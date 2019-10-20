@@ -1,0 +1,15 @@
+<div>
+  <h3>{{category.categoryName}}</h3>
+  <div *ngFor="let subCategory of category.subCategories">
+    <h2>
+      <a [routerLink]="['/auctions', category.categoryName, subCategory.categoryName]">
+        {{subCategory.categoryName}}
+      </a>
+    </h2>
+    <div class="subcategory2" *ngFor="let subcategory2 of subCategory.subCategories">
+      <a [routerLink]="['/auctions', category.categoryName, subCategory.categoryName, subcategory2.categoryName]">
+        {{subcategory2.categoryName}}
+      </a>
+    </div>
+  </div>
+</div>

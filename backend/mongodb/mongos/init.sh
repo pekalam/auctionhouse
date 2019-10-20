@@ -1,0 +1,1 @@
+docker exec db-mongos1 bash -c 'mongo < /scripts/init.js'

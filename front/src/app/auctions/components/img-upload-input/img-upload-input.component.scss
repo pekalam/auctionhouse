@@ -1,0 +1,58 @@
+$imgBtnSize: 200px;
+
+
+.upload-photo-input {
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
+}
+
+.plus-btn {
+  display: inline-block;
+  width: $imgBtnSize;
+  height: $imgBtnSize;
+  text-align: center;
+  vertical-align: middle;
+  line-height: $imgBtnSize;
+}
+
+.add-img-btn {
+  display: inline-block;
+  max-width: $imgBtnSize;
+  width: $imgBtnSize;
+  height: $imgBtnSize;
+  max-height: $imgBtnSize;
+  background-color: rgb(151, 143, 143);
+}
+
+.preview-container{
+  height: 100%;
+  cursor: pointer;
+  position: relative;
+  .cancel-btn{
+    position: absolute;
+    top: -12px;
+    left: $imgBtnSize - 13px;
+    background-color: red;
+    border-radius: 50%;
+    font-size: 14px;
+    line-height: 25px;
+    text-align: center;
+    width: 25px;
+    height: 25px;
+    span{
+      width: 25px;
+    }
+  }
+  .img-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    img{
+      width: 100%;
+      height: auto;
+    }
+  }
+
+}

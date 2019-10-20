@@ -1,0 +1,13 @@
+<div>
+  <app-auction-preview [auction]="auction"></app-auction-preview>
+  <form [formGroup]="form" (ngSubmit)="onBidSubmit()">
+
+    <span>Current price: {{auction.winningBid ? auction.winningBid.price : "none"}}</span>
+    <br/>
+    <label>
+      Your offer
+      <input type="number" formControlName="price" /> USD
+    </label>
+    <button type="submit">Submit bid</button>
+  </form>
+</div>

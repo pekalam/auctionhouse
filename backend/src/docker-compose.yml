@@ -1,0 +1,45 @@
+version: '3.4'
+
+services:
+  web:
+    image: ${DOCKER_REGISTRY-}web
+    build:
+      context: .
+      dockerfile: Web/Dockerfile
+
+  timetask_service:
+    hostname: timetask
+    image: ${DOCKER_REGISTRY-}timetask_service
+    ports:
+      - "5001:80"
+
+  eventst:
+    hostname: eventst
+    image: ${DOCKER_REGISTRY-}eventstore/eventstore
+    ports:
+      - "2113:2113"
+      - "1113:1113"
+    environment:
+      - EVENTSTORE_MEM_DB=true
+
+  rabbitmq:
+    hostname: rabbitmq
+    image: rabbitmq:3-management
+    tmpfs: /var/lib/rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+
+
+  integrationtests:
+    image: ${DOCKER_REGISTRY-}infrastructureintegrationtests
+    build:
+      context: .
+      dockerfile: Infrastructure.IntegrationTests/Dockerfile
+    depends_on:
+      - eventst
+      - rabbitmq
+
+
+
+

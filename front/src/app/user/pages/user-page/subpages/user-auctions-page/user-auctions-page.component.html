@@ -1,0 +1,5 @@
+<div *ngIf="userAuctions">
+  <div *ngFor="let auction of userAuctions.auctions">
+    <p>{{auction.product.name}}</p>
+  </div>
+</div>

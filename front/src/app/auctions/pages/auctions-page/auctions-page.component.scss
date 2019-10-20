@@ -1,0 +1,50 @@
+@import 'global';
+
+.container{
+  padding: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  .auctions-container{
+    width: calc(100% - 20px - 300px);
+    background-color: white;
+    display: inline-block;
+    margin: 0 10px 0 10px;
+  }
+  .filters-container{
+    display: inline-block;
+    background-color: white;
+    min-width: 300px;
+    height: auto;
+    margin: 0 10px 0 10px;
+    flex-shrink: 0;
+  }
+  @media only screen and (min-width: 961px) {
+    .filters-container{
+      @include section-shadow;
+    }
+    .auctions-container{
+      @include section-shadow;
+    }
+  }
+  @media only screen and (max-width: 960px) {
+    .auctions-container{
+      width: 100%;
+      margin: 0;
+    }
+    .filters-container{
+      width: 100%;
+      margin: 0 0 20px;
+    }
+  }
+}
+
+
+@media only screen and (max-width: 960px) {
+  .container{
+    flex-wrap: wrap;
+  }
+}
+
+
+

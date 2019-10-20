@@ -1,0 +1,8 @@
+
+backend/Gen/
+backend/src/.vs/
+backend/src/bin/
+backend/src/*/obj/
+backend/src/*/bin/
+backend/src/obj/
+backend/tools/

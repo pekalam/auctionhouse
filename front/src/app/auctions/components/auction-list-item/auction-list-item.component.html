@@ -1,0 +1,23 @@
+<div class="auction-list-item-container">
+  <div class="left">
+    <img *ngIf="auctionImgSrc" [src]="auctionImgSrc"/>
+  </div>
+  <div class="right" (click)="onAuctionListItemClick()">
+    <div class="right-content">
+        <div>
+            <h2>{{auction.productName}}</h2>
+          </div>
+          <div class="price-div">
+            <div class="price-div-left">
+              <span>Current price:</span>
+              <span class="price"> {{auction.actualPrice | currency}}</span>
+            </div>
+            <div class="price-div-right">
+              <span>Buy now price:</span>
+              <span class="price"> {{auction.buyNowPrice | currency}}</span>
+            </div>
+          </div>
+    </div>
+  </div>
+  <div class="clear"></div>
+</div>

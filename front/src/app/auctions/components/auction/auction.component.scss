@@ -1,0 +1,63 @@
+.auction-container {
+  height: 500px;
+  .left {
+    width: 55%;
+    height: 100%;
+    float: left;
+    background-color: blue;
+  }
+  .right {
+    float: left;
+    width: 45%;
+    height: 100%;
+    .right-content {
+      padding-left: 25px;
+      .date-div{
+        margin-top: 25px;
+      }
+      .current-price-div {
+        margin-top: 25px;
+        .price {
+          font-weight: bold;
+        }
+      }
+      .buynow-price-div {
+        margin-top: 25px;
+        .price {
+          font-weight: bold;
+        }
+      }
+
+      .bid-info-container{
+        margin-top: 25px;
+        .nobids{
+          color: chocolate;
+        }
+        .winner{
+          font-weight: bold;
+        }
+      }
+
+      .auction-buttons-container{
+        width: 100%;
+        margin-top: 15px;
+        button{
+          display: block;
+          cursor: pointer;
+          width: 100%;
+          margin-bottom: 10px;
+        }
+        .buynow-btn{
+          background-color: yellow;
+          color: black;
+        }
+        .bid-btn{
+        }
+      }
+    }
+  }
+  .description-container{
+    clear: both;
+    padding-top: 20px;
+  }
+}

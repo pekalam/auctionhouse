@@ -1,0 +1,11 @@
+version: '3.4'
+
+services:
+  db-config1:
+    hostname: db-config1
+    container_name: db-config1
+    image: mongo
+    tmpfs: /data/configdb
+    command: "--configsvr --replSet configRS --bind_ip_all"
+    volumes: 
+      - "./config/scripts:/scripts"

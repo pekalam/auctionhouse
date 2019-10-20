@@ -1,0 +1,17 @@
+<div>
+  <div class="container" [hidden]="!showCreateForm">
+    <div class="navig-btn-container">
+      <button class="back" (click)="onBackClick()">Back</button>
+      <button class="forward" (click)="onForwardClick()" [hidden]="!canMoveForward">Forward</button>
+    </div>
+    <app-category-select-step (outputOnStepComplete)="onCategorySelectedStep($event)" [hidden]="step !== 0">
+    </app-category-select-step>
+    <app-product-step (outputOnStepComplete)="onProductStep($event)" [hidden]="step !== 1"></app-product-step>
+    <app-add-image-step (outputOnStepComplete)="onImagesStep($event)" [hidden]="step !== 2"></app-add-image-step>
+    <app-create-summary-step [commandArgs]="createAuctionArgs" [hidden]="step !== 3"></app-create-summary-step>
+    <div class="create-container">
+        <button class="create-btn" (click)="onCreateClick()" mat-raised-button color="primary" *ngIf="step === 3">Create auction</button>
+        <p class="err-msg">{{error}}</p>
+    </div>
+  </div>
+</div>

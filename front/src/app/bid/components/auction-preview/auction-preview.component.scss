@@ -1,0 +1,14 @@
+.auction-preview-div{
+  display: flex;
+  width: 50%;
+  .left{
+    flex-grow: 1;
+    background-color: blue;
+    height: 100px;
+  }
+  .right{
+    flex-grow: 2;
+    background-color: red;
+    height: 100px;
+  }
+}

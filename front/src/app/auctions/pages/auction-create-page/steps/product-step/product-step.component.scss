@@ -1,0 +1,48 @@
+@import 'global';
+
+.container {
+  width: 80%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  @include section-shadow;
+  background-color: white;
+  mat-form-field {
+    display: block;
+    input{
+      margin-top: 20px;
+    }
+  }
+  .form-grid {
+    display: flex;
+    flex-flow: row;
+    width: 100%;
+    .g1{
+      flex-grow: 1;
+    }
+    .g2 {
+      flex-grow: 2;
+      padding-left: 40px;
+      display: flex;
+      flex-direction: column;
+      mat-form-field{
+        flex-grow: 2;
+      }
+      textarea{
+        margin-top: 10px;
+        height: 10em;
+      }
+      .ok-container{
+        flex-grow: 1;
+        text-align: center;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+        flex-direction: column;
+        button{
+          margin-right: 20px;
+        }
+      }
+    }
+  }
+}

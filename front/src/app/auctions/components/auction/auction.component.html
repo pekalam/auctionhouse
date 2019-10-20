@@ -1,0 +1,36 @@
+<div class="auction-container" *ngIf="auction">
+  <div class="left"></div>
+  <div class="right">
+    <div class="right-content" >
+      <h3>{{auction.product.name}}</h3>
+      <span>From: {{auction.creator.userName}}</span>
+      <div class="date-div">
+          <span>Starts: {{auction.startDate | date : "yyyy MMMM dd"}}</span>
+          <br/>
+          <span>Ends: {{auction.endDate | date : "yyyy MMMM dd"}}</span>
+          <br/>
+          <span class="days-left">Days left: {{getDaysLeft()}}</span>
+      </div>
+      <div class="current-price-div">
+        <span>Current price:</span>
+        <span class="price"> {{auction.actualPrice | currency}}</span>
+      </div>
+      <div class="buynow-price-div">
+        <span>Buy now price:</span>
+        <span class="price"> {{auction.buyNowPrice | currency}}</span>
+      </div>
+      <div class="bid-info-container">
+          <span class="winner" *ngIf="auction.winningBid">Auction winner: {{auction.winningBid.userIdentity.userName}}</span>
+          <span class="nobids" *ngIf="!auction.winningBid">Nobody is taking part in auction</span>
+      </div>
+      <div class="auction-buttons-container">
+        <button class="buynow-btn" (click)="onBuyNow()">Buy now</button>
+        <button class="bid-btn" (click)="onBid()">Bid</button>
+      </div>
+    </div>
+  </div>
+  <div class="description-container">
+    <h2>Description</h2>
+    <p>{{auction.product.description}}</p>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+@import 'global';
+
+#container{
+  padding-top: 50px;
+  background-color: white;
+  width: 50%;
+  margin: 20px auto;
+  padding: 20px;
+  @include section-shadow;
+  #sign-in-form{
+    .field-container{
+      padding: 15px;
+      display: block;
+      text-align: center;
+    }
+    #sign-in-button{
+      cursor: pointer;
+    }
+
+  }
+  .submit-button-container{
+    display: block;
+    text-align: center;
+    #signup-button{
+      margin-top: 30px;
+    }
+  }
+}

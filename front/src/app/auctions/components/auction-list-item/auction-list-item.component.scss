@@ -1,0 +1,52 @@
+$listItemHeight: 200px;
+
+.auction-list-item-container{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  .left{
+    min-width: 210px;
+    height: $listItemHeight;
+    box-sizing: border-box;
+    padding: 5px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    img{
+      max-width: 200px;
+      max-height: 200px;
+    }
+  }
+  .right{
+    width: 80%;
+    height: $listItemHeight;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    .right-content{
+      padding-left: 10px;
+      .price-div{
+        .price-div-left{
+          width: 50%;
+          float: left;
+        }
+        .price-div-right{
+          width: 50%;
+          float: left;
+        }
+        .price{
+          font-weight: bold;
+        }
+      }
+    }
+  }
+  .clear{
+    clear: both;
+  }
+  &:hover{
+    background-color: bisque;
+  }
+}

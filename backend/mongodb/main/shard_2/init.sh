@@ -1,0 +1,1 @@
+docker exec db-node2 bash -c 'mongo --port 27018 < /scripts/init.js'

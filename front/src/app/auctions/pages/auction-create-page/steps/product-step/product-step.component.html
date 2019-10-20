@@ -1,0 +1,41 @@
+<div class="container">
+  <form class="form-grid" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="g1">
+      <mat-form-field>
+        Product name
+        <input matInput type="text" formControlName="productName" />
+      </mat-form-field>
+
+      <mat-radio-group formControlName="buyNow">
+        <mat-radio-button>Buy now</mat-radio-button>
+      </mat-radio-group>
+
+
+      <mat-form-field>
+        Buy now price
+        <input [disabled]="" type="number" matInput formControlName="buyNowPrice" />
+      </mat-form-field>
+
+      <mat-form-field>
+        Start date
+        <input type="datetime-local" matInput formControlName="startDate" />
+      </mat-form-field>
+
+      <mat-form-field>
+        End date
+        <input type="datetime-local" matInput formControlName="endDate" />
+      </mat-form-field>
+
+    </div>
+
+    <div class="g2">
+      <mat-form-field>
+        Product description
+        <textarea matInput formControlName="productDescription"></textarea>
+      </mat-form-field>
+      <div class="ok-container">
+        <button mat-raised-button color="primary" type="submit">OK</button>
+      </div>
+    </div>
+  </form>
+</div>

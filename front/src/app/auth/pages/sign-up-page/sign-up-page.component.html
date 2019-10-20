@@ -1,0 +1,29 @@
+<div id="container">
+
+  <form id="sign-in-form" [formGroup]="form" (ngSubmit)="onSignUpClick()">
+    <div class="field-container">
+      <mat-form-field id="username-field">
+        <input matInput type="text" placeholder="Username" formControlName="username" required/>
+        <mat-error>
+          <ng-container *ngIf="form.controls.username.errors">
+            <span *ngIf="form.controls.username.errors.required">Username cannot be empty</span>
+          </ng-container>
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="field-container">
+      <mat-form-field id="password">
+        <input matInput type="password" placeholder="Password" formControlName="password" required/>
+        <mat-error>
+            <ng-container *ngIf="form.controls.password.errors">
+                <span *ngIf="form.controls.password.errors.required">Password cannot be empty</span>
+              </ng-container>
+        </mat-error>
+      </mat-form-field>
+
+    </div>
+    <div class="submit-button-container">
+      <button mat-raised-button color="primary" id="sign-in-button" type="submit">Sign up</button>
+    </div>
+  </form>
+</div>

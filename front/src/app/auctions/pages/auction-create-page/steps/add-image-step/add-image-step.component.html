@@ -1,0 +1,10 @@
+<div class="container">
+  <div class="img-btn-container">
+
+    <div class="add-img-btn-container" *ngFor="let id of imgIds">
+      <app-img-upload-input [imgnum]="id"></app-img-upload-input>
+    </div>
+
+  </div>
+  <button (click)="onOK()" class="ok-btn">OK</button>
+</div>

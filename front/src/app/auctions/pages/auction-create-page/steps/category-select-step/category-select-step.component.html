@@ -1,0 +1,39 @@
+<div id="container">
+  <h2>Select auction categories</h2>
+  <div>
+    <mat-form-field>
+      Main category
+      <mat-select (selectionChange)="selectMainCategory($event.value)">
+        <mat-option selected></mat-option>
+        <ng-container *ngFor="let cat of mainCategories">
+          <mat-option [value]="cat.categoryName">{{cat.categoryName}}</mat-option>
+        </ng-container>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div [appVisible]="selectedMainCategory == null">
+    <mat-form-field>
+      Sub category
+      <mat-select (selectionChange)="selectSubCategory($event.value)">
+        <mat-option selected></mat-option>
+        <ng-container *ngFor="let cat of subCategories">
+          <mat-option [value]="cat.categoryName">{{cat.categoryName}}</mat-option>
+        </ng-container>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div [appVisible]="selectedSubCategory == null">
+    <mat-form-field>
+      Second sub category
+      <mat-select (selectionChange)="selectSubCategory2($event.value)">
+        <mat-option selected></mat-option>
+        <ng-container *ngFor="let cat of subCategories2">
+          <mat-option [value]="cat.categoryName">{{cat.categoryName}}</mat-option>
+        </ng-container>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div id="ok-container" [appVisible]="!(selectedMainCategory && selectedSubCategory && selectedSubCategory2)">
+    <button (click)="onOkClick()" mat-raised-button color="primary">OK</button>
+  </div>
+</div>

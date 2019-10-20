@@ -1,0 +1,8 @@
+﻿<categories>
+  <category name="Fake category" id="0">
+    <sub-category name="Fake subcategory" id="1">
+      <sub-sub-category name="Fake subsubcategory 0" id="2"/>
+      <sub-sub-category name="Fake subsubcategory 1" id="3"/>
+    </sub-category>
+  </category>
+</categories>

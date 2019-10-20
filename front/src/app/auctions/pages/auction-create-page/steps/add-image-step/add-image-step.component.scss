@@ -1,0 +1,31 @@
+@import "global";
+
+$btnContainerSize: 250px;
+
+.container {
+  width: 80%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  @include section-shadow;
+  background-color: white;
+}
+.img-btn-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  .add-img-btn-container {
+    width: $btnContainerSize;
+    height: $btnContainerSize;
+    max-width: $btnContainerSize;
+    max-height: $btnContainerSize;
+    flex-grow: 1;
+    vertical-align: middle;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+  }
+}

@@ -1,0 +1,21 @@
+@import 'global';
+
+mat-form-field{
+  width: 70%;
+  max-width: 700px;
+  mat-select{
+    margin-top: 20px;
+  }
+}
+#ok-container{
+  text-align: center;
+}
+#container{
+  margin: 0 auto;
+  width: 80%;
+  max-width: 900px;
+  padding: 20px;
+  background-color: white;
+  text-align: center;
+}
+

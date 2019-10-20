@@ -1,0 +1,15 @@
+.container{
+  box-sizing: border-box;
+  padding: 5px 10px 10px 10px;
+  mat-radio-group{
+    display: block;
+    mat-radio-button{
+      display: block;
+    }
+  }
+  .apply-btn-container{
+    text-align: center;
+    width: 100%;
+  }
+}
+

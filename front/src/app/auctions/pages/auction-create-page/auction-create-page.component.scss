@@ -1,0 +1,38 @@
+@import "global";
+
+.container {
+  width: 100%;
+  padding-top: 50px;
+
+  mat-form-field {
+    display: block;
+  }
+  .form-grid {
+    display: flex;
+    flex-flow: row;
+    #g1,
+    #g2 {
+      flex-grow: 1;
+    }
+  }
+  .navig-btn-container{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    padding-bottom: 10px;
+    .back{
+      margin-right: 20px;
+    }
+    .forward{
+      margin-left: 20px;
+    }
+  }
+  .create-container{
+    width: 100%;
+    text-align: center;
+    padding-top: 20px;
+    .err-msg{
+      color: red;
+    }
+  }
+}

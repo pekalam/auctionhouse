@@ -1,0 +1,104 @@
+$barHeight: 50px;
+$itemsCount: 4;
+$bgColor: #ffffff;
+$hoverColor: #62727b;
+
+.navbar {
+  width: 100%;
+  height: $barHeight;
+  flex-direction: row;
+  flex-wrap: wrap;
+  display: flex;
+  justify-content: flex-start;
+  background-color: $bgColor;
+  border-bottom: 1px solid #ddd;
+  //position: fixed;
+  z-index: 1000;
+  .navbar-item {
+    text-align: center;
+    color: black;
+    height: $barHeight;
+    line-height: $barHeight;
+    vertical-align: middle;
+    text-decoration: none;
+    padding: 0 7px 0 7px;
+    cursor: pointer;
+    &:hover {
+      background-color: $hoverColor;
+      transition: background-color 0.5s ease;
+      color: white;
+    }
+    span {
+      text-align: center;
+      vertical-align: middle;
+      text-decoration: none;
+    }
+  }
+  .searchbar-container {
+    flex-grow: 2;
+    line-height: $barHeight;
+    vertical-align: middle;
+    text-align: center;
+
+    input {
+      width: 70%;
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+      font-size: 15px;
+    }
+    .search-button-container {
+      width: 10%;
+      display: inline-block;
+      padding-left: 10px;
+      box-sizing: border-box;
+      text-align: left;
+    }
+    button {
+      display: inline-block;
+    }
+  }
+  .navbar-item-icon {
+    text-align: center;
+    margin-left: 4px;
+    &:hover {
+      background-color: $bgColor;
+    }
+  }
+  .navbar-group-left {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row-reverse;
+    padding-right: 40px;
+  }
+  .signin-btn{
+    background-color: #62727b;
+    color: white;
+    &:hover {
+      background-color: gray;
+    }
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .navbar {
+    .navbar-item {
+      flex-grow: 0;
+      min-width: 100px;
+    }
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .navbar {
+    .navbar-item {
+      flex-basis: 100%;
+    }
+    .navbar-item-icon {
+      text-align: center;
+    }
+  }
+  .container {
+    height: $itemsCount * $barHeight !important;
+  }
+}

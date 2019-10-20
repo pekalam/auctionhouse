@@ -1,0 +1,21 @@
+<nav id="categories-container" (mouseleave)="hideSubcategories()">
+  <div id="main-categories-container" (mouseenter)="hideSubcategories()">
+    <div class="main-category" *ngFor="let category of mainCategories">
+      <div (mouseenter)="showSubcategories(category)" (touchstart)="showSubcategories(category)">
+        <a [routerLink]="['/category', category.categoryName]">{{category.categoryName}}</a>
+      </div>
+    </div>
+  </div>
+  <div id="subcategories-container" (mouseleave)="hideSubcategories()">
+    <div class="subcategory-list" *ngIf="subcategoriesShown">
+      <div class="subcategory" *ngFor="let subCategory of subCategories">
+        <a class="subcategory-name">{{subCategory.categoryName}}</a>
+        <div class="subcategories2-container">
+          <div class="subcategory2" *ngFor="let subcategory2 of subCategory.subCategories">
+            <a class="subcategory2-name">{{subcategory2.categoryName}}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

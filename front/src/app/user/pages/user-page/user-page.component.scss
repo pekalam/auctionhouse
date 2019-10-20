@@ -1,0 +1,9 @@
+@import 'global';
+
+.container{
+  @include section-shadow;
+  width: 90%;
+  max-width: 1500px;
+  background-color: white;
+  margin: 30px auto;
+}

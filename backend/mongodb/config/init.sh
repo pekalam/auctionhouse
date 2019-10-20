@@ -1,0 +1,1 @@
+docker exec db-config1 bash -c 'mongo --port 27019 < /scripts/init.js'

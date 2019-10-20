@@ -1,0 +1,25 @@
+<div class="container">
+  <div *ngIf="subcategories">
+    <h1>{{subcategories.categoryName}}</h1>
+    <div *ngFor="let subcategory2 of subcategories.subCategories[0].subCategories">
+      <a
+        [routerLink]="['/auctions', subcategories.categoryName, subcategories.subCategories[0].categoryName, subcategory2.categoryName]">{{subcategory2.categoryName}}</a>
+    </div>
+  </div>
+  <div>
+    <form [formGroup]="form">
+      <h4>Condition
+      </h4>
+      <mat-radio-group formControlName="condition">
+        <mat-radio-button value="new">New</mat-radio-button>
+        <mat-radio-button value="used">Used</mat-radio-button>
+        <mat-radio-button value="all">Both</mat-radio-button>
+      </mat-radio-group>
+      <h4>Price</h4>
+      <mat-slider></mat-slider>
+      <div class="apply-btn-container">
+        <button mat-raised-button color="primary" type="submit">Apply filters</button>
+      </div>
+    </form>
+  </div>
+</div>

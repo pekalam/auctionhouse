@@ -1,0 +1,8 @@
+<div class="container">
+  <div class="filters-container">
+    <app-auction-filters [subcategories]="subCategoryTree"></app-auction-filters>
+  </div>
+  <div class="auctions-container">
+    <app-auction-list-item *ngFor="let auction of auctions" [auction]="auction"></app-auction-list-item>
+  </div>
+</div>

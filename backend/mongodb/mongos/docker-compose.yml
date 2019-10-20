@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  db-mongos1:
+    hostname: db-mongos1
+    container_name: db-mongos1
+    image: mongo
+    volumes: 
+      - "./mongos/scripts:/scripts"
+    entrypoint: ["mongos", "--configdb", "configRS/db-config1:27019", "--bind_ip_all"]
+    ports: 
+      - "27017:27017"
