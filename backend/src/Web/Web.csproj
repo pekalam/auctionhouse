@@ -21,10 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Command\Core.Command.csproj" />
-    <ProjectReference Include="..\Core\Core.Common.csproj" />
+    <ProjectReference Include="..\Core.Command\Core.Command.csproj" />
+    <ProjectReference Include="..\Core.Common\Core.Common.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
-    <ProjectReference Include="..\Query\Core.Query.csproj" />
+    <ProjectReference Include="..\Core.Query\Core.Query.csproj" />
   </ItemGroup>
 
   <ItemGroup>

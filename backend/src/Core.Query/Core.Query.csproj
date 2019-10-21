@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Command\Core.Command.csproj" />
-    <ProjectReference Include="..\Core\Core.Common.csproj" />
+    <ProjectReference Include="..\Core.Command\Core.Command.csproj" />
+    <ProjectReference Include="..\Core.Common\Core.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

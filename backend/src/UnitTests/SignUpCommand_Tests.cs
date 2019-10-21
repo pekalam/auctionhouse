@@ -19,7 +19,7 @@ using NUnit.Framework;
 
 namespace Infrastructure.UnitTests
 {
-    public class Tests
+    public class SignUpCommand_Tests
     {
         private bool verifyRegisteredEvent(IEnumerable<Event> @event)
         {
