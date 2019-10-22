@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.WebSockets;
 using System.Threading;
-using Core;
 using Core.Command.CreateAuction;
 using Core.Common;
 using Core.Common.ApplicationServices;
@@ -20,12 +18,13 @@ using Core.Common.SchedulerService;
 using Core.Query.Handlers;
 using Core.Query.ReadModel;
 using FluentAssertions;
-using Infrastructure.Tests.Functional.EventHandling;
+using FunctionalTests.EventHandling;
+using FunctionalTests.Utils;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 
-namespace Infrastructure.Tests.Functional.CommandRollback
+namespace FunctionalTests.CommandRollback
 {
     [TestFixture]
     public class CreateAuctionRollback_test

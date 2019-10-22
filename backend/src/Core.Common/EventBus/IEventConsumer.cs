@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Tests")]
+[assembly: InternalsVisibleTo("FunctionalTests")]
 namespace Core.Common.EventBus
 {
     internal interface IEventConsumer

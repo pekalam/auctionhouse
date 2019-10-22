@@ -1,11 +1,10 @@
-﻿using System;
+using System;
 using Core.Common.ApplicationServices;
 using Core.Common.Domain.AuctionCreateSession;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Categories;
 using Core.Common.EventBus;
 using Core.Query.ReadModel;
-using EasyNetQ.AutoSubscribe;
 using EasyNetQ.Logging;
 using Infrastructure.Adapters.Repositories.EventStore;
 using Infrastructure.Adapters.Services;
@@ -17,7 +16,7 @@ using Moq;
 using NUnit.Framework;
 using RestEase;
 
-namespace Infrastructure.Tests.Functional.EventHandling
+namespace FunctionalTests.Utils
 {
     public class TestContextUtils
     {

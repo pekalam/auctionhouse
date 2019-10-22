@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using IEventBus = Core.Common.EventBus.IEventBus;
 
-[assembly: InternalsVisibleTo("Tests")]
+[assembly: InternalsVisibleTo("FunctionalTests")]
 namespace Infrastructure.Adapters.Services.EventBus
 {
     public class RabbitMqEventBus : IEventBus

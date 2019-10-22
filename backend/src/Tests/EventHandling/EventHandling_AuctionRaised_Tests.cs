@@ -11,49 +11,49 @@ using Core.Common.Domain.Users;
 using Core.Common.EventBus;
 using Core.Common.EventSignalingService;
 using Core.Query.Handlers;
-using EasyNetQ.AutoSubscribe;
+using FunctionalTests.Utils;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 
-namespace Infrastructure.Tests.Functional.EventHandling
+namespace FunctionalTests.EventHandling
 {
     public class EventHandling_AuctionRaised_Tests
     {
         [Test]
         public void Test1()
         {
-            var stubUser = new UserIdentity() {UserId = Guid.NewGuid(), UserName = "testUserName"};
-            var stubProduct = new Product() {Name = "test product", Description = "desc"};
-            var stubAuction = new Auction(20.0m, DateTime.UtcNow.AddMinutes(10), DateTime.UtcNow.AddDays(1), stubUser, 
-                stubProduct, new Category("test", 0));
+            var user = new UserIdentity() {UserId = Guid.NewGuid(), UserName = "testUserName"};
+            var product = new Product() {Name = "test product", Description = "desc"};
+            var auction = new Auction(20.0m, DateTime.UtcNow.AddMinutes(10), DateTime.UtcNow.AddDays(1), user, 
+                product, new Category("test", 0));
             var sem = new SemaphoreSlim(0, 1);
 
             var services = TestDepedencies.Instance.Value;
 
-            var mockEventHandler = new Mock<AuctionRaisedHandler>(services.AppEventBuilder,
+            var eventHandler = new Mock<AuctionRaisedHandler>(services.AppEventBuilder,
                 services.DbContext, Mock.Of<IEventSignalingService>(), Mock.Of<ILogger<AuctionRaisedHandler>>());
-            mockEventHandler.CallBase = true;
-            mockEventHandler.Setup(f => f.Consume(It.IsAny<IAppEvent<AuctionRaised>>()))
+            eventHandler.CallBase = true;
+            eventHandler.Setup(f => f.Consume(It.IsAny<IAppEvent<AuctionRaised>>()))
                 .Callback(() => sem.Release());
 
 
-            services.SetupEventBus(mockEventHandler.Object);
+            services.SetupEventBus(eventHandler.Object);
 
             var userIdentityService = new Mock<IUserIdentityService>();
             userIdentityService.Setup(f => f.GetSignedInUserIdentity())
-                .Returns(stubUser);
+                .Returns(user);
 
             var stubHandler = new BidCommandHandler(services.AuctionRepository, userIdentityService.Object,
                 services.EventBus);
 
-            services.AuctionRepository.AddAuction(stubAuction);
-            stubHandler.Handle(new BidCommand(stubAuction.AggregateId, 21.0m, new CorrelationId("123")), CancellationToken.None);
+            services.AuctionRepository.AddAuction(auction);
+            stubHandler.Handle(new BidCommand(auction.AggregateId, 21.0m, new CorrelationId("123")), CancellationToken.None);
 
 
             sem.Wait(TimeSpan.FromSeconds(5));
 
-            mockEventHandler.Verify(f => f.Consume(It.IsAny<IAppEvent<AuctionRaised>>()), Times.Once);
+            eventHandler.Verify(f => f.Consume(It.IsAny<IAppEvent<AuctionRaised>>()), Times.Once);
         }
     }
 }

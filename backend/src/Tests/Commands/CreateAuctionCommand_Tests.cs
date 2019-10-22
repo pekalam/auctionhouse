@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Core.Command;
 using Core.Command.CreateAuction;
-using Core.Common;
 using Core.Common.ApplicationServices;
 using Core.Common.Auth;
 using Core.Common.Domain.AuctionCreateSession;
@@ -15,10 +14,10 @@ using Core.Common.Domain.Products;
 using Core.Common.Domain.Users;
 using Core.Common.EventBus;
 using Core.Common.SchedulerService;
-using EasyNetQ.AutoSubscribe;
 using FluentAssertions;
+using FunctionalTests.EventHandling;
+using FunctionalTests.Utils;
 using Infrastructure.Adapters.Services.SchedulerService;
-using Infrastructure.Tests.Functional.EventHandling;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
@@ -28,7 +27,7 @@ using WireMock.ResponseProviders;
 using WireMock.Server;
 using WireMock.Settings;
 
-namespace Infrastructure.Tests.Functional.Commands
+namespace FunctionalTests.Commands
 {
     [TestFixture]
     public class CreateAuctionCommand_Tests
@@ -40,49 +39,63 @@ namespace Infrastructure.Tests.Functional.Commands
         private DateTime endDate;
         private TestCreateAuctionCommandHandler testCommandHandler;
         private TestDepedencies testDepedencies = TestDepedencies.Instance.Value;
+
         private List<string> categories = new List<string>()
         {
             "Fake category", "Fake subcategory", "Fake subsubcategory 0"
         };
 
-        [SetUp]
-        public void SetUp()
+        private void SetUpFakeTimeTaskServer()
         {
             server = FluentMockServer.Start(new FluentMockServerSettings() {Port = 9998});
-            called = false;
-            startDate = DateTime.UtcNow.AddSeconds(10);
-            endDate = DateTime.UtcNow.AddSeconds(20);
+            var responseProvider = new FakeResponseProvider(HttpStatusCode.OK);
+            responseProvider.Callback = message => { called = true; };
+            server.Given(Request.Create()
+                    .WithPath("/test")
+                    .UsingPost())
+                .RespondWith(responseProvider);
+        }
+
+        private void SetUpCommandHandler()
+        {
             var user = new User();
             user.Register("test");
             user.MarkPendingEventsAsHandled();
 
 
-            var UserIdentityService = new Mock<IUserIdentityService>();
-            UserIdentityService.Setup(service => service.GetSignedInUserIdentity()).Returns(user.UserIdentity);
+            var userIdentityService = new Mock<IUserIdentityService>();
+            userIdentityService.Setup(service => service.GetSignedInUserIdentity())
+                .Returns(user.UserIdentity);
 
-            var UserRepository = new Mock<IUserRepository>();
-            UserRepository.Setup(f => f.FindUser(It.IsAny<UserIdentity>())).Returns(user);
-
-            var responseProvider = new FakeResponseProvider(HttpStatusCode.OK);
-            responseProvider.Callback = message => { called = true; };
-            server.Given(Request.Create().WithPath("/test").UsingPost())
-                .RespondWith(responseProvider);
+            var userRepository = new Mock<IUserRepository>();
+            userRepository.Setup(f => f.FindUser(It.IsAny<UserIdentity>()))
+                .Returns(user);
 
             var auctionCreateSessionService = new Mock<IAuctionCreateSessionService>();
             auctionCreateSessionService.Setup(f => f.GetSessionForSignedInUser())
                 .Returns(user.UserIdentity.GetAuctionCreateSession());
             auctionCreateSessionService.Setup(f => f.RemoveSessionForSignedInUser());
 
-            var EventBusService = new Mock<EventBusService>(Mock.Of<IEventBus>(), Mock.Of<IAppEventBuilder>());
+            var eventBusService = new Mock<EventBusService>(Mock.Of<IEventBus>(), Mock.Of<IAppEventBuilder>());
 
             testCommandHandler = new TestCreateAuctionCommandHandler(testDepedencies.AuctionRepository,
-                UserIdentityService.Object,
+                userIdentityService.Object,
                 new TestAuctionSchedulerService(testDepedencies.TimeTaskClient,
                     testDepedencies.TimetaskServiceSettings),
-                EventBusService.Object,
+                eventBusService.Object,
                 Mock.Of<ILogger<CreateAuctionCommandHandler>>(),
                 new CategoryBuilder(testDepedencies.CategoryTreeService),
-                UserRepository.Object, auctionCreateSessionService.Object);
+                userRepository.Object, auctionCreateSessionService.Object);
+        }
+
+        [SetUp]
+        public void SetUp()
+        {
+            SetUpFakeTimeTaskServer();
+            called = false;
+            startDate = DateTime.UtcNow.AddSeconds(10);
+            endDate = DateTime.UtcNow.AddSeconds(20);
+            SetUpCommandHandler();
         }
 
         [TearDown]
@@ -100,13 +113,16 @@ namespace Infrastructure.Tests.Functional.Commands
                 startDate, endDate,
                 categories, new CorrelationId(""));
 
-            testCommandHandler.Handle(command, CancellationToken.None).Wait();
+            testCommandHandler.Handle(command, CancellationToken.None)
+                .Wait();
 
             Thread.Sleep(40_000);
 
             var added = testDepedencies.AuctionRepository.FindAuction(testCommandHandler.AddedAuction.AggregateId);
-            called.Should().BeTrue();
-            added.StartDate.Should().Be(startDate);
+            called.Should()
+                .BeTrue();
+            added.StartDate.Should()
+                .Be(startDate);
         }
 
         [Test]
@@ -116,11 +132,16 @@ namespace Infrastructure.Tests.Functional.Commands
             var command = new CreateAuctionCommand(Decimal.One, new Product {Name = "name", Description = "desc"},
                 startDate, endDate, categories, new CorrelationId(""));
 
-            Assert.Throws<Exception>(() => { testCommandHandler.Handle(command, CancellationToken.None).Wait(); });
+            Assert.Throws<Exception>(() =>
+            {
+                testCommandHandler.Handle(command, CancellationToken.None)
+                    .Wait();
+            });
 
             Thread.Sleep(7_000);
 
-            called.Should().BeFalse();
+            called.Should()
+                .BeFalse();
         }
 
         [Test]
@@ -131,11 +152,16 @@ namespace Infrastructure.Tests.Functional.Commands
                 startDate,
                 endDate, categories, new CorrelationId(""));
 
-            Assert.Throws<Exception>(() => { testCommandHandler.Handle(command, CancellationToken.None).Wait(); });
+            Assert.Throws<Exception>(() =>
+            {
+                testCommandHandler.Handle(command, CancellationToken.None)
+                    .Wait();
+            });
 
             Thread.Sleep(15_000);
 
-            called.Should().BeFalse();
+            called.Should()
+                .BeFalse();
         }
     }
 
@@ -165,7 +191,12 @@ namespace Infrastructure.Tests.Functional.Commands
 
         public Auction AddedAuction { get; private set; }
 
-        public TestCreateAuctionCommandHandler(IAuctionRepository auctionRepository, IUserIdentityService userIdService, IAuctionSchedulerService auctionSchedulerService, EventBusService eventBusService, ILogger<CreateAuctionCommandHandler> logger, CategoryBuilder categoryBuilder, IUserRepository userRepository, IAuctionCreateSessionService auctionCreateSessionService) : base(auctionRepository, userIdService, auctionSchedulerService, eventBusService, logger, categoryBuilder, userRepository, auctionCreateSessionService)
+        public TestCreateAuctionCommandHandler(IAuctionRepository auctionRepository, IUserIdentityService userIdService,
+            IAuctionSchedulerService auctionSchedulerService, EventBusService eventBusService,
+            ILogger<CreateAuctionCommandHandler> logger, CategoryBuilder categoryBuilder,
+            IUserRepository userRepository, IAuctionCreateSessionService auctionCreateSessionService) : base(
+            auctionRepository, userIdService, auctionSchedulerService, eventBusService, logger, categoryBuilder,
+            userRepository, auctionCreateSessionService)
         {
         }
 

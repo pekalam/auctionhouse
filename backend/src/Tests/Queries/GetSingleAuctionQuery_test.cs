@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System;
 using System.Threading;
 using Core.Common.Domain.Categories;
 using Core.Common.Domain.Products;
 using Core.Query.Queries.Auction.SingleAuction;
 using Core.Query.ReadModel;
 using FluentAssertions;
+using FunctionalTests.Utils;
 using Infrastructure.Adapters.Services;
-using Infrastructure.Tests.Functional.EventHandling;
 using MongoDB.Driver;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 
-namespace Infrastructure.Tests.Functional.Queries
+namespace FunctionalTests.Queries
 {
     [TestFixture]
     public class GetSingleAuctionQuery_test

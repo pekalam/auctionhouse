@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿using System.IO;
 using System.Threading;
 using Core.Common.Domain.Auctions;
 using FluentAssertions;
-using FluentValidation;
 using Infrastructure.Adapters.Repositories.AuctionImage;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
@@ -13,7 +9,7 @@ using MongoDB.Driver.GridFS;
 using Moq;
 using NUnit.Framework;
 
-namespace Infrastructure.Tests.Integration
+namespace IntegrationTests
 {
     [TestFixture]
     public class AuctionImageRepository_Tests

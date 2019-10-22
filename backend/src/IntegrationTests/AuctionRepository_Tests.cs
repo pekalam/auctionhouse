@@ -7,7 +7,7 @@ using FluentAssertions;
 using Infrastructure.Adapters.Repositories.EventStore;
 using NUnit.Framework;
 
-namespace Infrastructure.Tests.Integration
+namespace IntegrationTests
 {
     [Category("Integration")]
     public class AuctionRepository_Tests

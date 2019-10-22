@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using EasyNetQ.AutoSubscribe;
 
-namespace Infrastructure.Tests.Functional.EventHandling
+namespace FunctionalTests.EventHandling
 {
     class FakeAutoSubscriberMessageDispatcher : IAutoSubscriberMessageDispatcher
     {

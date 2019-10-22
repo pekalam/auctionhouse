@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "Web\Web.csproj", "{0
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{EBA8F839-9106-4195-A47B-C6EF22137452}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{7F73DDC5-6EF1-4D23-8485-5B851D36D39E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionalTests", "Tests\FunctionalTests.csproj", "{7F73DDC5-6EF1-4D23-8485-5B851D36D39E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{45F19B6A-F840-4FCA-8E87-3DB7CD1F3CE8}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Query", "Core.Query\Core.Query.csproj", "{3BF1DC2B-829E-4C5A-B34E-D1C9A456089F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gen", "..\Gen\Gen.csproj", "{16316068-A495-412D-9B62-AD604D22099B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{42ADE0DC-8C58-4749-B091-504955B0F581}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{16316068-A495-412D-9B62-AD604D22099B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16316068-A495-412D-9B62-AD604D22099B}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{16316068-A495-412D-9B62-AD604D22099B}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{42ADE0DC-8C58-4749-B091-504955B0F581}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42ADE0DC-8C58-4749-B091-504955B0F581}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42ADE0DC-8C58-4749-B091-504955B0F581}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42ADE0DC-8C58-4749-B091-504955B0F581}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

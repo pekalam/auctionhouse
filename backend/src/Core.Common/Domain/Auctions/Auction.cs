@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Core.Common.Domain.Auctions.Events;
 using Core.Common.Domain.Bids;
 using Core.Common.Domain.Categories;
 using Core.Common.Domain.Products;
 using Core.Common.Domain.Users;
 
+[assembly:InternalsVisibleTo("IntegrationTests")]
 namespace Core.Common.Domain.Auctions
 {
     public partial class Auction : AggregateRoot<Auction>

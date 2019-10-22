@@ -7,12 +7,13 @@ using Core.Query;
 using Core.Query.Queries.Auction.Auctions;
 using Core.Query.ReadModel;
 using FluentAssertions;
+using FunctionalTests.EventHandling;
+using FunctionalTests.Utils;
 using Infrastructure.Adapters.Services;
-using Infrastructure.Tests.Functional.EventHandling;
 using MongoDB.Driver;
 using NUnit.Framework;
 
-namespace Infrastructure.Tests.Functional.Queries
+namespace FunctionalTests.Queries
 {
     [TestFixture]
     public class GetAuctionsQuery_Tests
@@ -36,21 +37,18 @@ namespace Infrastructure.Tests.Functional.Queries
             _dbContext.UsersReadModel.DeleteMany(filter2);
         }
 
-        [Test]
-        public void Handle_when_given_valid_page_returns_auctions()
+        private AuctionReadModel[] GetFakeAuctionsReadModels()
         {
-            //arrange
-            
             var testCategoryTree = _categoryTreeService.GetCategoriesTree();
             var testCategory = new Category(testCategoryTree.SubCategories[0].CategoryName, 0);
             testCategory.SubCategory = new Category(testCategoryTree.SubCategories[0].SubCategories[0].CategoryName, 1);
             testCategory.SubCategory.SubCategory = new Category(testCategoryTree.SubCategories[0].SubCategories[0].SubCategories[0].CategoryName, 2);
 
-            var stubAuctions = new AuctionReadModel[AuctionsQueryHandler.PageSize*2];
-            
-            for (var i = 0; i < stubAuctions.Length; i++)
+            var auctions = new AuctionReadModel[AuctionsQueryHandler.PageSize * 2];
+
+            for (var i = 0; i < auctions.Length; i++)
             {
-                stubAuctions[i] = new AuctionReadModel()
+                auctions[i] = new AuctionReadModel()
                 {
                     ActualPrice = 20,
                     AuctionId = Guid.NewGuid().ToString(),
@@ -60,8 +58,18 @@ namespace Infrastructure.Tests.Functional.Queries
                     Category = testCategory
                 };
             }
+
+            return auctions;
+        }
+
+        [Test]
+        public void Handle_when_given_valid_page_returns_auctions()
+        {
+            //arrange
+            var stubAuctions = GetFakeAuctionsReadModels();
             _dbContext.AuctionsReadModel.InsertMany(stubAuctions);
             Thread.Sleep(2000);
+
             var queryHandler = new AuctionsQueryHandler(_dbContext, new CategoryBuilder(_categoryTreeService));
             var query = new AuctionsQuery() { Page = 1, CategoryNames = new List<string>()
             {

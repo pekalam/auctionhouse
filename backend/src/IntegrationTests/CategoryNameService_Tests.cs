@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Infrastructure.Adapters.Services;
 using NUnit.Framework;
 
-namespace Infrastructure.Tests.Integration
+namespace IntegrationTests
 {
     [TestFixture]
     public class CategoryNameService_Tests
