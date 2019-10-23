@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Adapters.Services.SchedulerService
+﻿namespace Infrastructure.Services.SchedulerService
 {
     public class TimeTaskServiceSettings
     {

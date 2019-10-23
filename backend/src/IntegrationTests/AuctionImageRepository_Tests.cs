@@ -2,7 +2,7 @@
 using System.Threading;
 using Core.Common.Domain.Auctions;
 using FluentAssertions;
-using Infrastructure.Adapters.Repositories.AuctionImage;
+using Infrastructure.Repositories.AuctionImage;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;

@@ -1,9 +1,8 @@
 ﻿using System;
-using Core;
 using Core.Common;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Infrastructure.Adapters
+namespace Infrastructure
 {
     public class MicrosoftDIImplProvider : IImplProvider
     {

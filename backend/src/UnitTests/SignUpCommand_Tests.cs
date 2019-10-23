@@ -23,9 +23,12 @@ namespace Infrastructure.UnitTests
     {
         private bool verifyRegisteredEvent(IEnumerable<Event> @event)
         {
-            var ev = @event.Select(e => e as UserRegistered).ToList();
-            return ev.Count == 1 && ev[0].UserIdentity.UserName == "test"
-                                 && ev[0].UserIdentity.UserId != Guid.Empty;
+            var ev = @event.Select(e => e as UserRegistered)
+                .ToList();
+            return ev.Count == 1 && ev[0]
+                                     .UserIdentity.UserName == "test"
+                                 && ev[0]
+                                     .UserIdentity.UserId != Guid.Empty;
         }
 
         private UsertAuthDbContext PrepareFakeDbContext()
@@ -63,25 +66,32 @@ namespace Infrastructure.UnitTests
             UserIdentity userIdentity = null;
             var mockEventBusService = new Mock<EventBusService>(Mock.Of<IEventBus>(), Mock.Of<IAppEventBuilder>());
             mockEventBusService.Setup(f => f.Publish(
-                It.Is<IEnumerable<Event>>(ev => verifyRegisteredEvent(ev)),
-                It.IsAny<CorrelationId>(),
-                command)
-            ).Callback((IEnumerable<Event> evs, CorrelationId id, ICommand cmd) =>
-            {
-                userIdentity = (evs.First() as UserRegistered).UserIdentity;
-            }).Verifiable();
+                    It.Is<IEnumerable<Event>>(ev => verifyRegisteredEvent(ev)),
+                    It.IsAny<CorrelationId>(),
+                    command)
+                )
+                .Callback((IEnumerable<Event> evs, CorrelationId id, ICommand cmd) =>
+                {
+                    userIdentity = (evs.First() as UserRegistered).UserIdentity;
+                })
+                .Verifiable();
 
             var mockUserIdentityService = new SignUpCommandHandler(mockEventBusService.Object, authRepo,
                 Mock.Of<IEventSignalingService>(),
                 Mock.Of<IUserRepository>(),
                 Mock.Of<ILogger<SignUpCommandHandler>>());
-            mockUserIdentityService.Handle(command, CancellationToken.None).Wait();
+            mockUserIdentityService.Handle(command, CancellationToken.None)
+                .Wait();
 
-            stubDbContext.UserAuth.Count().Should().Be(1);
+            stubDbContext.UserAuth.Count()
+                .Should()
+                .Be(1);
             mockEventBusService.Verify(
                 f => f.Publish(It.IsAny<IEnumerable<Event>>(), It.IsAny<CorrelationId>(), command), Times.Once);
-            userIdentity.UserName.Should().Be(username);
-            userIdentity.UserId.Should().NotBe(Guid.Empty);
+            userIdentity.UserName.Should()
+                .Be(username);
+            userIdentity.UserId.Should()
+                .NotBe(Guid.Empty);
         }
 
         [Test]
@@ -95,18 +105,21 @@ namespace Infrastructure.UnitTests
             var command = new SignUpCommand(username, password, new CorrelationId("123"));
             var mockEventBusService = new Mock<EventBusService>(Mock.Of<IEventBus>(), Mock.Of<IAppEventBuilder>());
             mockEventBusService.Setup(f => f.Publish(
-                It.Is<IEnumerable<Event>>(ev => verifyRegisteredEvent(ev)),
-                It.IsAny<CorrelationId>(), command)
-            ).Verifiable();
+                    It.Is<IEnumerable<Event>>(ev => verifyRegisteredEvent(ev)),
+                    It.IsAny<CorrelationId>(), command)
+                )
+                .Verifiable();
 
             var mockUserIdentityService = new SignUpCommandHandler(mockEventBusService.Object, authRepo,
                 Mock.Of<IEventSignalingService>(),
                 Mock.Of<IUserRepository>(),
                 Mock.Of<ILogger<SignUpCommandHandler>>());
-            mockUserIdentityService.Handle(command, CancellationToken.None).Wait();
+            mockUserIdentityService.Handle(command, CancellationToken.None)
+                .Wait();
 
             Assert.Throws<UsernameConflictException>(() =>
-                mockUserIdentityService.Handle(command, CancellationToken.None).Wait());
+                mockUserIdentityService.Handle(command, CancellationToken.None)
+                    .Wait());
         }
     }
 }

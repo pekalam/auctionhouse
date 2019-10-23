@@ -6,7 +6,7 @@ using Core.Common.Domain;
 using EventStore.ClientAPI;
 using Newtonsoft.Json;
 
-namespace Infrastructure.Adapters.Repositories.EventStore
+namespace Infrastructure.Repositories.EventStore
 {
     public abstract class EventStoreRepositoryBase
     {

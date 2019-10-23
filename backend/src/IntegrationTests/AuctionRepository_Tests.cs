@@ -4,7 +4,7 @@ using Core.Common.Domain.Categories;
 using Core.Common.Domain.Products;
 using Core.Common.Domain.Users;
 using FluentAssertions;
-using Infrastructure.Adapters.Repositories.EventStore;
+using Infrastructure.Repositories.EventStore;
 using NUnit.Framework;
 
 namespace IntegrationTests
@@ -17,12 +17,19 @@ namespace IntegrationTests
 
         private Auction CreateFakeAuction()
         {
-            var auction = new Auction(20.0m, DateTime.UtcNow.AddMinutes(10), DateTime.UtcNow.AddDays(1),
-                new UserIdentity() { UserName = "test", UserId = Guid.NewGuid() }, new Product()
+            var auctionArgs = new AuctionArgs.Builder()
+                .SetBuyNow(20.0m)
+                .SetStartDate(DateTime.UtcNow.AddMinutes(10))
+                .SetEndDate(DateTime.UtcNow.AddDays(1))
+                .SetOwner(new UserIdentity() { UserName = "test", UserId = Guid.NewGuid() })
+                .SetProduct(new Product()
                 {
                     Name = "test product",
                     Description = "description"
-                }, new Category("test", 0));
+                })
+                .SetCategory(new Category("test", 0))
+                .Build();
+            var auction = new Auction(auctionArgs);
             return auction;
         }
 

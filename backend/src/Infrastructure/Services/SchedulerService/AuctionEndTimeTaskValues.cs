@@ -1,7 +1,7 @@
 ﻿using System;
 using Core.Common.Domain.Auctions;
 
-namespace Infrastructure.Adapters.Services.SchedulerService
+namespace Infrastructure.Services.SchedulerService
 {
     public class AuctionEndTimeTaskValues
     {

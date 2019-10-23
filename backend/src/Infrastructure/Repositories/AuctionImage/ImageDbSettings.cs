@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Adapters.Repositories.AuctionImage
+﻿namespace Infrastructure.Repositories.AuctionImage
 {
     public class ImageDbSettings
     {

@@ -2,7 +2,7 @@
 using Core.Common.Domain.Auctions;
 using Core.Common.SchedulerService;
 
-namespace Infrastructure.Adapters.Services.SchedulerService
+namespace Infrastructure.Services.SchedulerService
 {
     public class AuctionSchedulerService : IAuctionSchedulerService
     {

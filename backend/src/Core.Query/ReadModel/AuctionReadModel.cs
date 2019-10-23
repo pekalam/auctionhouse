@@ -16,7 +16,7 @@ namespace Core.Query.ReadModel
         public string AuctionId { get; set; }
 
 
-        public UserIdentityReadModel Creator { get; set; }
+        public UserIdentity Creator { get; set; }
         public Product Product { get; set; }
         public Category Category { get; set; }
         public AuctionImage[] AuctionImages { get; set; }

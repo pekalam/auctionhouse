@@ -128,14 +128,29 @@ namespace Core.Command.CreateAuction
             return user;
         }
 
+        private AuctionArgs GetAuctionArgs(CreateAuctionCommand request, UserIdentity owner)
+        {
+            var category = _categoryBuilder.FromCategoryNamesList(request.Category);
+            var builder = new AuctionArgs.Builder()
+                .SetStartDate(request.StartDate)
+                .SetEndDate(request.EndDate)
+                .SetCategory(category)
+                .SetProduct(request.Product)
+                .SetOwner(owner);
+            if (request.BuyNowPrice.HasValue)
+            {
+                builder.SetBuyNow(request.BuyNowPrice.Value);
+            }
+
+            return builder.Build();
+        }
+
         public virtual Task<Unit> Handle(CreateAuctionCommand request, CancellationToken cancellationToken)
         {
             var user = GetSignedInUser();
             var auctionCreateSession = _auctionCreateSessionService.GetSessionForSignedInUser();
 
-            var category = _categoryBuilder.FromCategoryNamesList(request.Category);
-            var auction = auctionCreateSession.CreateAuction(request.BuyNowPrice, request.StartDate, request.EndDate,
-                request.Product, category);
+            var auction = auctionCreateSession.CreateAuction(GetAuctionArgs(request, user.UserIdentity));
 
             _auctionCreateSessionService.RemoveSessionForSignedInUser();
 

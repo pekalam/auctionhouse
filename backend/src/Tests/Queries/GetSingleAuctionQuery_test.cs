@@ -6,7 +6,7 @@ using Core.Query.Queries.Auction.SingleAuction;
 using Core.Query.ReadModel;
 using FluentAssertions;
 using FunctionalTests.Utils;
-using Infrastructure.Adapters.Services;
+using Infrastructure.Services;
 using MongoDB.Driver;
 using NUnit.Framework;
 

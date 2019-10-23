@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Infrastructure.Adapters.Services.SchedulerService
+namespace Infrastructure.Services.SchedulerService
 {
     public class TimeTaskRequest<T> where T : class
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 
-namespace Infrastructure.Adapters.Services.SchedulerService
+namespace Infrastructure.Services.SchedulerService
 {
     public class TimeTaskServiceAuhorization
     {

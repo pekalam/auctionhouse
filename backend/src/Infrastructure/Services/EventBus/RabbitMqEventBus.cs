@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 using IEventBus = Core.Common.EventBus.IEventBus;
 
 [assembly: InternalsVisibleTo("FunctionalTests")]
-namespace Infrastructure.Adapters.Services.EventBus
+namespace Infrastructure.Services.EventBus
 {
     public class RabbitMqEventBus : IEventBus
     {

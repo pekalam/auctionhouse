@@ -2,7 +2,7 @@
 using Core.Common.EventBus;
 using Core.Common.Interfaces;
 
-namespace Infrastructure.Adapters.Services.EventBus
+namespace Infrastructure.Services.EventBus
 {
     public class AppEventRabbitMQ<T> : IAppEvent<T> where T : Event
     {

@@ -6,7 +6,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
 
-namespace Infrastructure.Adapters.Repositories.AuctionImage
+namespace Infrastructure.Repositories.AuctionImage
 {
     public class AuctionImageSizeConverterService : IAuctionImageSizeConverterService
     {

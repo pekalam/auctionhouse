@@ -3,7 +3,7 @@ using Core.Command.EndAuction;
 using Core.Common.Interfaces;
 using Core.Common.SchedulerService;
 
-namespace Infrastructure.Adapters.Services.SchedulerService
+namespace Infrastructure.Services.SchedulerService
 {
     public class ScheduledTaskDispatcher : IScheduledTaskDispatcher
     {

@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using Infrastructure.Adapters.Services;
+using Infrastructure.Services;
 using NUnit.Framework;
 
 namespace IntegrationTests

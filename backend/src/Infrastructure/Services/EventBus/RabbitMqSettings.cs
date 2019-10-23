@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Adapters.Services.EventBus
+﻿namespace Infrastructure.Services.EventBus
 {
     public class RabbitMqSettings
     {

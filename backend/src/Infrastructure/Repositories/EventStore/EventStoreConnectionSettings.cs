@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Adapters.Repositories.EventStore
+﻿namespace Infrastructure.Repositories.EventStore
 {
     public class EventStoreConnectionSettings
     {

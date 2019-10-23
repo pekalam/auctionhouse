@@ -17,7 +17,7 @@ using Core.Common.SchedulerService;
 using FluentAssertions;
 using FunctionalTests.EventHandling;
 using FunctionalTests.Utils;
-using Infrastructure.Adapters.Services.SchedulerService;
+using Infrastructure.Services.SchedulerService;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;

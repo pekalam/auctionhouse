@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using FluentValidation.Internal;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
 
-namespace Infrastructure.Adapters.Repositories.AuctionImage
+namespace Infrastructure.Repositories.AuctionImage
 {
     public class ImageDbContext
     {

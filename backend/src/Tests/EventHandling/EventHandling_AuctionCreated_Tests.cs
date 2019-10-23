@@ -36,7 +36,6 @@ namespace FunctionalTests.EventHandling
             user.MarkPendingEventsAsHandled();
             product = new Product() { Name = "test product", Description = "desc" };
             correlationId = new CorrelationId("test_correlationId");
-            SetUpCommandHandler();
             services.DbContext.UsersReadModel.InsertOne(new UserReadModel()
                 { UserIdentity = new UserIdentityReadModel(user.UserIdentity) });
         }
@@ -76,11 +75,12 @@ namespace FunctionalTests.EventHandling
         {
             var v1 = auctionCreated != null;
             var v2 = auctionCreated.AuctionId != Guid.Empty;
-            var v3 = auctionCreated.Product.Name.Equals(command.Product.Name) &&
-                     auctionCreated.Product.Description.Equals(command.Product.Description);
-            var v4 = auctionCreated.BuyNowPrice.Equals(command.BuyNowPrice);
-            var v5 = auctionCreated.StartDate.CompareTo(command.StartDate) == 0;
-            return v1 && v2 && v3 && v4 && v5;
+            var v3 = auctionCreated.AuctionArgs.Product.Name.Equals(command.Product.Name) &&
+                     auctionCreated.AuctionArgs.Product.Description.Equals(command.Product.Description);
+            var v4 = auctionCreated.AuctionArgs.BuyNowPrice.Equals(command.BuyNowPrice);
+            var v5 = auctionCreated.AuctionArgs.StartDate.CompareTo(command.StartDate) == 0;
+            var v6 = auctionCreated.AuctionArgs.Creator.UserId.Equals(user.UserIdentity.UserId);
+            return v1 && v2 && v3 && v4 && v5 && v6;
         }
 
         [Test]
@@ -110,7 +110,7 @@ namespace FunctionalTests.EventHandling
                 .CallBase();
 
             services.SetupEventBus(eventHandler.Object);
-
+            SetUpCommandHandler();
 
             //act
             commandHandler.Handle(command, CancellationToken.None);

@@ -1,7 +1,7 @@
 ﻿using System;
 using EventStore.ClientAPI;
 
-namespace Infrastructure.Adapters.Repositories.EventStore
+namespace Infrastructure.Repositories.EventStore
 {
     public class ESConnectionContext
     {

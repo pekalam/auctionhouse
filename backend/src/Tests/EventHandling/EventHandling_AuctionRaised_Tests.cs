@@ -23,10 +23,19 @@ namespace FunctionalTests.EventHandling
         [Test]
         public void Test1()
         {
+
+
             var user = new UserIdentity() {UserId = Guid.NewGuid(), UserName = "testUserName"};
             var product = new Product() {Name = "test product", Description = "desc"};
-            var auction = new Auction(20.0m, DateTime.UtcNow.AddMinutes(10), DateTime.UtcNow.AddDays(1), user, 
-                product, new Category("test", 0));
+            var auctionArgs = new AuctionArgs.Builder()
+                    .SetBuyNow(20.0m)
+                    .SetStartDate(DateTime.UtcNow.AddMinutes(10))
+                    .SetEndDate(DateTime.UtcNow.AddDays(1))
+                    .SetCategory(new Category("test", 0))
+                    .SetOwner(user)
+                    .SetProduct(product)
+                    .Build();
+            var auction = new Auction(auctionArgs);
             var sem = new SemaphoreSlim(0, 1);
 
             var services = TestDepedencies.Instance.Value;

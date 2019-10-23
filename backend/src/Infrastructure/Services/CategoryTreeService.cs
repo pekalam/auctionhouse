@@ -3,7 +3,7 @@ using System.IO;
 using System.Xml;
 using Core.Common.Domain.Categories;
 
-namespace Infrastructure.Adapters.Services
+namespace Infrastructure.Services
 {
     public class CategoryNameServiceSettings
     {

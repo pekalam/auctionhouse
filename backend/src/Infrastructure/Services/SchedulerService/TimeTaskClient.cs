@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using RestEase;
 
-namespace Infrastructure.Adapters.Services.SchedulerService
+namespace Infrastructure.Services.SchedulerService
 {
     public interface ITimeTaskClient
     {

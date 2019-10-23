@@ -2,7 +2,7 @@
 using Core.Common.Domain.Users;
 using EventStore.ClientAPI;
 
-namespace Infrastructure.Adapters.Repositories.EventStore
+namespace Infrastructure.Repositories.EventStore
 {
     public class ESUserRepository : EventStoreRepositoryBase, IUserRepository
     {
