@@ -32,8 +32,7 @@ namespace Core.Common.Domain.Auctions
         private void Apply(AuctionCreated @event)
         {
             AggregateId = @event.AuctionId;
-            Create(@event.BuyNowPrice, @event.StartDate, @event.EndDate,
-                @event.Creator, @event.Product, @event.Category, @event.AuctionImages, false);
+            Create(@event.AuctionArgs, false);
         }
 
         private void Apply(BidCanceled @event) => CancelBid(@event.CanceledBid);

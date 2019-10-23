@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using Infrastructure.Adapters.Services.SchedulerService;
+using Infrastructure.Services.SchedulerService;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

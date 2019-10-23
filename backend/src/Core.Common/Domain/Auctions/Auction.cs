@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Core.Common.Domain.Auctions.Events;
 using Core.Common.Domain.Bids;
 using Core.Common.Domain.Categories;
 using Core.Common.Domain.Products;
 using Core.Common.Domain.Users;
+
+[assembly: InternalsVisibleTo("IntegrationTests")]
 
 namespace Core.Common.Domain.Auctions
 {
@@ -13,9 +16,13 @@ namespace Core.Common.Domain.Auctions
     {
         public const int MAX_IMAGES = 6;
 
+        private List<AuctionImage> _auctionImages = new List<AuctionImage>(new AuctionImage[MAX_IMAGES]);
+        private List<Bid> _bids = new List<Bid>();
+        private int _imgNum = 0;
+
         public decimal? BuyNowPrice { get; private set; }
         public decimal? ActualPrice { get; private set; }
-        public ICollection<Bid> Bids { get; private set; } = new List<Bid>();
+        public IReadOnlyCollection<Bid> Bids => _bids;
         public DateTime StartDate { get; private set; }
         public DateTime EndDate { get; private set; }
         public UserIdentity Owner { get; private set; }
@@ -23,37 +30,31 @@ namespace Core.Common.Domain.Auctions
         public Product Product { get; private set; }
         public UserIdentity Buyer { get; private set; } = UserIdentity.Empty;
         public Category Category { get; private set; }
-        public bool Canceled { get; private set; } = false;
-        private List<AuctionImage> _auctionImages = new List<AuctionImage>(new AuctionImage[MAX_IMAGES]);
+        public bool Canceled { get; private set; }
         public IReadOnlyList<AuctionImage> AuctionImages => _auctionImages;
-
-        private int _imgNum = 0;
 
         public Auction()
         {
         }
 
-        internal Auction(decimal? buyNowPrice, DateTime startDate, DateTime endDate, UserIdentity creator,
-            Product product, Category category, AuctionImage[] auctionImages = null)
+        internal Auction(AuctionArgs auctionArgs)
         {
-            Create(buyNowPrice, startDate, endDate, creator, product, category, auctionImages);
-            AddEvent(new AuctionCreated(AggregateId, product, buyNowPrice, startDate, endDate, creator, category,
-                _auctionImages.ToArray()));
+            Create(auctionArgs, true);
+            AddEvent(new AuctionCreated(AggregateId, auctionArgs));
         }
 
-        private void Create(decimal? buyNowPrice, DateTime startDate, DateTime endDate, UserIdentity creator,
-            Product product, Category category, AuctionImage[] auctionImages, bool compareToNow = true)
+        private void Create(AuctionArgs auctionArgs, bool compareToNow)
         {
-            ValidateDates(startDate, endDate, compareToNow);
-            BuyNowPrice = buyNowPrice;
-            StartDate = startDate;
-            EndDate = endDate;
-            Owner = creator;
-            Product = product;
-            Category = category;
-            if (auctionImages != null)
+            ValidateDates(auctionArgs.StartDate, auctionArgs.EndDate, compareToNow);
+            BuyNowPrice = auctionArgs.BuyNowPrice;
+            StartDate = auctionArgs.StartDate;
+            EndDate = auctionArgs.EndDate;
+            Owner = auctionArgs.Creator;
+            Product = auctionArgs.Product;
+            Category = auctionArgs.Category;
+            if (auctionArgs.AuctionImages != null)
             {
-                foreach (var img in auctionImages)
+                foreach (var img in auctionArgs.AuctionImages)
                 {
                     if (img != null)
                     {
@@ -110,7 +111,7 @@ namespace Core.Common.Domain.Auctions
                 throw new DomainException("Auction cannot be raised by auction creator");
             }
 
-            Bids.Add(bid);
+            _bids.Add(bid);
             ActualPrice = bid.Price;
             AddEvent(new AuctionRaised(bid));
         }
@@ -123,12 +124,13 @@ namespace Core.Common.Domain.Auctions
                 throw new DomainException($"Cannot find bid with BidId: {bid.BidId}");
             }
 
-            if (DateTime.Now.Subtract(existingBid.DateCreated).Minutes > 10)
+            if (DateTime.Now.Subtract(existingBid.DateCreated)
+                    .Minutes > 10)
             {
                 throw new DomainException($"Bid ({bid.BidId}) was created more than 10 minutes ago");
             }
 
-            Bids.Remove(existingBid);
+            _bids.Remove(existingBid);
             AddEvent(new BidCanceled(existingBid));
             if (existingBid.Price.Equals(ActualPrice))
             {

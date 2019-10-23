@@ -25,18 +25,18 @@ namespace Core.Query.Handlers
             var auction = new AuctionReadModel()
             {
                 Id = ObjectId.GenerateNewId(),
-                Product = ev.Product,
-                BuyNowPrice = ev.BuyNowPrice,
-                StartDate = ev.StartDate,
-                EndDate = ev.EndDate,
-                Creator = new UserIdentityReadModel(ev.Creator),
+                Product = ev.AuctionArgs.Product,
+                BuyNowPrice = ev.AuctionArgs.BuyNowPrice,
+                StartDate = ev.AuctionArgs.StartDate,
+                EndDate = ev.AuctionArgs.EndDate,
+                Creator = ev.AuctionArgs.Creator,
                 AuctionId = ev.AuctionId.ToString(),
-                Category = ev.Category,
+                Category = ev.AuctionArgs.Category,
                 Version =  ev.AggVersion,
-                AuctionImages = ev.AuctionImages
+                AuctionImages = ev.AuctionArgs.AuctionImages
             };
 
-            var filter = Builders<UserReadModel>.Filter.Eq(f => f.UserIdentity.UserId, ev.Creator.UserId.ToString());
+            var filter = Builders<UserReadModel>.Filter.Eq(f => f.UserIdentity.UserId, ev.AuctionArgs.Creator.UserId.ToString());
             var update = Builders<UserReadModel>.Update.Push(f => f.CreatedAuctions, ev.AuctionId.ToString());
 
 
@@ -52,11 +52,11 @@ namespace Core.Query.Handlers
             catch (Exception)
             {
                 session.AbortTransaction();
-                _eventSignalingService.TrySendEventFailureToUser(message, message.Event.Creator);
+                _eventSignalingService.TrySendEventFailureToUser(message, ev.AuctionArgs.Creator);
                 throw;
             }
 
-            _eventSignalingService.TrySendEventCompletionToUser(message, message.Event.Creator);
+            _eventSignalingService.TrySendEventCompletionToUser(message, ev.AuctionArgs.Creator);
         }
     }
 }

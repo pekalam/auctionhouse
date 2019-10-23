@@ -21,11 +21,19 @@ namespace Core.DomainModelTests
     {
         private User user = null;
         private string username = "test_username";
+        private AuctionArgs auctionArgs;
 
         [SetUp]
         public void SetUp()
         {
             user = new User();
+            auctionArgs = new AuctionArgs.Builder()
+                .SetBuyNow(12)
+                .SetStartDate(DateTime.UtcNow.AddMinutes(20))
+                .SetEndDate(DateTime.UtcNow.AddDays(1))
+                .SetProduct(new Product() { Name = "name", Description = "desc" })
+                .SetCategory(new Category("", 0))
+                .Build();
         }
 
         [Test]
@@ -44,9 +52,7 @@ namespace Core.DomainModelTests
             user.Register(username);
             var session = user.UserIdentity.GetAuctionCreateSession();
             AuctionCreateSession.SESSION_MAX_TIME = -1;
-            Assert.Throws<DomainException>(() => session.CreateAuction(12, DateTime.UtcNow.AddMinutes(20),
-                DateTime.UtcNow.AddDays(1),
-                new Product() {Name = "name", Description = "desc"}, new Category("", 0)));
+            Assert.Throws<DomainException>(() => session.CreateAuction(auctionArgs));
         }
 
         [Test]
@@ -107,8 +113,7 @@ namespace Core.DomainModelTests
             var image2 = new AuctionImage("id1", "id2", "id3");
             session.AddOrReplaceImage(image2, 1);
 
-            var auction = session.CreateAuction(12, DateTime.UtcNow.AddMinutes(20), DateTime.UtcNow.AddDays(1),
-                new Product() {Name = "name", Description = "desc"}, new Category("", 0));
+            var auction = session.CreateAuction(auctionArgs);
 
             auction.AuctionImages.Count.Should().Be(Auction.MAX_IMAGES);
             auction.AuctionImages[0].Should().Be(image1);
@@ -127,8 +132,7 @@ namespace Core.DomainModelTests
             var session = user.UserIdentity.GetAuctionCreateSession();
             session.AddOrReplaceImage(null, 0);
 
-            var auction = session.CreateAuction(12, DateTime.UtcNow.AddMinutes(20), DateTime.UtcNow.AddDays(1),
-                new Product() {Name = "name", Description = "desc"}, new Category("", 0));
+            var auction = session.CreateAuction(auctionArgs);
 
             auction.AuctionImages.Count.Should().Be(Auction.MAX_IMAGES);
             for (int i = 0; i < auction.AuctionImages.Count; i++)

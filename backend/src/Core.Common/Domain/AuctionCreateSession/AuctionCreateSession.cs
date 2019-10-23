@@ -65,14 +65,19 @@ namespace Core.Common.Domain.AuctionCreateSession
             _auctionImages[imgNum] = img;
         }
 
-        public Auction CreateAuction(decimal? buyNowPrice, DateTime startDate, DateTime endDate, Product product, Category category)
+        public Auction CreateAuction(AuctionArgs auctionArgs)
         {
             CheckIsSessionValid();
             if (_creator == null)
             {
                 throw new DomainException("User must be registered to create auction");
             }
-            var auction = new Auction(buyNowPrice, startDate, endDate, _creator, product, category, _auctionImages);
+            var args = new AuctionArgs.Builder()
+                .From(auctionArgs)
+                .SetImages(_auctionImages)
+                .SetOwner(_creator)
+                .Build();
+            var auction = new Auction(args);
             return auction;
         }
 
