@@ -106,7 +106,7 @@ namespace Core.Common.Domain.Auctions
                 throw new DomainException("Price is to low");
             }
 
-            if (bid.UserIdentity == Owner)
+            if (bid.UserIdentity.UserId == Owner.UserId)
             {
                 throw new DomainException("Auction cannot be raised by auction creator");
             }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
-import { distinct } from 'rxjs/operators';
+import { distinctUntilChanged } from 'rxjs/operators';
 import { UserIdentity } from '../models/UserIdentity';
 import * as jwtDecode from 'jwt-decode';
 
@@ -9,10 +9,10 @@ import * as jwtDecode from 'jwt-decode';
 })
 export class AuthenticationStateService {
   protected isAuthenticatedSubject = new ReplaySubject<boolean>(0);
-  public isAuthenticated = this.isAuthenticatedSubject.asObservable();
+  public isAuthenticated = this.isAuthenticatedSubject.asObservable().pipe(distinctUntilChanged());
 
   protected currentUserSubject = new ReplaySubject<UserIdentity>(0);
-  public currentUser = this.currentUserSubject.asObservable();
+  public currentUser = this.currentUserSubject.asObservable().pipe(distinctUntilChanged());
 
   constructor() {
     this.isAuthenticatedSubject.next(false);

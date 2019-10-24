@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { CategoriesQuery } from '../../../core/queries/CategoriesQuery';
 import { CreateAuctionCommandArgs, CreateAuctionCommand } from '../../../core/commands/CreateAuctionCommand';
@@ -10,16 +10,19 @@ import { ImgUploadResult } from '../../components/img-upload-input/img-upload-in
 import { Router } from '@angular/router';
 import { StartAuctionCreateSessionCommand } from '../../../core/commands/StartAuctionCreateSessionCommand';
 import { ServerMessageService } from '../../../core/services/ServerMessageService';
+import { Subscription } from 'rxjs';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-auction-create-page',
   templateUrl: './auction-create-page.component.html',
   styleUrls: ['./auction-create-page.component.scss']
 })
-export class AuctionCreatePageComponent implements OnInit {
+export class AuctionCreatePageComponent implements OnInit, OnDestroy{
   private totalSteps: number = 4;
   private categorySelectStep: CategorySelectStep;
   private productStep: ProductStep;
+  private connectionStartedSub: Subscription;
 
   createAuctionArgs: CreateAuctionCommandArgs;
   step = 0;
@@ -28,19 +31,24 @@ export class AuctionCreatePageComponent implements OnInit {
   showCreateForm = false;
 
   constructor(private startAuctionCreateSessionCommand: StartAuctionCreateSessionCommand,
-    private createAuctionCommand: CreateAuctionCommand,
-    private serverMessageService: ServerMessageService,
-    private router: Router) {
-      this.serverMessageService.connectionStarted.subscribe((success) => {
-        if (success) {
-          this.startAuctionCreateSession();
-        }
-      });
+              private createAuctionCommand: CreateAuctionCommand,
+              private serverMessageService: ServerMessageService,
+              private router: Router) {
   }
 
-
   ngOnInit() {
+    this.connectionStartedSub = this.serverMessageService.connectionStarted.subscribe((connected) => {
+      if (connected) {
+        this.startAuctionCreateSession();
+      } else {
+        this.router.navigate(['/home']);
+      }
+    });
+    this.serverMessageService.ensureConnected();
+  }
 
+  ngOnDestroy(): void {
+    this.connectionStartedSub.unsubscribe();
   }
 
   private startAuctionCreateSession() {

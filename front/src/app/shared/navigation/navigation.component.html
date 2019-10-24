@@ -17,7 +17,7 @@
     </div>
   </div>
   <div class="navbar-group-left">
-    <div *ngIf="(authenticationStateService.isAuthenticated | async); else login">
+    <div *ngIf="isAuthenticated; else login">
       <div class="navbar-item" [matMenuTriggerFor]="menu">Menu</div>
       <mat-menu #menu="matMenu" class="user-menu">
         <div>

@@ -10,6 +10,7 @@ import { MatMenuModule, MatMenuTrigger } from '@angular/material';
 export class NavigationComponent implements OnInit {
 
   username: string;
+  isAuthenticated = false;
 
   constructor(public authenticationStateService: AuthenticationStateService) {
     console.log("ctor");
@@ -23,11 +24,10 @@ export class NavigationComponent implements OnInit {
         this.username = user.userName;
       }
     })
+    this.authenticationStateService.isAuthenticated.subscribe((isAuth) => this.isAuthenticated = isAuth);
   }
 
   ngOnInit() {
-
-    this.authenticationStateService.checkIsAuthenticated();
   }
 
   onLogout() {

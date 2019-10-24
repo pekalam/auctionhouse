@@ -22,7 +22,7 @@ export class ImgUploadInputComponent implements OnInit {
   imgSelect = new EventEmitter<ImgUploadResult>();
 
   imgSrc = "";
-  preview = true;
+  preview = false;
 
   @HostListener('change', ['$event.target.files']) emitFiles(event: FileList) {
     this.command.execute(event, this.imgNum).subscribe((msg) => {
@@ -30,6 +30,7 @@ export class ImgUploadInputComponent implements OnInit {
         console.log('add image completed');
         console.log(msg);
         this.fetchAuctionImagePreview(msg.values.imgSz1);
+        this.imgSelect.emit(new ImgUploadResult(this.imgNum, msg.values.imgSz1));
       } else {
         console.log('Cannot add image');
       }
