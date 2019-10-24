@@ -25,15 +25,22 @@ namespace Core.Query.Handlers
         private void UpdateAuction(AuctionRaised ev, IClientSessionHandle session)
         {
             var auctionIdFilter = Builders<AuctionReadModel>.Filter.Eq(f => f.AuctionId, ev.Bid.AuctionId.ToString());
-            var auctionVersionFilter = Builders<AuctionReadModel>.Filter.Eq(f => f.Version, ev.AggVersion);
+            var auctionVersionFilter = Builders<AuctionReadModel>.Filter.Eq(f => f.Version, ev.AggVersion - 1);
             var bidUpdate = Builders<AuctionReadModel>.Update.Set(f => f.WinningBid, ev.Bid);
+            var priceUpd = Builders<AuctionReadModel>.Update.Set(f => f.ActualPrice, ev.Bid.Price);
             var totalBidsUpd = Builders<AuctionReadModel>.Update.Inc(f => f.TotalBids, 1);
+            var versionUpd = Builders<AuctionReadModel>.Update.Set(f => f.Version, ev.AggVersion);
 
             try
             {
-                _dbContext.AuctionsReadModel.UpdateMany(session,
+                var result = _dbContext.AuctionsReadModel.UpdateMany(session,
                     Builders<AuctionReadModel>.Filter.And(new[] {auctionIdFilter, auctionVersionFilter}),
-                    Builders<AuctionReadModel>.Update.Combine(new[] {bidUpdate, totalBidsUpd}));
+                    Builders<AuctionReadModel>.Update.Combine(new[] {bidUpdate, totalBidsUpd, priceUpd, versionUpd}));
+                if (result.MatchedCount == 0)
+                {
+                    throw new Exception($"No auctions with id: {ev.Bid.AuctionId} and" +
+                                        $"Version: {ev.AggVersion}");
+                }
             }
             catch (Exception e)
             {
