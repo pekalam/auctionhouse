@@ -4,7 +4,7 @@
       src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==" />
   </a>
 
-  <a class="navbar-item" [routerLink]="['/auctions/create']">Sell</a>
+  <a id="sell-btn" class="navbar-item" [routerLink]="['/auctions/create']">Sell</a>
   <div class="searchbar-container">
     <input type="text" placeholder="Search auctions" aria-label="Number" [matAutocomplete]="auto">
     <mat-autocomplete #auto="matAutocomplete">
@@ -13,20 +13,24 @@
       </mat-option>
     </mat-autocomplete>
     <div class="search-button-container">
-      <button>S</button>
-
+      <button>SEARCH</button>
     </div>
   </div>
   <div class="navbar-group-left">
     <div *ngIf="(authenticationStateService.isAuthenticated | async); else login">
       <div class="navbar-item" [matMenuTriggerFor]="menu">Menu</div>
-      <mat-menu #menu="matMenu">
-        <button [routerLink]="['/user']" mat-menu-item>My account</button>
-        <button (click)="onLogout()" mat-menu-item>Logout</button>
+      <mat-menu #menu="matMenu" class="user-menu">
+        <div>
+          <button class="user-menu-btn" [routerLink]="['/user']" mat-menu-item>My account</button>
+        </div>
+        <div>
+          <button class="user-menu-btn" id="logout-btn" (click)="onLogout()" mat-menu-item>Logout</button>
+        </div>
+
       </mat-menu>
     </div>
     <ng-template #login>
-        <a class="navbar-item signin-btn" [routerLink]="['/sign-in']">Sign in</a>
+      <a class="navbar-item signin-btn" [routerLink]="['/sign-in']">Sign in</a>
     </ng-template>
   </div>
 </div>

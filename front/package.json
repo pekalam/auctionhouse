@@ -7,7 +7,8 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "webdriver-update": "webdriver-manager update"
   },
   "private": true,
   "dependencies": {
@@ -26,6 +27,7 @@
     "jwt-decode": "^2.2.0",
     "rxjs": "~6.4.0",
     "tslib": "^1.9.0",
+    "webdriver-manager": "^12.1.7",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {

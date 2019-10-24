@@ -16,8 +16,7 @@
     flex-grow: 1;
     height: 300px;
     float: left;
-    background-color: red;
+    background-color: $primaryColor;
     display: block;
-    @include section-shadow;
   }
 }

@@ -3,6 +3,7 @@
     <div class="main-category" *ngFor="let category of mainCategories">
       <div (mouseenter)="showSubcategories(category)" (touchstart)="showSubcategories(category)">
         <a [routerLink]="['/category', category.categoryName]">{{category.categoryName}}</a>
+        <hr/>
       </div>
     </div>
   </div>

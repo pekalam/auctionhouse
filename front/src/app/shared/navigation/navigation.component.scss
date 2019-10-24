@@ -1,7 +1,6 @@
-$barHeight: 50px;
+@import "global";
+
 $itemsCount: 4;
-$bgColor: #ffffff;
-$hoverColor: #62727b;
 
 .navbar {
   width: 100%;
@@ -10,7 +9,7 @@ $hoverColor: #62727b;
   flex-wrap: wrap;
   display: flex;
   justify-content: flex-start;
-  background-color: $bgColor;
+  background-color: $primaryColor;
   border-bottom: 1px solid #ddd;
   //position: fixed;
   z-index: 1000;
@@ -24,7 +23,7 @@ $hoverColor: #62727b;
     padding: 0 7px 0 7px;
     cursor: pointer;
     &:hover {
-      background-color: $hoverColor;
+      background-color: $secondaryColor;
       transition: background-color 0.5s ease;
       color: white;
     }
@@ -34,35 +33,14 @@ $hoverColor: #62727b;
       text-decoration: none;
     }
   }
-  .searchbar-container {
-    flex-grow: 2;
-    line-height: $barHeight;
-    vertical-align: middle;
-    text-align: center;
-
-    input {
-      width: 70%;
-      padding: 0;
-      margin: 0;
-      box-sizing: border-box;
-      font-size: 15px;
-    }
-    .search-button-container {
-      width: 10%;
-      display: inline-block;
-      padding-left: 10px;
-      box-sizing: border-box;
-      text-align: left;
-    }
-    button {
-      display: inline-block;
-    }
-  }
   .navbar-item-icon {
     text-align: center;
     margin-left: 4px;
+    img {
+      vertical-align: middle;
+    }
     &:hover {
-      background-color: $bgColor;
+      background-color: $primaryColor;
     }
   }
   .navbar-group-left {
@@ -71,11 +49,70 @@ $hoverColor: #62727b;
     flex-direction: row-reverse;
     padding-right: 40px;
   }
-  .signin-btn{
-    background-color: #62727b;
-    color: white;
+  .signin-btn {
+    background-color: $primaryColor;
+    color: black;
+    font-weight: bold;
     &:hover {
-      background-color: gray;
+      background-color: $secondaryColor;
+    }
+  }
+}
+
+#sell-btn{
+  font-weight: bold;
+}
+
+::ng-deep .user-menu {
+  width: 200px;
+  div {
+    text-align: center;
+    margin: 0 0 10px 0;
+  }
+  .user-menu-btn {
+    @include app-btn;
+    background-color: white;
+    &:hover {
+      background-color: rgb(201, 201, 201);
+    }
+    width: 90%;
+    color: black;
+  }
+  #logout-btn {
+    background-color: $secondaryColor;
+    color: white;
+  }
+}
+
+$searchInput_border: 2px;
+$searchInput_padding: 7px;
+$searchInput_height: 20px;
+
+.searchbar-container {
+  flex-grow: 2;
+  line-height: $barHeight;
+  vertical-align: middle;
+  text-align: center;
+  input {
+    width: 70%;
+    padding: $searchInput_padding;
+    border: $searchInput_border solid #ddd;
+    margin: 0;
+    height: $searchInput_height;
+    font-size: 15px;
+  }
+  .search-button-container {
+    width: 10%;
+    display: inline-block;
+    padding-left: 10px;
+    box-sizing: border-box;
+    text-align: left;
+
+    button {
+      height: 2 * $searchInput_border + 2 * $searchInput_padding +
+        $searchInput_height;
+      font-weight: bold;
+      @include app-btn;
     }
   }
 }

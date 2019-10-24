@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AuthenticationStateService } from '../../core/services/AuthenticationStateService';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material';
 
 @Component({
   selector: 'app-navigation',
@@ -7,8 +8,6 @@ import { AuthenticationStateService } from '../../core/services/AuthenticationSt
   styleUrls: ['./navigation.component.scss']
 })
 export class NavigationComponent implements OnInit {
-
-
 
   constructor(public authenticationStateService: AuthenticationStateService) {}
 

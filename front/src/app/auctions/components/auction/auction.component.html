@@ -4,6 +4,7 @@
     <div class="right-content" >
       <h3>{{auction.product.name}}</h3>
       <span>From: {{auction.creator.userName}}</span>
+      <p *ngIf="showTimer" class="timer">{{timer.m}}:{{timer.s}}</p>
       <div class="date-div">
           <span>Starts: {{auction.startDate | date : "yyyy MMMM dd"}}</span>
           <br/>

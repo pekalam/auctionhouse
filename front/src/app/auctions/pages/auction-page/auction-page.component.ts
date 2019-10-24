@@ -14,8 +14,8 @@ export class AuctionPageComponent implements OnInit {
   auction: Auction;
 
   constructor(private activatedRoute: ActivatedRoute,
-              private auctionQuery: AuctionQuery,
-              private router: Router) {
+    private auctionQuery: AuctionQuery,
+    private router: Router) {
     this.activatedRoute.queryParams.subscribe((p) => {
       this.auctionQuery
         .execute(p.auctionId)
@@ -32,6 +32,10 @@ export class AuctionPageComponent implements OnInit {
 
   onBuyNowClick() {
 
+  }
+
+  onAuctionTimeout() {
+    this.router.navigate(['/home']);
   }
 
 }
