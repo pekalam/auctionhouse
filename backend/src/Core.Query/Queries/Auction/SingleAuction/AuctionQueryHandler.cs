@@ -18,11 +18,15 @@ namespace Core.Query.Queries.Auction.SingleAuction
         public async Task<AuctionReadModel> Handle(AuctionQuery request, CancellationToken cancellationToken)
         {
             var filter = Builders<AuctionReadModel>.Filter.Eq(model => model.AuctionId, request.AuctionId);
-
+            var upd = Builders<AuctionReadModel>.Update.Inc(f => f.Views, 1);
+            
+            //TODO FindOneAndUpdate
             AuctionReadModel auction = await _readModelDbContext.AuctionsReadModel
                 .Find(filter)
                 .FirstAsync();
 
+            await _readModelDbContext.AuctionsReadModel.UpdateManyAsync(filter, upd);
+            
             return auction;
         }
     }

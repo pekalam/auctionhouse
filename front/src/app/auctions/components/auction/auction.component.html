@@ -24,10 +24,14 @@
           <span class="winner" *ngIf="auction.winningBid">Auction winner: {{auction.winningBid.userIdentity.userName}}</span>
           <span class="nobids" *ngIf="!auction.winningBid">Nobody is taking part in auction</span>
       </div>
+      <div class="views-container">
+        <span>Views: {{auction.views}}</span>
+      </div>
       <div class="auction-buttons-container">
         <button class="buynow-btn" (click)="onBuyNow()">Buy now</button>
         <button class="bid-btn" (click)="onBid()">Bid</button>
       </div>
+
     </div>
   </div>
   <div class="description-container">

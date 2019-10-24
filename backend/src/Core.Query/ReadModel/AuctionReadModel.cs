@@ -27,7 +27,7 @@ namespace Core.Query.ReadModel
         public decimal? BuyNowPrice { get; set; }
         public decimal? ActualPrice { get; set; }
         public int TotalBids { get; set; }
-
+        public int Views { get; set; }
 
         [BsonDefaultValue(false)]
         public bool Completed { get; set; }

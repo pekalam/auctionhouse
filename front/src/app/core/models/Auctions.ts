@@ -37,4 +37,5 @@ export interface Auction {
   buyer: UserIdentity;
   bought: boolean;
   auctionImages: AuctionImage[];
+  views: number;
 }

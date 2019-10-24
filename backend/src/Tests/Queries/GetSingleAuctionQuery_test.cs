@@ -17,12 +17,31 @@ namespace FunctionalTests.Queries
     {
         private ReadModelDbContext _dbContext;
         private CategoryTreeService _categoryTreeService;
+        private AuctionReadModel stubAuction;
 
         [SetUp]
         public void SetUp()
         {
             _categoryTreeService = TestDepedencies.Instance.Value.CategoryTreeService;
             _dbContext = TestDepedencies.Instance.Value.DbContext;
+            var testCategoryTree = _categoryTreeService.GetCategoriesTree();
+            var testCategory = new Category(testCategoryTree.SubCategories[0].CategoryName, 0);
+            testCategory.SubCategory = new Category(testCategoryTree.SubCategories[0].SubCategories[0].CategoryName, 1);
+            testCategory.SubCategory.SubCategory = new Category(testCategoryTree.SubCategories[0].SubCategories[0].SubCategories[0].CategoryName, 2);
+            stubAuction = new AuctionReadModel()
+            {
+                ActualPrice = 20,
+                AuctionId = Guid.NewGuid().ToString(),
+                BuyNowPrice = 21,
+                StartDate = DateTime.UtcNow.AddMinutes(12),
+                EndDate = DateTime.UtcNow.AddDays(1),
+                Category = testCategory,
+                Product = new Product()
+                {
+                    Name = "test",
+                    Description = "desc"
+                }
+            };
         }
 
         [TearDown]
@@ -35,33 +54,32 @@ namespace FunctionalTests.Queries
         }
 
         [Test]
-        public void Handle_when_given_valid_page_returns_auction()
+        public void Handle_when_called_twice_increments_views()
         {
             //arrange
-
-            var testCategoryTree = _categoryTreeService.GetCategoriesTree();
-            var testCategory = new Category(testCategoryTree.SubCategories[0].CategoryName, 0);
-            testCategory.SubCategory = new Category(testCategoryTree.SubCategories[0].SubCategories[0].CategoryName, 1);
-            testCategory.SubCategory.SubCategory = new Category(testCategoryTree.SubCategories[0].SubCategories[0].SubCategories[0].CategoryName, 2);
-
-            var stubAuction = new AuctionReadModel()
-            {
-                ActualPrice = 20,
-                AuctionId = Guid.NewGuid().ToString(),
-                BuyNowPrice = 21,
-                StartDate = DateTime.UtcNow,
-                EndDate = DateTime.UtcNow.AddDays(1),
-                Category = testCategory,
-                Product = new Product()
-                {
-                    Name = "test", Description = "desc"
-                }
-            };
-
             _dbContext.AuctionsReadModel.InsertOne(stubAuction);
             Thread.Sleep(2000);
             var queryHandler = new AuctionQueryHandler(_dbContext);
             var query = new AuctionQuery(stubAuction.AuctionId);
+
+            var result1 = queryHandler.Handle(query, CancellationToken.None).Result;
+            var result2 = queryHandler.Handle(query, CancellationToken.None).Result;
+
+            result1.Views.Should()
+                .Be(0);
+            result2.Views.Should()
+                .Be(1);
+        }
+
+        [Test]
+        public void Handle_when_given_valid_page_returns_auction()
+        {
+            //arrange
+            _dbContext.AuctionsReadModel.InsertOne(stubAuction);
+            Thread.Sleep(2000);
+            var queryHandler = new AuctionQueryHandler(_dbContext);
+            var query = new AuctionQuery(stubAuction.AuctionId);
+
             //act
             var result = queryHandler.Handle(query, CancellationToken.None).Result;
 
