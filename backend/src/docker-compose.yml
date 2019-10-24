@@ -12,6 +12,9 @@ services:
     image: ${DOCKER_REGISTRY-}timetask_service
     ports:
       - "5001:80"
+    environment: 
+      - "ClientKey=testk"
+      - "ManagmentKey=testm"
 
   eventst:
     hostname: eventst
