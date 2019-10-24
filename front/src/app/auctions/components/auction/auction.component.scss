@@ -1,14 +1,21 @@
+@import 'global';
+
 .auction-container {
-  height: 500px;
+  max-width: 1400px;
+  background-color: $primaryColor;
+  margin: 50px auto;
+  padding: 20px;
+  box-sizing: border-box;
+  @include section-shadow;
   .left {
-    width: 55%;
-    height: 100%;
+    width: 45%;
+    height: 500px;
     float: left;
     background-color: blue;
   }
   .right {
     float: left;
-    width: 45%;
+    width: 55%;
     height: 100%;
     .right-content {
       padding-left: 25px;
@@ -43,23 +50,32 @@
         width: 100%;
         margin-top: 15px;
         button{
+          @include app-btn;
           display: block;
           cursor: pointer;
           width: 100%;
+          font-weight: bold;
+          height: 35px;
           margin-bottom: 10px;
         }
         .buynow-btn{
-          background-color: yellow;
+          background-color: $secondaryLightColor;
           color: black;
+          &:hover{
+            color: white;
+          }
         }
-        .bid-btn{
-        }
+
       }
     }
   }
   .description-container{
     clear: both;
     padding-top: 20px;
+    .description-text{
+      background-color: #f7f7f7;
+      padding: 5px;
+    }
   }
 
   .timer{

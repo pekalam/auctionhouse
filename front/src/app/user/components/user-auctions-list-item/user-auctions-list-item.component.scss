@@ -1,0 +1,21 @@
+@import 'global';
+
+.container{
+  padding: 20px;
+  cursor: pointer;
+  .left{
+    width: 30%;
+    height: 100px;
+    background-color: blue;
+    float: left;
+  }
+  .right{
+    width: 35%;
+    float: left;
+    padding-left: 20px;
+    box-sizing: border-box;
+  }
+  &:hover{
+    background-color: $secondaryLightColor;
+  }
+}

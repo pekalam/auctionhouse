@@ -1,0 +1,25 @@
+@import 'global';
+
+.container{
+  @include section-shadow;
+  max-width: 1200px;
+  padding: 20px;
+  background-color: white;
+  margin: 25px auto;
+  display: flex;
+  .left{
+    flex-grow: 2;
+  }
+  .right{
+    flex-grow: 1;
+  }
+}
+
+#submit-btn{
+  @include app-btn;
+  height: 40px;
+}
+
+#offer-field{
+  margin: 5px 0 5px 0;
+}

@@ -23,7 +23,7 @@ export class AuctionsQuery {
     let next: Category = category;
     let list = '';
     while (next) {
-      list += `categories=${encodeURIComponent(next.categoryName)}`;
+      list += `categories=${encodeURIComponent(next.name)}`;
       next = next.subCategory;
       if (next) {
         list += '&';

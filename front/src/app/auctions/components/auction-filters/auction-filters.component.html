@@ -3,6 +3,7 @@
     <h1>{{subcategories.categoryName}}</h1>
     <div *ngFor="let subcategory2 of subcategories.subCategories[0].subCategories">
       <a
+      [class]="'subcat-link ' + (subcategory2.categoryName === selectedSubCategory ? 'highlight' : '')"
         [routerLink]="['/auctions', subcategories.categoryName, subcategories.subCategories[0].categoryName, subcategory2.categoryName]">{{subcategory2.categoryName}}</a>
     </div>
   </div>

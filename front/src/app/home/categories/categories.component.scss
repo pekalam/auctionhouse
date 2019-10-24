@@ -60,16 +60,13 @@ $containerHeight: 560px;
       font-size: 12px;
       box-sizing: border-box;
       padding: 20px;
-      .subcategory-name {
-        cursor: pointer;
+      .subcategory-link {
+        cursor: text;
         font-weight: 700;
         font-size: 14px;
         margin-bottom: 16px;
         display: block;
         text-align: left;
-        &:hover {
-          color: rgb(112, 190, 164);
-        }
       }
     }
     .subcategories2-container {
@@ -77,7 +74,9 @@ $containerHeight: 560px;
         font-size: 12px;
         margin-bottom: 16px;
         text-align: left;
-        .subcategory2-name {
+        .subcategory2-link {
+          text-decoration: none;
+          color: black;
           cursor: pointer;
           &:hover {
             color: rgb(112, 190, 164);

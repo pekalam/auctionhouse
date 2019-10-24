@@ -1,14 +1,7 @@
 <div class="auction-preview-div">
-  <div class="left">
-  </div>
-  <div class="right">
-    <h3>{{auction.product.name}}</h3>
-    <span>From: {{auction.creator.userName}}</span>
 
-    <span>Starts: {{auction.startDate | date : "yyyy MMMM dd"}}</span>
-    <br />
-    <span>Ends: {{auction.endDate | date : "yyyy MMMM dd"}}</span>
-    <br />
-
-  </div>
+  <h3>Auction: {{auction.product.name}}</h3>
+  <p>From: {{auction.creator.userName}}</p>
+  <p>Start: {{auction.startDate | date : "yyyy MMMM dd"}}</p>
+  <p>End: {{auction.endDate | date : "yyyy MMMM dd"}}</p>
 </div>

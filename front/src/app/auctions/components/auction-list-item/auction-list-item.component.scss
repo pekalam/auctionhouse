@@ -29,17 +29,23 @@ $listItemHeight: 200px;
     .right-content{
       padding-left: 10px;
       .price-div{
-        .price-div-left{
-          width: 50%;
-          float: left;
+        .current-price-div{
+
         }
-        .price-div-right{
-          width: 50%;
-          float: left;
+        .buynowprice-div{
+          margin-top: 10px;
+          .buynowtext{
+            font-size: 10px;
+          }
+          .buynowprice{
+            font-size: 12px;
+          }
         }
-        .price{
+        .currentprice{
           font-weight: bold;
+          font-size: 20px;
         }
+
       }
     }
   }

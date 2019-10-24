@@ -1,11 +1,14 @@
 $primaryColor: #ffffff;
 $secondaryColor: #ff5a00;
+$secondaryLightColor: bisque;
+$secondaryDarkColor: #d85610;
+$highlightColor: rgb(112, 190, 164);
 $barHeight: 70px;
 
 @mixin section-shadow {
-  -webkit-box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.27);
-  -moz-box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.27);
-  box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.27);
+  -webkit-box-shadow: 0px 0px 1px 0px rgba(0,0,0,0.27);
+  -moz-box-shadow: 0px 0px 1px 0px rgba(0,0,0,0.27);
+  box-shadow: 0px 0px 1px 0px rgba(0,0,0,0.27);
 }
 
 @mixin section-shadow-clear {
@@ -27,7 +30,7 @@ $barHeight: 70px;
   text-align: center;
   border: 0;
   &:hover{
-    background-color: #d85610;
+    background-color: $secondaryDarkColor;
   }
 }
 

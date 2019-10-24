@@ -1,0 +1,39 @@
+@import 'global';
+
+.container{
+  @include section-shadow;
+  background-color: white;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 1200px;
+  #mainCat{
+    text-align: center;
+  }
+}
+
+.category-grid{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  .category-item{
+    flex-grow: 1;
+    flex-basis: 50%;
+    box-sizing: border-box;
+    padding: 10px;
+  }
+}
+
+.subcat-link{
+  text-decoration: none;
+  cursor: pointer;
+  &:hover{
+    color: $secondaryColor;
+  }
+}
+.subcat2-link{
+  text-decoration: none;
+  cursor: pointer;
+  &:hover{
+    color: $secondaryColor;
+  }
+}

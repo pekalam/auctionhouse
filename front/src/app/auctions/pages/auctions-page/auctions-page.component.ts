@@ -23,10 +23,10 @@ export class AuctionsPageComponent implements OnInit {
   }
 
   private constructCategory(mainCategoryName: string, subCategoryName: string, subCategory2Name?: string) {
-    const cat: Category = { categoryName: mainCategoryName, subCategory: null };
-    cat.subCategory = { categoryName: subCategoryName, subCategory: null };
+    const cat: Category = { name: mainCategoryName, subCategory: null };
+    cat.subCategory = { name: subCategoryName, subCategory: null };
     if (subCategory2Name) {
-      cat.subCategory.subCategory = { categoryName: subCategory2Name, subCategory: null };
+      cat.subCategory.subCategory = { name: subCategory2Name, subCategory: null };
     }
     this.currentCategory = cat;
     this.categoriesQuery.getSubcategoryTree(mainCategoryName, subCategoryName).subscribe((v) => {

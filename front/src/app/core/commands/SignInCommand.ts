@@ -11,8 +11,8 @@ export class SignInCommand {
   private parseUser(jwt: string): UserIdentity {
     const decoded = jwtDecode(jwt);
     return {
-      userId: decoded.sid,
-      userName: decoded.name
+      userId: decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid'],
+      userName: decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
     };
   }
 
@@ -35,6 +35,8 @@ export class SignInCommand {
         }),
         map<string, UserIdentity>((v) => this.parseUser(v)),
         tap(user => {
+          console.log(user);
+
           this.authStateService.notifyObservers(true, user);
         })
       );

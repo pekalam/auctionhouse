@@ -30,13 +30,13 @@ export class AuthenticationStateService {
   private parseUser(jwt: string): UserIdentity {
     const decoded = jwtDecode(jwt);
     return {
-      userId: decoded.sid,
-      userName: decoded.name
+      userId: decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid'],
+      userName: decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
     };
   }
 
   notifyObservers(isAuthenticated: boolean, currentUser: UserIdentity) {
-    console.log("is auth " + isAuthenticated);
+    console.log("NOTF");
 
     this.isAuthenticatedSubject.next(isAuthenticated);
     this.currentUserSubject.next(currentUser);

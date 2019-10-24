@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { BidCreatePageComponent } from './pages/bid-create-page/bid-create-page.component';
 import { AuctionPreviewComponent } from './components/auction-preview/auction-preview.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MaterialModule } from '../material.module';
+import { RouterModule } from '@angular/router';
 
 
 
@@ -10,8 +12,10 @@ import { ReactiveFormsModule } from '@angular/forms';
   declarations: [BidCreatePageComponent, AuctionPreviewComponent],
   imports: [
     ReactiveFormsModule,
-    CommonModule
+    CommonModule,
+    MaterialModule,
+    RouterModule
   ],
-  exports: [BidCreatePageComponent, AuctionPreviewComponent]
+  exports: [BidCreatePageComponent]
 })
 export class BidModule { }

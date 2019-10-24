@@ -8,13 +8,15 @@
             <h2>{{auction.productName}}</h2>
           </div>
           <div class="price-div">
-            <div class="price-div-left">
-              <span>Current price:</span>
-              <span class="price"> {{auction.actualPrice | currency}}</span>
+            <div class="current-price-div">
+              <span>Current price</span>
+              <br>
+              <span class="currentprice"> {{auction.actualPrice | currency}}</span>
             </div>
-            <div class="price-div-right">
-              <span>Buy now price:</span>
-              <span class="price"> {{auction.buyNowPrice | currency}}</span>
+            <div class="buynowprice-div">
+              <span class="buynowtext">Buy now price</span>
+              <br>
+              <span class="buynowprice"> {{auction.buyNowPrice | currency}}</span>
             </div>
           </div>
     </div>

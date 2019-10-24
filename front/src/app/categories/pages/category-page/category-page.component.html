@@ -1,15 +1,16 @@
-<div>
-  <h3>{{category.categoryName}}</h3>
-  <div *ngFor="let subCategory of category.subCategories">
-    <h2>
-      <a [routerLink]="['/auctions', category.categoryName, subCategory.categoryName]">
+<div class="container">
+  <h1 #mainCat>{{category.categoryName}}</h1>
+  <div class="category-grid">
+    <div class="category-item" *ngFor="let subCategory of category.subCategories">
+      <h2 class="subcat-link" [routerLink]="['/auctions', category.categoryName, subCategory.categoryName]">
         {{subCategory.categoryName}}
-      </a>
-    </h2>
-    <div class="subcategory2" *ngFor="let subcategory2 of subCategory.subCategories">
-      <a [routerLink]="['/auctions', category.categoryName, subCategory.categoryName, subcategory2.categoryName]">
-        {{subcategory2.categoryName}}
-      </a>
+      </h2>
+      <hr>
+      <div class="subcategory2" *ngFor="let subcategory2 of subCategory.subCategories">
+        <p class="subcat2-link"
+          [routerLink]="['/auctions', category.categoryName, subCategory.categoryName, subcategory2.categoryName]">
+          {{subcategory2.categoryName}}</p>
+      </div>
     </div>
   </div>
 </div>

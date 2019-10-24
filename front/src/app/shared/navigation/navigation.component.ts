@@ -9,13 +9,28 @@ import { MatMenuModule, MatMenuTrigger } from '@angular/material';
 })
 export class NavigationComponent implements OnInit {
 
-  constructor(public authenticationStateService: AuthenticationStateService) {}
+  username: string;
+
+  constructor(public authenticationStateService: AuthenticationStateService) {
+    console.log("ctor");
+
+    this.authenticationStateService.currentUser.subscribe((user) => {
+      console.log("nav sub " + user);
+
+      if (user) {
+      console.log("nav sub " + user.userName);
+
+        this.username = user.userName;
+      }
+    })
+  }
 
   ngOnInit() {
+
     this.authenticationStateService.checkIsAuthenticated();
   }
 
-  onLogout(){
+  onLogout() {
     this.authenticationStateService.logout();
   }
 }

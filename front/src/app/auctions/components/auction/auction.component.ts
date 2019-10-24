@@ -14,11 +14,16 @@ export class AuctionComponent implements OnInit, OnDestroy {
   set setAuction(auction: Auction) {
     if (auction) {
       this.auction = auction;
+      this.setDaysLeft();
       this.calculateAuctionTime();
       this.clearAuctionTimeCalcInterval();
       this.timeoutHandle = setInterval(() => { this.calculateAuctionTime(); });
     }
+    console.log("set");
+
   }
+  @Input()
+  showAuctionButtons: boolean = false;
   @Output() buyNow = new EventEmitter<Auction>();
   @Output() bid = new EventEmitter<Auction>();
   @Output() auctionTimeout = new EventEmitter<Auction>();
@@ -26,6 +31,13 @@ export class AuctionComponent implements OnInit, OnDestroy {
   showTimer = false;
   timer = { m: '', s: '' };
   auction: Auction;
+  daysLeft = 0;
+
+  private setDaysLeft(){
+    let d1 = new Date(this.auction.endDate);
+    let d2 = new Date(this.auction.startDate);
+    this.daysLeft = Math.round((d1.getTime() - d2.getTime()) / (1000 * 60 * 60 * 24));
+  }
 
   constructor() {
   }
@@ -70,13 +82,6 @@ export class AuctionComponent implements OnInit, OnDestroy {
     }
   }
 
-  getDaysLeft(): number {
-    console.log(this.auction.endDate);
-    let d1 = new Date(this.auction.endDate);
-    let d2 = new Date(this.auction.startDate);
-
-    return Math.round((d1.getTime() - d2.getTime()) / (1000 * 60 * 60 * 24));
-  }
 
   onBuyNow() {
     this.buyNow.emit(this.auction);

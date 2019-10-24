@@ -10,10 +10,10 @@
   <div id="subcategories-container" (mouseleave)="hideSubcategories()">
     <div class="subcategory-list" *ngIf="subcategoriesShown">
       <div class="subcategory" *ngFor="let subCategory of subCategories">
-        <a class="subcategory-name">{{subCategory.categoryName}}</a>
+        <a class="subcategory-link">{{subCategory.categoryName}}</a>
         <div class="subcategories2-container">
           <div class="subcategory2" *ngFor="let subcategory2 of subCategory.subCategories">
-            <a class="subcategory2-name">{{subcategory2.categoryName}}</a>
+            <a class="subcategory2-link"  [routerLink]="['/auctions', selectedCategory.categoryName, subCategory.categoryName, subcategory2.categoryName]">{{subcategory2.categoryName}}</a>
           </div>
         </div>
       </div>

@@ -1,0 +1,14 @@
+<div class="container" (click)="itemClick.emit(auction)">
+  <div class="left"></div>
+  <div class="right">
+    <p>{{auction.product.name}}</p>
+    <p>Starts: {{auction.startDate | date : "yyyy MMMM dd"}}</p>
+    <p>Ends: {{auction.endDate | date : "yyyy MMMM dd"}}</p>
+  </div>
+  <div class="right">
+      <p>Buy now: {{auction.buyNowPrice != null}}</p>
+      <p>Category: <br>- {{auction.category.name}}<br>-- {{auction.category.subCategory.name}}<br>--- {{auction.category.subCategory.subCategory.name}}</p>
+      <p>Ends: {{auction.endDate | date : "yyyy MMMM dd"}}</p>
+    </div>
+  <div style="clear: both;"></div>
+</div>

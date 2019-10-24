@@ -12,6 +12,9 @@ export class AuctionFiltersComponent implements OnInit {
   @Input()
   subcategories: CategoryTreeNode;
 
+  @Input()
+  selectedSubCategory: string;
+
   form: FormGroup;
 
   constructor(private formBuilder: FormBuilder) {

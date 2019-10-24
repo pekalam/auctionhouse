@@ -21,6 +21,9 @@
       <div class="navbar-item" [matMenuTriggerFor]="menu">Menu</div>
       <mat-menu #menu="matMenu" class="user-menu">
         <div>
+          <p>Hello {{username}}</p>
+        </div>
+        <div>
           <button class="user-menu-btn" [routerLink]="['/user']" mat-menu-item>My account</button>
         </div>
         <div>

@@ -1,15 +1,36 @@
-.container{
+@import "global";
+
+.container {
   box-sizing: border-box;
   padding: 5px 10px 10px 10px;
-  mat-radio-group{
+  mat-radio-group {
     display: block;
-    mat-radio-button{
+    mat-radio-button {
       display: block;
+      margin-bottom: 7px;
     }
   }
-  .apply-btn-container{
+  .apply-btn-container {
     text-align: center;
     width: 100%;
   }
 }
 
+.subcat-link {
+  text-decoration: none;
+  color: $secondaryColor;
+  cursor: pointer;
+  display: block;
+  &:hover {
+    color: $secondaryDarkColor;
+  }
+  padding: 0 0 12px 0;
+}
+
+.highlight {
+  color: $highlightColor;
+  cursor: text;
+  &:hover {
+    color: $highlightColor;
+  }
+}

@@ -13,6 +13,7 @@ export class CategoriesComponent implements OnInit {
   mainCategories: CategoryTreeNode[];
   subCategories: CategoryTreeNode[];
   subcategoriesShown = false;
+  selectedCategory: CategoryTreeNode;
 
   constructor(private categoriesQuery: CategoriesQuery, private router: Router) { }
 
@@ -23,6 +24,7 @@ export class CategoriesComponent implements OnInit {
   }
 
   showSubcategories(category: CategoryTreeNode) {
+    this.selectedCategory = category;
     this.subCategories = category.subCategories;
     this.subcategoriesShown = true;
   }
