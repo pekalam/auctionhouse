@@ -1,7 +1,7 @@
 <mat-expansion-panel #panel [hideToggle]="!mobile" [disabled]="!mobile" [expanded]="!mobile">
-    <mat-expansion-panel-header [ngStyle]="panel.hideToggle ? {display: 'none'} : ''">
-      Filters
-    </mat-expansion-panel-header>
+  <mat-expansion-panel-header [ngStyle]="panel.hideToggle ? {display: 'none'} : ''">
+    Filters
+  </mat-expansion-panel-header>
   <div class="container">
 
 
@@ -24,13 +24,31 @@
         </mat-radio-group>
         <h4>Auction type
         </h4>
-        <mat-radio-group formControlName="type">
+        <mat-radio-group formControlName="type" [(ngModel)]="selectedAuctionType">
           <mat-radio-button value="0">Buy now</mat-radio-button>
           <mat-radio-button value="1">Auction</mat-radio-button>
           <mat-radio-button value="2">All</mat-radio-button>
         </mat-radio-group>
-        <h4>Price</h4>
-        <mat-slider></mat-slider>
+        <div class="buynow-price-container" [hidden]="selectedAuctionType === '1'">
+          <h4>Buy now auction price</h4>
+          <mat-form-field id="min-buynow" class="buynow-price">
+            <input matInput type="text" placeholder="Min" formControlName="minBuyNow" />
+          </mat-form-field>
+          <mat-form-field id="max-buynow" class="buynow-price">
+            <input matInput type="text" placeholder="Max" formControlName="maxBuyNow" />
+          </mat-form-field>
+          <div style="clear: both;"></div>
+        </div>
+        <div class="buynow-price-container" [hidden]="selectedAuctionType === '0'">
+            <h4>Auction price</h4>
+            <mat-form-field id="min-buynow" class="buynow-price">
+              <input matInput type="text" placeholder="Min" formControlName="minBuyNow" />
+            </mat-form-field>
+            <mat-form-field id="max-buynow" class="buynow-price">
+              <input matInput type="text" placeholder="Max" formControlName="maxBuyNow" />
+            </mat-form-field>
+            <div style="clear: both;"></div>
+          </div>
         <div class="apply-btn-container">
           <button mat-raised-button color="primary" type="submit">Apply filters</button>
         </div>

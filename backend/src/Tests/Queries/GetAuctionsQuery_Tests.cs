@@ -230,5 +230,104 @@ namespace FunctionalTests.Queries
             results2.Count.Should()
                 .Be(AuctionsQueryHandler.PageSize - 1);
         }
+
+
+        [Test]
+        public void Handle_when_given_valid_buyNowPrice_filter_params_returns_valid_auctions_page()
+        {
+            //arrange
+            var stubAuctions = GetFakeAuctionsReadModels();
+            stubAuctions[0]
+                .BuyNowPrice = 99;
+            _dbContext.AuctionsReadModel.InsertMany(stubAuctions.AsSpan(0, AuctionsQueryHandler.PageSize)
+                .ToArray());
+            Thread.Sleep(2000);
+
+            var queryHandler = new AuctionsQueryHandler(_dbContext, new CategoryBuilder(_categoryTreeService));
+            var query1 = new AuctionsQuery()
+            {
+                Page = 0,
+                CategoryNames = new List<string>()
+                {
+                    "Fake category", "Fake subcategory", "Fake subsubcategory 0"
+                }, MinBuyNowPrice = 0, MaxBuyNowPrice = 40
+            };
+
+
+            var query2 = new AuctionsQuery()
+            {
+                Page = 0,
+                CategoryNames = new List<string>()
+                {
+                    "Fake category", "Fake subcategory", "Fake subsubcategory 0"
+                }
+                ,MinBuyNowPrice = 90, MaxBuyNowPrice = 99
+            };
+
+            //act
+            var results1 = queryHandler.Handle(query1, CancellationToken.None)
+                .Result.ToList();
+            var results2 = queryHandler.Handle(query2, CancellationToken.None)
+                .Result.ToList();
+
+            //assert
+            results1.Count.Should()
+                .Be(AuctionsQueryHandler.PageSize - 1);
+            results2.Count.Should()
+                .Be(1);
+        }
+
+        [Test]
+        public void Handle_when_valid_auctionPrice_filter_params_returns_valid_auctions_page()
+        {
+            //arrange
+            var stubAuctions = GetFakeAuctionsReadModels();
+            stubAuctions[0]
+                .ActualPrice = 99;
+            foreach (var auction in stubAuctions)
+            {
+                auction.BuyNowPrice = null;
+            }
+            _dbContext.AuctionsReadModel.InsertMany(stubAuctions.AsSpan(0, AuctionsQueryHandler.PageSize)
+                .ToArray());
+            Thread.Sleep(2000);
+
+            var queryHandler = new AuctionsQueryHandler(_dbContext, new CategoryBuilder(_categoryTreeService));
+            var query1 = new AuctionsQuery()
+            {
+                Page = 0,
+                CategoryNames = new List<string>()
+                {
+                    "Fake category", "Fake subcategory", "Fake subsubcategory 0"
+                },
+                MinAuctionPrice = 0,
+                MaxAuctionPrice = 40
+            };
+
+
+            var query2 = new AuctionsQuery()
+            {
+                Page = 0,
+                CategoryNames = new List<string>()
+                {
+                    "Fake category", "Fake subcategory", "Fake subsubcategory 0"
+                }
+                ,
+                MinAuctionPrice = 90,
+                MaxAuctionPrice = 99
+            };
+
+            //act
+            var results1 = queryHandler.Handle(query1, CancellationToken.None)
+                .Result.ToList();
+            var results2 = queryHandler.Handle(query2, CancellationToken.None)
+                .Result.ToList();
+
+            //assert
+            results1.Count.Should()
+                .Be(AuctionsQueryHandler.PageSize - 1);
+            results2.Count.Should()
+                .Be(1);
+        }
     }
 }

@@ -26,6 +26,7 @@ export class AuctionFiltersComponent implements OnInit {
   applyFilters = new EventEmitter<AuctionFilters>();
 
   form: FormGroup;
+  selectedAuctionType: string = "2";
 
 
   constructor(private formBuilder: FormBuilder, public breakpointObserver: BreakpointObserver) {
@@ -40,7 +41,11 @@ export class AuctionFiltersComponent implements OnInit {
     });
     this.form = formBuilder.group({
       condition: "2",
-      type: "2"
+      type: "2",
+      minBuyNow: "0",
+      maxBuyNow: "0",
+      minAuction: "0",
+      maxAuction: "0"
     });
   }
 
@@ -52,7 +57,7 @@ export class AuctionFiltersComponent implements OnInit {
 
   applyClick() {
     if (this.form.valid) {
-      let filters = new AuctionFilters(this.form.value.condition, this.form.value.type);
+      let filters = new AuctionFilters(this.form.value.condition, this.form.value.type, this.form.value.minBuyNow, this.form.value.maxBuyNow);
       if(this.lastFilters && this.lastFilters.equals(filters)){
         return;
       }

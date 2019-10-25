@@ -44,6 +44,34 @@ namespace Core.Query.Queries.Auction.Auctions
                 filtersArr.Add(Builders<AuctionReadModel>.Filter.Eq(f => f.Product.Condition, (Condition)request.ConditionQuery));
             }
 
+            if (request.MinBuyNowPrice != request.MaxBuyNowPrice
+                && request.MinBuyNowPrice < request.MaxBuyNowPrice
+                && (request.AuctionTypeQuery == AuctionTypeQuery.All
+                    || request.AuctionTypeQuery == AuctionTypeQuery.BuyNow) )
+            {
+                if (request.AuctionTypeQuery != AuctionTypeQuery.All)
+                {
+                    filtersArr.Add(Builders<AuctionReadModel>.Filter.Ne(f => f.BuyNowPrice, null));
+                }
+
+                filtersArr.Add(Builders<AuctionReadModel>.Filter.Gte(f => f.BuyNowPrice, request.MinBuyNowPrice));
+                filtersArr.Add(Builders<AuctionReadModel>.Filter.Lte(f => f.BuyNowPrice, request.MaxBuyNowPrice));
+            }
+
+            if (request.MinAuctionPrice != request.MaxAuctionPrice
+                && request.MinAuctionPrice < request.MaxAuctionPrice
+                && (request.AuctionTypeQuery == AuctionTypeQuery.All
+                    || request.AuctionTypeQuery == AuctionTypeQuery.Auction))
+            {
+                if (request.AuctionTypeQuery != AuctionTypeQuery.All)
+                {
+                    filtersArr.Add(Builders<AuctionReadModel>.Filter.Eq(f => f.BuyNowPrice, null));
+                }
+
+                filtersArr.Add(Builders<AuctionReadModel>.Filter.Gte(f => f.ActualPrice, request.MinAuctionPrice));
+                filtersArr.Add(Builders<AuctionReadModel>.Filter.Lte(f => f.ActualPrice, request.MaxAuctionPrice));
+            }
+
             return filtersArr;
         }
 

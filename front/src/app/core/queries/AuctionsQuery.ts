@@ -14,11 +14,12 @@ export enum AuctionTypeQuery {
 
 export class AuctionFilters {
   constructor(public condition: ConditionQuery = ConditionQuery.All,
-    public auctionType: AuctionTypeQuery = AuctionTypeQuery.All) { }
+    public auctionType: AuctionTypeQuery = AuctionTypeQuery.All, public minBuyNow = "0", public maxBuyNow = "0",
+    public minAuction = "0", public maxAuction = "0") { }
 
-    equals(filter: AuctionFilters): boolean{
-      return filter.auctionType == this.auctionType && filter.condition == this.condition;
-    }
+  equals(filter: AuctionFilters): boolean {
+    return filter.auctionType == this.auctionType && filter.condition == this.condition;
+  }
 }
 
 
@@ -51,9 +52,18 @@ export class AuctionsQuery {
     return `type=${filter.auctionType}`;
   }
 
+  private getAuctionBuyNowPrice(filter: AuctionFilters): string {
+    return `minbpr=${filter.minBuyNow}&maxbpr=${filter.maxBuyNow}`;
+  }
+
+  private getAuctionPrice(filter: AuctionFilters): string {
+    return `minapr=${filter.minAuction}&maxapr=${filter.maxAuction}`;
+  }
+
   execute(page: number, category: Category, filters?: AuctionFilters): Observable<AuctionListModel[]> {
     if (!filters) { filters = new AuctionFilters(); }
-    const url = `/api/auctions?page=${page}&${this.getCategoryList(category)}&${this.getCondition(filters.condition)}&${this.getAuctionTypeQuery(filters)}`;
+    const url = `/api/auctions?page=${page}&${this.getCategoryList(category)}&${this.getCondition(filters.condition)}`
+    + `&${this.getAuctionTypeQuery(filters)}&${this.getAuctionBuyNowPrice(filters)}&${this.getAuctionPrice(filters)}`;
     return this.httpClient.get<AuctionListModel[]>(url, {});
   }
 }
