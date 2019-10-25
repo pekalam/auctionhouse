@@ -9,7 +9,7 @@ export enum ConditionQuery {
 }
 
 export enum AuctionTypeQuery {
-  BuyNow, Auction, All
+  BuyNowOnly, Auction, AuctionAndBuyNow, All
 }
 
 export class AuctionFilters {

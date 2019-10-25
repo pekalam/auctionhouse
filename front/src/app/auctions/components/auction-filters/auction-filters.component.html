@@ -25,9 +25,10 @@
         <h4>Auction type
         </h4>
         <mat-radio-group formControlName="type" [(ngModel)]="selectedAuctionType">
-          <mat-radio-button value="0">Buy now</mat-radio-button>
+          <mat-radio-button value="0">Buy now only</mat-radio-button>
           <mat-radio-button value="1">Auction</mat-radio-button>
-          <mat-radio-button value="2">All</mat-radio-button>
+          <mat-radio-button value="2">Auction and buy now</mat-radio-button>
+          <mat-radio-button value="3">All</mat-radio-button>
         </mat-radio-group>
         <div class="buynow-price-container" [hidden]="selectedAuctionType === '1'">
           <h4>Buy now auction price</h4>
@@ -42,10 +43,10 @@
         <div class="buynow-price-container" [hidden]="selectedAuctionType === '0'">
             <h4>Auction price</h4>
             <mat-form-field id="min-buynow" class="buynow-price">
-              <input matInput type="text" placeholder="Min" formControlName="minBuyNow" />
+              <input matInput type="text" placeholder="Min" formControlName="minAuction" />
             </mat-form-field>
             <mat-form-field id="max-buynow" class="buynow-price">
-              <input matInput type="text" placeholder="Max" formControlName="maxBuyNow" />
+              <input matInput type="text" placeholder="Max" formControlName="maxAuction" />
             </mat-form-field>
             <div style="clear: both;"></div>
           </div>

@@ -27,6 +27,7 @@ namespace Core.Query.Handlers
                 Id = ObjectId.GenerateNewId(),
                 Product = ev.AuctionArgs.Product,
                 BuyNowPrice = ev.AuctionArgs.BuyNowPrice,
+                BuyNowOnly = ev.AuctionArgs.BuyNowOnly,
                 StartDate = ev.AuctionArgs.StartDate,
                 EndDate = ev.AuctionArgs.EndDate,
                 Creator = ev.AuctionArgs.Creator,

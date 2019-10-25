@@ -62,9 +62,6 @@ namespace CreateAuction
             };
 
             var cmd = new Faker<CreateAuctionCommandDto>()
-                .RuleFor(dto => dto.Category, fakeCategory())
-                .RuleFor(dto => dto.BuyNowPrice,
-                    faker => faker.Random.Bool() ? faker.Random.Decimal(20, 100) : new decimal?())
                 .RuleFor(dto => dto.CorrelationId, "123")
                 .RuleFor(dto => dto.StartDate, faker => DateTime.UtcNow.AddMinutes(20))
                 .RuleFor(dto => dto.EndDate, faker => DateTime.UtcNow.AddDays(faker.Random.Int(5, 10)))
@@ -73,9 +70,15 @@ namespace CreateAuction
                     Name = faker.Commerce.ProductName(),
                     Description = faker.Lorem.Lines(20),
                     Condition = faker.Random.Bool() ? Condition.New : Condition.Used
+                })
+                .RuleSet("buyNowAndAuction", set =>
+                {
+                    set.RuleFor(dto => dto.Category, fakeCategory())
+                        .RuleFor(dto => dto.BuyNowPrice,
+                            faker => faker.Random.Bool() ? faker.Random.Decimal(20, 100) : 0);
                 });
 
-            return cmd.Generate();
+            return cmd.Generate("default,buyNowAndAuction");
         }
 
         static void Main(string[] args)
@@ -87,6 +90,8 @@ namespace CreateAuction
 
 
             var api = RestClient.For<Req>(url);
+
+            var cmd = CreateCommand();
 
             var dto = new StartAuctionCreateSessionCommandDto() {CorrelationId = "123"};
             api.StartSession(jwt, dto)
@@ -118,7 +123,7 @@ namespace CreateAuction
             }
 
 
-            api.CreateAuction(jwt, CreateCommand())
+            api.CreateAuction(jwt, cmd)
                 .Wait();
         }
     }

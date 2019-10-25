@@ -68,6 +68,7 @@ namespace FunctionalTests.Queries
                     StartDate = DateTime.UtcNow,
                     EndDate = DateTime.UtcNow.AddDays(1),
                     Category = testCategory,
+                    BuyNowOnly = false,
                     Product = new Product("prod 1", "desc", Condition.Used)
                 };
             }
@@ -144,6 +145,10 @@ namespace FunctionalTests.Queries
             //arrange
             var stubAuctions = GetFakeAuctionsReadModels();
             stubAuctions[0]
+                .BuyNowOnly = true;
+            stubAuctions[1]
+                .BuyNowOnly = false;
+            stubAuctions[1]
                 .BuyNowPrice = 0;
             _dbContext.AuctionsReadModel.InsertMany(stubAuctions.AsSpan(0, AuctionsQueryHandler.PageSize)
                 .ToArray());
@@ -157,7 +162,7 @@ namespace FunctionalTests.Queries
                 {
                     "Fake category", "Fake subcategory", "Fake subsubcategory 0"
                 },
-                AuctionTypeQuery = AuctionTypeQuery.Auction,
+                AuctionTypeQuery = AuctionTypeQuery.BuyNowOnly,
             };
 
 
@@ -168,7 +173,17 @@ namespace FunctionalTests.Queries
                 {
                     "Fake category", "Fake subcategory", "Fake subsubcategory 0"
                 },
-                AuctionTypeQuery = AuctionTypeQuery.BuyNow,
+                AuctionTypeQuery = AuctionTypeQuery.Auction,
+            };
+
+            var query3 = new AuctionsQuery()
+            {
+                Page = 0,
+                CategoryNames = new List<string>()
+                {
+                    "Fake category", "Fake subcategory", "Fake subsubcategory 0"
+                },
+                AuctionTypeQuery = AuctionTypeQuery.AuctionAndBuyNow,
             };
 
             //act
@@ -176,12 +191,16 @@ namespace FunctionalTests.Queries
                 .Result.ToList();
             var results2 = queryHandler.Handle(query2, CancellationToken.None)
                 .Result.ToList();
+            var results3 = queryHandler.Handle(query3, CancellationToken.None)
+                .Result.ToList();
 
             //assert
             results1.Count.Should()
                 .Be(1);
             results2.Count.Should()
-                .Be(AuctionsQueryHandler.PageSize - 1);
+                .Be(1);
+            results3.Count.Should()
+                .Be(AuctionsQueryHandler.PageSize - 2);
         }
 
 
@@ -328,6 +347,70 @@ namespace FunctionalTests.Queries
                 .Be(AuctionsQueryHandler.PageSize - 1);
             results2.Count.Should()
                 .Be(1);
+        }
+
+
+
+        [Test]
+        public void Handle_when_valid_auctionPrice_and_buyNowPrice_filter_params_returns_valid_auctions_page()
+        {
+            //arrange
+            var stubAuctions = GetFakeAuctionsReadModels();
+            stubAuctions[0]
+                .ActualPrice = 20;
+            stubAuctions[0]
+                .BuyNowPrice = 123;
+            foreach (var auction in stubAuctions.Skip(1))
+            {
+                auction.BuyNowPrice = 0;
+            }
+            _dbContext.AuctionsReadModel.InsertMany(stubAuctions.AsSpan(0, AuctionsQueryHandler.PageSize)
+                .ToArray());
+            Thread.Sleep(2000);
+
+            var queryHandler = new AuctionsQueryHandler(_dbContext, new CategoryBuilder(_categoryTreeService));
+            var query1 = new AuctionsQuery()
+            {
+                Page = 0,
+                CategoryNames = new List<string>()
+                {
+                    "Fake category", "Fake subcategory", "Fake subsubcategory 0"
+                },
+                MinAuctionPrice = 0,
+                MaxAuctionPrice = 40,
+                MinBuyNowPrice = 1,
+                MaxBuyNowPrice = 140
+            };
+
+
+            var query2 = new AuctionsQuery()
+            {
+                Page = 0,
+                CategoryNames = new List<string>()
+                {
+                    "Fake category", "Fake subcategory", "Fake subsubcategory 0"
+                }
+                ,
+                MinAuctionPrice = 0,
+                MaxAuctionPrice = 40,
+                MinBuyNowPrice = 0,
+                MaxBuyNowPrice = 140
+            };
+
+            //act
+            var results1 = queryHandler.Handle(query1, CancellationToken.None)
+                .Result.ToList();
+            var results2 = queryHandler.Handle(query2, CancellationToken.None)
+                .Result.ToList();
+
+            //assert
+            results1.Count.Should()
+                .Be(1);
+            results2.Count.Should()
+                .Be(AuctionsQueryHandler.PageSize);
+            results2[0].AuctionId
+                .Should()
+                .Be(stubAuctions[0].AuctionId);
         }
     }
 }

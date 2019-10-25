@@ -12,7 +12,7 @@ namespace Core.Query.Queries.Auction.Auctions
 
     public enum AuctionTypeQuery
     {
-        BuyNow, Auction, All
+        BuyNowOnly, Auction, AuctionAndBuyNow, All
     }
 
     public class AuctionsQuery : IRequest<IEnumerable<AuctionsQueryResult>>
