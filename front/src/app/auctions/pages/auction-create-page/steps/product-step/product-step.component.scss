@@ -1,14 +1,18 @@
 @import 'global';
 
+
+
 .container {
-  width: 80%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  @include section-shadow;
   background-color: white;
+  text-align: left;
+  mat-radio-button{
+    font-size: 14px;
+  }
   mat-form-field {
     display: block;
+    ::ng-deep .mat-form-field-infix{
+      font-size: 14px;
+    }
     input{
       margin-top: 20px;
     }

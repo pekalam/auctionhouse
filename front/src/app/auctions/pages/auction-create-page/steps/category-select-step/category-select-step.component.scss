@@ -1,5 +1,9 @@
 @import 'global';
 
+h4{
+  margin-bottom: 0;
+}
+
 mat-form-field{
   width: 70%;
   max-width: 700px;
@@ -7,15 +11,8 @@ mat-form-field{
     margin-top: 20px;
   }
 }
-#ok-container{
-  text-align: center;
-}
 #container{
-  margin: 0 auto;
-  width: 80%;
-  max-width: 900px;
-  padding: 20px;
-  background-color: white;
   text-align: center;
+  padding-bottom: 10px;
 }
 

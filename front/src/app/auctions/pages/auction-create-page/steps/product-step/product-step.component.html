@@ -3,7 +3,7 @@
     <div class="g1">
       <mat-form-field>
         Product name
-        <input matInput type="text" formControlName="productName" />
+        <input matInput type="text" formControlName="productName" (change)="onChange()" />
       </mat-form-field>
 
       <mat-radio-group formControlName="buyNow">
@@ -13,17 +13,23 @@
 
       <mat-form-field>
         Buy now price
-        <input [disabled]="" type="number" matInput formControlName="buyNowPrice" />
+        <input [disabled]="" type="number" matInput formControlName="buyNowPrice" (change)="onChange()" />
       </mat-form-field>
 
       <mat-form-field>
         Start date
-        <input type="datetime-local" matInput formControlName="startDate" />
+        <input [matDatepicker]="picker1" matInput [(ngModel)]="defaultStartDate" formControlName="startDate"
+          (change)="onChange()" />
+          <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
       </mat-form-field>
 
       <mat-form-field>
         End date
-        <input type="datetime-local" matInput formControlName="endDate" />
+        <input [matDatepicker]="picker2" [(ngModel)]="defaultEndDate" matInput formControlName="endDate"
+          (change)="onChange()" />
+          <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
       </mat-form-field>
 
     </div>
@@ -31,11 +37,8 @@
     <div class="g2">
       <mat-form-field>
         Product description
-        <textarea matInput formControlName="productDescription"></textarea>
+        <textarea matInput formControlName="productDescription" (change)="onChange()"></textarea>
       </mat-form-field>
-      <div class="ok-container">
-        <button mat-raised-button color="primary" type="submit">OK</button>
-      </div>
     </div>
   </form>
 </div>

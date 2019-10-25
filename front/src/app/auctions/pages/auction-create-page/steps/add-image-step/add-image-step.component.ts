@@ -8,7 +8,6 @@ import { AuctionCreateStep } from '../../../../auctionCreateStep';
   styleUrls: ['./add-image-step.component.scss']
 })
 export class AddImageStepComponent extends AuctionCreateStep<ImgUploadResult[]> implements OnInit {
-
   imgIds = [0, 1, 2, 3, 4, 5];
   show = [1, 1, 1, 0, 0, 0];
 
@@ -23,6 +22,10 @@ export class AddImageStepComponent extends AuctionCreateStep<ImgUploadResult[]> 
     this.imgUploadResults[result.id] = result;
   }
 
+  checkIsReady() {
+    this.onStepReady.emit();
+  }
+
   onImgSelect(result: ImgUploadResult) {
     let found = this.imgIds.find(v => v == result.id);
     if (found) {
@@ -32,7 +35,7 @@ export class AddImageStepComponent extends AuctionCreateStep<ImgUploadResult[]> 
     }
   }
 
-  onOK() {
+  onOkClick() {
     let results = this.imgUploadResults.filter(i => i != null);
     this.completeStep(results);
   }

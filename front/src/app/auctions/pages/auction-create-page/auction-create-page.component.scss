@@ -1,38 +1,80 @@
 @import "global";
 
-.container {
-  width: 100%;
+.main-container {
   padding-top: 50px;
+  width: 100%;
+  text-align: center;
+}
 
+.navig-btn-container {
+  position: absolute;
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+  .nav-btn {
+    @include app-btn;
+    height: 20px;
+  }
+  .back {
+    margin: 10px 0 0 10px;
+    background-color: #8c8c8c;
+  }
+  .forward {
+    margin: 10px 10px 0 0;
+  }
+}
+.create-container {
+  width: 100%;
+  text-align: center;
+  padding-top: 15px;
+  .err-msg {
+    color: red;
+  }
+  .cancel-btn {
+    @include app-btn;
+    margin-right: 30px;
+    background-color: #f44336;
+    height: 32px;
+  }
+  .create-btn {
+    @include app-btn;
+    height: 32px;
+  }
+}
+.container {
+  width: 90%;
+  height: auto;
+  margin: 0 auto;
+  background-color: white;
+  box-sizing: border-box;
+  padding: 6px 20px 20px 20px;
+  * {
+    width: 100%;
+  }
   mat-form-field {
     display: block;
   }
-  .form-grid {
-    display: flex;
-    flex-flow: row;
-    #g1,
-    #g2 {
-      flex-grow: 1;
-    }
+}
+
+.msg {
+  font-size: 16px;
+  font-weight: bold;
+  color: #5c5c5c;
+  width: 90%;
+  margin: 0 auto;
+  background-color: white;
+  * {
+    margin: 0;
   }
-  .navig-btn-container{
-    display: flex;
-    justify-content: center;
-    flex-direction: row;
-    padding-bottom: 10px;
-    .back{
-      margin-right: 20px;
-    }
-    .forward{
-      margin-left: 20px;
-    }
+  .text {
+    display: block;
+    padding: 10px;
   }
-  .create-container{
-    width: 100%;
-    text-align: center;
-    padding-top: 20px;
-    .err-msg{
-      color: red;
-    }
+  hr {
+    @include app-hr;
+    width: 90%;
+    margin: 0 auto;
   }
 }
+
+

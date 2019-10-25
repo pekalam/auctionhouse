@@ -5,6 +5,13 @@ $secondaryDarkColor: #d85610;
 $highlightColor: rgb(112, 190, 164);
 $barHeight: 70px;
 
+@mixin app-hr {
+  background: #ddd;
+  display: block;
+  height: 1px;
+  border: 0;
+}
+
 @mixin section-shadow {
   -webkit-box-shadow: 0px 0px 1px 0px rgba(0,0,0,0.27);
   -moz-box-shadow: 0px 0px 1px 0px rgba(0,0,0,0.27);

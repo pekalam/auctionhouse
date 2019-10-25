@@ -1,11 +1,10 @@
+@import 'global';
+
 $listItemHeight: 200px;
 
 .bottom-line{
+  @include app-hr;
   width: 90%;
-  background: #ddd;
-  display: block;
-  height: 1px;
-  border: 0;
 }
 
 .auction-list-item-container{

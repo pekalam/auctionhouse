@@ -1,17 +1,22 @@
-<div>
-  <div class="container" [hidden]="!showCreateForm">
-    <div class="navig-btn-container">
-      <button class="back" (click)="onBackClick()">Back</button>
-      <button class="forward" (click)="onForwardClick()" [hidden]="!canMoveForward">Forward</button>
-    </div>
-    <app-category-select-step (outputOnStepComplete)="onCategorySelectedStep($event)" [hidden]="step !== 0">
+<div class="main-container" [hidden]="!showCreateForm">
+
+  <div class="msg">
+      <div class="navig-btn-container">
+          <button class="nav-btn back" (click)="onBackClick()" [appVisible]="step === 0">Back</button>
+        </div>
+    <div class="text">{{formMessage}}</div>
+    <hr>
+  </div>
+  <div class="container">
+    <app-category-select-step #categoryStep (outputOnStepComplete)="onCategorySelectedStep($event)" (onStepReady)="showOk = true" [hidden]="step !== 0">
     </app-category-select-step>
-    <app-product-step (outputOnStepComplete)="onProductStep($event)" [hidden]="step !== 1"></app-product-step>
-    <app-add-image-step (outputOnStepComplete)="onImagesStep($event)" [hidden]="step !== 2"></app-add-image-step>
-    <app-create-summary-step [commandArgs]="createAuctionArgs" [hidden]="step !== 3"></app-create-summary-step>
-    <div class="create-container">
-        <button class="create-btn" (click)="onCreateClick()" mat-raised-button color="primary" *ngIf="step === 3">Create auction</button>
-        <p class="err-msg">{{error}}</p>
-    </div>
+    <app-product-step #productStep (outputOnStepComplete)="onProductStep($event)" (onStepReady)="showOk = true" [hidden]="step !== 1"></app-product-step>
+    <app-add-image-step #imageStep (outputOnStepComplete)="onImagesStep($event)" (onStepReady)="showOk = true" [hidden]="step !== 2"></app-add-image-step>
+    <app-create-summary-step #summaryStep [commandArgs]="createAuctionArgs" (outputOnStepComplete)="onSummaryStep()" (onStepReady)="showOk = true" [hidden]="step !== 3"></app-create-summary-step>
+  </div>
+  <div class="create-container">
+    <button class="cancel-btn" (click)="location.back()">Cancel</button>
+    <button class="create-btn" (click)="onOkClick()" *ngIf="showOk">{{step != 3 ? 'Continue' : 'Create auction'}}</button>
+    <p class="err-msg">{{error}}</p>
   </div>
 </div>

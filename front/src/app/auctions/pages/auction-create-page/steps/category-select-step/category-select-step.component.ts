@@ -10,6 +10,7 @@ import { AuctionCreateStep } from '../../../../auctionCreateStep';
   styleUrls: ['./category-select-step.component.scss']
 })
 export class CategorySelectStepComponent extends AuctionCreateStep<CategorySelectStep> implements OnInit {
+
   mainCategories: CategoryTreeNode[] = [];
   subCategories: CategoryTreeNode[] = [];
   subCategories2: CategoryTreeNode[] = [];
@@ -26,6 +27,12 @@ export class CategorySelectStepComponent extends AuctionCreateStep<CategorySelec
   }
 
   ngOnInit() {
+  }
+
+  checkIsReady() {
+    if (this.selectedMainCategory && this.selectedSubCategory && this.selectedSubCategory2) {
+      this.onStepReady.emit();
+    }
   }
 
   selectMainCategory(selectedCategoryName: string) {
@@ -61,13 +68,16 @@ export class CategorySelectStepComponent extends AuctionCreateStep<CategorySelec
       return;
     }
     this.selectedSubCategory2 = this.subCategories2.filter(c => c.categoryName === selectedCategoryName)[0];
+    this.onStepReady.emit();
   }
 
   onOkClick() {
-    if (this.selectedMainCategory && this.selectedSubCategory && this.selectedSubCategory2) {
-      this.completeStep(new CategorySelectStep(this.selectedMainCategory, this.selectedSubCategory, this.selectedSubCategory2));
-    }
+    console.log("OK click");
 
+    if (this.selectedMainCategory && this.selectedSubCategory && this.selectedSubCategory2) {
+      var step = new CategorySelectStep(this.selectedMainCategory, this.selectedSubCategory, this.selectedSubCategory2);
+      this.completeStep(step);
+    }
   }
 
 }
