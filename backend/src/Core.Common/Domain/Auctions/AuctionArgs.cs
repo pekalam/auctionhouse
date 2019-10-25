@@ -7,13 +7,14 @@ namespace Core.Common.Domain.Auctions
 {
     public class AuctionArgs
     {
-        public decimal? BuyNowPrice { get; set; }
+        public decimal BuyNowPrice { get; set; } = 0;
+        public bool BuyNowOnly { get; set; } = false;
+        public AuctionImage[] AuctionImages { get; set; } = null;
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public UserIdentity Creator { get; set; }
         public Product Product { get; set; }
         public Category Category { get; set; }
-        public AuctionImage[] AuctionImages { get; set; } = null;
 
         public class Builder
         {
@@ -21,8 +22,12 @@ namespace Core.Common.Domain.Auctions
 
             private void CheckCanBuild()
             {
-                if (args.Product == default || args.StartDate == default || args.EndDate == default || args.Creator == default ||
-                    args.Category == default)
+                if (args.Product == default || 
+                    args.StartDate == default || 
+                    args.EndDate == default || 
+                    args.Creator == default ||
+                    args.Category == default || 
+                    (args.BuyNowOnly && args.BuyNowPrice == 0))
                 {
                     throw new DomainException("Invalid auctionArgs");
                 }
@@ -36,6 +41,12 @@ namespace Core.Common.Domain.Auctions
             public Builder SetBuyNow(decimal buyNowPrice)
             {
                 args.BuyNowPrice = buyNowPrice;
+                return this;
+            }
+
+            public Builder SetBuyNowOnly(bool buyNowOnly)
+            {
+                args.BuyNowOnly = buyNowOnly;
                 return this;
             }
 

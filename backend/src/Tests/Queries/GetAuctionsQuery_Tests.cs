@@ -144,7 +144,7 @@ namespace FunctionalTests.Queries
             //arrange
             var stubAuctions = GetFakeAuctionsReadModels();
             stubAuctions[0]
-                .BuyNowPrice = null;
+                .BuyNowPrice = 0;
             _dbContext.AuctionsReadModel.InsertMany(stubAuctions.AsSpan(0, AuctionsQueryHandler.PageSize)
                 .ToArray());
             Thread.Sleep(2000);
@@ -286,7 +286,7 @@ namespace FunctionalTests.Queries
                 .ActualPrice = 99;
             foreach (var auction in stubAuctions)
             {
-                auction.BuyNowPrice = null;
+                auction.BuyNowPrice = 0;
             }
             _dbContext.AuctionsReadModel.InsertMany(stubAuctions.AsSpan(0, AuctionsQueryHandler.PageSize)
                 .ToArray());

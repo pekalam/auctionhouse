@@ -24,8 +24,11 @@ namespace Core.Query.ReadModel
         public DateTime StartDate { get; set; }
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime EndDate { get; set; }
-        public decimal? BuyNowPrice { get; set; }
-        public decimal? ActualPrice { get; set; }
+        public bool BuyNowOnly { get; set; }
+        [BsonDefaultValue(0)]
+        public decimal BuyNowPrice { get; set; }
+        [BsonDefaultValue(0)]
+        public decimal ActualPrice { get; set; }
         public int TotalBids { get; set; }
         public int Views { get; set; }
 

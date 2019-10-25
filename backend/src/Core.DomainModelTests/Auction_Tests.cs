@@ -15,7 +15,21 @@ namespace Core.DomainModelTests
     public class Auction_Tests
     {
         private Auction auction;
-        private readonly AuctionArgs_Tests _auctionArgsTests = new AuctionArgs_Tests();
+
+
+        private Auction CreateBuyNowOnlyAuction()
+        {
+            var args = new AuctionArgs.Builder()
+                .SetBuyNowOnly(true)
+                .SetOwner(new UserIdentity())
+                .SetCategory(new Category("", 1))
+                .SetBuyNow(123)
+                .SetStartDate(DateTime.UtcNow.AddDays(1))
+                .SetEndDate(DateTime.UtcNow.AddDays(2))
+                .SetProduct(new Product())
+                .Build();
+            return new Auction(args);
+        }
 
         [SetUp]
         public void SetUp()
@@ -27,6 +41,7 @@ namespace Core.DomainModelTests
                 .SetOwner(new UserIdentity())
                 .SetProduct(new Product())
                 .SetCategory(new Category("test", 0))
+                .SetBuyNowOnly(false)
                 .Build();
             auction = new Auction(auctionArgs);
         }
@@ -36,17 +51,42 @@ namespace Core.DomainModelTests
         {
             var image1 = new AuctionImage("1", "2", "3");
             var image2 = new AuctionImage("1", "2", "3");
+            var imgs = new AuctionImage[] {image1, image2};
+            var start = DateTime.UtcNow.AddMinutes(20);
+            var end = DateTime.UtcNow.AddDays(1);
+            var owner = new UserIdentity(){UserId = Guid.NewGuid(), UserName = "test"};
 
             var auctionArgs = new AuctionArgs.Builder()
                 .SetBuyNow(90.00m)
-                .SetStartDate(DateTime.UtcNow.AddMinutes(20))
-                .SetEndDate(DateTime.UtcNow.AddDays(1))
-                .SetOwner(new UserIdentity())
+                .SetStartDate(start)
+                .SetEndDate(end)
+                .SetOwner(owner)
                 .SetProduct(new Product())
                 .SetCategory(new Category("test", 0))
-                .SetImages(new AuctionImage[] { image1, image2 })
+                .SetImages(imgs)
                 .Build();
             var auction = new Auction(auctionArgs);
+
+            auction.Category.Should()
+                .Be(auctionArgs.Category);
+            auction.ActualPrice.Should()
+                .Be(0);
+            auction.AuctionImages[0]
+                .Should()
+                .Be(imgs[0]);
+            auction.AuctionImages[1]
+                .Should()
+                .Be(imgs[1]);
+            auction.Bids.Count.Should()
+                .Be(0);
+            auction.BuyNowPrice.Should()
+                .Be(90.00m);
+            auction.StartDate.Should()
+                .Be(start);
+            auction.EndDate.Should()
+                .Be(end);
+            auction.Owner.Should()
+                .Be(owner);
 
             auction.PendingEvents.Count.Should()
                 .Be(1);
@@ -115,7 +155,7 @@ namespace Core.DomainModelTests
             auction.AggregateId.Should()
                 .NotBeEmpty()
                 .And.Be(id);
-            auction.BuyNowPrice.Value.Should()
+            auction.BuyNowPrice.Should()
                 .Be(20);
             auction.Product.Should()
                 .NotBeNull();
@@ -124,7 +164,7 @@ namespace Core.DomainModelTests
             auction.Completed.Should()
                 .BeFalse();
             auction.ActualPrice.Should()
-                .BeNull();
+                .Be(0);
             auction.Owner.Should()
                 .NotBeNull();
             auction.StartDate.Should()
@@ -179,6 +219,15 @@ namespace Core.DomainModelTests
         }
 
         [Test]
+        public void Raise_when_buynowonly_throws()
+        {
+            var auction = CreateBuyNowOnlyAuction();
+
+            var bid = new Bid(auction.AggregateId, new UserIdentity() {UserId = Guid.NewGuid()}, 12);
+            Assert.Throws<DomainException>(() => auction.Raise(bid));
+        }
+
+        [Test]
         public void ChangeEndDate_when_valid_endDate_changes_EndDate()
         {
             var end = auction.EndDate;
@@ -187,6 +236,13 @@ namespace Core.DomainModelTests
 
             auction.EndDate.Should()
                 .Be(end.AddDays(12));
+        }
+
+        [Test]
+        public void ChangeEndDate_when_invalid_endDate_throws()
+        {
+            Assert.Throws<DomainException>(() => auction.ChangeEndDate(auction.StartDate));
+            Assert.Throws<DomainException>(() => auction.ChangeEndDate(auction.StartDate.AddDays(-1)));
         }
 
         [Test]
@@ -261,6 +317,14 @@ namespace Core.DomainModelTests
             auction.MarkPendingEventsAsHandled();
 
             Assert.Throws<DomainException>(() => auction.CancelAuction());
+        }
+
+        [Test]
+        public void CancelBid_when_buynowOnly_throws()
+        {
+            var auction = CreateBuyNowOnlyAuction();
+            Assert.Throws<DomainException>(() => auction.CancelBid(new Bid(auction.AggregateId,
+                new UserIdentity(){UserId = Guid.NewGuid()}, 12)));
         }
 
         [Test]

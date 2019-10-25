@@ -21,6 +21,60 @@ namespace Core.Query.Queries.Auction.Auctions
             _categoryBuilder = categoryBuilder;
         }
 
+        private void CreateBuyNowPriceFilter(List<FilterDefinition<AuctionReadModel>> filtersArr, AuctionsQuery request)
+        {
+            if (request.MinBuyNowPrice != request.MaxBuyNowPrice
+                && request.MinBuyNowPrice < request.MaxBuyNowPrice
+                && (request.AuctionTypeQuery == AuctionTypeQuery.All
+                    || request.AuctionTypeQuery == AuctionTypeQuery.BuyNow))
+            {
+                var filter1 = Builders<AuctionReadModel>.Filter.Gte(f => f.BuyNowPrice, request.MinBuyNowPrice);
+                var filter2 = Builders<AuctionReadModel>.Filter.Lte(f => f.BuyNowPrice, request.MaxBuyNowPrice);
+                var priceFilter = Builders<AuctionReadModel>.Filter.And(filter1, filter2);
+
+                if (request.AuctionTypeQuery == AuctionTypeQuery.BuyNow)
+                {
+                    //buy now only
+                    filtersArr.Add(Builders<AuctionReadModel>.Filter.Ne(f => f.BuyNowPrice, 0));
+                    filtersArr.Add(priceFilter);
+                }
+                else
+                {
+                    var auctionFilter = Builders<AuctionReadModel>.Filter.Eq(f => f.BuyNowPrice, 0);
+                    filtersArr.Add(Builders<AuctionReadModel>.Filter.Or(priceFilter, auctionFilter));
+                }
+            }
+        }
+
+        private void CreateAuctionPriceFilter(List<FilterDefinition<AuctionReadModel>> filtersArr,
+            AuctionsQuery request)
+        {
+            if (request.MinAuctionPrice != request.MaxAuctionPrice
+                && request.MinAuctionPrice < request.MaxAuctionPrice
+                && (request.AuctionTypeQuery == AuctionTypeQuery.All
+                    || request.AuctionTypeQuery == AuctionTypeQuery.Auction))
+            {
+                var filter1 = Builders<AuctionReadModel>.Filter.Gte(f => f.ActualPrice, request.MinAuctionPrice);
+                var filter2 = Builders<AuctionReadModel>.Filter.Lte(f => f.ActualPrice, request.MaxAuctionPrice);
+
+                var priceFilter = Builders<AuctionReadModel>.Filter.And(filter1, filter2);
+
+                if (request.MinAuctionPrice == 0)
+                {
+                    //var buyNowFilter = Builders<AuctionReadModel>.Filter.Eq(f => f.ActualPrice, null);
+                   // filtersArr.Add(Builders<AuctionReadModel>.Filter.Or(priceFilter, buyNowFilter));
+                  //  return;
+                }
+
+                if (request.AuctionTypeQuery == AuctionTypeQuery.Auction)
+                {
+                    //buy now only
+                    filtersArr.Add(Builders<AuctionReadModel>.Filter.Eq(f => f.BuyNowPrice, 0));
+                }
+                filtersArr.Add(priceFilter);
+            }
+        }
+
         private List<FilterDefinition<AuctionReadModel>> CreateFilterDefs(AuctionsQuery request)
         {
             var category = _categoryBuilder.FromCategoryNamesList(request.CategoryNames);
@@ -32,45 +86,23 @@ namespace Core.Query.Queries.Auction.Auctions
             };
             if (request.AuctionTypeQuery == AuctionTypeQuery.Auction)
             {
-                filtersArr.Add(Builders<AuctionReadModel>.Filter.Eq(f => f.BuyNowPrice, null));
+                filtersArr.Add(Builders<AuctionReadModel>.Filter.Eq(f => f.BuyNowPrice, 0));
             }
+
             if (request.AuctionTypeQuery == AuctionTypeQuery.BuyNow)
             {
-                filtersArr.Add(Builders<AuctionReadModel>.Filter.Ne(f => f.BuyNowPrice, null));
+                filtersArr.Add(Builders<AuctionReadModel>.Filter.Ne(f => f.BuyNowPrice, 0));
             }
 
             if (request.ConditionQuery != ConditionQuery.All)
             {
-                filtersArr.Add(Builders<AuctionReadModel>.Filter.Eq(f => f.Product.Condition, (Condition)request.ConditionQuery));
+                filtersArr.Add(Builders<AuctionReadModel>.Filter.Eq(f => f.Product.Condition,
+                    (Condition) request.ConditionQuery));
             }
 
-            if (request.MinBuyNowPrice != request.MaxBuyNowPrice
-                && request.MinBuyNowPrice < request.MaxBuyNowPrice
-                && (request.AuctionTypeQuery == AuctionTypeQuery.All
-                    || request.AuctionTypeQuery == AuctionTypeQuery.BuyNow) )
-            {
-                if (request.AuctionTypeQuery != AuctionTypeQuery.All)
-                {
-                    filtersArr.Add(Builders<AuctionReadModel>.Filter.Ne(f => f.BuyNowPrice, null));
-                }
+            CreateBuyNowPriceFilter(filtersArr, request);
 
-                filtersArr.Add(Builders<AuctionReadModel>.Filter.Gte(f => f.BuyNowPrice, request.MinBuyNowPrice));
-                filtersArr.Add(Builders<AuctionReadModel>.Filter.Lte(f => f.BuyNowPrice, request.MaxBuyNowPrice));
-            }
-
-            if (request.MinAuctionPrice != request.MaxAuctionPrice
-                && request.MinAuctionPrice < request.MaxAuctionPrice
-                && (request.AuctionTypeQuery == AuctionTypeQuery.All
-                    || request.AuctionTypeQuery == AuctionTypeQuery.Auction))
-            {
-                if (request.AuctionTypeQuery != AuctionTypeQuery.All)
-                {
-                    filtersArr.Add(Builders<AuctionReadModel>.Filter.Eq(f => f.BuyNowPrice, null));
-                }
-
-                filtersArr.Add(Builders<AuctionReadModel>.Filter.Gte(f => f.ActualPrice, request.MinAuctionPrice));
-                filtersArr.Add(Builders<AuctionReadModel>.Filter.Lte(f => f.ActualPrice, request.MaxAuctionPrice));
-            }
+            CreateAuctionPriceFilter(filtersArr, request);
 
             return filtersArr;
         }

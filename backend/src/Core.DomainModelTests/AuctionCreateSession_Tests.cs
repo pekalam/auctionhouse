@@ -33,6 +33,7 @@ namespace Core.DomainModelTests
                 .SetEndDate(DateTime.UtcNow.AddDays(1))
                 .SetProduct(new Product() { Name = "name", Description = "desc" })
                 .SetCategory(new Category("", 0))
+                .SetOwner(new UserIdentity())
                 .Build();
         }
 

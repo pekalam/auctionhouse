@@ -21,9 +21,9 @@ namespace Core.Common.Domain.Auctions
         private List<AuctionImage> _auctionImages = new List<AuctionImage>(new AuctionImage[MAX_IMAGES]);
         private List<Bid> _bids = new List<Bid>();
         private int _imgNum = 0;
-
-        public decimal? BuyNowPrice { get; private set; }
-        public decimal? ActualPrice { get; private set; }
+        public bool BuyNowOnly { get; private set; }
+        public decimal BuyNowPrice { get; private set; }
+        public decimal ActualPrice { get; private set; }
         public IReadOnlyCollection<Bid> Bids => _bids;
         public DateTime StartDate { get; private set; }
         public DateTime EndDate { get; private set; }
@@ -54,6 +54,7 @@ namespace Core.Common.Domain.Auctions
             Owner = auctionArgs.Creator;
             Product = auctionArgs.Product;
             Category = auctionArgs.Category;
+            BuyNowOnly = auctionArgs.BuyNowOnly;
             if (auctionArgs.AuctionImages != null)
             {
                 foreach (var img in auctionArgs.AuctionImages)
@@ -88,7 +89,7 @@ namespace Core.Common.Domain.Auctions
             }
         }
 
-        private void CheckAuctionCompletedOrCanceled()
+        private void ThrowIfCompletedOrCanceled()
         {
             if (Completed)
             {
@@ -101,10 +102,19 @@ namespace Core.Common.Domain.Auctions
             }
         }
 
+        private void ThrowIfBuyNowOnly()
+        {
+            if (BuyNowOnly)
+            {
+                throw new DomainException("Auction is buyNow only");
+            }
+        }
+
         public void Raise(Bid bid)
         {
-            CheckAuctionCompletedOrCanceled();
-            if (ActualPrice.HasValue && bid.Price <= ActualPrice || bid.Price == 0)
+            ThrowIfBuyNowOnly();
+            ThrowIfCompletedOrCanceled();
+            if (bid.Price <= ActualPrice)
             {
                 throw new DomainException("Price is to low");
             }
@@ -121,6 +131,9 @@ namespace Core.Common.Domain.Auctions
 
         public void CancelBid(Bid bid)
         {
+            ThrowIfBuyNowOnly();
+            ThrowIfCompletedOrCanceled();
+
             var existingBid = Bids.FirstOrDefault(b => b.BidId.Equals(bid.BidId));
             if (existingBid == null)
             {
@@ -145,21 +158,21 @@ namespace Core.Common.Domain.Auctions
 
         public void ChangeEndDate(DateTime newEndDate)
         {
-            CheckAuctionCompletedOrCanceled();
+            ThrowIfCompletedOrCanceled();
             ValidateDates(StartDate, newEndDate, false);
             EndDate = newEndDate;
         }
 
         public void CancelAuction()
         {
-            CheckAuctionCompletedOrCanceled();
+            ThrowIfCompletedOrCanceled();
             Canceled = true;
             AddEvent(new AuctionCanceled(AggregateId));
         }
 
         public void EndAuction()
         {
-            CheckAuctionCompletedOrCanceled();
+            ThrowIfCompletedOrCanceled();
             Completed = true;
             var winningBid = Bids.FirstOrDefault(b => b.Price == Bids.Max(bid => bid.Price));
             Buyer = winningBid?.UserIdentity;
@@ -168,12 +181,12 @@ namespace Core.Common.Domain.Auctions
 
         public void BuyNow(UserIdentity userIdentity)
         {
-            if (!BuyNowPrice.HasValue)
+            if (BuyNowPrice == 0)
             {
                 throw new DomainException($"Aution {AggregateId} buy now price has not been set");
             }
 
-            CheckAuctionCompletedOrCanceled();
+            ThrowIfCompletedOrCanceled();
 
             Buyer = userIdentity ?? throw new DomainException($"Null user identity");
             Completed = true;
