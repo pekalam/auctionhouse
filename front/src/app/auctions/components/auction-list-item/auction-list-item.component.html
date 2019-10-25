@@ -1,25 +1,34 @@
-<div class="auction-list-item-container">
-  <div class="left">
-    <img *ngIf="auctionImgSrc" [src]="auctionImgSrc"/>
-  </div>
-  <div class="right" (click)="onAuctionListItemClick()">
-    <div class="right-content">
-        <div>
-            <h2>{{auction.productName}}</h2>
-          </div>
-          <div class="price-div">
-            <div class="current-price-div">
-              <span>Current price</span>
-              <br>
-              <span class="currentprice"> {{auction.actualPrice | currency}}</span>
-            </div>
-            <div class="buynowprice-div">
-              <span class="buynowtext">Buy now price</span>
-              <br>
-              <span class="buynowprice"> {{auction.buyNowPrice | currency}}</span>
-            </div>
-          </div>
+<div>
+  <div class="auction-list-item-container">
+    <div class="left">
+      <img *ngIf="auctionImgSrc" [src]="auctionImgSrc" />
     </div>
+    <div class="right" (click)="onAuctionListItemClick()">
+      <div class="right-content">
+        <div class="title-div">
+          <h2 class="auction-title">{{auction.productName}}</h2>
+          <span class="condition-text">Condition: {{auction.condition == 0 ? 'Used' : 'New'}}</span>
+        </div>
+        <div class="price-div">
+          <div class="current-price-div">
+            <span>Current price</span>
+            <br>
+            <span class="currentprice"> {{auction.actualPrice | currency}}</span>
+          </div>
+
+          <div class="buynowprice-div" [appVisible]="auction.buyNowPrice == 0.0">
+            <span class="buynowtext">Buy now price</span>
+            <br>
+            <span class="buynowprice"> {{auction.buyNowPrice | currency}}</span>
+          </div>
+          <div class="totalbids-div" [appVisible]="auction.buyNowOnly">
+            <span>Total bids: {{auction.totalBids}}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="clear"></div>
   </div>
-  <div class="clear"></div>
+  <hr class="bottom-line">
 </div>

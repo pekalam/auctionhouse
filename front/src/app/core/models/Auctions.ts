@@ -1,7 +1,7 @@
 import { Category } from './Category';
 import { UserIdentity } from './UserIdentity';
 import { Bid } from './Bid';
-import { Product } from './Product';
+import { Product, Condition } from './Product';
 
 export interface AuctionImage{
   size1Id: string;
@@ -19,6 +19,9 @@ export interface AuctionListModel{
   endDate: Date;
   buyNowPrice: number;
   actualPrice: number;
+  totalBids: number;
+  buyNowOnly: boolean;
+  condition: Condition;
   auctionImages: AuctionImage[];
 }
 
@@ -30,6 +33,7 @@ export interface Auction {
   category: Category;
   startDate: Date;
   endDate: Date;
+  buyNowOnly: boolean;
   buyNowPrice: number;
   actualPrice: number;
   winningBid: Bid;
@@ -37,5 +41,6 @@ export interface Auction {
   buyer: UserIdentity;
   bought: boolean;
   auctionImages: AuctionImage[];
+  totalBids: number;
   views: number;
 }

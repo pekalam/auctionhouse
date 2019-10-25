@@ -8,6 +8,8 @@ export class VisibleDirective {
 
   @Input('appVisible')
   set visible(v: boolean) {
+    console.log(v);
+
     this._visible = v;
     if (this._visible === true) {
       this.el.nativeElement.style.visibility = 'hidden';

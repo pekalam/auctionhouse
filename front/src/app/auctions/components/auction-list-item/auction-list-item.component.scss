@@ -1,9 +1,19 @@
 $listItemHeight: 200px;
 
+.bottom-line{
+  width: 90%;
+  background: #ddd;
+  display: block;
+  height: 1px;
+  border: 0;
+}
+
 .auction-list-item-container{
   width: 100%;
   display: flex;
   flex-direction: row;
+  padding: 0 0 0 14px;
+  box-sizing: border-box;
   .left{
     min-width: 210px;
     height: $listItemHeight;
@@ -20,7 +30,7 @@ $listItemHeight: 200px;
     }
   }
   .right{
-    width: 80%;
+    width: calc(100% - 210px);
     height: $listItemHeight;
     cursor: pointer;
     display: flex;
@@ -28,25 +38,6 @@ $listItemHeight: 200px;
     justify-content: center;
     .right-content{
       padding-left: 10px;
-      .price-div{
-        .current-price-div{
-
-        }
-        .buynowprice-div{
-          margin-top: 10px;
-          .buynowtext{
-            font-size: 10px;
-          }
-          .buynowprice{
-            font-size: 12px;
-          }
-        }
-        .currentprice{
-          font-weight: bold;
-          font-size: 20px;
-        }
-
-      }
     }
   }
   .clear{
@@ -55,4 +46,44 @@ $listItemHeight: 200px;
   &:hover{
     background-color: bisque;
   }
+}
+
+.title-div{
+  .auction-title{
+    margin-bottom: 4px;
+  }
+  .condition-text{
+    font-size: 12px;
+  }
+  margin-bottom: 7px;
+}
+
+
+.totalbids-div{
+  width: 50%;
+  float: left;
+  text-align: right;
+  margin-top: 40px;
+  font-size: 10px;
+  span{
+    padding-right: 10%;
+  }
+}
+.current-price-div{
+
+}
+.buynowprice-div{
+  width: 50%;
+  float: left;
+  margin-top: 10px;
+  .buynowtext{
+    font-size: 10px;
+  }
+  .buynowprice{
+    font-size: 12px;
+  }
+}
+.currentprice{
+  font-weight: bold;
+  font-size: 20px;
 }

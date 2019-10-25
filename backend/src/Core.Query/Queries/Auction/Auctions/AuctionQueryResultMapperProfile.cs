@@ -8,7 +8,9 @@ namespace Core.Query.Queries.Auction.Auctions
         public AuctionQueryResultMapperProfile()
         {
             CreateMap<AuctionReadModel, AuctionsQueryResult>()
-                .ForMember(d => d.ProductName, opt => opt.MapFrom(s => s.Product.Name));
+                .ForMember(d => d.ProductName, opt => opt.MapFrom(s => s.Product.Name))
+                .ForMember(d => d.Condition, opt => opt.MapFrom(s => s.Product.Condition));
+
         }
     }
 }
