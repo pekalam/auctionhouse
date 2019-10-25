@@ -24,6 +24,9 @@ namespace Core.DomainModelTests
             builder.SetStartDate(DateTime.UtcNow.AddMinutes(20));
             Assert.Throws<DomainException>(() => builder.Build());
             builder.SetEndDate(DateTime.UtcNow.AddDays(5));
+            Assert.Throws<DomainException>(() => builder.Build());
+
+            builder.SetTags(new string[] {"t1", "t2"});
             Assert.DoesNotThrow(() => builder.Build());
             builder.SetBuyNow(20.0m);
             Assert.DoesNotThrow(() => builder.Build());

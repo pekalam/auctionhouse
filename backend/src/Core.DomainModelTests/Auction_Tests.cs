@@ -27,6 +27,7 @@ namespace Core.DomainModelTests
                 .SetStartDate(DateTime.UtcNow.AddDays(1))
                 .SetEndDate(DateTime.UtcNow.AddDays(2))
                 .SetProduct(new Product())
+                .SetTags(new[] {"tag1"})
                 .Build();
             return new Auction(args);
         }
@@ -42,8 +43,31 @@ namespace Core.DomainModelTests
                 .SetProduct(new Product())
                 .SetCategory(new Category("test", 0))
                 .SetBuyNowOnly(false)
+                .SetTags(new[] {"tag1"})
                 .Build();
             auction = new Auction(auctionArgs);
+        }
+
+        [Test]
+        public void AuctionConstructor_when_invalid_tags_throws()
+        {
+            var builder = new AuctionArgs.Builder()
+                .SetBuyNow(90.00m)
+                .SetStartDate(DateTime.UtcNow.AddMinutes(20))
+                .SetEndDate(DateTime.UtcNow.AddDays(5))
+                .SetOwner(new UserIdentity())
+                .SetProduct(new Product())
+                .SetCategory(new Category("test", 0))
+                .SetBuyNowOnly(false);
+            var args = builder.SetTags(new string[1])
+                .Build();
+            Assert.Throws<DomainException>(() => new Auction(args));
+            args = builder.SetTags(new []{"1", null})
+                .Build();
+            Assert.Throws<DomainException>(() => new Auction(args));
+            args = builder.SetTags(new[] { "1", "" })
+                .Build();
+            Assert.Throws<DomainException>(() => new Auction(args));
         }
 
         [Test]
@@ -54,7 +78,7 @@ namespace Core.DomainModelTests
             var imgs = new AuctionImage[] {image1, image2};
             var start = DateTime.UtcNow.AddMinutes(20);
             var end = DateTime.UtcNow.AddDays(1);
-            var owner = new UserIdentity(){UserId = Guid.NewGuid(), UserName = "test"};
+            var owner = new UserIdentity() {UserId = Guid.NewGuid(), UserName = "test"};
 
             var auctionArgs = new AuctionArgs.Builder()
                 .SetBuyNow(90.00m)
@@ -64,6 +88,7 @@ namespace Core.DomainModelTests
                 .SetProduct(new Product())
                 .SetCategory(new Category("test", 0))
                 .SetImages(imgs)
+                .SetTags(new[] {"tag1"})
                 .Build();
             var auction = new Auction(auctionArgs);
 
@@ -87,6 +112,11 @@ namespace Core.DomainModelTests
                 .Be(end);
             auction.Owner.Should()
                 .Be(owner);
+            auction.Tags[0]
+                .Should()
+                .Be("tag1");
+            auction.Tags.Length.Should()
+                .Be(1);
 
             auction.PendingEvents.Count.Should()
                 .Be(1);
@@ -96,7 +126,8 @@ namespace Core.DomainModelTests
             auction.AggregateId.Should()
                 .NotBeEmpty();
             var createdEvent = auction.PendingEvents.First() as AuctionCreated;
-            createdEvent.AuctionArgs.Should().BeEquivalentTo(auctionArgs);
+            createdEvent.AuctionArgs.Should()
+                .BeEquivalentTo(auctionArgs);
         }
 
         [TestCase(0, 0, true)]
@@ -104,7 +135,8 @@ namespace Core.DomainModelTests
         [TestCase(-Auction.MAX_TODAY_MIN_OFFSET, 0, true)]
         [TestCase(-Auction.MAX_TODAY_MIN_OFFSET + 1, 0, true)]
         [TestCase(-Auction.MAX_TODAY_MIN_OFFSET + 1, Auction.MIN_AUCTION_TIME_M - Auction.MAX_TODAY_MIN_OFFSET, true)]
-        [TestCase(-Auction.MAX_TODAY_MIN_OFFSET + 1, Auction.MIN_AUCTION_TIME_M - Auction.MAX_TODAY_MIN_OFFSET + 1, false)]
+        [TestCase(-Auction.MAX_TODAY_MIN_OFFSET + 1, Auction.MIN_AUCTION_TIME_M - Auction.MAX_TODAY_MIN_OFFSET + 1,
+            false)]
         [TestCase(0, Auction.MIN_AUCTION_TIME_M, false)]
         public void AuctionConstructor_when_invalid_end_date_args_throws(int minutesStart, int minutesEnd, bool throws)
         {
@@ -117,6 +149,7 @@ namespace Core.DomainModelTests
                 .SetOwner(new UserIdentity())
                 .SetProduct(new Product())
                 .SetCategory(new Category("test", 0))
+                .SetTags(new[] {"t1"})
                 .Build();
             if (throws)
             {
@@ -131,7 +164,6 @@ namespace Core.DomainModelTests
         [Test]
         public void Auction_FromEvents_builds_valid_auction()
         {
-
             var start = DateTime.UtcNow.AddMinutes(20);
             var end = start.AddDays(2);
             var id = Guid.NewGuid();
@@ -142,6 +174,7 @@ namespace Core.DomainModelTests
                 .SetOwner(new UserIdentity())
                 .SetProduct(new Product())
                 .SetCategory(new Category("test", 0))
+                .SetTags(new[] {"tag1"})
                 .Build();
             var events = new Event[]
             {
@@ -192,7 +225,7 @@ namespace Core.DomainModelTests
         [Test]
         public void Raise_generates_valid_pending_events_and_state()
         {
-            var bid = new Bid(auction.AggregateId, new UserIdentity(){UserId = Guid.NewGuid()}, 21);
+            var bid = new Bid(auction.AggregateId, new UserIdentity() {UserId = Guid.NewGuid()}, 21);
 
             auction.Raise(bid);
 
@@ -211,9 +244,9 @@ namespace Core.DomainModelTests
         [TestCase(10)]
         public void Raise_when_invalid_parameters_throws(decimal price)
         {
-            auction.Raise(new Bid(auction.AggregateId, new UserIdentity(){UserId = Guid.NewGuid()}, 91));
+            auction.Raise(new Bid(auction.AggregateId, new UserIdentity() {UserId = Guid.NewGuid()}, 91));
 
-            var bid1 = new Bid(auction.AggregateId, new UserIdentity(){UserId = Guid.NewGuid()}, price);
+            var bid1 = new Bid(auction.AggregateId, new UserIdentity() {UserId = Guid.NewGuid()}, price);
 
             Assert.Throws<DomainException>(() => auction.Raise(bid1));
         }
@@ -324,7 +357,7 @@ namespace Core.DomainModelTests
         {
             var auction = CreateBuyNowOnlyAuction();
             Assert.Throws<DomainException>(() => auction.CancelBid(new Bid(auction.AggregateId,
-                new UserIdentity(){UserId = Guid.NewGuid()}, 12)));
+                new UserIdentity() {UserId = Guid.NewGuid()}, 12)));
         }
 
         [Test]

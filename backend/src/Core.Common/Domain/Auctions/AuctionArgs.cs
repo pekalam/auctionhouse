@@ -15,6 +15,7 @@ namespace Core.Common.Domain.Auctions
         public UserIdentity Creator { get; set; }
         public Product Product { get; set; }
         public Category Category { get; set; }
+        public string[] Tags { get; set; }
 
         public class Builder
         {
@@ -27,6 +28,7 @@ namespace Core.Common.Domain.Auctions
                     args.EndDate == default || 
                     args.Creator == default ||
                     args.Category == default || 
+                    args.Tags == default ||
                     (args.BuyNowOnly && args.BuyNowPrice == 0))
                 {
                     throw new DomainException("Invalid auctionArgs");
@@ -36,6 +38,12 @@ namespace Core.Common.Domain.Auctions
             public Builder From(AuctionArgs args)
             {
                 this.args = args;
+                return this;
+            }
+
+            public Builder SetTags(string[] tags)
+            {
+                this.args.Tags = tags;
                 return this;
             }
             public Builder SetBuyNow(decimal buyNowPrice)

@@ -34,6 +34,7 @@ namespace Core.DomainModelTests
                 .SetProduct(new Product() { Name = "name", Description = "desc" })
                 .SetCategory(new Category("", 0))
                 .SetOwner(new UserIdentity())
+                .SetTags(new string[]{"tag1"})
                 .Build();
         }
 
