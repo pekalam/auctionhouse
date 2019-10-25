@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using Core.Common.EventSignalingService;
 using Core.Query.ReadModel;
 using Infrastructure.Auth;
@@ -66,6 +67,7 @@ namespace Web
             services.AddHttpContextAccessor();
             services.AddSingleton<JwtService>();
             services.AddScoped<IEventSignalingService, EventSignalingService>();
+            services.AddAutoMapper(typeof(Startup).Assembly);
 
             MicrosoftDIBootstraper.Bootstrap<UserIdentityService, AuctionCreateSessionService>(services, 
                 eventStoreSettings, rabbitMqSettings, 

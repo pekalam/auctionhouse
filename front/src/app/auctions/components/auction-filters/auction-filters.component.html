@@ -1,26 +1,41 @@
-<div class="container">
-  <div *ngIf="subcategories">
-    <h1>{{subcategories.categoryName}}</h1>
-    <div *ngFor="let subcategory2 of subcategories.subCategories[0].subCategories">
-      <a
-      [class]="'subcat-link ' + (subcategory2.categoryName === selectedSubCategory ? 'highlight' : '')"
-        [routerLink]="['/auctions', subcategories.categoryName, subcategories.subCategories[0].categoryName, subcategory2.categoryName]">{{subcategory2.categoryName}}</a>
-    </div>
-  </div>
-  <div>
-    <form [formGroup]="form">
-      <h4>Condition
-      </h4>
-      <mat-radio-group formControlName="condition">
-        <mat-radio-button value="new">New</mat-radio-button>
-        <mat-radio-button value="used">Used</mat-radio-button>
-        <mat-radio-button value="all">Both</mat-radio-button>
-      </mat-radio-group>
-      <h4>Price</h4>
-      <mat-slider></mat-slider>
-      <div class="apply-btn-container">
-        <button mat-raised-button color="primary" type="submit">Apply filters</button>
+<mat-expansion-panel #panel [hideToggle]="!mobile" [disabled]="!mobile" [expanded]="!mobile">
+    <mat-expansion-panel-header [ngStyle]="panel.hideToggle ? {display: 'none'} : ''">
+      Filters
+    </mat-expansion-panel-header>
+  <div class="container">
+
+
+    <div *ngIf="subcategories">
+      <h1 class="cat-title"><a
+          [routerLink]="['/category', subcategories.categoryName]">{{subcategories.categoryName}}</a></h1>
+      <div *ngFor="let subcategory2 of subcategories.subCategories[0].subCategories">
+        <a [class]="'subcat-link ' + (subcategory2.categoryName === selectedSubCategory ? 'highlight' : '')"
+          [routerLink]="['/auctions', subcategories.categoryName, subcategories.subCategories[0].categoryName, subcategory2.categoryName]">{{subcategory2.categoryName}}</a>
       </div>
-    </form>
+    </div>
+    <div>
+      <form [formGroup]="form" (ngSubmit)="applyClick()">
+        <h4>Condition
+        </h4>
+        <mat-radio-group formControlName="condition">
+          <mat-radio-button value="0">Used</mat-radio-button>
+          <mat-radio-button value="1">New</mat-radio-button>
+          <mat-radio-button value="2">All</mat-radio-button>
+        </mat-radio-group>
+        <h4>Auction type
+        </h4>
+        <mat-radio-group formControlName="type">
+          <mat-radio-button value="0">Buy now</mat-radio-button>
+          <mat-radio-button value="1">Auction</mat-radio-button>
+          <mat-radio-button value="2">All</mat-radio-button>
+        </mat-radio-group>
+        <h4>Price</h4>
+        <mat-slider></mat-slider>
+        <div class="apply-btn-container">
+          <button mat-raised-button color="primary" type="submit">Apply filters</button>
+        </div>
+      </form>
+    </div>
+
   </div>
-</div>
+</mat-expansion-panel>

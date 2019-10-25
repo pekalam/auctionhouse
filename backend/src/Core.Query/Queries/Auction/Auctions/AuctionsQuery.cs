@@ -5,12 +5,12 @@ using MediatR;
 
 namespace Core.Query.Queries.Auction.Auctions
 {
-    public enum Condition
+    public enum ConditionQuery
     {
         Used, New, All
     }
 
-    public enum AuctionType
+    public enum AuctionTypeQuery
     {
         BuyNow, Auction, All
     }
@@ -22,9 +22,9 @@ namespace Core.Query.Queries.Auction.Auctions
         [MinCount(1)]
         public List<string> CategoryNames { get; set; }
 
-        public Condition Condition { get; set; } = Condition.All;
-        public decimal MinPrice { get; set; } = 0;
-        public decimal MaxPrice { get; set; } = 0;
-        public AuctionType AuctionType { get; set; } = AuctionType.All;
+        public ConditionQuery ConditionQuery { get; set; } = ConditionQuery.All;
+        public decimal MinBuyNowPrice { get; set; } = 0;
+        public decimal MaxBuyNowPrice { get; set; } = 0;
+        public AuctionTypeQuery AuctionTypeQuery { get; set; } = AuctionTypeQuery.All;
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Core.Command.AuctionCreateSession_AddAuctionImage;
 using Core.Command.AuctionCreateSession_RemoveImage;
 using Core.Command.AuctionCreateSession_StartAuctionCreateSession;
@@ -32,11 +33,16 @@ namespace Web.Api
     public class AuctionController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        public AuctionController(IMediator mediator)
+
+        public AuctionController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
+            _mapper = mapper;
         }
+
+        
 
         [Authorize(Roles = "User"), HttpPost("bid")]
         public async Task<ActionResult> Bid([FromBody] BidCommandDto commandDto)
@@ -67,8 +73,8 @@ namespace Web.Api
         public async Task<ActionResult<IEnumerable<AuctionsQueryResult>>> Auctions(
             [FromQuery] AuctionsQueryDto queryDto)
         {
-            var auctions = await _mediator.Send(new AuctionsQuery()
-                {Page = queryDto.Page, CategoryNames = queryDto.Categories.ToList()});
+            var query = _mapper.Map<AuctionsQuery>(queryDto);
+            var auctions = await _mediator.Send(query);
             return Ok(auctions);
         }
 

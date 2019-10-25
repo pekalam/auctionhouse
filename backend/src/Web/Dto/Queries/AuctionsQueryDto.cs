@@ -11,15 +11,15 @@ namespace Web.Dto.Queries
     {
         [FromQuery(Name = "page")]
         public int Page { get; set; }
-        [FromQuery(Name = "categories")] public string[] Categories { get; set; }
+        [FromQuery(Name = "categories")] public string[] CategoryNames { get; set; }
 
         [FromQuery(Name = "cond")]
-        public Condition Condition { get; set; } = Condition.All;
+        public ConditionQuery ConditionQuery { get; set; } = ConditionQuery.All;
         [FromQuery(Name = "minpr")]
-        public decimal MinPrice { get; set; } = 0;
+        public decimal MinBuyNowPrice { get; set; } = 0;
         [FromQuery(Name = "maxpr")]
-        public decimal MaxPrice { get; set; } = 0;
+        public decimal MaxBuyNowPrice { get; set; } = 0;
         [FromQuery(Name = "type")]
-        public AuctionType AuctionType { get; set; } = AuctionType.All;
+        public AuctionTypeQuery AuctionTypeQuery { get; set; } = AuctionTypeQuery.All;
     }
 }

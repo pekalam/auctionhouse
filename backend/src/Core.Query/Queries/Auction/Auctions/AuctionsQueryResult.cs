@@ -10,7 +10,7 @@ namespace Core.Query.Queries.Auction.Auctions
     {
         [BsonId]
         public ObjectId Id { get; set; }
-        public Guid AuctionId { get; set; }
+        public string AuctionId { get; set; }
         public UserIdentity Creator { get; set; }
         public string ProductName { get; set; }
         public Category Category { get; set; }

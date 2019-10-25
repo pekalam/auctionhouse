@@ -15,6 +15,8 @@ namespace Core.Common.Domain.Auctions
     public partial class Auction : AggregateRoot<Auction>
     {
         public const int MAX_IMAGES = 6;
+        public const int MAX_TODAY_MIN_OFFSET = 15;
+        public const int MIN_AUCTION_TIME_M = MAX_TODAY_MIN_OFFSET + 120;
 
         private List<AuctionImage> _auctionImages = new List<AuctionImage>(new AuctionImage[MAX_IMAGES]);
         private List<Bid> _bids = new List<Bid>();
@@ -66,19 +68,20 @@ namespace Core.Common.Domain.Auctions
 
         private void ValidateDates(DateTime startDate, DateTime endDate, bool compareToNow)
         {
-            bool startLessThanNow = false;
+            bool startLessThanOffset = false;
             if (compareToNow)
             {
-                startLessThanNow = startDate.Ticks < DateTime.UtcNow.Ticks;
+                startLessThanOffset = (DateTime.UtcNow.Subtract(startDate).TotalMinutes > MAX_TODAY_MIN_OFFSET);
             }
 
+            bool hasMinTime = (endDate.Subtract(startDate)).TotalMinutes >= MIN_AUCTION_TIME_M;
             bool startLessThanEnd = startDate.CompareTo(endDate) == -1;
             bool startNotEqualMax = !startDate.Equals(DateTime.MaxValue);
             bool startNotEqualMin = !startDate.Equals(DateTime.MinValue);
             bool endNotEqualMax = !endDate.Equals(DateTime.MaxValue);
             bool endNotEqualMin = !endDate.Equals(DateTime.MinValue);
 
-            if (!startLessThanEnd || startLessThanNow || !startNotEqualMax || !startNotEqualMin || !endNotEqualMin ||
+            if (!startLessThanEnd || startLessThanOffset || !hasMinTime || !startNotEqualMax || !startNotEqualMin || !endNotEqualMin ||
                 !endNotEqualMax)
             {
                 throw new DomainException("Invalid auction date");

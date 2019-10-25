@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
-import { Product } from 'src/app/core/models/Product';
+import { Product, Condition } from 'src/app/core/models/Product';
 import { Auction } from '../../../../../core/models/Auctions';
 import { AuctionCreateStep } from '../../../../auctionCreateStep';
 import { ProductStep } from 'src/app/auctions/productStep';
@@ -35,7 +35,8 @@ export class ProductStepComponent extends AuctionCreateStep<ProductStep> impleme
     if (this.form.valid) {
       let product: Product = {
         name: this.form.value.productName,
-        description: this.form.value.productDescription
+        description: this.form.value.productDescription,
+        condition: Condition.New
       };
       let startDate = this.form.value.startDate;
       let endDate = this.form.value.endDate;

@@ -9,6 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="EasyNetQ" Version="3.6.0" />
     <PackageReference Include="EasyNetQ.MetaData" Version="2.0.0" />
     <PackageReference Include="EasyNetQ.MetaData.Abstractions" Version="2.0.0" />

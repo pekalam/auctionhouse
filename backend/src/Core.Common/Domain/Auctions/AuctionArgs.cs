@@ -19,6 +19,15 @@ namespace Core.Common.Domain.Auctions
         {
             private AuctionArgs args = new AuctionArgs();
 
+            private void CheckCanBuild()
+            {
+                if (args.Product == default || args.StartDate == default || args.EndDate == default || args.Creator == default ||
+                    args.Category == default)
+                {
+                    throw new DomainException("Invalid auctionArgs");
+                }
+            }
+
             public Builder From(AuctionArgs args)
             {
                 this.args = args;
@@ -66,7 +75,11 @@ namespace Core.Common.Domain.Auctions
                 return this;
             }
 
-            public AuctionArgs Build() => args;
+            public AuctionArgs Build()
+            {
+                CheckCanBuild();
+                return args;
+            }
         }
     }
 }

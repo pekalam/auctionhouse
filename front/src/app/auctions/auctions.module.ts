@@ -16,7 +16,7 @@ import { AddImageStepComponent } from './pages/auction-create-page/steps/add-ima
 import { ImgUploadInputComponent } from './components/img-upload-input/img-upload-input.component';
 import { CreateSummaryStepComponent } from './pages/auction-create-page/steps/create-summary-step/create-summary-step.component';
 import { AuctionFiltersComponent } from './components/auction-filters/auction-filters.component';
-
+import {LayoutModule} from '@angular/cdk/layout';
 
 
 @NgModule({
@@ -33,7 +33,8 @@ import { AuctionFiltersComponent } from './components/auction-filters/auction-fi
     MaterialModule,
     RouterModule,
     CommonModule,
-    SharedModule
+    SharedModule,
+    LayoutModule
   ]
 })
 export class AuctionsModule { }

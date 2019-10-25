@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Auction, AuctionListModel } from '../../../core/models/Auctions';
 import { Category } from '../../../core/models/Category';
-import { AuctionsQuery, Condition } from '../../../core/queries/AuctionsQuery';
+import { AuctionsQuery, ConditionQuery, AuctionFilters } from '../../../core/queries/AuctionsQuery';
 import { CategoriesQuery } from '../../../core/queries/CategoriesQuery';
 import { CategoryTreeNode } from '../../../core/models/CategoryTreeNode';
+import { Condition } from 'src/app/core/models/Product';
 
 @Component({
   selector: 'app-auctions-page',
@@ -19,7 +20,6 @@ export class AuctionsPageComponent implements OnInit {
 
   constructor(private activatedRoute: ActivatedRoute, private auctionsQuery: AuctionsQuery,
     private categoriesQuery: CategoriesQuery) {
-
   }
 
   private constructCategory(mainCategoryName: string, subCategoryName: string, subCategory2Name?: string) {
@@ -38,9 +38,16 @@ export class AuctionsPageComponent implements OnInit {
     this.fetchAuctions(0);
   }
 
-  fetchAuctions(page: number) {
+  applyFilters(filters: AuctionFilters){
+    console.log("applied");
+    console.log(filters);
+
+    this.fetchAuctions(0, filters);
+  }
+
+  fetchAuctions(page: number, filters?: AuctionFilters) {
     this.auctionsQuery
-      .execute(page, this.currentCategory, Condition.all)
+      .execute(page, this.currentCategory, filters)
       .subscribe(v => this.auctions = v);
   }
 

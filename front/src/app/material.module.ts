@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule, MatRadioModule, MatMenuModule,MatProgressSpinnerModule, MatTabsModule, MatPaginatorModule, MatDialogModule, MatInputModule, MatFormFieldModule, MatButtonModule, MatListModule, MatSelectModule, NativeDateModule, MatDatepickerModule, MatDialogRef, MAT_DIALOG_DATA, MAT_DATE_FORMATS } from '@angular/material';
-import {MatCardModule} from '@angular/material/card';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
-import {MatSliderModule} from '@angular/material/slider';
+import { MatTableModule, MatExpansionModule, MatRadioModule, MatMenuModule, MatProgressSpinnerModule, MatTabsModule, MatPaginatorModule, MatDialogModule, MatInputModule, MatFormFieldModule, MatButtonModule, MatListModule, MatSelectModule, NativeDateModule, MatDatepickerModule, MatDialogRef, MAT_DIALOG_DATA, MAT_DATE_FORMATS } from '@angular/material';
+import { MatCardModule } from '@angular/material/card';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatSliderModule } from '@angular/material/slider';
 
 export const MY_FORMATS = {
   parse: {
@@ -37,7 +37,8 @@ export const MY_FORMATS = {
     MatDatepickerModule,
     MatCardModule,
     MatTabsModule,
-    MatSliderModule
+    MatSliderModule,
+    MatExpansionModule
   ],
   providers: [
     { provide: MatDialogRef, useValue: {} },
