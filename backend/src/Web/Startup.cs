@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Core.Common.EventSignalingService;
 using Core.Query.ReadModel;
+using Infrastructure.Auth;
 using Infrastructure.Repositories.AuctionImage;
 using Infrastructure.Repositories.EventStore;
 using Infrastructure.Services;
@@ -47,6 +48,8 @@ namespace Web
             var mongoDbSettings = Configuration.GetSection("Mongo").Get<MongoDbSettings>();
             var imageDbSettings = Configuration.GetSection("ImageDb").Get<ImageDbSettings>();
             var timeTaskServiceSettings = Configuration.GetSection("TimeTaskService").Get<TimeTaskServiceSettings>();
+            var userAuthDbSettings = Configuration.GetSection("UserAuthDb")
+                .Get<UserAuthDbContextOptions>();
 
             services.AddCors(options =>
             {
@@ -69,7 +72,7 @@ namespace Web
                 mongoDbSettings, timeTaskServiceSettings, new CategoryNameServiceSettings()
                 {
                     CategoriesFilePath = "./_data/categories.xml"
-                }, imageDbSettings);
+                }, imageDbSettings, userAuthDbSettings);
             services.AddSignalR();
             services.AddSingleton<IUserIdProvider, UserIdProvider>();
 

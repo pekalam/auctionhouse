@@ -1,13 +1,10 @@
-﻿using EasyNetQ.AutoSubscribe;
-using Infrastructure.Auth;
+﻿using Infrastructure.Auth;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using RestEase;
 using System;
 using System.Reflection;
 using System.Threading;
-using Core;
 using Core.Command.SignUp;
 using Core.Common;
 using Core.Common.ApplicationServices;
@@ -37,22 +34,21 @@ namespace Infrastructure.Bootstraper
             IServiceCollection serviceCollection,
             EventStoreConnectionSettings eventStoreConnectionSettings,
             RabbitMqSettings rabbitMqSettings, MongoDbSettings mongoDbSettings,
-            TimeTaskServiceSettings timeTaskServiceSettings, CategoryNameServiceSettings categoryNameServiceSettings, ImageDbSettings imageDbSettings)
+            TimeTaskServiceSettings timeTaskServiceSettings, CategoryNameServiceSettings categoryNameServiceSettings, ImageDbSettings imageDbSettings, UserAuthDbContextOptions userAuthDbContextOptions)
             where UserIdentityServiceImplT : class, IUserIdentityService
             where AuctionCreateSessionServiceT : class, IAuctionCreateSessionService
         {
-            UsertAuthDbContext.Seed = false;
-
             serviceCollection.AddSingleton(eventStoreConnectionSettings);
             serviceCollection.AddSingleton(rabbitMqSettings);
             serviceCollection.AddSingleton(mongoDbSettings);
             serviceCollection.AddSingleton(categoryNameServiceSettings);
             serviceCollection.AddSingleton(timeTaskServiceSettings);
             serviceCollection.AddSingleton(imageDbSettings);
+            serviceCollection.AddSingleton(userAuthDbContextOptions);
 
             serviceCollection.AddSingleton<IImplProvider, MicrosoftDIImplProvider>(provider =>
                 new MicrosoftDIImplProvider(provider));
-            serviceCollection.AddDbContext<UsertAuthDbContext>(builder => builder.UseInMemoryDatabase("infra"));
+            serviceCollection.AddSingleton<UsertAuthDbContext>();
             serviceCollection.AddScoped<IUserAuthenticationDataRepository, UserAuthenticationDataRepository>();
             serviceCollection.AddSingleton<IUserIdentityService, UserIdentityServiceImplT>();
             serviceCollection.AddScoped<IAuctionCreateSessionService, AuctionCreateSessionServiceT>();
@@ -112,8 +108,8 @@ namespace Infrastructure.Bootstraper
 
             ((CategoryTreeService) (serviceProvider.GetRequiredService<ICategoryTreeService>())).Init();
 
-            serviceProvider.GetRequiredService<IMediator>()
-                .Send(new SignUpCommand("test", "pass", new CorrelationId("123")), CancellationToken.None);
+//            serviceProvider.GetRequiredService<IMediator>()
+//                .Send(new SignUpCommand("test", "pass", new CorrelationId("123")), CancellationToken.None);
         }
     }
 }

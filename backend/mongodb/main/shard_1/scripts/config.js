@@ -1,5 +1,6 @@
 auctionsCollectionName = 'AuctionsReadModel';
 usersCollectionName = 'UsersReadModel';
+userAuthDataCollectionName = 'UserAuthData';
 hostname = "db-node1";
 port = 27018;
 replSetName = "n1";

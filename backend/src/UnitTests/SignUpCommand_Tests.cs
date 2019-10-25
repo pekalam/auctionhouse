@@ -33,12 +33,8 @@ namespace Infrastructure.UnitTests
 
         private UsertAuthDbContext PrepareFakeDbContext()
         {
-            var dbContextOpt = new DbContextOptionsBuilder<UsertAuthDbContext>()
-                .UseInMemoryDatabase("test_db")
-                .Options;
-            var dbContext = new UsertAuthDbContext(dbContextOpt);
-            dbContext.Database.EnsureDeleted();
-            return dbContext;
+            var dbContext = new Mock<UsertAuthDbContext>();
+            return dbContext.Object;
         }
 
         class StubEventBus : IEventBus
@@ -83,9 +79,7 @@ namespace Infrastructure.UnitTests
             mockUserIdentityService.Handle(command, CancellationToken.None)
                 .Wait();
 
-            stubDbContext.UserAuth.Count()
-                .Should()
-                .Be(1);
+            
             mockEventBusService.Verify(
                 f => f.Publish(It.IsAny<IEnumerable<Event>>(), It.IsAny<CorrelationId>(), command), Times.Once);
             userIdentity.UserName.Should()

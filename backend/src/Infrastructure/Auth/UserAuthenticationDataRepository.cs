@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Core.Common.Auth;
+using MongoDB.Driver;
 
 namespace Infrastructure.Auth
 {
@@ -15,21 +16,20 @@ namespace Infrastructure.Auth
 
         public virtual UserAuthenticationData FindUserAuthById(Guid id)
         {
-            var found = _dbContext.UserAuth.FirstOrDefault(u => u.UserId == id);
-            return found;
+            var found = _dbContext.UserAuth.Find(u => u.UserId == id).FirstOrDefault();
+            return UserAuthenticationDataAssembler.From(found);
         }
 
         public virtual UserAuthenticationData FindUserAuth(string userName)
         {
-            var found = _dbContext.UserAuth.FirstOrDefault(u => u.UserName == userName);
-            return found;
+            var found = _dbContext.UserAuth.Find(u => u.UserName == userName).FirstOrDefault();
+            return UserAuthenticationDataAssembler.From(found);
         }
 
         public virtual UserAuthenticationData AddUserAuth(UserAuthenticationData userAuthenticationData)
         {
-            var added = _dbContext.UserAuth.Add(userAuthenticationData).Entity;
-            _dbContext.SaveChanges();
-            return added;
+            _dbContext.UserAuth.InsertOne(UserAuthenticationDataAssembler.From(userAuthenticationData));
+            return userAuthenticationData;
         }
     }
 }
