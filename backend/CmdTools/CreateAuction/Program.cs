@@ -71,7 +71,8 @@ namespace CreateAuction
                 .RuleFor(dto => dto.Product, faker => new Product()
                 {
                     Name = faker.Commerce.ProductName(),
-                    Description = faker.Lorem.Lines(20)
+                    Description = faker.Lorem.Lines(20),
+                    Condition = faker.Random.Bool() ? Condition.New : Condition.Used
                 });
 
             return cmd.Generate();
