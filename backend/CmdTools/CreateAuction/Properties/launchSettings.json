@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CreateAuction": {
+      "commandName": "Project",
+      "commandLineArgs": "http://localhost:5000 eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zaWQiOiJhOTc0ZGJiNy00MDNhLTRkNWItODk2OS05MTkwMjE1Njk4YmEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6InRlc3QiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiaXNzIjoibWFyZWsiLCJhdWQiOiJtYXJlayJ9.5YFmRv1XuRrKO1cT49F83iBRlQ-DJVd08ZtD5V2PPV8 0.png"
+    }
+  }
+}

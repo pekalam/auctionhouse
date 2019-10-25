@@ -1,8 +1,43 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Bogus" Version="28.4.1" />
+    <PackageReference Include="RestEase" Version="1.4.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Core.Command">
+      <HintPath>..\..\src\Web\bin\Debug\netcoreapp2.2\Core.Command.dll</HintPath>
+    </Reference>
+    <Reference Include="Core.Common">
+      <HintPath>..\..\src\Web\bin\Debug\netcoreapp2.2\Core.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Core.Query">
+      <HintPath>..\..\src\Web\bin\Debug\netcoreapp2.2\Core.Query.dll</HintPath>
+    </Reference>
+    <Reference Include="Infrastructure">
+      <HintPath>..\..\src\Web\bin\Debug\netcoreapp2.2\Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Web">
+      <HintPath>..\..\src\Web\bin\Debug\netcoreapp2.2\Web.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="0.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="0.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="categories.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
 </Project>
