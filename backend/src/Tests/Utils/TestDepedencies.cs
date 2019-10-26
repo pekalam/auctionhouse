@@ -112,7 +112,8 @@ namespace FunctionalTests.Utils
             TimetaskServiceSettings = new TimeTaskServiceSettings()
             {
                 ConnectionString = "http://localhost:5001",
-                AuctionEndEchoTaskEndpoint = "http://host.docker.internal:9998/test"
+                AuctionEndEchoTaskEndpoint = "http://host.docker.internal:9998/test",
+                ApiKey = "testk"
             };
             TimeTaskClient = RestClient.For<ITimeTaskClient>(TimetaskServiceSettings.ConnectionString);
             SchedulerService = new AuctionSchedulerService(TimeTaskClient, TimetaskServiceSettings);

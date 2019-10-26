@@ -20,6 +20,10 @@ namespace Infrastructure.Repositories.EventStore
         public User FindUser(UserIdentity userIdentity)
         {
             var events = ReadEvents(userIdentity.UserId);
+            if (events == null)
+            {
+                return null;
+            }
             var user = User.FromEvents(events);
             return user;
         }

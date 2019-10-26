@@ -20,5 +20,7 @@ namespace Web.Dto.Commands
         public List<string> Category { get; set; }
         [Required]
         public string CorrelationId { get; set; }
+        [Required]
+        public string[] Tags { get; set; }
     }
 }

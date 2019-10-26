@@ -100,7 +100,7 @@ namespace FunctionalTests.CommandRollback
             userRepository.Setup(f => f.FindUser(It.IsAny<UserIdentity>())).Returns(user);
 
             var command = new CreateAuctionCommand(20.0m, product, DateTime.UtcNow.AddMinutes(10), DateTime.UtcNow.AddDays(12),
-                categories, correlationId);
+                categories, correlationId, new []{"tag1"});
 
             IAppEvent<AuctionCreated> publishedEvent = null;
 

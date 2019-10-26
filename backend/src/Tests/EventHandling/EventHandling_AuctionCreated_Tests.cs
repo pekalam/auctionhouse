@@ -68,7 +68,7 @@ namespace FunctionalTests.EventHandling
             };
             return new CreateAuctionCommand(20.0m, product, DateTime.UtcNow.AddMinutes(20),
                 DateTime.UtcNow.AddDays(12),
-                categories, correlationId);
+                categories, correlationId, new []{"tag1"});
         }
 
         private bool VerifyEvent(AuctionCreated auctionCreated, CreateAuctionCommand command)
@@ -131,8 +131,8 @@ namespace FunctionalTests.EventHandling
                 .NotBeNull();
             auctionReadModel.Product.Should()
                 .BeEquivalentTo(product);
-            auctionReadModel.Creator.Should()
-                .BeEquivalentTo(userReadModel.UserIdentity);
+            auctionReadModel.Creator.UserId.Should()
+                .Be(userReadModel.UserIdentity.UserId);
 
             userReadModel.CreatedAuctions.Count.Should()
                 .Be(1);

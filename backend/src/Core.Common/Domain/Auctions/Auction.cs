@@ -17,6 +17,7 @@ namespace Core.Common.Domain.Auctions
         public const int MAX_IMAGES = 6;
         public const int MAX_TODAY_MIN_OFFSET = 15;
         public const int MIN_AUCTION_TIME_M = MAX_TODAY_MIN_OFFSET + 120;
+        public const int MIN_TAGS = 1;
 
         private List<AuctionImage> _auctionImages = new List<AuctionImage>(new AuctionImage[MAX_IMAGES]);
         private List<Bid> _bids = new List<Bid>();
@@ -33,6 +34,7 @@ namespace Core.Common.Domain.Auctions
         public UserIdentity Buyer { get; private set; } = UserIdentity.Empty;
         public Category Category { get; private set; }
         public bool Canceled { get; private set; }
+        public string[] Tags { get; private set; }
         public IReadOnlyList<AuctionImage> AuctionImages => _auctionImages;
 
         public Auction()
@@ -55,6 +57,15 @@ namespace Core.Common.Domain.Auctions
             Product = auctionArgs.Product;
             Category = auctionArgs.Category;
             BuyNowOnly = auctionArgs.BuyNowOnly;
+            if (auctionArgs.Tags.Length < MIN_TAGS || auctionArgs.Tags.Contains(null) || auctionArgs.Tags.Contains(string.Empty))
+            {
+                throw new DomainException("Not enough auction tags");
+            }
+            else
+            {
+                Tags = new string[auctionArgs.Tags.Length];
+                Array.Copy(auctionArgs.Tags, Tags, Tags.Length);
+            }
             if (auctionArgs.AuctionImages != null)
             {
                 foreach (var img in auctionArgs.AuctionImages)

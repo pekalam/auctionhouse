@@ -58,7 +58,6 @@ namespace FunctionalTests.Queries
         {
             //arrange
             _dbContext.AuctionsReadModel.InsertOne(stubAuction);
-            Thread.Sleep(2000);
             var queryHandler = new AuctionQueryHandler(_dbContext);
             var query = new AuctionQuery(stubAuction.AuctionId);
 
@@ -76,7 +75,6 @@ namespace FunctionalTests.Queries
         {
             //arrange
             _dbContext.AuctionsReadModel.InsertOne(stubAuction);
-            Thread.Sleep(2000);
             var queryHandler = new AuctionQueryHandler(_dbContext);
             var query = new AuctionQuery(stubAuction.AuctionId);
 

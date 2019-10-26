@@ -39,7 +39,6 @@ namespace FunctionalTests.Queries
             var filter2 = Builders<UserReadModel>.Filter.Empty;
             _dbContext.AuctionsReadModel.DeleteMany(filter1);
             _dbContext.UsersReadModel.DeleteMany(filter2);
-            Thread.Sleep(2000);
         }
 
         private AuctionReadModel[] GetFakeAuctionsReadModels()
@@ -104,7 +103,6 @@ namespace FunctionalTests.Queries
             //arrange
             var stubAuctions = GetFakeAuctionsReadModels();
             _dbContext.AuctionsReadModel.InsertMany(stubAuctions);
-            Thread.Sleep(2000);
 
             var query = new AuctionsQuery()
             {
@@ -152,7 +150,6 @@ namespace FunctionalTests.Queries
                 .BuyNowPrice = 0;
             _dbContext.AuctionsReadModel.InsertMany(stubAuctions.AsSpan(0, AuctionsQueryHandler.PageSize)
                 .ToArray());
-            Thread.Sleep(2000);
 
             var queryHandler = new AuctionsQueryHandler(_dbContext, new CategoryBuilder(_categoryTreeService));
             var query1 = new AuctionsQuery()
@@ -213,7 +210,6 @@ namespace FunctionalTests.Queries
                 .Product.Condition = Condition.New;
             _dbContext.AuctionsReadModel.InsertMany(stubAuctions.AsSpan(0, AuctionsQueryHandler.PageSize)
                 .ToArray());
-            Thread.Sleep(2000);
 
             var queryHandler = new AuctionsQueryHandler(_dbContext, new CategoryBuilder(_categoryTreeService));
             var query1 = new AuctionsQuery()
@@ -260,7 +256,6 @@ namespace FunctionalTests.Queries
                 .BuyNowPrice = 99;
             _dbContext.AuctionsReadModel.InsertMany(stubAuctions.AsSpan(0, AuctionsQueryHandler.PageSize)
                 .ToArray());
-            Thread.Sleep(2000);
 
             var queryHandler = new AuctionsQueryHandler(_dbContext, new CategoryBuilder(_categoryTreeService));
             var query1 = new AuctionsQuery()
@@ -309,7 +304,6 @@ namespace FunctionalTests.Queries
             }
             _dbContext.AuctionsReadModel.InsertMany(stubAuctions.AsSpan(0, AuctionsQueryHandler.PageSize)
                 .ToArray());
-            Thread.Sleep(2000);
 
             var queryHandler = new AuctionsQueryHandler(_dbContext, new CategoryBuilder(_categoryTreeService));
             var query1 = new AuctionsQuery()
@@ -366,7 +360,6 @@ namespace FunctionalTests.Queries
             }
             _dbContext.AuctionsReadModel.InsertMany(stubAuctions.AsSpan(0, AuctionsQueryHandler.PageSize)
                 .ToArray());
-            Thread.Sleep(2000);
 
             var queryHandler = new AuctionsQueryHandler(_dbContext, new CategoryBuilder(_categoryTreeService));
             var query1 = new AuctionsQuery()
