@@ -12,6 +12,7 @@ namespace Infrastructure.Services.SchedulerService
         public AuctionSchedulerService(ITimeTaskClient timeTaskClient, TimeTaskServiceSettings serviceSettings)
         {
             _timeTaskClient = timeTaskClient;
+            _timeTaskClient.ApiKey = serviceSettings.ApiKey;
             _serviceSettings = serviceSettings;
         }
 

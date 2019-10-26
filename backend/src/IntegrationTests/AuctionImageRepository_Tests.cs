@@ -53,7 +53,6 @@ namespace IntegrationTests
                 Img = testFile
             };
             auctionImageRepository.AddImage("img1", imgRepresentation);
-            Thread.Sleep(2000);
             var fetched = auctionImageRepository.FindImage("img1");
 
             fetched.Should().NotBeNull();

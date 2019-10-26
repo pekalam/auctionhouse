@@ -10,6 +10,51 @@ using NUnit.Framework;
 namespace IntegrationTests
 {
     [Category("Integration")]
+    public class UserRepository_Tests
+    {
+        private ESUserRepository userRepository;
+        private User user;
+
+        [SetUp]
+        public void SetUp()
+        {
+            var esConnectionContext = new ESConnectionContext(new EventStoreConnectionSettings()
+            {
+                IPAddress = "127.0.0.1",
+                Port = 1113
+            });
+            esConnectionContext.Connect();
+            userRepository = new ESUserRepository(esConnectionContext);
+            user = new User();
+            user.Register("test");
+            
+        }
+
+        [Test]
+        public void Adduser_adds_user_and_Finduser_reads_it()
+        {
+            userRepository.AddUser(user);
+            user.MarkPendingEventsAsHandled();
+
+            var read = userRepository.FindUser(user.UserIdentity);
+
+            read.Should().BeEquivalentTo(user);
+        }
+
+
+        [Test]
+        public void FindUser_when_not_found_returns_null()
+        {
+            var read = userRepository.FindUser(user.UserIdentity);
+
+            read.Should()
+                .BeNull();
+        }
+    }
+
+
+
+    [Category("Integration")]
     public class AuctionRepository_Tests
     {
         private ESAuctionRepository auctionRepository;
@@ -69,6 +114,15 @@ namespace IntegrationTests
             var read = auctionRepository.FindAuction(auction.AggregateId);
 
             read.Should().BeNull();
+        }
+
+        [Test]
+        public void FindAuction_when_not_found_returns_null()
+        {
+            var read = auctionRepository.FindAuction(Guid.NewGuid());
+
+            read.Should()
+                .BeNull();
         }
     }
 }

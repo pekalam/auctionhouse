@@ -16,6 +16,7 @@ using Core.Common.Domain.Products;
 using Core.Common.EventBus;
 using Core.Query.Queries.Auction.AuctionImage;
 using Core.Query.Queries.Auction.Auctions;
+using Core.Query.Queries.Auction.AuctionsByTag;
 using Core.Query.Queries.Auction.Categories;
 using Core.Query.Queries.Auction.SingleAuction;
 using Core.Query.ReadModel;
@@ -42,7 +43,6 @@ namespace Web.Api
             _mapper = mapper;
         }
 
-        
 
         [Authorize(Roles = "User"), HttpPost("bid")]
         public async Task<ActionResult> Bid([FromBody] BidCommandDto commandDto)
@@ -55,9 +55,15 @@ namespace Web.Api
         [Authorize(Roles = "User"), HttpPost("createAuction")]
         public async Task<ActionResult> Bid([FromBody] CreateAuctionCommandDto commandDto)
         {
-            var command = new CreateAuctionCommand(commandDto.BuyNowPrice, commandDto.Product, commandDto.StartDate,
+            var command = new CreateAuctionCommand(
+                commandDto.BuyNowPrice,
+                commandDto.Product,
+                commandDto.StartDate,
                 commandDto.EndDate,
-                commandDto.Category, new CorrelationId(commandDto.CorrelationId));
+                commandDto.Category,
+                new CorrelationId(commandDto.CorrelationId),
+                commandDto.Tags
+            );
             await _mediator.Send(command);
             return Ok();
         }
@@ -128,7 +134,6 @@ namespace Web.Api
                 await _mediator.Send(command);
                 return Ok();
             }
-            
         }
 
         [HttpGet("auctionImage")]
@@ -142,11 +147,12 @@ namespace Web.Api
             return File(result.Img.Img, "image/jpeg");
         }
 
-        [Authorize(Roles = "User"), HttpPost("test")]
-        public async Task Test()
+        [HttpGet("auctionsByTag")]
+        public async Task<ActionResult<AuctionsByTagQueryResult>> AuctionsByTagQuery(
+            [FromQuery] AuctionsByTagQueryDto queryDto)
         {
-            await _mediator.Send(new CreateAuctionCommand(20, new Product() {Description = "desc", Name = "name"},
-                DateTime.Today, DateTime.Today.AddDays(1), new List<string>(), new CorrelationId("test")));
+            var result = await _mediator.Send(new AuctionsByTagQuery() {Tag = queryDto.Tag, Page = queryDto.Page});
+            return Ok(result);
         }
     }
 }

@@ -47,7 +47,7 @@ namespace Infrastructure.Repositories.EventStore
                     _connectionContext.Connection.ReadStreamEventsForwardAsync(GetStreamId(entityId), nextSliceStart,
                             200, false)
                         .Result;
-                if (currentSlice.Status == SliceReadStatus.StreamDeleted)
+                if (currentSlice.Status == SliceReadStatus.StreamDeleted || currentSlice.Status == SliceReadStatus.StreamNotFound)
                 {
                     return null;
                 }

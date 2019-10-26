@@ -111,7 +111,7 @@ namespace FunctionalTests.Commands
             endDate = DateTime.UtcNow.AddSeconds(35);
             var command = new CreateAuctionCommand(Decimal.One, new Product {Name = "name", Description = "desc"},
                 startDate, endDate,
-                categories, new CorrelationId(""));
+                categories, new CorrelationId(""), new []{"tag1"});
 
             testCommandHandler.Handle(command, CancellationToken.None)
                 .Wait();
@@ -130,7 +130,7 @@ namespace FunctionalTests.Commands
         {
             testCommandHandler.AuctionRepositoryThrows = true;
             var command = new CreateAuctionCommand(Decimal.One, new Product {Name = "name", Description = "desc"},
-                startDate, endDate, categories, new CorrelationId(""));
+                startDate, endDate, categories, new CorrelationId(""), new []{"tag1"});
 
             Assert.Throws<Exception>(() =>
             {
@@ -150,7 +150,7 @@ namespace FunctionalTests.Commands
             testCommandHandler.EventBusThrows = true;
             var command = new CreateAuctionCommand(Decimal.One, new Product {Name = "name", Description = "desc"},
                 startDate,
-                endDate, categories, new CorrelationId(""));
+                endDate, categories, new CorrelationId(""), new []{"tag1"});
 
             Assert.Throws<Exception>(() =>
             {

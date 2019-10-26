@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Core.Common.Domain.Auctions.Events;
 using Core.Common.EventBus;
 using Core.Common.EventSignalingService;
@@ -34,7 +35,8 @@ namespace Core.Query.Handlers
                 AuctionId = ev.AuctionId.ToString(),
                 Category = ev.AuctionArgs.Category,
                 Version =  ev.AggVersion,
-                AuctionImages = ev.AuctionArgs.AuctionImages
+                AuctionImages = ev.AuctionArgs.AuctionImages,
+                Tags = ev.AuctionArgs.Tags
             };
 
             var filter = Builders<UserReadModel>.Filter.Eq(f => f.UserIdentity.UserId, ev.AuctionArgs.Creator.UserId.ToString());

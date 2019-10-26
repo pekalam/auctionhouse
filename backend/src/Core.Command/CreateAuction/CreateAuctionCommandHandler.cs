@@ -136,6 +136,7 @@ namespace Core.Command.CreateAuction
                 .SetEndDate(request.EndDate)
                 .SetCategory(category)
                 .SetProduct(request.Product)
+                .SetTags(request.Tags)
                 .SetOwner(owner);
             if (request.BuyNowPrice.HasValue)
             {

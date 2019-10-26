@@ -71,6 +71,7 @@ namespace CreateAuction
                     Description = faker.Lorem.Lines(20),
                     Condition = faker.Random.Bool() ? Condition.New : Condition.Used
                 })
+                .RuleFor(dto => dto.Tags, faker => faker.Random.Bool() ? new []{"tag1", "tag2", "tag3"} : new[] { "tag4", "tag5", "tag6" })
                 .RuleSet("buyNowAndAuction", set =>
                 {
                     set.RuleFor(dto => dto.Category, fakeCategory())
