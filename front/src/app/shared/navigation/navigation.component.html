@@ -6,15 +6,7 @@
 
   <a id="sell-btn" class="navbar-item" [routerLink]="['/auctions/create']">Sell</a>
   <div class="searchbar-container">
-    <input type="text" placeholder="Search auctions" aria-label="Number" [matAutocomplete]="auto">
-    <mat-autocomplete #auto="matAutocomplete">
-      <mat-option>
-        "cww"
-      </mat-option>
-    </mat-autocomplete>
-    <div class="search-button-container">
-      <button>SEARCH</button>
-    </div>
+    <app-search-bar></app-search-bar>
   </div>
   <div class="navbar-group-left">
     <div *ngIf="isAuthenticated; else login">

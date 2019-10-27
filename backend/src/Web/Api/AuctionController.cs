@@ -16,9 +16,9 @@ using Core.Common.Domain.Products;
 using Core.Common.EventBus;
 using Core.Query.Queries.Auction.AuctionImage;
 using Core.Query.Queries.Auction.Auctions;
-using Core.Query.Queries.Auction.AuctionsByTag;
 using Core.Query.Queries.Auction.Categories;
 using Core.Query.Queries.Auction.SingleAuction;
+using Core.Query.Queries.Auction.TopAuctionsByTag;
 using Core.Query.ReadModel;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -147,11 +147,11 @@ namespace Web.Api
             return File(result.Img.Img, "image/jpeg");
         }
 
-        [HttpGet("auctionsByTag")]
-        public async Task<ActionResult<AuctionsByTagQueryResult>> AuctionsByTagQuery(
+        [HttpGet("topAuctionsByTag")]
+        public async Task<ActionResult<TopAuctionsInTagReadModel>> TopAuctionsByTagQuery(
             [FromQuery] AuctionsByTagQueryDto queryDto)
         {
-            var result = await _mediator.Send(new AuctionsByTagQuery() {Tag = queryDto.Tag, Page = queryDto.Page});
+            var result = await _mediator.Send(new TopAuctionsByTagQuery() {Tag = queryDto.Tag, Page = queryDto.Page});
             return Ok(result);
         }
     }

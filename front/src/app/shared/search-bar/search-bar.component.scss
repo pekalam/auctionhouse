@@ -1,0 +1,45 @@
+@import "global";
+
+$searchInput_border: 2px;
+$searchInput_padding: 7px;
+$searchInput_height: 20px;
+
+input {
+  width: 70%;
+  padding: $searchInput_padding;
+  border: $searchInput_border solid #ddd;
+  margin: 0;
+  height: $searchInput_height;
+  font-size: 15px;
+}
+.search-button-container {
+  width: 10%;
+  display: inline-block;
+  padding-left: 10px;
+  box-sizing: border-box;
+  text-align: left;
+
+  button {
+    height: 2 * $searchInput_border + 2 * $searchInput_padding +
+      $searchInput_height;
+    font-weight: bold;
+    @include app-btn;
+  }
+}
+
+.auction-link{
+  &:hover{
+    background-color: $secondaryLightColor;
+  }
+}
+
+#show-more-option{
+  text-align: center;
+  font-weight: bold;
+  background-color: #979797;
+  &:hover{
+    background-color: #b7b7b7;
+
+  }
+  color: white;
+}
