@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { Auction } from '../../../core/models/Auctions';
 import { Router } from '@angular/router';
+import { AuctionImageQuery } from 'src/app/core/queries/AuctionImageQuery';
 
 @Component({
   selector: 'app-auction',
@@ -14,6 +15,7 @@ export class AuctionComponent implements OnInit, OnDestroy {
   set setAuction(auction: Auction) {
     if (auction) {
       this.auction = auction;
+      this.imgs = auction.auctionImages.filter(img => img != null).map(img => this.auctionImageQuery.execute(img.size1Id));
       this.setDaysLeft();
       this.calculateAuctionTime();
       this.clearAuctionTimeCalcInterval();
@@ -32,6 +34,7 @@ export class AuctionComponent implements OnInit, OnDestroy {
   timer = { m: '', s: '' };
   auction: Auction;
   daysLeft = 0;
+  imgs = [];
 
   private setDaysLeft(){
     let d1 = new Date(this.auction.endDate);
@@ -39,10 +42,11 @@ export class AuctionComponent implements OnInit, OnDestroy {
     this.daysLeft = Math.round((d1.getTime() - d2.getTime()) / (1000 * 60 * 60 * 24));
   }
 
-  constructor() {
+  constructor(private auctionImageQuery: AuctionImageQuery) {
   }
 
   ngOnInit() {
+
   }
 
   ngOnDestroy(): void {

@@ -1,5 +1,9 @@
 <div class="auction-container" *ngIf="auction">
-  <div class="left"></div>
+  <div class="left">
+      <app-carousel [sources]="imgs" [img-height]="250"></app-carousel>
+  </div>
+
+
   <div class="right">
     <div class="right-content">
       <h3>{{auction.product.name}}</h3>

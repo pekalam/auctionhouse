@@ -1,19 +1,19 @@
-@import 'global';
+@import "global";
 
 $listItemHeight: 200px;
 
-.bottom-line{
+.bottom-line {
   @include app-hr;
   width: 90%;
 }
 
-.auction-list-item-container{
+.auction-list-item-container {
   width: 100%;
   display: flex;
   flex-direction: row;
   padding: 0 0 0 14px;
   box-sizing: border-box;
-  .left{
+  .left {
     min-width: 210px;
     height: $listItemHeight;
     box-sizing: border-box;
@@ -23,66 +23,162 @@ $listItemHeight: 200px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    img{
-      max-width: 200px;
-      max-height: 200px;
-    }
   }
-  .right{
+  .right {
     width: calc(100% - 210px);
     height: $listItemHeight;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    .right-content{
+    .right-content {
       padding-left: 10px;
     }
   }
-  .clear{
-    clear: both;
-  }
-  &:hover{
+  &:hover {
     background-color: bisque;
   }
 }
 
-.title-div{
-  .auction-title{
+.auction-img {
+  max-width: 200px;
+  max-height: 200px;
+}
+
+.title-div {
+  .auction-title {
     margin-bottom: 4px;
   }
-  .condition-text{
+  .condition-text {
     font-size: 12px;
   }
   margin-bottom: 7px;
 }
 
+.current-price-div {
+}
 
-.totalbids-div{
+.totalbids-div {
   width: 50%;
   float: left;
   text-align: right;
   margin-top: 40px;
   font-size: 10px;
-  span{
+  span {
     padding-right: 10%;
   }
 }
-.current-price-div{
 
-}
-.buynowprice-div{
+.buynowprice-div {
   width: 50%;
   float: left;
   margin-top: 10px;
-  .buynowtext{
+  .buynowtext {
     font-size: 10px;
   }
-  .buynowprice{
+  .buynowprice {
     font-size: 12px;
   }
 }
-.currentprice{
+.currentprice {
   font-weight: bold;
   font-size: 20px;
+}
+
+@media screen and(max-width: 1255px) {
+  .auction-title {
+    font-size: 20px;
+  }
+  .currentprice {
+    font-size: 18px;
+  }
+  .current-price-title {
+    font-size: 14px;
+  }
+}
+
+@media screen and(max-width: 1050px) {
+  .auction-title {
+    font-size: 18px;
+  }
+  .currentprice {
+    font-size: 16px;
+  }
+  .current-price-title {
+    font-size: 13px;
+  }
+  .totalbids-div {
+    font-size: 9px;
+  }
+}
+
+@media screen and(max-width: 700px) {
+  .auction-title {
+    font-size: 16px;
+  }
+  .currentprice {
+    font-size: 14px;
+  }
+  .current-price-title {
+    font-size: 11px;
+  }
+  .condition-text {
+    font-size: 12px;
+  }
+}
+
+@media screen and(max-width: 540px) {
+  .auction-title {
+    font-size: 15px;
+  }
+  .currentprice {
+    font-size: 13px;
+  }
+  .current-price-title {
+    font-size: 10px;
+  }
+  .condition-text {
+    font-size: 11px;
+  }
+  .buynowprice {
+    font-size: 12px;
+  }
+}
+
+@media screen and(max-width: 400px) {
+}
+
+@media screen and(max-width: 605px) {
+  .auction-list-item-container {
+    .left {
+      min-width: 160px;
+      .auction-img {
+        max-width: 150px;
+        max-height: 150px;
+      }
+    }
+    .right {
+      width: calc(100% - 160px);
+    }
+  }
+}
+
+@media screen and(max-width: 490px) {
+  .auction-list-item-container {
+    flex-direction: column;
+    .left {
+      flex-basis: 100%;
+      min-width: 100%;
+    }
+    .right {
+      flex-basis: 100%;
+      width: 100%;
+    }
+  }
+  .totalbids-div {
+    clear: both;
+    margin-top: 10px;
+    width: 100%;
+    text-align: center;
+  }
 }

@@ -1,0 +1,38 @@
+@import'global';
+
+.container {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  .container-center{
+    display: block;
+    flex-grow: 1;
+  }
+}
+
+.btn-container {
+  position: relative;
+  z-index: 900;
+  display: flex;
+  justify-content: space-between;
+  button{
+    @include app-btn;
+    height: 25px;
+    position: relative;
+    top: -12px;
+  }
+}
+
+.img-container{
+}
+
+.img {
+}
+
+#next {
+}
+
+#prev {
+
+}

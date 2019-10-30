@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-home-page',
@@ -10,6 +11,7 @@ export class HomePageComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+
   }
 
 }

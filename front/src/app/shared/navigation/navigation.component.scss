@@ -4,20 +4,20 @@ $itemsCount: 4;
 
 .navbar {
   width: 100%;
-  height: $barHeight;
+  height: $navbarHeight;
+  display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  display: flex;
   justify-content: flex-start;
   background-color: $primaryColor;
   border-bottom: 1px solid #ddd;
   //position: fixed;
-  z-index: 1000;
+  //z-index: 1000;
   .navbar-item {
     text-align: center;
     color: black;
-    height: $barHeight;
-    line-height: $barHeight;
+    height: $navbarHeight;
+    line-height: $navbarHeight;
     vertical-align: middle;
     text-decoration: none;
     padding: 0 7px 0 7px;
@@ -49,13 +49,22 @@ $itemsCount: 4;
     flex-direction: row-reverse;
     padding-right: 40px;
   }
-  .signin-btn {
-    background-color: $primaryColor;
-    color: black;
-    font-weight: bold;
-    &:hover {
-      background-color: $secondaryColor;
-    }
+
+}
+
+.searchbar-container {
+  flex-grow: 2;
+  line-height: $navbarHeight;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.signin-btn {
+  background-color: $primaryColor;
+  color: black;
+  font-weight: bold;
+  &:hover {
+    background-color: $secondaryColor;
   }
 }
 
@@ -84,14 +93,10 @@ $itemsCount: 4;
   }
 }
 
-.searchbar-container {
-  flex-grow: 2;
-  line-height: $barHeight;
-  vertical-align: middle;
-  text-align: center;
-}
 
-@media only screen and (min-width: 768px) {
+
+
+@media only screen and (min-width: 821px) {
   .navbar {
     .navbar-item {
       flex-grow: 0;
@@ -100,7 +105,7 @@ $itemsCount: 4;
   }
 }
 
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 820px) {
   .navbar {
     .navbar-item {
       flex-basis: 100%;
@@ -108,8 +113,20 @@ $itemsCount: 4;
     .navbar-item-icon {
       text-align: center;
     }
+    .searchbar-container {
+      flex-basis: 100%;
+    }
+    .navbar-group-left {
+      display: block;
+      text-align: center;
+      padding: 0;
+    }
   }
   .container {
-    height: $itemsCount * $barHeight !important;
+    height: $itemsCount * $navbarHeight;
+  }
+  ::ng-deep .user-menu {
+    width: 100vw;
+    max-width: unset !important;
   }
 }

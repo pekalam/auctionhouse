@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CategoryTreeNode } from 'src/app/core/models/CategoryTreeNode';
 import { Router } from '@angular/router';
 import { CategoriesQuery } from '../../core/queries/CategoriesQuery';
+import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
+
 
 @Component({
   selector: 'home-categories',
@@ -15,12 +17,23 @@ export class CategoriesComponent implements OnInit {
   subcategoriesShown = false;
   selectedCategory: CategoryTreeNode;
 
-  constructor(private categoriesQuery: CategoriesQuery, private router: Router) { }
+  mobile = false;
+
+  constructor(private categoriesQuery: CategoriesQuery, private router: Router, private breakpointObserver: BreakpointObserver) { }
 
   ngOnInit() {
     this.categoriesQuery
       .execute()
       .subscribe(categories => this.mainCategories = categories.subCategories);
+    this.breakpointObserver
+      .observe(['(max-width: 820px)'])
+      .subscribe((state: BreakpointState) => {
+        if (state.matches) {
+          this.mobile = true;
+        } else {
+          this.mobile = false;
+        }
+      });
   }
 
   showSubcategories(category: CategoryTreeNode) {

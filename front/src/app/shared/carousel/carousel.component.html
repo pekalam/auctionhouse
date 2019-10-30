@@ -1,0 +1,11 @@
+<div class="container" >
+  <div class="container-center" [style.height.px]="imgHeight">
+    <div class="img-container">
+      <img *ngFor="let imgInd of imgInd" class="img" [src]="imgs[imgInd]" [hidden]="imgInd != shown" />
+    </div>
+    <div class="btn-container" [style.top.px]="-(imgHeight / 2)">
+      <button id="prev" (click)="shown = (shown - 1 < 0 ? imgInd.length - 1 : shown - 1)" [hidden]="imgInd.length == 1">Prev</button>
+      <button id="next" (click)="shown = ((shown + 1) % imgInd.length)" [hidden]="imgInd.length == 1">Next</button>
+    </div>
+  </div>
+</div>

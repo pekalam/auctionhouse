@@ -15,14 +15,14 @@
     </div>
     <div>
       <form [formGroup]="form" (ngSubmit)="applyClick()">
-        <h4>Condition
+        <h4 class="group-name">Condition
         </h4>
         <mat-radio-group formControlName="condition">
           <mat-radio-button value="0">Used</mat-radio-button>
           <mat-radio-button value="1">New</mat-radio-button>
           <mat-radio-button value="2">All</mat-radio-button>
         </mat-radio-group>
-        <h4>Auction type
+        <h4 class="group-name">Auction type
         </h4>
         <mat-radio-group formControlName="type" [(ngModel)]="selectedAuctionType">
           <mat-radio-button value="0">Buy now only</mat-radio-button>
@@ -31,7 +31,7 @@
           <mat-radio-button value="3">All</mat-radio-button>
         </mat-radio-group>
         <div class="buynow-price-container" [hidden]="selectedAuctionType === '1'">
-          <h4>Buy now auction price</h4>
+          <h4 class="group-name">Buy now auction price</h4>
           <mat-form-field id="min-buynow" class="buynow-price">
             <input matInput type="text" placeholder="Min" formControlName="minBuyNow" />
           </mat-form-field>
@@ -41,7 +41,7 @@
           <div style="clear: both;"></div>
         </div>
         <div class="buynow-price-container" [hidden]="selectedAuctionType === '0'">
-            <h4>Auction price</h4>
+            <h4 class="group-name">Auction price</h4>
             <mat-form-field id="min-buynow" class="buynow-price">
               <input matInput type="text" placeholder="Min" formControlName="minAuction" />
             </mat-form-field>

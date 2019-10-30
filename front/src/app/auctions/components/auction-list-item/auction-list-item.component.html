@@ -1,7 +1,7 @@
 <div>
   <div class="auction-list-item-container">
     <div class="left">
-      <img *ngIf="auctionImgSrc" [src]="auctionImgSrc" />
+      <img class="auction-img" *ngIf="auctionImgSrc" [src]="auctionImgSrc" />
     </div>
     <div class="right" (click)="onAuctionListItemClick()">
       <div class="right-content">
@@ -11,7 +11,7 @@
         </div>
         <div class="price-div">
           <div class="current-price-div">
-            <span>Current price</span>
+            <span class="current-price-title">Current price</span>
             <br>
             <span class="currentprice"> {{auction.actualPrice | currency}}</span>
           </div>
@@ -28,7 +28,7 @@
       </div>
 
     </div>
-    <div class="clear"></div>
+    <div style="clear: both;"></div>
   </div>
   <hr class="bottom-line">
 </div>
