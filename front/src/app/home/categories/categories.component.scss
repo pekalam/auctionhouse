@@ -31,6 +31,7 @@ $containerHeight: 560px;
     box-sizing: border-box;
     left: 325px;
     width: calc(95vw - 325px - 10px);
+    max-width: $maxContentWidth - 325px - 10px;
     z-index: 999;
     background-color: white;
     .subcategory-list {

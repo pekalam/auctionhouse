@@ -17,6 +17,7 @@ import { ImgUploadInputComponent } from './components/img-upload-input/img-uploa
 import { CreateSummaryStepComponent } from './pages/auction-create-page/steps/create-summary-step/create-summary-step.component';
 import { AuctionFiltersComponent } from './components/auction-filters/auction-filters.component';
 import {LayoutModule} from '@angular/cdk/layout';
+import { ErrorModule } from '../error/error.module';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import {LayoutModule} from '@angular/cdk/layout';
     RouterModule,
     CommonModule,
     SharedModule,
-    LayoutModule
+    LayoutModule,
+    ErrorModule
   ]
 })
 export class AuctionsModule { }

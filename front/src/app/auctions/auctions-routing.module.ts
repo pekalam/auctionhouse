@@ -7,7 +7,7 @@ import { AuthGuard } from '../core/auth/AuthGuard';
 const routes: Routes = [
   { path: 'auctions/:mainCategory/:subCategory', component: AuctionsPageComponent },
   { path: 'auctions/:mainCategory/:subCategory/:subCategory2', component: AuctionsPageComponent },
-  { path: 'auctions/create', canActivate: [AuthGuard], component: AuctionCreatePageComponent },
+  { path: 'auctions/create', canActivate: [AuthGuard], data: {msg: "You must be signed in to create an auction"}, component: AuctionCreatePageComponent },
 ];
 
 @NgModule({

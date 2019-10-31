@@ -1,5 +1,5 @@
 <div>
-  <input #searchBar type="text" placeholder="Search auctions" aria-label="Number" [matAutocomplete]="auto"
+  <input #searchBar type="text" placeholder="Search for anything" aria-label="Number" [matAutocomplete]="auto"
     (input)="onSearchBarKey(searchBar.value)">
   <mat-autocomplete #auto="matAutocomplete">
     <mat-option class="auction-link" [routerLink]="['auction']" [queryParams]="{auctionId: item.auctionId}" *ngFor="let item of auctions">

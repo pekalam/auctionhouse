@@ -1,6 +1,6 @@
 <div class="auction-container" *ngIf="auction">
   <div class="left">
-      <app-carousel [sources]="imgs" [img-height]="250"></app-carousel>
+      <app-carousel [sources]="imgs" [img-height]="200"></app-carousel>
   </div>
 
 
@@ -10,10 +10,8 @@
       <span>From: {{auction.creator.userName}}</span>
       <p *ngIf="showTimer" class="timer">{{timer.m}}:{{timer.s}}</p>
       <div class="date-div">
-        <span>Starts: {{auction.startDate | date : "yyyy MMMM dd"}}</span>
-        <br />
-        <span>Ends: {{auction.endDate | date : "yyyy MMMM dd"}}</span>
-        <br />
+        <span id="start">Starts: {{auction.startDate | date : "yyyy MMMM dd"}}</span>
+        <span id="end">Ends: {{auction.endDate | date : "yyyy MMMM dd"}}</span>
         <span class="days-left">Days left: {{daysLeft}}</span>
       </div>
       <div class="current-price-div">
@@ -32,18 +30,18 @@
       <div class="views-container">
         <span>Views: {{auction.views}}</span>
       </div>
-      <div class="auction-buttons-container" [hidden]="!showAuctionButtons">
-        <button class="buynow-btn" (click)="onBuyNow()" [hidden]="auction.buyNowPrice == null">Buy now</button>
-        <button class="bid-btn" (click)="onBid()">Bid</button>
+      <div class="auction-buttons-container">
+        <button class="buynow-btn" (click)="onBuyNow()" [disabled]="showAuctionButtons || auction.buyNowPrice == null">Buy now</button>
+        <button class="bid-btn" (click)="onBid()" [disabled]="showAuctionButtons">Bid</button>
       </div>
 
     </div>
   </div>
   <div class="description-container">
-    <div class="description-text">
+    <div class="description-content">
       <h2>Description</h2>
 
-      <p>{{auction.product.description}}</p>
+      <p class="description-text">{{auction.product.description}}</p>
     </div>
   </div>
 </div>

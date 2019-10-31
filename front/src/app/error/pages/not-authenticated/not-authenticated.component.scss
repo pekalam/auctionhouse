@@ -1,0 +1,15 @@
+@import 'global';
+
+.container{
+  padding-top: 50px;
+  background-color: white;
+  width: 70%;
+  margin: 20px auto;
+  padding: 20px;
+  text-align: center;
+  @include section-shadow;
+  .msg{
+    font-weight: bold;
+    color: #f72f2f;
+  }
+}

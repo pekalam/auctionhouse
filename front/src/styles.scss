@@ -7,3 +7,14 @@ body { margin: 0; font-family: Open Sans,sans-serif; overflow-y: scroll; }
   background-color: $secondaryColor;
 }
 
+hr{
+  @include app-hr;
+}
+
+footer{
+  background-color: #585858;
+  height: 70px;
+  box-sizing: border-box;
+  padding: 10px 0 10px 0;
+}
+

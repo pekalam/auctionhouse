@@ -43,3 +43,7 @@ input {
   }
   color: white;
 }
+
+::ng-deep .mat-autocomplete-panel{
+  max-height: unset !important;
+}

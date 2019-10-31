@@ -26,22 +26,33 @@
   .description-container {
     clear: both;
     padding-top: 20px;
-    .description-text {
+    .description-content {
       background-color: #f7f7f7;
-      padding: 5px;
+      padding: 5px 10px 5px 10px;
+      .description-text{
+        padding-left: 20px;
+        text-align: justify;
+      }
     }
-  }
-
-  .timer {
-    color: red;
   }
 }
 
+.timer {
+  color: red;
+}
 
 .right-content {
   padding-left: 25px;
   .date-div {
     margin-top: 25px;
+    #start{
+      margin-bottom: 5px;
+      display: block;
+    }
+    #end{
+      margin-bottom: 5px;
+      display: block;
+    }
   }
   .current-price-div {
     margin-top: 25px;
@@ -73,7 +84,6 @@
     button {
       @include app-btn;
       display: block;
-      cursor: pointer;
       width: 100%;
       font-weight: bold;
       height: 35px;

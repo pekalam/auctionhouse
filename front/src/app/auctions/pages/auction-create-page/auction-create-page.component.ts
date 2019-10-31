@@ -106,13 +106,13 @@ export class AuctionCreatePageComponent implements OnInit, OnDestroy {
   private changeFormMessage() {
     switch (this.step) {
       case 0:
-        this.formMessage = "Create new auction";
+        this.formMessage = "Select categories";
         break;
       case 1:
-        this.formMessage = "Type auction data";
+        this.formMessage = "Basic info";
         break;
       case 2:
-        this.formMessage = "Add image";
+        this.formMessage = "Auction images";
         break;
       case 3:
         this.formMessage = "Summary"

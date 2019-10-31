@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-carousel',
@@ -21,6 +21,8 @@ export class CarouselComponent implements OnInit {
     this.imgInd = this.imgs.map((v, i) => i);
   }
 
+  @Output('imgSelected')
+  imgSelected = new EventEmitter<number>();
 
 
   constructor() { }
@@ -28,4 +30,13 @@ export class CarouselComponent implements OnInit {
   ngOnInit() {
   }
 
+  onPrev(){
+    this.shown = this.shown - 1 < 0 ? this.imgInd.length - 1 : this.shown - 1;
+    this.imgSelected.emit(this.shown);
+  }
+
+  onNext(){
+    this.shown = (this.shown + 1) % this.imgInd.length;
+    this.imgSelected.emit(this.shown);
+  }
 }

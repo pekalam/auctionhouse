@@ -1,0 +1,12 @@
+.container{
+  display: flex;
+  flex-direction: row;
+  .carousel{
+    flex-grow: 1;
+  }
+  .auction{
+    flex-grow: 1;
+    box-sizing: border-box;
+    padding-left: 30px;
+  }
+}

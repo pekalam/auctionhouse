@@ -4,6 +4,7 @@ import { MatTableModule, MatExpansionModule, MatRadioModule, MatMenuModule, MatP
 import { MatCardModule } from '@angular/material/card';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSliderModule } from '@angular/material/slider';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 export const MY_FORMATS = {
   parse: {
@@ -38,7 +39,8 @@ export const MY_FORMATS = {
     MatCardModule,
     MatTabsModule,
     MatSliderModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatTooltipModule
   ],
   providers: [
     { provide: MatDialogRef, useValue: {} },

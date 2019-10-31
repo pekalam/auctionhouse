@@ -63,6 +63,7 @@ $itemsCount: 4;
   background-color: $primaryColor;
   color: black;
   font-weight: bold;
+  display: block;
   &:hover {
     background-color: $secondaryColor;
   }

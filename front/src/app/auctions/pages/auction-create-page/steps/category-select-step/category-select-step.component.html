@@ -12,7 +12,7 @@
   </div>
   <div [appVisible]="selectedMainCategory == null">
     <mat-form-field>
-      <h4>Sub category</h4>
+      <h4>Subcategory</h4>
       <mat-select (selectionChange)="selectSubCategory($event.value)">
         <mat-option selected></mat-option>
         <ng-container *ngFor="let cat of subCategories">
@@ -23,7 +23,7 @@
   </div>
   <div [appVisible]="selectedSubCategory == null">
     <mat-form-field>
-      <h4>Second sub category</h4>
+      <h4>Second subcategory</h4>
       <mat-select (selectionChange)="selectSubCategory2($event.value)">
         <mat-option selected></mat-option>
         <ng-container *ngFor="let cat of subCategories2">
