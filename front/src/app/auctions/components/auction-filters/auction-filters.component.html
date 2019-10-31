@@ -3,14 +3,12 @@
     Filters
   </mat-expansion-panel-header>
   <div class="container">
-
-
-    <div *ngIf="subcategories">
+    <div *ngIf="filterCategories">
       <h1 class="cat-title"><a
-          [routerLink]="['/category', subcategories.categoryName]">{{subcategories.categoryName}}</a></h1>
-      <div *ngFor="let subcategory2 of subcategories.subCategories[0].subCategories">
-        <a [class]="'subcat-link ' + (subcategory2.categoryName === selectedSubCategory ? 'highlight' : '')"
-          [routerLink]="['/auctions', subcategories.categoryName, subcategories.subCategories[0].categoryName, subcategory2.categoryName]">{{subcategory2.categoryName}}</a>
+          [routerLink]="filterCategories.link">{{filterCategories.value}}</a></h1>
+      <div *ngFor="let subcategory2 of filterCategories.children">
+        <a [class]="'subcat-link ' + (subcategory2.value === selectedCategoryValue ? 'highlight' : '')"
+          [routerLink]="subcategory2.link">{{subcategory2.value}}</a>
       </div>
     </div>
     <div>
