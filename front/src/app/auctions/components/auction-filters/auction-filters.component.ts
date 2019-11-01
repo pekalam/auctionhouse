@@ -7,6 +7,7 @@ import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/l
 
 export interface FilterCategory {
   link: any[];
+  queryParams: any;
   value: string;
   children: FilterCategory[];
 }

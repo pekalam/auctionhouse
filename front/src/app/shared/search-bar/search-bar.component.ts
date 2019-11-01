@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Subject, Observable, of } from 'rxjs';
-import { TopAuctionsQueryResult, TopAuctionQueryItem, TopAuctionsByTagQuery } from 'src/app/core/queries/AuctionsByTagQuery';
+import { TopAuctionsQueryResult, TopAuctionQueryItem, TopAuctionsByTagQuery } from 'src/app/core/queries/TopAuctionsByTagQuery';
 import { switchMap, distinctUntilChanged, debounceTime, catchError } from 'rxjs/operators';
 
 @Component({

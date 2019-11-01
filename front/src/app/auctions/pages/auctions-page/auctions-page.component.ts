@@ -7,6 +7,10 @@ import { CategoriesQuery } from '../../../core/queries/CategoriesQuery';
 import { CategoryTreeNode } from '../../../core/models/CategoryTreeNode';
 import { Condition } from 'src/app/core/models/Product';
 import { FilterCategory } from '../../components/auction-filters/auction-filters.component';
+import { StartAuctionCreateSessionCommand } from '../../../core/commands/StartAuctionCreateSessionCommand';
+import { AuctionsByTagQuery } from '../../../core/queries/AuctionsByTagQuery';
+import { CommonTagsQuery } from '../../../core/queries/CommonTagsQuery';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-auctions-page',
@@ -17,19 +21,21 @@ export class AuctionsPageComponent implements OnInit {
   auctions: AuctionListModel[];
   filterCategories: FilterCategory;
   selectedFilterCategoryValue: string;
+
   private currentCategory: Category;
+  private tag: string = "";
 
-
-  constructor(private activatedRoute: ActivatedRoute, private auctionsQuery: AuctionsQuery,
-              private categoriesQuery: CategoriesQuery) {
+  constructor(private activatedRoute: ActivatedRoute, private auctionsByCategoryQuery: AuctionsQuery,
+    private categoriesQuery: CategoriesQuery, private auctionsByTagQuery: AuctionsByTagQuery, private commonTagsQuery: CommonTagsQuery) {
   }
 
-  private createFilterCategories(mainCategoryName: string, treeNode: CategoryTreeNode) {
+  private createFilterCategoriesByCategory(mainCategoryName: string, treeNode: CategoryTreeNode) {
     const subCategories2: FilterCategory[] = treeNode.subCategories.map<FilterCategory>((t) => {
       const filterCat: FilterCategory = {
         link: ['/auctions', mainCategoryName, treeNode.categoryName, t.categoryName],
         value: t.categoryName,
-        children: []
+        children: [],
+        queryParams: null
       };
       return filterCat;
     });
@@ -38,7 +44,8 @@ export class AuctionsPageComponent implements OnInit {
     this.filterCategories = {
       link: ['/category', mainCategoryName],
       value: mainCategoryName,
-      children: subCategories2
+      children: subCategories2,
+      queryParams: null
     };
     console.log(this.filterCategories
     );
@@ -58,10 +65,31 @@ export class AuctionsPageComponent implements OnInit {
     this.currentCategory = cat;
     this.categoriesQuery
       .getSubcategoryTree(mainCategoryName, subCategoryName)
-      .subscribe((v) => this.createFilterCategories(mainCategoryName, v));
+      .subscribe((v) => this.createFilterCategoriesByCategory(mainCategoryName, v));
 
     this.selectedFilterCategoryValue = subCategory2Name;
     this.fetchAuctions(0);
+  }
+
+  private createFilterCategoryByTag(tag: string) {
+    this.commonTagsQuery.execute(tag).subscribe((result) => {
+      this.filterCategories = {
+        link: null,
+        value: "Tags",
+        queryParams: null,
+        children: result.withTags.map<FilterCategory>((t) => {
+          let filterCat: FilterCategory = {
+            link: ['/auctions'],
+            value: `${t.tag} (${t.times})`,
+            children: [],
+            queryParams: { tag: t.tag }
+          };
+          return filterCat;
+        })
+      }
+      this.tag = `${result.withTags[0].tag}`;
+      this.fetchAuctions(0);
+    });
   }
 
   applyFilters(filters: AuctionFilters) {
@@ -72,14 +100,27 @@ export class AuctionsPageComponent implements OnInit {
   }
 
   fetchAuctions(page: number, filters?: AuctionFilters) {
-    this.auctionsQuery
-      .execute(page, this.currentCategory, filters)
-      .subscribe(v => this.auctions = v);
+    if (this.tag.length == 0) {
+      this.auctionsByCategoryQuery
+        .execute(page, this.currentCategory, filters)
+        .subscribe(v => this.auctions = v);
+    } else {
+      this.auctionsByTagQuery
+        .execute(page, this.tag, filters)
+        .subscribe(v => this.auctions = v);
+    }
   }
 
   ngOnInit() {
-    this.activatedRoute.params.subscribe(p => this.constructCategory(p.mainCategory,
-      p.subCategory, p.subCategory2));
+    this.activatedRoute.queryParams.subscribe((q) => {
+      if (q.tag) {
+        this.createFilterCategoryByTag(q.tag);
+      } else {
+        this.activatedRoute.params.subscribe(p => this.constructCategory(p.mainCategory,
+          p.subCategory, p.subCategory2));
+      }
+    });
+
   }
 
 }

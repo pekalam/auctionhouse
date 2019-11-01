@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Core.Query.Queries.Auction.Auctions;
+using Core.Query.Queries.Auction.Auctions.ByCategory;
+using Core.Query.Queries.Auction.Auctions.ByTag;
 using Web.Dto.Queries;
 
 namespace Web.Dto
@@ -12,7 +14,8 @@ namespace Web.Dto
     {
         public MapperProfile()
         {
-            CreateMap<AuctionsQueryDto, AuctionsQuery>();
+            CreateMap<AuctionsByCategoryQueryDto, AuctionsByCategoryQuery>();
+            CreateMap<AuctionsByTagQueryDto, AuctionsByTagQuery>();
         }
     
     }

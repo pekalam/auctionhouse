@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Dto.Queries
 {
-    public class AuctionsQueryDto
+    public class AuctionsByCategoryQueryDto
     {
         [FromQuery(Name = "page")]
         public int Page { get; set; }

@@ -5,7 +5,7 @@ services:
     hostname: db-node1
     container_name: db-node1
     image: mongo
-    tmpfs: /data/db
+#    tmpfs: /data/db
     entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "n1", "--shardsvr" ]
     volumes: 
       - "./main/shard_1/scripts:/scripts"

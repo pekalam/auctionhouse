@@ -7,6 +7,7 @@ using Core.Common.Domain.Categories;
 using Core.Common.Domain.Products;
 using Core.Query;
 using Core.Query.Queries.Auction.Auctions;
+using Core.Query.Queries.Auction.Auctions.ByCategory;
 using Core.Query.ReadModel;
 using FluentAssertions;
 using FunctionalTests.EventHandling;
@@ -22,14 +23,14 @@ namespace FunctionalTests.Queries
     {
         private ReadModelDbContext _dbContext;
         private CategoryTreeService _categoryTreeService;
-        private AuctionsQueryHandler queryHandler;
+        private AuctionsByCategoryQueryHandler _byCategoryQueryHandler;
 
         [SetUp]
         public void SetUp()
         {
             _categoryTreeService = TestDepedencies.Instance.Value.CategoryTreeService;
             _dbContext = TestDepedencies.Instance.Value.DbContext;
-            queryHandler = new AuctionsQueryHandler(_dbContext, new CategoryBuilder(_categoryTreeService));
+            _byCategoryQueryHandler = new AuctionsByCategoryQueryHandler(_dbContext, new CategoryBuilder(_categoryTreeService));
         }
 
         [TearDown]
@@ -54,7 +55,7 @@ namespace FunctionalTests.Queries
                 .SubCategories[0]
                 .CategoryName, 2);
 
-            var auctions = new AuctionReadModel[AuctionsQueryHandler.PageSize * 2];
+            var auctions = new AuctionReadModel[AuctionsByCategoryQueryHandler.PageSize * 2];
 
             for (var i = 0; i < auctions.Length; i++)
             {
@@ -104,7 +105,7 @@ namespace FunctionalTests.Queries
             var stubAuctions = GetFakeAuctionsReadModels();
             _dbContext.AuctionsReadModel.InsertMany(stubAuctions);
 
-            var query = new AuctionsQuery()
+            var query = new AuctionsByCategoryQuery()
             {
                 Page = page, CategoryNames = new List<string>()
                 {
@@ -112,7 +113,7 @@ namespace FunctionalTests.Queries
                 }
             };
             //act
-            var results = queryHandler.Handle(query, CancellationToken.None)
+            var results = _byCategoryQueryHandler.Handle(query, CancellationToken.None)
                 .Result.ToList();
 
             //assert
@@ -125,7 +126,7 @@ namespace FunctionalTests.Queries
             }
 
             results.Count.Should()
-                .Be(AuctionsQueryHandler.PageSize);
+                .Be(AuctionsByCategoryQueryHandler.PageSize);
 
             CompareResults(results, stubAuctions);
 
@@ -133,7 +134,7 @@ namespace FunctionalTests.Queries
                 .Except(results.Select(a => a.AuctionId))
                 .Count()
                 .Should()
-                .Be(AuctionsQueryHandler.PageSize);
+                .Be(AuctionsByCategoryQueryHandler.PageSize);
         }
 
 
@@ -148,11 +149,11 @@ namespace FunctionalTests.Queries
                 .BuyNowOnly = false;
             stubAuctions[1]
                 .BuyNowPrice = 0;
-            _dbContext.AuctionsReadModel.InsertMany(stubAuctions.AsSpan(0, AuctionsQueryHandler.PageSize)
+            _dbContext.AuctionsReadModel.InsertMany(stubAuctions.AsSpan(0, AuctionsByCategoryQueryHandler.PageSize)
                 .ToArray());
 
-            var queryHandler = new AuctionsQueryHandler(_dbContext, new CategoryBuilder(_categoryTreeService));
-            var query1 = new AuctionsQuery()
+            var queryHandler = new AuctionsByCategoryQueryHandler(_dbContext, new CategoryBuilder(_categoryTreeService));
+            var query1 = new AuctionsByCategoryQuery()
             {
                 Page = 0,
                 CategoryNames = new List<string>()
@@ -163,7 +164,7 @@ namespace FunctionalTests.Queries
             };
 
 
-            var query2 = new AuctionsQuery()
+            var query2 = new AuctionsByCategoryQuery()
             {
                 Page = 0,
                 CategoryNames = new List<string>()
@@ -173,7 +174,7 @@ namespace FunctionalTests.Queries
                 AuctionTypeQuery = AuctionTypeQuery.Auction,
             };
 
-            var query3 = new AuctionsQuery()
+            var query3 = new AuctionsByCategoryQuery()
             {
                 Page = 0,
                 CategoryNames = new List<string>()
@@ -197,7 +198,7 @@ namespace FunctionalTests.Queries
             results2.Count.Should()
                 .Be(1);
             results3.Count.Should()
-                .Be(AuctionsQueryHandler.PageSize - 2);
+                .Be(AuctionsByCategoryQueryHandler.PageSize - 2);
         }
 
 
@@ -208,11 +209,11 @@ namespace FunctionalTests.Queries
             var stubAuctions = GetFakeAuctionsReadModels();
             stubAuctions[0]
                 .Product.Condition = Condition.New;
-            _dbContext.AuctionsReadModel.InsertMany(stubAuctions.AsSpan(0, AuctionsQueryHandler.PageSize)
+            _dbContext.AuctionsReadModel.InsertMany(stubAuctions.AsSpan(0, AuctionsByCategoryQueryHandler.PageSize)
                 .ToArray());
 
-            var queryHandler = new AuctionsQueryHandler(_dbContext, new CategoryBuilder(_categoryTreeService));
-            var query1 = new AuctionsQuery()
+            var queryHandler = new AuctionsByCategoryQueryHandler(_dbContext, new CategoryBuilder(_categoryTreeService));
+            var query1 = new AuctionsByCategoryQuery()
             {
                 Page = 0,
                 CategoryNames = new List<string>()
@@ -223,7 +224,7 @@ namespace FunctionalTests.Queries
             };
 
 
-            var query2 = new AuctionsQuery()
+            var query2 = new AuctionsByCategoryQuery()
             {
                 Page = 0,
                 CategoryNames = new List<string>()
@@ -243,7 +244,7 @@ namespace FunctionalTests.Queries
             results1.Count.Should()
                 .Be(1);
             results2.Count.Should()
-                .Be(AuctionsQueryHandler.PageSize - 1);
+                .Be(AuctionsByCategoryQueryHandler.PageSize - 1);
         }
 
 
@@ -254,11 +255,11 @@ namespace FunctionalTests.Queries
             var stubAuctions = GetFakeAuctionsReadModels();
             stubAuctions[0]
                 .BuyNowPrice = 99;
-            _dbContext.AuctionsReadModel.InsertMany(stubAuctions.AsSpan(0, AuctionsQueryHandler.PageSize)
+            _dbContext.AuctionsReadModel.InsertMany(stubAuctions.AsSpan(0, AuctionsByCategoryQueryHandler.PageSize)
                 .ToArray());
 
-            var queryHandler = new AuctionsQueryHandler(_dbContext, new CategoryBuilder(_categoryTreeService));
-            var query1 = new AuctionsQuery()
+            var queryHandler = new AuctionsByCategoryQueryHandler(_dbContext, new CategoryBuilder(_categoryTreeService));
+            var query1 = new AuctionsByCategoryQuery()
             {
                 Page = 0,
                 CategoryNames = new List<string>()
@@ -268,7 +269,7 @@ namespace FunctionalTests.Queries
             };
 
 
-            var query2 = new AuctionsQuery()
+            var query2 = new AuctionsByCategoryQuery()
             {
                 Page = 0,
                 CategoryNames = new List<string>()
@@ -286,7 +287,7 @@ namespace FunctionalTests.Queries
 
             //assert
             results1.Count.Should()
-                .Be(AuctionsQueryHandler.PageSize - 1);
+                .Be(AuctionsByCategoryQueryHandler.PageSize - 1);
             results2.Count.Should()
                 .Be(1);
         }
@@ -302,11 +303,11 @@ namespace FunctionalTests.Queries
             {
                 auction.BuyNowPrice = 0;
             }
-            _dbContext.AuctionsReadModel.InsertMany(stubAuctions.AsSpan(0, AuctionsQueryHandler.PageSize)
+            _dbContext.AuctionsReadModel.InsertMany(stubAuctions.AsSpan(0, AuctionsByCategoryQueryHandler.PageSize)
                 .ToArray());
 
-            var queryHandler = new AuctionsQueryHandler(_dbContext, new CategoryBuilder(_categoryTreeService));
-            var query1 = new AuctionsQuery()
+            var queryHandler = new AuctionsByCategoryQueryHandler(_dbContext, new CategoryBuilder(_categoryTreeService));
+            var query1 = new AuctionsByCategoryQuery()
             {
                 Page = 0,
                 CategoryNames = new List<string>()
@@ -318,7 +319,7 @@ namespace FunctionalTests.Queries
             };
 
 
-            var query2 = new AuctionsQuery()
+            var query2 = new AuctionsByCategoryQuery()
             {
                 Page = 0,
                 CategoryNames = new List<string>()
@@ -338,7 +339,7 @@ namespace FunctionalTests.Queries
 
             //assert
             results1.Count.Should()
-                .Be(AuctionsQueryHandler.PageSize - 1);
+                .Be(AuctionsByCategoryQueryHandler.PageSize - 1);
             results2.Count.Should()
                 .Be(1);
         }
@@ -358,11 +359,11 @@ namespace FunctionalTests.Queries
             {
                 auction.BuyNowPrice = 0;
             }
-            _dbContext.AuctionsReadModel.InsertMany(stubAuctions.AsSpan(0, AuctionsQueryHandler.PageSize)
+            _dbContext.AuctionsReadModel.InsertMany(stubAuctions.AsSpan(0, AuctionsByCategoryQueryHandler.PageSize)
                 .ToArray());
 
-            var queryHandler = new AuctionsQueryHandler(_dbContext, new CategoryBuilder(_categoryTreeService));
-            var query1 = new AuctionsQuery()
+            var queryHandler = new AuctionsByCategoryQueryHandler(_dbContext, new CategoryBuilder(_categoryTreeService));
+            var query1 = new AuctionsByCategoryQuery()
             {
                 Page = 0,
                 CategoryNames = new List<string>()
@@ -376,7 +377,7 @@ namespace FunctionalTests.Queries
             };
 
 
-            var query2 = new AuctionsQuery()
+            var query2 = new AuctionsByCategoryQuery()
             {
                 Page = 0,
                 CategoryNames = new List<string>()
@@ -400,7 +401,7 @@ namespace FunctionalTests.Queries
             results1.Count.Should()
                 .Be(1);
             results2.Count.Should()
-                .Be(AuctionsQueryHandler.PageSize);
+                .Be(AuctionsByCategoryQueryHandler.PageSize);
             results2[0].AuctionId
                 .Should()
                 .Be(stubAuctions[0].AuctionId);

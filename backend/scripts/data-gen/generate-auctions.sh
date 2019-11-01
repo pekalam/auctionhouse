@@ -11,6 +11,6 @@ for (( i=0; i<$count; i++ ))
 do
 	rand=$(((RANDOM<<15|RANDOM) % ${#files[@]}))
 	echo "Generating $i auction with img ${files[$rand]}..."
-	dotnet run $url $jwt "$imgDir/${files[$rand]}"
+	dotnet run $url $jwt "$imgDir/${files[$rand]}" --no-build &
 	echo "finished"
 done

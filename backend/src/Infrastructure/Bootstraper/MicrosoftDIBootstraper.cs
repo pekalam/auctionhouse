@@ -17,6 +17,7 @@ using Core.Common.EventBus;
 using Core.Common.SchedulerService;
 using Core.Query.Handlers;
 using Core.Query.Queries.Auction.Auctions;
+using Core.Query.Queries.Auction.Auctions.ByCategory;
 using Core.Query.Queries.Auction.SingleAuction;
 using Core.Query.Queries.User.UserData;
 using Core.Query.ReadModel;
@@ -64,7 +65,7 @@ namespace Infrastructure.Bootstraper
             serviceCollection.AddScoped<AuctionImageAddedHandler>();
             serviceCollection.AddScoped<AuctionCompletedHandler>();
 
-            serviceCollection.AddScoped<AuctionsQueryHandler>();
+            serviceCollection.AddScoped<AuctionsByCategoryQueryHandler>();
             serviceCollection.AddScoped<UserDataQueryHandler>();
             serviceCollection.AddScoped<AuctionQueryHandler>();
 

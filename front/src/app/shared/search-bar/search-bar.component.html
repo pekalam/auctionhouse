@@ -5,7 +5,7 @@
     <mat-option class="auction-link" [routerLink]="['auction']" [queryParams]="{auctionId: item.auctionId}" *ngFor="let item of auctions">
       {{item.auctionName}}
     </mat-option>
-    <mat-option id="show-more-option" *ngIf="auctions.length">
+    <mat-option id="show-more-option" *ngIf="auctions.length" [routerLink]="['auctions']" [queryParams]="{'tag': tag}">
       {{total}} more like {{tag}}
     </mat-option>
   </mat-autocomplete>

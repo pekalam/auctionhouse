@@ -42,5 +42,9 @@ namespace Core.Query.ReadModel
 
         public virtual IMongoCollection<TopAuctionsInTagReadModel> TagsAuctionsCollection =>
             _db.GetCollection<TopAuctionsInTagReadModel>("TopAuctionsInTag");
+
+        public virtual IMongoCollection<CommonTagsReadModel> CommonTagsCollection =>
+            _db.GetCollection<CommonTagsReadModel>("CommonTags");
+        
     }
 }

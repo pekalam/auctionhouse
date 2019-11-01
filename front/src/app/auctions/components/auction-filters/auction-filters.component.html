@@ -8,7 +8,7 @@
           [routerLink]="filterCategories.link">{{filterCategories.value}}</a></h1>
       <div *ngFor="let subcategory2 of filterCategories.children">
         <a [class]="'subcat-link ' + (subcategory2.value === selectedCategoryValue ? 'highlight' : '')"
-          [routerLink]="subcategory2.link">{{subcategory2.value}}</a>
+          [routerLink]="subcategory2.link" [queryParams]="subcategory2.queryParams">{{subcategory2.value}}</a>
       </div>
     </div>
     <div>

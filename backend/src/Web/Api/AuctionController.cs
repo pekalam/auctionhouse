@@ -16,7 +16,10 @@ using Core.Common.Domain.Products;
 using Core.Common.EventBus;
 using Core.Query.Queries.Auction.AuctionImage;
 using Core.Query.Queries.Auction.Auctions;
+using Core.Query.Queries.Auction.Auctions.ByCategory;
+using Core.Query.Queries.Auction.Auctions.ByTag;
 using Core.Query.Queries.Auction.Categories;
+using Core.Query.Queries.Auction.CommonTags;
 using Core.Query.Queries.Auction.SingleAuction;
 using Core.Query.Queries.Auction.TopAuctionsByTag;
 using Core.Query.ReadModel;
@@ -77,9 +80,9 @@ namespace Web.Api
 
         [HttpGet("auctions")]
         public async Task<ActionResult<IEnumerable<AuctionsQueryResult>>> Auctions(
-            [FromQuery] AuctionsQueryDto queryDto)
+            [FromQuery] AuctionsByCategoryQueryDto byCategoryQueryDto)
         {
-            var query = _mapper.Map<AuctionsQuery>(queryDto);
+            var query = _mapper.Map<AuctionsByCategoryQuery>(byCategoryQueryDto);
             var auctions = await _mediator.Send(query);
             return Ok(auctions);
         }
@@ -152,6 +155,21 @@ namespace Web.Api
             [FromQuery] AuctionsByTagQueryDto queryDto)
         {
             var result = await _mediator.Send(new TopAuctionsByTagQuery() {Tag = queryDto.Tag, Page = queryDto.Page});
+            return Ok(result);
+        }
+
+        [HttpGet("commonTags")]
+        public async Task<ActionResult<CommonTagsReadModel>> CommonTags([FromQuery] CommonTagsQueryDto queryDto)
+        {
+            var result = await _mediator.Send(new CommonTagsQuery() {Tag = queryDto.Tag});
+            return Ok(result);
+        }
+
+        [HttpGet("auctionsByTag")]
+        public async Task<ActionResult<AuctionsQueryResult>> AuctionsByTag([FromQuery] AuctionsByTagQueryDto queryDto)
+        {
+            var query = _mapper.Map<AuctionsByTagQuery>(queryDto);
+            var result = await _mediator.Send(query);
             return Ok(result);
         }
     }

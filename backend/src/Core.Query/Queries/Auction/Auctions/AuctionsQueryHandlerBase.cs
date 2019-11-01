@@ -1,32 +1,20 @@
 ﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Core.Common.Domain.Categories;
 using Core.Common.Domain.Products;
 using Core.Query.ReadModel;
-using MediatR;
 using MongoDB.Driver;
 
 namespace Core.Query.Queries.Auction.Auctions
 {
-    public class AuctionsQueryHandler : IRequestHandler<AuctionsQuery, IEnumerable<AuctionsQueryResult>>
+    public class AuctionsQueryHandlerBase
     {
-        public readonly static int PageSize = 10;
-        private readonly ReadModelDbContext _dbContext;
-        private readonly CategoryBuilder _categoryBuilder;
+        public const int PageSize = 10;
 
-        public AuctionsQueryHandler(ReadModelDbContext dbContext, CategoryBuilder categoryBuilder)
-        {
-            _dbContext = dbContext;
-            _categoryBuilder = categoryBuilder;
-        }
-
-        private void CreateBuyNowPriceFilter(List<FilterDefinition<AuctionReadModel>> filtersArr, AuctionsQuery request)
+        protected void CreateBuyNowPriceFilter(List<FilterDefinition<AuctionReadModel>> filtersArr, AuctionsQueryBase request)
         {
             if (request.MinBuyNowPrice != request.MaxBuyNowPrice
                 && request.MinBuyNowPrice < request.MaxBuyNowPrice
                 && (request.AuctionTypeQuery == AuctionTypeQuery.All || request.AuctionTypeQuery == AuctionTypeQuery.AuctionAndBuyNow
-                    || request.AuctionTypeQuery == AuctionTypeQuery.BuyNowOnly))
+                                                                     || request.AuctionTypeQuery == AuctionTypeQuery.BuyNowOnly))
             {
                 var filter1 = Builders<AuctionReadModel>.Filter.Gte(f => f.BuyNowPrice, request.MinBuyNowPrice);
                 var filter2 = Builders<AuctionReadModel>.Filter.Lte(f => f.BuyNowPrice, request.MaxBuyNowPrice);
@@ -41,13 +29,13 @@ namespace Core.Query.Queries.Auction.Auctions
             }
         }
 
-        private void CreateAuctionPriceFilter(List<FilterDefinition<AuctionReadModel>> filtersArr,
-            AuctionsQuery request)
+        protected void CreateAuctionPriceFilter(List<FilterDefinition<AuctionReadModel>> filtersArr,
+            AuctionsQueryBase request)
         {
             if (request.MinAuctionPrice != request.MaxAuctionPrice
                 && request.MinAuctionPrice < request.MaxAuctionPrice
                 && (request.AuctionTypeQuery == AuctionTypeQuery.All || request.AuctionTypeQuery == AuctionTypeQuery.AuctionAndBuyNow
-                    || request.AuctionTypeQuery == AuctionTypeQuery.Auction))
+                                                                     || request.AuctionTypeQuery == AuctionTypeQuery.Auction))
             {
                 var filter1 = Builders<AuctionReadModel>.Filter.Gte(f => f.ActualPrice, request.MinAuctionPrice);
                 var filter2 = Builders<AuctionReadModel>.Filter.Lte(f => f.ActualPrice, request.MaxAuctionPrice);
@@ -62,15 +50,9 @@ namespace Core.Query.Queries.Auction.Auctions
             }
         }
 
-        private List<FilterDefinition<AuctionReadModel>> CreateFilterDefs(AuctionsQuery request)
+        protected List<FilterDefinition<AuctionReadModel>> CreateFilterDefs(AuctionsQueryBase request)
         {
-            var category = _categoryBuilder.FromCategoryNamesList(request.CategoryNames);
-            var catFilter = Builders<AuctionReadModel>.Filter.Eq(f => f.Category, category);
-
-            var filtersArr = new List<FilterDefinition<AuctionReadModel>>()
-            {
-                catFilter
-            };
+            var filtersArr = new List<FilterDefinition<AuctionReadModel>>();
             if (request.AuctionTypeQuery == AuctionTypeQuery.Auction)
             {
                 var f1 = Builders<AuctionReadModel>.Filter.Eq(f => f.BuyNowOnly, false);
@@ -87,13 +69,13 @@ namespace Core.Query.Queries.Auction.Auctions
             {
                 var f1 = Builders<AuctionReadModel>.Filter.Eq(f => f.BuyNowOnly, false);
                 var f2 = Builders<AuctionReadModel>.Filter.Gt(f => f.BuyNowPrice, 0);
-                filtersArr.Add(Builders<AuctionReadModel>.Filter.And(f1,f2));
+                filtersArr.Add(Builders<AuctionReadModel>.Filter.And(f1, f2));
             }
 
             if (request.ConditionQuery != ConditionQuery.All)
             {
                 filtersArr.Add(Builders<AuctionReadModel>.Filter.Eq(f => f.Product.Condition,
-                    (Condition) request.ConditionQuery));
+                    (Condition)request.ConditionQuery));
             }
 
             CreateBuyNowPriceFilter(filtersArr, request);
@@ -101,22 +83,6 @@ namespace Core.Query.Queries.Auction.Auctions
             CreateAuctionPriceFilter(filtersArr, request);
 
             return filtersArr;
-        }
-
-        public async Task<IEnumerable<AuctionsQueryResult>> Handle(AuctionsQuery request,
-            CancellationToken cancellationToken)
-        {
-            var mapper = MapperConfigHolder.Configuration.CreateMapper();
-            var filtersArr = CreateFilterDefs(request);
-
-            var auctions = await _dbContext.AuctionsReadModel
-                .Find(Builders<AuctionReadModel>.Filter.And(filtersArr))
-                .Skip(request.Page * PageSize)
-                .Project(model => mapper.Map<AuctionsQueryResult>(model))
-                .Limit(PageSize)
-                .ToListAsync();
-            return auctions;
-            ;
         }
     }
 }

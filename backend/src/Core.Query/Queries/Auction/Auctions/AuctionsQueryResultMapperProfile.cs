@@ -3,9 +3,9 @@ using Core.Query.ReadModel;
 
 namespace Core.Query.Queries.Auction.Auctions
 {
-    public class AuctionQueryResultMapperProfile : Profile
+    public class AuctionsQueryResultMapperProfile : Profile
     {
-        public AuctionQueryResultMapperProfile()
+        public AuctionsQueryResultMapperProfile()
         {
             CreateMap<AuctionReadModel, AuctionsQueryResult>()
                 .ForMember(d => d.ProductName, opt => opt.MapFrom(s => s.Product.Name))

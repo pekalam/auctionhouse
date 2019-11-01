@@ -22,8 +22,8 @@ services:
     ports:
       - "2113:2113"
       - "1113:1113"
-    environment:
-      - EVENTSTORE_MEM_DB=true
+#    environment:
+#      - EVENTSTORE_MEM_DB=true
 
   rabbitmq:
     hostname: rabbitmq

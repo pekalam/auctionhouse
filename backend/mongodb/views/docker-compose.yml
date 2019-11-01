@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  cron-node:
+    hostname: cron-node
+    container_name: cron-node
+    image: mongo
+    volumes: 
+      - ./views/scripts:/scripts"
+    entrypoint: ["mongo", "--nodb"]
+    ports: 
+      - "27069:27017"

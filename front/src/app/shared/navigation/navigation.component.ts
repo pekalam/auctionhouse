@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { AuthenticationStateService } from '../../core/services/AuthenticationStateService';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material';
-import { TopAuctionsByTagQuery, TopAuctionsQueryResult, TopAuctionQueryItem } from '../../core/queries/AuctionsByTagQuery';
+import { TopAuctionsByTagQuery, TopAuctionsQueryResult, TopAuctionQueryItem } from '../../core/queries/TopAuctionsByTagQuery';
 import { Subject, Observable } from 'rxjs';
 import { distinctUntilChanged, debounceTime, switchMap, tap, map } from 'rxjs/operators';
 
