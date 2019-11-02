@@ -1,8 +1,9 @@
 <div class="container">
-  <app-carousel class="carousel" [sources]="['https://via.placeholder.com/250?text=1', 'https://via.placeholder.com/250?text=2']"
-  [img-height]="250" (imgSelected)="selectedImg = $event"></app-carousel>
+  <app-carousel class="carousel" [sources]="imgSources"
+  [img-height]="imgHeight" (imgSelected)="selectedImg = $event"></app-carousel>
   <div class="auction">
     <h3>{{auctions[selectedImg].productName}}</h3>
-    <p>{{auctions[selectedImg].price | currency}}</p>
+    <p class="current-price">{{auctions[selectedImg].actualPrice | currency}}</p>
+    <p class="views">Views: {{auctions[selectedImg].views}}</p>
   </div>
 </div>

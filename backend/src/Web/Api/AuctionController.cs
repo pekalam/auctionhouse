@@ -20,6 +20,7 @@ using Core.Query.Queries.Auction.Auctions.ByCategory;
 using Core.Query.Queries.Auction.Auctions.ByTag;
 using Core.Query.Queries.Auction.Categories;
 using Core.Query.Queries.Auction.CommonTags;
+using Core.Query.Queries.Auction.MostViewed;
 using Core.Query.Queries.Auction.SingleAuction;
 using Core.Query.Queries.Auction.TopAuctionsByTag;
 using Core.Query.ReadModel;
@@ -169,6 +170,14 @@ namespace Web.Api
         public async Task<ActionResult<AuctionsQueryResult>> AuctionsByTag([FromQuery] AuctionsByTagQueryDto queryDto)
         {
             var query = _mapper.Map<AuctionsByTagQuery>(queryDto);
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+
+        [HttpGet("mostViewedAuctions")]
+        public async Task<ActionResult<IEnumerable<MostViewedAuctionsResult>>> MostViewedAuctions()
+        {
+            var query = new MostViewedAuctionsQuery();
             var result = await _mediator.Send(query);
             return Ok(result);
         }

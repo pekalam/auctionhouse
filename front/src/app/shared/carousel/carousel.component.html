@@ -1,7 +1,7 @@
 <div class="container" >
   <div class="container-center" [style.height.px]="imgHeight">
     <div class="img-container">
-      <img *ngFor="let imgInd of imgInd" class="img" [src]="imgs[imgInd]" [hidden]="imgInd != shown" />
+      <img *ngFor="let imgInd of imgInd" class="img" [src]="imgs[imgInd]" [hidden]="imgInd != shown" [style.height.px]="imgHeight" />
     </div>
     <div class="btn-container" [style.top.px]="-(imgHeight / 2)">
       <button id="prev" (click)="onPrev()" [hidden]="imgInd.length == 1">Prev</button>

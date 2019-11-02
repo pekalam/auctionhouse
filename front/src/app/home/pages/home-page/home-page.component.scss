@@ -34,11 +34,13 @@
 
 @media only screen and (max-width: 820px) {
   #home-container {
+    flex-wrap: wrap;
     home-categories {
       min-width: 100%;
     }
     .promo-container {
       flex-grow: 0;
+      margin-left: 0;
     }
   }
 }

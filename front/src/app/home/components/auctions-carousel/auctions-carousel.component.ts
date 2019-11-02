@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { AuctionListModel } from '../../../core/models/Auctions';
+import { MostViewedAuction } from '../../../core/queries/MostViewedAuctionsQuery';
+import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-auctions-carousel',
@@ -8,19 +10,44 @@ import { AuctionListModel } from '../../../core/models/Auctions';
 })
 export class AuctionsCarouselComponent implements OnInit {
 
-  auctions: any[] = [
-    {productName: "Item 1", price: 20.20},
-    {productName: "Item 2", price: 99.99}
-  ]
+  auctions: MostViewedAuction[];
+  imgSources: string[];
+
+  @Input('auctions')
+  set setAuctions(auctions: MostViewedAuction[]) {
+    this.imgSources = auctions.map((a) => `/api/auctionImage?img=${a.auctionImages[0].size1Id}`);
+    this.auctions = auctions;
+  }
   selectedImg = 0;
 
-  constructor() { }
+  imgHeight;
 
-  ngOnInit() {
+  constructor(public breakpointObserver: BreakpointObserver) {
+    this.breakpointObserver
+      .observe(['(max-width: 820px)'])
+      .subscribe((state: BreakpointState) => {
+        if (state.matches) {
+          console.log("asd");
+
+          this.imgHeight = 133;
+        } else {
+          this.imgHeight = 200;
+        }
+      });
+
+    this.breakpointObserver
+      .observe(['(max-width: 1100px)'])
+      .subscribe((state: BreakpointState) => {
+        if (state.matches) {
+          console.log("asd");
+
+          this.imgHeight = 150;
+        } else {
+          this.imgHeight = 200;
+        }
+      });
   }
 
-  f(n){
-    console.log(n);
-
+  ngOnInit() {
   }
 }

@@ -2,8 +2,6 @@
   <div class="left">
       <app-carousel [sources]="imgs" [img-height]="200"></app-carousel>
   </div>
-
-
   <div class="right">
     <div class="right-content">
       <h3>{{auction.product.name}}</h3>
@@ -30,7 +28,7 @@
       <div class="views-container">
         <span>Views: {{auction.views}}</span>
       </div>
-      <div class="auction-buttons-container">
+      <div class="auction-buttons-container" *ngIf="(authenticationStateService.currentUser | async).userId !== auction.creator.userId">
         <button class="buynow-btn" (click)="onBuyNow()" [disabled]="showAuctionButtons || auction.buyNowPrice == null">Buy now</button>
         <button class="bid-btn" (click)="onBid()" [disabled]="showAuctionButtons">Bid</button>
       </div>

@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angu
 import { Auction } from '../../../core/models/Auctions';
 import { Router } from '@angular/router';
 import { AuctionImageQuery } from 'src/app/core/queries/AuctionImageQuery';
+import { AuthenticationStateService } from '../../../core/services/AuthenticationStateService';
 
 @Component({
   selector: 'app-auction',
@@ -42,7 +43,8 @@ export class AuctionComponent implements OnInit, OnDestroy {
     this.daysLeft = Math.round((d1.getTime() - d2.getTime()) / (1000 * 60 * 60 * 24));
   }
 
-  constructor(private auctionImageQuery: AuctionImageQuery) {
+  constructor(private auctionImageQuery: AuctionImageQuery, public authenticationStateService: AuthenticationStateService) {
+    authenticationStateService.checkIsAuthenticated();
   }
 
   ngOnInit() {

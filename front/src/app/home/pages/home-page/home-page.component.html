@@ -1,10 +1,10 @@
 <div id="home-container">
   <home-categories></home-categories>
   <div class="promo-container">
-    <h3 id="promo-title">Today's Deals</h3>
+    <h3 id="promo-title">Most viewed</h3>
     <hr>
     <div class="promo">
-      <app-auctions-carousel style="width: 100%; display: block;"></app-auctions-carousel>
+      <app-auctions-carousel *ngIf="mostViewedAuctions" [auctions]="mostViewedAuctions" style="width: 100%; display: block;"></app-auctions-carousel>
     </div>
   </div>
 </div>

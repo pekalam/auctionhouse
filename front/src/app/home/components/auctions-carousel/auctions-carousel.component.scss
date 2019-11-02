@@ -1,12 +1,27 @@
 .container{
-  display: flex;
-  flex-direction: row;
+  display: block;
   .carousel{
-    flex-grow: 1;
+    width: 50%;
+    float: left;
   }
   .auction{
-    flex-grow: 1;
+    width: 50%;
+    float: left;
     box-sizing: border-box;
     padding-left: 30px;
   }
+}
+
+.current-price{
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.views{
+  font-size: 13px;
+}
+
+
+@media only screen and (max-width: 820px) {
+
 }

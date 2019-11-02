@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
+import { MostViewedAuctionsQuery, MostViewedAuction } from '../../../core/queries/MostViewedAuctionsQuery';
 
 @Component({
   selector: 'app-home-page',
@@ -8,7 +9,13 @@ import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 })
 export class HomePageComponent implements OnInit {
 
-  constructor() { }
+  mostViewedAuctions: MostViewedAuction[];
+
+  constructor(private mostViewedAuctionsQuery: MostViewedAuctionsQuery) {
+    mostViewedAuctionsQuery.execute().subscribe((result) => {
+      this.mostViewedAuctions = result;
+    });
+  }
 
   ngOnInit() {
 
