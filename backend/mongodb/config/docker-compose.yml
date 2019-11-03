@@ -7,8 +7,6 @@ services:
     image: mongo
     tmpfs: /data/configdb
     command: "--configsvr --replSet configRS --bind_ip_all"
-    volumes: 
-      - "./config/scripts:/scripts"
   db-config2:
     hostname: db-config2
     container_name: db-config2

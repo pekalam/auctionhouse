@@ -7,5 +7,3 @@ services:
     image: mongo
 #    tmpfs: /data/db
     entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "n1", "--shardsvr" ]
-    volumes: 
-      - "./main/shard_1/scripts:/scripts"

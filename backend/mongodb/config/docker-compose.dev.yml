@@ -7,5 +7,3 @@ services:
     image: mongo
     tmpfs: /data/configdb
     command: "--configsvr --replSet configRS --bind_ip_all"
-    volumes: 
-      - "./config/scripts:/scripts"
