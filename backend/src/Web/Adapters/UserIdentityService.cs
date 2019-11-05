@@ -1,18 +1,24 @@
 ﻿using System;
+using System.Net;
 using System.Security.Claims;
 using Core.Common.Auth;
 using Core.Common.Domain.Users;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.Extensions.Logging;
+using Web.Exceptions;
 
 namespace Web.Adapters
 {
     public class UserIdentityService : IUserIdentityService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ILogger<UserIdentityService> _logger;
 
-        public UserIdentityService(IHttpContextAccessor httpContextAccessor)
+        public UserIdentityService(IHttpContextAccessor httpContextAccessor, ILogger<UserIdentityService> logger)
         {
             _httpContextAccessor = httpContextAccessor;
+            _logger = logger;
         }
 
         public UserIdentity GetSignedInUserIdentity()
@@ -21,7 +27,8 @@ namespace Web.Adapters
             var id = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid);
             if (id == null)
             {
-                throw new ApiExcpetion("Not signed in");
+                _logger.LogDebug($"User not signed in (url: {_httpContextAccessor.HttpContext.Request.GetDisplayUrl()})");
+                throw new ApiException(HttpStatusCode.Unauthorized, "Not signed in");
             }
             Guid userId;
             if (Guid.TryParse(id, out userId))
@@ -30,7 +37,8 @@ namespace Web.Adapters
             }
             else
             {
-                throw new ApiExcpetion("Cannot parse guid");
+                _logger.LogError($"Cannot parse GUID of user: {userName}");
+                throw new ApiException(HttpStatusCode.InternalServerError, "Cannot parse guid");
             }
         }
     }

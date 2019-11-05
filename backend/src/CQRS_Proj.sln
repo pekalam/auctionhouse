@@ -19,9 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Command", "Core.Comman
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Query", "Core.Query\Core.Query.csproj", "{3BF1DC2B-829E-4C5A-B34E-D1C9A456089F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gen", "..\Gen\Gen.csproj", "{16316068-A495-412D-9B62-AD604D22099B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{42ADE0DC-8C58-4749-B091-504955B0F581}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{42ADE0DC-8C58-4749-B091-504955B0F581}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,10 +59,6 @@ Global
 		{3BF1DC2B-829E-4C5A-B34E-D1C9A456089F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3BF1DC2B-829E-4C5A-B34E-D1C9A456089F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3BF1DC2B-829E-4C5A-B34E-D1C9A456089F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{16316068-A495-412D-9B62-AD604D22099B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{16316068-A495-412D-9B62-AD604D22099B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{16316068-A495-412D-9B62-AD604D22099B}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{16316068-A495-412D-9B62-AD604D22099B}.Release|Any CPU.Build.0 = Debug|Any CPU
 		{42ADE0DC-8C58-4749-B091-504955B0F581}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{42ADE0DC-8C58-4749-B091-504955B0F581}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42ADE0DC-8C58-4749-B091-504955B0F581}.Release|Any CPU.ActiveCfg = Release|Any CPU

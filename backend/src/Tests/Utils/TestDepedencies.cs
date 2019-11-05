@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Core.Common.ApplicationServices;
 using Core.Common.Domain.AuctionCreateSession;
 using Core.Common.Domain.Auctions;
@@ -79,7 +80,7 @@ namespace FunctionalTests.Utils
             {
                 ConnectionString = rabbitMqConnectionString
             }, Mock.Of<ILogger<RabbitMqEventBus>>());
-            eventBus.Init(eventHandlers);
+            eventBus.InitSubscribers(eventHandlers.Select(h => new RabbitMqEventConsumerFactory(() => h, h.MessageType.Name)).ToArray());
             EventBus = new EventBusService(eventBus ,AppEventBuilder);
         }
 

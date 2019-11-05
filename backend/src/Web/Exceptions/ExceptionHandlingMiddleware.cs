@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Threading.Tasks;
 using Core.Command.Exceptions;
 using Core.Command.Exceptions.Common;
-using Infrastructure.Auth;
 using Microsoft.AspNetCore.Http;
 
-namespace Web.Middleware
+namespace Web.Exceptions
 {
     public class ExceptionHandlingMiddleware
     {

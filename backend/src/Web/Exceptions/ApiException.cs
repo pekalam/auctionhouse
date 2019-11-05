@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Runtime.Serialization;
-using System.Threading.Tasks;
 
-namespace Web.Middleware
+namespace Web.Exceptions
 {
     public class ApiException : Exception
     {

@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using Core.Common.Auth;
 using Core.Common.Domain.AuctionCreateSession;
 using Core.Common.Domain.Users;
@@ -13,7 +11,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Web
+namespace Web.Adapters
 {
     public class MyContractResolver : Newtonsoft.Json.Serialization.DefaultContractResolver
     {

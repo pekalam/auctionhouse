@@ -12,8 +12,21 @@ using Newtonsoft.Json;
 using IEventBus = Core.Common.EventBus.IEventBus;
 
 [assembly: InternalsVisibleTo("FunctionalTests")]
+
 namespace Infrastructure.Services.EventBus
 {
+    internal class RabbitMqEventConsumerFactory
+    {
+        public Func<IEventConsumer> FactoryFunc { get; }
+        public string MessageName { get; }
+
+        public RabbitMqEventConsumerFactory(Func<IEventConsumer> factoryFunc, string messageName)
+        {
+            FactoryFunc = factoryFunc;
+            MessageName = messageName;
+        }
+    }
+
     public class RabbitMqEventBus : IEventBus
     {
         private readonly RabbitMqSettings _settings;
@@ -27,13 +40,13 @@ namespace Infrastructure.Services.EventBus
             _logger = logger;
         }
 
-        internal void Init(params IEventConsumer[] subscribers)
+        internal void InitSubscribers(params RabbitMqEventConsumerFactory[] subscriberFactories)
         {
             _bus = RabbitHutch.CreateBus(_settings.ConnectionString);
 
             SetupErrorQueueSubscribtion();
 
-            foreach (var eventConsumer in subscribers)
+            foreach (var eventConsumer in subscriberFactories)
             {
                 Subscribe(eventConsumer);
             }
@@ -43,10 +56,11 @@ namespace Infrastructure.Services.EventBus
         {
             try
             {
-                return JsonConvert.DeserializeObject<AppEventRabbitMQ<Event>>(message.Body.Message, new JsonSerializerSettings()
-                {
-                    TypeNameHandling = TypeNameHandling.All
-                });
+                return JsonConvert.DeserializeObject<AppEventRabbitMQ<Event>>(message.Body.Message,
+                    new JsonSerializerSettings()
+                    {
+                        TypeNameHandling = TypeNameHandling.All
+                    });
             }
             catch (Exception e)
             {
@@ -61,7 +75,8 @@ namespace Infrastructure.Services.EventBus
             var commandEvent = ParseEventFromMessage(message);
             if (commandEvent != null)
             {
-                var commandName = commandEvent.Command.GetType().Name;
+                var commandName = commandEvent.Command.GetType()
+                    .Name;
                 var handler = RollbackHandlerRegistry.GetCommandRollbackHandler(commandName);
                 handler.Rollback(commandEvent);
             }
@@ -75,22 +90,28 @@ namespace Infrastructure.Services.EventBus
             _bus.Advanced.Consume<Error>(queue, HandleErrorMessage);
         }
 
-        private void Subscribe(IEventConsumer eventConsumer)
+        private void Subscribe(RabbitMqEventConsumerFactory eventConsumerFactory)
         {
-            string toCamel(string i) => (Char.ToLower(i[0])) + i.Substring(1);
+            string toCamel(string s) => Char.ToLower(s[0]) + s.Substring(1);
+            string messageName = toCamel(eventConsumerFactory.MessageName);
+            Func<IEventConsumer> factory = eventConsumerFactory.FactoryFunc;
 
-            _bus.Subscribe(typeof(IAppEvent<Event>), eventConsumer.MessageType.Name, o => eventConsumer.Dispatch(o), configuration =>
-            {
-                configuration.WithTopic(toCamel(eventConsumer.MessageType.Name));
-                configuration.WithQueueName(toCamel(eventConsumer.MessageType.Name));
-            });
+            _bus.Subscribe(typeof(IAppEvent<Event>), messageName,
+                o => factory
+                        .Invoke()
+                        .Dispatch(o),
+                configuration =>
+                {
+                    configuration.WithTopic(messageName);
+                    configuration.WithQueueName(messageName);
+                });
         }
 
         public void Publish<T>(IAppEvent<T> @event) where T : Event
         {
             _bus.Publish(@event, @event.Event.EventName);
-            
-           //_bus.Advanced.Publish(new Exchange("Core.Interfaces.EventBus.IAppEvent`1[[Core.DomainModel.Event, Core]], Core"), @event.Event.EventName, true, new Message<IAppEvent<T>>(@event));
+
+            //_bus.Advanced.Publish(new Exchange("Core.Interfaces.EventBus.IAppEvent`1[[Core.DomainModel.Event, Core]], Core"), @event.Event.EventName, true, new Message<IAppEvent<T>>(@event));
         }
 
         public void Publish<T>(IEnumerable<IAppEvent<T>> events) where T : Event

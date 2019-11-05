@@ -19,7 +19,8 @@ using Infrastructure.Services.EventBus;
 using Infrastructure.Services.SchedulerService;
 using Web.Adapters;
 using Web.Adapters.EventSignaling;
-using Web.Middleware;
+using Web.Auth;
+using Web.Exceptions;
 using IUserIdProvider = Microsoft.AspNetCore.SignalR.IUserIdProvider;
 
 namespace Web
@@ -35,7 +36,8 @@ namespace Web
 
         private void ConfigureJWT(IServiceCollection services)
         {
-            var jwtConfig = Configuration.GetSection("JWT").Get<JwtSettings>();
+            var jwtConfig = Configuration.GetSection("JWT")
+                .Get<JwtSettings>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(jwtConfig.ConfigureJwt);
@@ -44,11 +46,16 @@ namespace Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<JwtSettings>(Configuration.GetSection("JWT"));
-            var eventStoreSettings = Configuration.GetSection("EventStore").Get<EventStoreConnectionSettings>();
-            var rabbitMqSettings = Configuration.GetSection("MQ").Get<RabbitMqSettings>();
-            var mongoDbSettings = Configuration.GetSection("Mongo").Get<MongoDbSettings>();
-            var imageDbSettings = Configuration.GetSection("ImageDb").Get<ImageDbSettings>();
-            var timeTaskServiceSettings = Configuration.GetSection("TimeTaskService").Get<TimeTaskServiceSettings>();
+            var eventStoreSettings = Configuration.GetSection("EventStore")
+                .Get<EventStoreConnectionSettings>();
+            var rabbitMqSettings = Configuration.GetSection("MQ")
+                .Get<RabbitMqSettings>();
+            var mongoDbSettings = Configuration.GetSection("Mongo")
+                .Get<MongoDbSettings>();
+            var imageDbSettings = Configuration.GetSection("ImageDb")
+                .Get<ImageDbSettings>();
+            var timeTaskServiceSettings = Configuration.GetSection("TimeTaskService")
+                .Get<TimeTaskServiceSettings>();
             var userAuthDbSettings = Configuration.GetSection("UserAuthDb")
                 .Get<UserAuthDbContextOptions>();
 
@@ -69,25 +76,27 @@ namespace Web
             services.AddScoped<IEventSignalingService, EventSignalingService>();
             services.AddAutoMapper(typeof(Startup).Assembly);
 
-            MicrosoftDIBootstraper.Bootstrap<UserIdentityService, AuctionCreateSessionService>(services, 
-                eventStoreSettings, rabbitMqSettings, 
-                mongoDbSettings, timeTaskServiceSettings, new CategoryNameServiceSettings()
+            DefaultDIBootstraper.Command.Configure<UserIdentityService, AuctionCreateSessionService>(
+                services,
+                eventStoreSettings, rabbitMqSettings, timeTaskServiceSettings, imageDbSettings, userAuthDbSettings,
+                new CategoryNameServiceSettings()
                 {
                     CategoriesFilePath = "./_data/categories.xml"
-                }, imageDbSettings, userAuthDbSettings);
+                }
+            );
+            DefaultDIBootstraper.Query.Configure(services, mongoDbSettings, new CategoryNameServiceSettings()
+            {
+                CategoriesFilePath = "./_data/categories.xml"
+            }, imageDbSettings, rabbitMqSettings);
+
             services.AddSignalR();
             services.AddSingleton<IUserIdProvider, UserIdProvider>();
-
             services.AddDistributedMemoryCache();
-
-
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
                 options.Cookie.IsEssential = true;
             });
-
-
             services.AddMvc();
             services.AddAuthentication()
                 .AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(ApiKeyAuthenticationOptions.Scheme,
@@ -98,7 +107,9 @@ namespace Web
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
         {
-            MicrosoftDIBootstraper.Init(serviceProvider);
+            //DefaultDIBootstraper.Start(serviceProvider);
+            DefaultDIBootstraper.Command.Start(serviceProvider);
+            DefaultDIBootstraper.Query.Start(serviceProvider);
 
             app.UseCors();
             app.UseMiddleware<ExceptionHandlingMiddleware>();
@@ -106,11 +117,9 @@ namespace Web
             {
                 app.UseDeveloperExceptionPage();
             }
+
             app.UseAuthentication();
-            app.UseSignalR(builder =>
-            {
-                builder.MapHub<ApplicationHub>("/app");
-            });
+            app.UseSignalR(builder => { builder.MapHub<ApplicationHub>("/app"); });
             app.UseSession();
             app.UseMvc();
         }

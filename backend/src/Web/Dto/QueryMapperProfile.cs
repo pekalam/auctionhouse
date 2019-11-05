@@ -10,9 +10,9 @@ using Web.Dto.Queries;
 
 namespace Web.Dto
 {
-    public class MapperProfile : Profile
+    public class QueryMapperProfile : Profile
     {
-        public MapperProfile()
+        public QueryMapperProfile()
         {
             CreateMap<AuctionsByCategoryQueryDto, AuctionsByCategoryQuery>();
             CreateMap<AuctionsByTagQueryDto, AuctionsByTagQuery>();

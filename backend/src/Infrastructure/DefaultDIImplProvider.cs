@@ -4,18 +4,21 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure
 {
-    public class MicrosoftDIImplProvider : IImplProvider
+    public class DefaultDIImplProvider : IImplProvider
     {
         private IServiceProvider _serviceProvider;
 
-        public MicrosoftDIImplProvider(IServiceProvider serviceProvider)
+        public DefaultDIImplProvider(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
 
         public T Get<T>()
         {
-            return _serviceProvider.GetRequiredService<T>();
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                return scope.ServiceProvider.GetRequiredService<T>();
+            }
         }
     }
 }

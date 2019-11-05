@@ -9,18 +9,17 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Dto.Queries;
-using Web.Middleware;
 
 namespace Web.Api
 {
     [ApiController]
     [Route("api")]
     [Authorize]
-    public class UserController : Controller
+    public class UserQueryController : Controller
     {
         private readonly IMediator _mediator;
 
-        public UserController(IMediator mediator)
+        public UserQueryController(IMediator mediator)
         {
             _mediator = mediator;
         }
