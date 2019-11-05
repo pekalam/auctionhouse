@@ -6,7 +6,7 @@ imgDir=$3
 count=$4
 
 files=($(ls "$imgDir"))
-cd ../../CmdTools/CreateAuction
+pushd ./CmdTools/CreateAuction
 for (( i=0; i<$count; i++ ))
 do
 	rand=$(((RANDOM<<15|RANDOM) % ${#files[@]}))
@@ -14,3 +14,4 @@ do
 	dotnet run $url $jwt "$imgDir/${files[$rand]}" --no-build &
 	echo "finished"
 done
+popd
