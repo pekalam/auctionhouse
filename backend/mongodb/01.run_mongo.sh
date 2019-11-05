@@ -7,4 +7,4 @@ else
 fi
 
 
-docker-compose -f ./mongos/docker-compose.yml -f $configComposeFile -f ./main/shard_1/docker-compose.yml -f ./main/shard_2/docker-compose.yml --project-directory . up -d
+docker-compose -f ./mongos/docker-compose.yml -f $configComposeFile -f ./shards/shard_1/docker-compose.yml -f ./shards/shard_2/docker-compose.yml --project-directory . up -d

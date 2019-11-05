@@ -1,12 +1,12 @@
 version: '3.4'
 
 services:
-  cron-node:
-    hostname: cron-node
-    container_name: cron-node
-    image: mongo
-    volumes: 
-      - ./views/scripts:/scripts"
-    entrypoint: ["mongo", "--nodb"]
-    ports: 
-      - "27069:27017"
+  update-server:
+    hostname: update-server
+    container_name: update-server
+    image: update-server
+    tty: true
+networks:
+    default:
+        external:
+            name: auctionhouse_network

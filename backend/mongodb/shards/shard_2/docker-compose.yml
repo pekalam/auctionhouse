@@ -7,3 +7,7 @@ services:
     image: mongo
 #    tmpfs: /data/db
     entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "n2", "--shardsvr" ]
+networks:
+    default:
+        external:
+            name: auctionhouse_network

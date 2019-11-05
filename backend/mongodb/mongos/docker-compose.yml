@@ -8,3 +8,7 @@ services:
     entrypoint: ["mongos", "--configdb", "configRS/db-config1:27019", "--bind_ip_all"]
     ports: 
       - "27017:27017"
+networks:
+    default:
+        external:
+            name: auctionhouse_network

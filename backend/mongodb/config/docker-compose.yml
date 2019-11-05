@@ -19,3 +19,7 @@ services:
     image: mongo
     tmpfs: /data/configdb
     command: "--configsvr --replSet configRS --bind_ip_all"
+networks:
+    default:
+        external:
+            name: auctionhouse_network

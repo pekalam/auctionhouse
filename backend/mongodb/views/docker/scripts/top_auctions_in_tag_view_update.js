@@ -1,3 +1,6 @@
+var conn = new Mongo('db-mongos1');
+var db = conn.getDB('appDb');
+
 db.getCollection('AuctionsReadModel').aggregate([
     { $project: { "Tag": "$Tags", "_id": 0, "AuctionId": 1, "Product.Name": 1, "Views": 1 } },
     { $unwind: "$Tag" },
