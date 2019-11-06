@@ -7,16 +7,11 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="8.4.0" />
     <PackageReference Include="JetBrains.Annotations" Version="10.2.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Extensions\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Microsoft.Extensions.Logging.Abstractions">
-      <HintPath>..\..\..\..\..\..\.nuget\packages\microsoft.extensions.logging.abstractions\2.2.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

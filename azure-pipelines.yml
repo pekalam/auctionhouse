@@ -10,10 +10,16 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
+- task: UseDotNet@2
+  displayName: 'Use .NET Core sdk'
+  inputs:
+    packageType: sdk
+    version: 2.2.401
+    installationPath: $(Agent.ToolsDirectory)/dotnet
 - task: ShellScript@2
   inputs:
-    scriptPath: 'backend\cli\build.sh'
+    scriptPath: 'backend/cli/build.sh'
     #args: '' # Optional
     #disableAutoCwd: false # Optional
-    cwd: 'backend\cli' # Optional
+    cwd: 'backend/cli' # Optional
     #failOnStandardError: false
