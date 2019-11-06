@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Core.Command.AuctionCreateSession_AddAuctionImage
 {
+
     public class AddAuctionImageCommandHandler : IRequestHandler<AddAuctionImageCommand>
     {
         private readonly IAuctionImageRepository _imageRepository;
@@ -48,7 +49,7 @@ namespace Core.Command.AuctionCreateSession_AddAuctionImage
 
             try
             {
-                _imageRepository.AddImage(imageId, converted);
+                _imageRepository.Add(imageId, converted);
             }
             catch (Exception)
             {
@@ -73,14 +74,12 @@ namespace Core.Command.AuctionCreateSession_AddAuctionImage
 
             auctionCreateSession.AddOrReplaceImage(auctionImg, request.ImgNum);
 
-
             _auctionCreateSessionService.SaveSessionForSignedInUser(auctionCreateSession);
             _eventSignalingService.TrySendCompletionToUser("auctionImageAdded", request.CorrelationId, userIdentity, new Dictionary<string, string>()
             {
                 {"imgSz1", auctionImg.Size1Id},
                 {"imgSz2", auctionImg.Size2Id},
                 {"imgSz3", auctionImg.Size3Id}
-
             });
             return Task.FromResult(Unit.Value);
         }

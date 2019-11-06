@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Threading;
 using Core.Common.Domain.Auctions;
 using FluentAssertions;
@@ -33,15 +34,15 @@ namespace IntegrationTests
         [TearDown]
         public void TearDown()
         {
-             var filter = Builders<GridFSFileInfo>.Filter.Eq(f => f.Filename,
-                "img1");
-             using (var c = dbContext.Bucket.Find(filter))
-             {
-                 foreach (var i in c.ToEnumerable())
-                 {
-                     dbContext.Bucket.Delete(i.Id);
-                 }
-             }
+            var filter = Builders<GridFSFileInfo>.Filter.In(f => f.Filename,
+                Enumerable.Range(0, 10).Select(i => $"img{i}"));
+            using (var c = dbContext.Bucket.Find(filter))
+            {
+                foreach (var i in c.ToEnumerable())
+                {
+                    dbContext.Bucket.Delete(i.Id);
+                }
+            }
         }
 
         [Test]
@@ -50,13 +51,75 @@ namespace IntegrationTests
             var testFile = File.ReadAllBytes("./test_image.jpg");
             var imgRepresentation = new AuctionImageRepresentation()
             {
-                Img = testFile
+                Img = testFile, Metadata = new AuctionImageMetadata()
             };
-            auctionImageRepository.AddImage("img1", imgRepresentation);
-            var fetched = auctionImageRepository.FindImage("img1");
+            auctionImageRepository.Add("img1", imgRepresentation);
+            var fetched = auctionImageRepository.Find("img1");
 
-            fetched.Should().NotBeNull();
-            fetched.Img.Length.Should().Be(testFile.Length);
+            fetched.Metadata.IsAssignedToAuction.Should()
+                .BeFalse();
+            fetched.Should()
+                .NotBeNull();
+            fetched.Img.Length.Should()
+                .Be(testFile.Length);
+        }
+
+        [Test]
+        public void UpdateMetadata_when_file_exists_changes_metadata()
+        {
+            var testFile = File.ReadAllBytes("./test_image.jpg");
+            var imgRepresentation = new AuctionImageRepresentation()
+            {
+                Img = testFile,
+                Metadata = new AuctionImageMetadata()
+            };
+            auctionImageRepository.Add("img1", imgRepresentation);
+
+            auctionImageRepository.UpdateMetadata("img1", new AuctionImageMetadata()
+            {
+                IsAssignedToAuction = true
+            });
+
+            var fetched = auctionImageRepository.Find("img1");
+
+            fetched.Metadata.IsAssignedToAuction.Should()
+                .BeTrue();
+            fetched.Should()
+                .NotBeNull();
+            fetched.Img.Length.Should()
+                .Be(testFile.Length);
+        }
+
+        private void AddTestImageToRepository(string imageId)
+        {
+            var testFile = File.ReadAllBytes("./test_image.jpg");
+            var imgRepresentation = new AuctionImageRepresentation()
+            {
+                Img = testFile,
+                Metadata = new AuctionImageMetadata()
+            };
+            auctionImageRepository.Add(imageId, imgRepresentation);
+        }
+
+        [Test]
+        public void UpdateManyMetadata_when_files_exists_changes_metadata()
+        {
+            AddTestImageToRepository("img1");
+            AddTestImageToRepository("img2");
+
+            auctionImageRepository.UpdateManyMetadata(new []{"img1", "img2"}, new AuctionImageMetadata()
+            {
+                IsAssignedToAuction = true
+            });
+
+            var fetched1 = auctionImageRepository.Find("img1");
+            var fetched2 = auctionImageRepository.Find("img2");
+
+
+            fetched1.Metadata.IsAssignedToAuction.Should()
+                .BeTrue();
+            fetched2.Metadata.IsAssignedToAuction.Should()
+                .BeTrue();
         }
     }
 }

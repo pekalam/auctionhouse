@@ -37,8 +37,9 @@ namespace FunctionalTests.CommandRollback
                 IUserIdentityService userIdService, IAuctionSchedulerService auctionSchedulerService,
                 EventBusService eventBusService, ILogger<CreateAuctionCommandHandler> logger,
                 CategoryBuilder categoryBuilder, IUserRepository userRepository, IAuctionCreateSessionService cs,
+                IAuctionImageRepository imageRepository,
                 CreateAuctionRollbackHandler rollbackHandler) : base(auctionRepository,
-                userIdService, auctionSchedulerService, eventBusService, logger, categoryBuilder, userRepository, cs)
+                userIdService, auctionSchedulerService, eventBusService, logger, categoryBuilder, userRepository, cs, imageRepository)
             {
                 _createAuctionRollbackHandler = rollbackHandler;
             }
@@ -97,10 +98,12 @@ namespace FunctionalTests.CommandRollback
             userIdService.Setup(f => f.GetSignedInUserIdentity())
                 .Returns(user.UserIdentity);
             var userRepository = new Mock<IUserRepository>();
-            userRepository.Setup(f => f.FindUser(It.IsAny<UserIdentity>())).Returns(user);
+            userRepository.Setup(f => f.FindUser(It.IsAny<UserIdentity>()))
+                .Returns(user);
 
-            var command = new CreateAuctionCommand(20.0m, product, DateTime.UtcNow.AddMinutes(10), DateTime.UtcNow.AddDays(12),
-                categories, correlationId, new []{"tag1"});
+            var command = new CreateAuctionCommand(20.0m, product, DateTime.UtcNow.AddMinutes(10),
+                DateTime.UtcNow.AddDays(12),
+                categories, correlationId, new[] {"tag1"});
 
             IAppEvent<AuctionCreated> publishedEvent = null;
 
@@ -121,11 +124,13 @@ namespace FunctionalTests.CommandRollback
             services.SetupEventBus(eventHandler.Object);
 
             var implProv = new Mock<IImplProvider>();
-            implProv.Setup(f => f.Get<IAuctionRepository>()).Returns(services.AuctionRepository);
+            implProv.Setup(f => f.Get<IAuctionRepository>())
+                .Returns(services.AuctionRepository);
             RollbackHandlerRegistry.ImplProvider = implProv.Object;
             var testRollbackHandler = new Mock<TestCreateAuctionRollbackHandler>(implProv.Object);
             testRollbackHandler.CallBase = true;
-            testRollbackHandler.Setup(f => f.Rollback(It.IsAny<IAppEvent<Event>>())).CallBase();
+            testRollbackHandler.Setup(f => f.Rollback(It.IsAny<IAppEvent<Event>>()))
+                .CallBase();
             testRollbackHandler.Object.AfterAction = () => { sem2.Release(); };
 
 
@@ -135,7 +140,8 @@ namespace FunctionalTests.CommandRollback
                 new TestCreateAuctionCommandHandler(services.AuctionRepository, userIdService.Object,
                     services.SchedulerService, services.EventBus,
                     Mock.Of<ILogger<CreateAuctionCommandHandler>>(),
-                    new CategoryBuilder(services.CategoryTreeService), userRepository.Object, services.GetAuctionCreateSessionService(session),
+                    new CategoryBuilder(services.CategoryTreeService), userRepository.Object,
+                    services.GetAuctionCreateSessionService(session), services.AuctionImageRepository,
                     testRollbackHandler.Object);
 
             commandHandler.Handle(command, CancellationToken.None);
@@ -148,8 +154,10 @@ namespace FunctionalTests.CommandRollback
             var auctionAfterRollback = services.AuctionRepository.FindAuction(publishedEvent.Event.AuctionId);
 
             testRollbackHandler.Verify(f => f.Rollback(It.IsAny<IAppEvent<Event>>()), Times.Once());
-            createdAuciton.Should().NotBe(null);
-            auctionAfterRollback.Should().Be(null);
+            createdAuciton.Should()
+                .NotBe(null);
+            auctionAfterRollback.Should()
+                .Be(null);
         }
     }
 }

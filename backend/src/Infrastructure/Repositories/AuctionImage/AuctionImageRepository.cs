@@ -3,6 +3,7 @@ using System.Linq;
 using Core.Common.Domain.Auctions;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
 
@@ -53,7 +54,7 @@ namespace Infrastructure.Repositories.AuctionImage
             }
         }
 
-        public AuctionImageRepresentation FindImage(string imageId)
+        public AuctionImageRepresentation Find(string imageId)
         {
             var filter = Builders<GridFSFileInfo>.Filter.Eq(f => f.Filename,
                 imageId);
@@ -62,18 +63,59 @@ namespace Infrastructure.Repositories.AuctionImage
             {
                 return null;
             }
+            var metadata = BsonSerializer.Deserialize<AuctionImageMetadata>(fileInfo.Metadata);
             var fileBytes = GetFileFromDb(fileInfo.Id);
             return new AuctionImageRepresentation()
             {
-                Img = fileBytes
+                Img = fileBytes,
+                Metadata = metadata 
             };
         }
 
-        public void AddImage(string imageId, AuctionImageRepresentation imageRepresentation)
+        public void UpdateMetadata(string imageId, AuctionImageMetadata metadata)
         {
-            if (FindImage(imageId) == null)
+            var filter = Builders<BsonDocument>.Filter.Eq("filename", imageId);
+            var update = Builders<BsonDocument>.Update.Set("metadata", metadata);
+            var result = _dbContext.Bucket.Database
+                .GetCollection<BsonDocument>("fs.files")
+                .UpdateOne(filter, update);
+            if (result.MatchedCount != 1)
             {
-                var o = _dbContext.Bucket.UploadFromBytes(imageId, imageRepresentation.Img);
+                throw new Exception($"Matched count {result.MatchedCount}");
+            }
+
+            if (result.ModifiedCount != 1)
+            {
+                throw new Exception($"Modified count {result.ModifiedCount}");
+            }
+        }
+
+        public void UpdateManyMetadata(string[] imageIds, AuctionImageMetadata metadata)
+        {
+            var filter = Builders<BsonDocument>.Filter.In("filename", imageIds);
+            var update = Builders<BsonDocument>.Update.Set("metadata", metadata);
+
+            var result = _dbContext.Bucket.Database
+                .GetCollection<BsonDocument>("fs.files")
+                .UpdateMany(filter, update);
+            if (result.MatchedCount <= 0)
+            {
+                throw new Exception($"Matched count {result.MatchedCount}");
+            }
+
+            if (result.ModifiedCount <= 0)
+            {
+                throw new Exception($"Modified count {result.ModifiedCount}");
+            }
+        }
+
+        public void Add(string imageId, AuctionImageRepresentation imageRepresentation)
+        {
+            if (Find(imageId) == null)
+            {
+                var fileUploadOptions = new GridFSUploadOptions();
+                fileUploadOptions.Metadata = imageRepresentation.Metadata.ToBsonDocument();
+                var o = _dbContext.Bucket.UploadFromBytes(imageId, imageRepresentation.Img, fileUploadOptions);
             }
             else
             {
@@ -81,7 +123,7 @@ namespace Infrastructure.Repositories.AuctionImage
             }
         }
 
-        public void RemoveImage(string imageId)
+        public void Remove(string imageId)
         {
             var info = GetFileInfo(imageId);
             if (info != null)

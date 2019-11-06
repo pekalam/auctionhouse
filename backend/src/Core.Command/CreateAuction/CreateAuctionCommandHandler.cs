@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Command.Exceptions;
@@ -26,8 +27,14 @@ namespace Core.Command.CreateAuction
         private readonly CategoryBuilder _categoryBuilder;
         private readonly IUserRepository _userRepository;
         private readonly IAuctionCreateSessionService _auctionCreateSessionService;
+        private readonly IAuctionImageRepository _auctionImageRepository;
 
-        public CreateAuctionCommandHandler(IAuctionRepository auctionRepository, IUserIdentityService userIdService, IAuctionSchedulerService auctionSchedulerService, EventBusService eventBusService, ILogger<CreateAuctionCommandHandler> logger, CategoryBuilder categoryBuilder, IUserRepository userRepository, IAuctionCreateSessionService auctionCreateSessionService)
+        public CreateAuctionCommandHandler(IAuctionRepository auctionRepository,
+            IUserIdentityService userIdService,
+            IAuctionSchedulerService auctionSchedulerService, EventBusService eventBusService,
+            ILogger<CreateAuctionCommandHandler> logger, CategoryBuilder categoryBuilder,
+            IUserRepository userRepository, IAuctionCreateSessionService auctionCreateSessionService,
+            IAuctionImageRepository auctionImageRepository)
         {
             _auctionRepository = auctionRepository;
             _userIdService = userIdService;
@@ -37,10 +44,13 @@ namespace Core.Command.CreateAuction
             _categoryBuilder = categoryBuilder;
             _userRepository = userRepository;
             _auctionCreateSessionService = auctionCreateSessionService;
+            _auctionImageRepository = auctionImageRepository;
             SetupRollbackHandler();
         }
 
-        protected virtual void SetupRollbackHandler() => RollbackHandlerRegistry.RegisterCommandRollbackHandler(nameof(CreateAuctionCommand), provider => new CreateAuctionRollbackHandler(provider));
+        protected virtual void SetupRollbackHandler() =>
+            RollbackHandlerRegistry.RegisterCommandRollbackHandler(nameof(CreateAuctionCommand),
+                provider => new CreateAuctionRollbackHandler(provider));
 
         protected virtual void AddToRepository(Auction auction, AtomicSequence<Auction> context)
         {
@@ -72,7 +82,8 @@ namespace Core.Command.CreateAuction
         {
             try
             {
-                var scheduledTaskId = _auctionSchedulerService.ScheduleAuctionEndTask(auction).Result;
+                var scheduledTaskId = _auctionSchedulerService.ScheduleAuctionEndTask(auction)
+                    .Result;
                 context.TransactionContext = scheduledTaskId;
             }
             catch (Exception e)
@@ -93,6 +104,54 @@ namespace Core.Command.CreateAuction
             {
                 _logger.LogCritical($"Cannot schedule auction end {e.Message}");
                 throw new CommandException("Cannot schedule auction end", e);
+            }
+        }
+
+        protected virtual void ChangeImagesMetadata(Auction auction, AtomicSequence<Auction> context)
+        {
+            if (auction.AuctionImages.Count(img => img == null) == auction.AuctionImages.Count)
+            {
+                return;
+            }
+
+            try
+            {
+                _auctionImageRepository.UpdateManyMetadata(auction.AuctionImages
+                    .Where(image => image != null)
+                    .SelectMany(img => new string[3] {img.Size1Id, img.Size2Id, img.Size3Id}.AsEnumerable())
+                    .ToArray(), new AuctionImageMetadata()
+                {
+                    IsAssignedToAuction = true
+                });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Cannot set auction images metadata");
+                throw;
+            }
+        }
+
+        protected virtual void ChangeImagesMetadata_Rollback(Auction auction, AtomicSequence<Auction> context)
+        {
+            if (auction.AuctionImages.Count(img => img == null) == auction.AuctionImages.Count)
+            {
+                return;
+            }
+
+            try
+            {
+                _auctionImageRepository.UpdateManyMetadata(auction.AuctionImages
+                    .Where(image => image != null)
+                    .SelectMany(img => new string[3] { img.Size1Id, img.Size2Id, img.Size3Id }.AsEnumerable())
+                    .ToArray(), new AuctionImageMetadata()
+                {
+                    IsAssignedToAuction = false
+                });
+            }
+            catch (Exception e)
+            {
+                _logger.LogCritical("Cannot rollback set auction images metadata");
+                throw;
             }
         }
 
@@ -158,6 +217,7 @@ namespace Core.Command.CreateAuction
             var addAuctionSequence = new AtomicSequence<Auction>()
                 .AddTask(AddToRepository, RollbackAddToRepository)
                 .AddTask(SheduleAuctionEndTask, RollbackScheduleAuctionEndTask)
+                .AddTask(ChangeImagesMetadata, ChangeImagesMetadata_Rollback)
                 .AddTask((param, _) => PublishEvents(auction, user, request), null);
 
             addAuctionSequence.ExecuteSequence(auction);

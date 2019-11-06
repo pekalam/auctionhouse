@@ -2,8 +2,10 @@
 {
     public interface IAuctionImageRepository
     {
-        AuctionImageRepresentation FindImage(string imageId);
-        void AddImage(string imageId, AuctionImageRepresentation imageRepresentation);
-        void RemoveImage(string imageId);
+        AuctionImageRepresentation Find(string imageId);
+        void Add(string imageId, AuctionImageRepresentation imageRepresentation);
+        void Remove(string imageId);
+        void UpdateMetadata(string imageId, AuctionImageMetadata metadata);
+        void UpdateManyMetadata(string[] imageIds, AuctionImageMetadata Metadata);
     }
 }

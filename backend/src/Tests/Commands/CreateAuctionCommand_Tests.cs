@@ -85,7 +85,7 @@ namespace FunctionalTests.Commands
                 eventBusService.Object,
                 Mock.Of<ILogger<CreateAuctionCommandHandler>>(),
                 new CategoryBuilder(testDepedencies.CategoryTreeService),
-                userRepository.Object, auctionCreateSessionService.Object);
+                userRepository.Object, auctionCreateSessionService.Object, testDepedencies.AuctionImageRepository);
         }
 
         [SetUp]
@@ -194,9 +194,9 @@ namespace FunctionalTests.Commands
         public TestCreateAuctionCommandHandler(IAuctionRepository auctionRepository, IUserIdentityService userIdService,
             IAuctionSchedulerService auctionSchedulerService, EventBusService eventBusService,
             ILogger<CreateAuctionCommandHandler> logger, CategoryBuilder categoryBuilder,
-            IUserRepository userRepository, IAuctionCreateSessionService auctionCreateSessionService) : base(
+            IUserRepository userRepository, IAuctionCreateSessionService auctionCreateSessionService, IAuctionImageRepository imageRepository) : base(
             auctionRepository, userIdService, auctionSchedulerService, eventBusService, logger, categoryBuilder,
-            userRepository, auctionCreateSessionService)
+            userRepository, auctionCreateSessionService, imageRepository)
         {
         }
 

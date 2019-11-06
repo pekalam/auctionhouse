@@ -1,4 +1,5 @@
 ﻿using System;
+using Core.Common.Domain.Auctions;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
@@ -20,6 +21,7 @@ namespace Infrastructure.Repositories.AuctionImage
                 BsonSerializer.RegisterSerializer(typeof(Guid),
                     new GuidSerializer(BsonType.String));
             }
+            
 
             _client = new MongoClient(new MongoUrl(options.ConnectionString));
             _db = _client.GetDatabase(options.DatabaseName);

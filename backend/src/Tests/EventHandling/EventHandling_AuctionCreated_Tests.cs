@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using Core.Command.CreateAuction;
 using Core.Common.Auth;
+using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Auctions.Events;
 using Core.Common.Domain.Categories;
 using Core.Common.Domain.Products;
@@ -34,10 +36,17 @@ namespace FunctionalTests.EventHandling
             user = new User();
             user.Register("testUserName");
             user.MarkPendingEventsAsHandled();
-            product = new Product() { Name = "test product", Description = "desc" };
+            product = new Product() {Name = "test product", Description = "desc"};
             correlationId = new CorrelationId("test_correlationId");
             services.DbContext.UsersReadModel.InsertOne(new UserReadModel()
-                { UserIdentity = new UserIdentityReadModel(user.UserIdentity) });
+                {UserIdentity = new UserIdentityReadModel(user.UserIdentity)});
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            var testDepedencies = TestDepedencies.Instance.Value;
+            testDepedencies.AuctionImageRepository.Remove("img1-1");
         }
 
         private void SetUpCommandHandler()
@@ -52,12 +61,24 @@ namespace FunctionalTests.EventHandling
                 .Returns(user);
 
             var session = user.UserIdentity.GetAuctionCreateSession();
+            session.AddOrReplaceImage(new AuctionImage("img1-1",
+                "img1-2", "img1-3"), 0);
+            services.AuctionImageRepository.Add("img1-1", new AuctionImageRepresentation()
+            {
+                Metadata = new AuctionImageMetadata(),
+                Img = File.ReadAllBytes("./test_image.jpg")
+            });
+            var sessionService = services.GetAuctionCreateSessionService(session);
+            
             commandHandler =
-                new CreateAuctionCommandHandler(services.AuctionRepository, userIdService.Object,
+                new CreateAuctionCommandHandler(services.AuctionRepository, 
+                    userIdService.Object,
                     services.SchedulerService, services.EventBus,
                     Mock.Of<ILogger<CreateAuctionCommandHandler>>(),
-                    new CategoryBuilder(services.CategoryTreeService), userRepository.Object,
-                    services.GetAuctionCreateSessionService(session));
+                    new CategoryBuilder(services.CategoryTreeService), 
+                    userRepository.Object,
+                    sessionService, services.AuctionImageRepository
+                    );
         }
 
         CreateAuctionCommand GetCreateCommand()
@@ -68,7 +89,7 @@ namespace FunctionalTests.EventHandling
             };
             return new CreateAuctionCommand(20.0m, product, DateTime.UtcNow.AddMinutes(20),
                 DateTime.UtcNow.AddDays(12),
-                categories, correlationId, new []{"tag1"});
+                categories, correlationId, new[] {"tag1"});
         }
 
         private bool VerifyEvent(AuctionCreated auctionCreated, CreateAuctionCommand command)
@@ -136,6 +157,10 @@ namespace FunctionalTests.EventHandling
 
             userReadModel.CreatedAuctions.Count.Should()
                 .Be(1);
+
+            services.AuctionImageRepository.Find("img1-1")
+                .Metadata.IsAssignedToAuction.Should()
+                .BeTrue();
 
             correlationId.Value.Should()
                 .BeEquivalentTo(correlationIdFromHandler.Value);

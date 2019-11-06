@@ -95,7 +95,8 @@ namespace Web.Api
                 commandDto.Img.CopyTo(stream);
                 var imageRepresentation = new AuctionImageRepresentation()
                 {
-                    Img = stream.ToArray()
+                    Img = stream.ToArray(),
+                    Metadata = new AuctionImageMetadata()
                 };
                 var command = new AddAuctionImageCommand(imageRepresentation, correlationId, commandDto.ImgNum);
                 await _mediator.Send(command);
