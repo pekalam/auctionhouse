@@ -4,16 +4,16 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
+- develop
 
 pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: ShellScript@2
+  inputs:
+    scriptPath 'backend\cli\build.sh;:
+    #args: '' # Optional
+    #disableAutoCwd: false # Optional
+    cwd: 'backend\cli' # Optional
+    #failOnStandardError: false
