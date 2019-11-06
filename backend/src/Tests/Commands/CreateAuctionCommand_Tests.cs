@@ -78,19 +78,26 @@ namespace FunctionalTests.Commands
 
             var eventBusService = new Mock<EventBusService>(Mock.Of<IEventBus>(), Mock.Of<IAppEventBuilder>());
 
-            testCommandHandler = new TestCreateAuctionCommandHandler(testDepedencies.AuctionRepository,
-                userIdentityService.Object,
-                new TestAuctionSchedulerService(testDepedencies.TimeTaskClient,
+            var handlerDepedencies = new CreateAuctionCommandHandlerDepedencies()
+            {
+                auctionRepository = testDepedencies.AuctionRepository,
+                userIdService = userIdentityService.Object,
+                auctionSchedulerService = new TestAuctionSchedulerService(testDepedencies.TimeTaskClient,
                     testDepedencies.TimetaskServiceSettings),
-                eventBusService.Object,
-                Mock.Of<ILogger<CreateAuctionCommandHandler>>(),
-                new CategoryBuilder(testDepedencies.CategoryTreeService),
-                userRepository.Object, auctionCreateSessionService.Object, testDepedencies.AuctionImageRepository);
+                eventBusService = eventBusService.Object,
+                logger = Mock.Of<ILogger<CreateAuctionCommandHandler>>(),
+                auctionCreateSessionService = auctionCreateSessionService.Object,
+                auctionImageRepository = testDepedencies.AuctionImageRepository,
+                categoryBuilder = new CategoryBuilder(testDepedencies.CategoryTreeService),
+                userRepository = userRepository.Object
+            };
+            testCommandHandler = new TestCreateAuctionCommandHandler(handlerDepedencies);
         }
 
         [SetUp]
         public void SetUp()
         {
+            AuctionConstantsFactory.MinAuctionTimeM = -1;
             SetUpFakeTimeTaskServer();
             called = false;
             startDate = DateTime.UtcNow.AddSeconds(10);
@@ -191,12 +198,7 @@ namespace FunctionalTests.Commands
 
         public Auction AddedAuction { get; private set; }
 
-        public TestCreateAuctionCommandHandler(IAuctionRepository auctionRepository, IUserIdentityService userIdService,
-            IAuctionSchedulerService auctionSchedulerService, EventBusService eventBusService,
-            ILogger<CreateAuctionCommandHandler> logger, CategoryBuilder categoryBuilder,
-            IUserRepository userRepository, IAuctionCreateSessionService auctionCreateSessionService, IAuctionImageRepository imageRepository) : base(
-            auctionRepository, userIdService, auctionSchedulerService, eventBusService, logger, categoryBuilder,
-            userRepository, auctionCreateSessionService, imageRepository)
+        public TestCreateAuctionCommandHandler(CreateAuctionCommandHandlerDepedencies depedencies) : base(depedencies)
         {
         }
 
@@ -211,9 +213,9 @@ namespace FunctionalTests.Commands
             AddedAuction = auction;
         }
 
-        protected override void RollbackAddToRepository(Auction auction, AtomicSequence<Auction> context)
+        protected override void AddToRepository_Rollback(Auction auction, AtomicSequence<Auction> context)
         {
-            base.RollbackAddToRepository(auction, context);
+            base.AddToRepository_Rollback(auction, context);
         }
 
         protected override void SheduleAuctionEndTask(Auction auction, AtomicSequence<Auction> context)
@@ -226,9 +228,9 @@ namespace FunctionalTests.Commands
             base.SheduleAuctionEndTask(auction, context);
         }
 
-        protected override void RollbackScheduleAuctionEndTask(Auction auction, AtomicSequence<Auction> context)
+        protected override void ScheduleAuctionEndTask_Rollback(Auction auction, AtomicSequence<Auction> context)
         {
-            base.RollbackScheduleAuctionEndTask(auction, context);
+            base.ScheduleAuctionEndTask_Rollback(auction, context);
         }
 
         protected override void PublishEvents(Auction auction, User user, CreateAuctionCommand createAuctionCommand)

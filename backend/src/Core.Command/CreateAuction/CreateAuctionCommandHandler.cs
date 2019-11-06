@@ -17,34 +17,26 @@ using Microsoft.Extensions.Logging;
 
 namespace Core.Command.CreateAuction
 {
+    public class CreateAuctionCommandHandlerDepedencies
+    {
+        public IAuctionRepository auctionRepository;
+        public IUserIdentityService userIdService;
+        public IAuctionSchedulerService auctionSchedulerService;
+        public EventBusService eventBusService;
+        public ILogger<CreateAuctionCommandHandler> logger;
+        public CategoryBuilder categoryBuilder;
+        public IUserRepository userRepository;
+        public IAuctionCreateSessionService auctionCreateSessionService;
+        public IAuctionImageRepository auctionImageRepository;
+    }
+
     public class CreateAuctionCommandHandler : IRequestHandler<CreateAuctionCommand>
     {
-        private readonly IAuctionRepository _auctionRepository;
-        private readonly IUserIdentityService _userIdService;
-        private readonly IAuctionSchedulerService _auctionSchedulerService;
-        private readonly EventBusService _eventBusService;
-        private readonly ILogger<CreateAuctionCommandHandler> _logger;
-        private readonly CategoryBuilder _categoryBuilder;
-        private readonly IUserRepository _userRepository;
-        private readonly IAuctionCreateSessionService _auctionCreateSessionService;
-        private readonly IAuctionImageRepository _auctionImageRepository;
+        private readonly CreateAuctionCommandHandlerDepedencies _deps;
 
-        public CreateAuctionCommandHandler(IAuctionRepository auctionRepository,
-            IUserIdentityService userIdService,
-            IAuctionSchedulerService auctionSchedulerService, EventBusService eventBusService,
-            ILogger<CreateAuctionCommandHandler> logger, CategoryBuilder categoryBuilder,
-            IUserRepository userRepository, IAuctionCreateSessionService auctionCreateSessionService,
-            IAuctionImageRepository auctionImageRepository)
+        public CreateAuctionCommandHandler(CreateAuctionCommandHandlerDepedencies depedencies)
         {
-            _auctionRepository = auctionRepository;
-            _userIdService = userIdService;
-            _auctionSchedulerService = auctionSchedulerService;
-            _eventBusService = eventBusService;
-            _logger = logger;
-            _categoryBuilder = categoryBuilder;
-            _userRepository = userRepository;
-            _auctionCreateSessionService = auctionCreateSessionService;
-            _auctionImageRepository = auctionImageRepository;
+            _deps = depedencies;
             SetupRollbackHandler();
         }
 
@@ -56,24 +48,24 @@ namespace Core.Command.CreateAuction
         {
             try
             {
-                _auctionRepository.AddAuction(auction);
+                _deps.auctionRepository.AddAuction(auction);
             }
             catch (Exception e)
             {
-                _logger.LogWarning($"Cannot add auction to repository {e.Message}");
+                _deps.logger.LogWarning($"Cannot add auction to repository {e.Message}");
                 throw new CommandException("Cannot add auction to repository", e);
             }
         }
 
-        protected virtual void RollbackAddToRepository(Auction auction, AtomicSequence<Auction> context)
+        protected virtual void AddToRepository_Rollback(Auction auction, AtomicSequence<Auction> context)
         {
             try
             {
-                _auctionRepository.RemoveAuction(auction.AggregateId);
+                _deps.auctionRepository.RemoveAuction(auction.AggregateId);
             }
             catch (Exception e)
             {
-                _logger.LogCritical($"Cannot rollback add auction to repository {e.Message}");
+                _deps.logger.LogCritical($"Cannot rollback add auction to repository {e.Message}");
                 throw new CommandException("Cannot rollback add auction to repository", e);
             }
         }
@@ -82,27 +74,27 @@ namespace Core.Command.CreateAuction
         {
             try
             {
-                var scheduledTaskId = _auctionSchedulerService.ScheduleAuctionEndTask(auction)
+                var scheduledTaskId = _deps.auctionSchedulerService.ScheduleAuctionEndTask(auction)
                     .Result;
                 context.TransactionContext = scheduledTaskId;
             }
             catch (Exception e)
             {
-                _logger.LogWarning($"Cannot schedule auction end {e.Message}");
+                _deps.logger.LogWarning($"Cannot schedule auction end {e.Message}");
                 throw new CommandException("Cannot schedule auction end", e);
             }
         }
 
-        protected virtual void RollbackScheduleAuctionEndTask(Auction auction, AtomicSequence<Auction> context)
+        protected virtual void ScheduleAuctionEndTask_Rollback(Auction auction, AtomicSequence<Auction> context)
         {
             try
             {
                 var scheduledTaskId = (ScheduledTaskId) context.TransactionContext;
-                _auctionSchedulerService.CancelAuctionEndTask(scheduledTaskId);
+                _deps.auctionSchedulerService.CancelAuctionEndTask(scheduledTaskId);
             }
             catch (Exception e)
             {
-                _logger.LogCritical($"Cannot schedule auction end {e.Message}");
+                _deps.logger.LogCritical($"Cannot schedule auction end {e.Message}");
                 throw new CommandException("Cannot schedule auction end", e);
             }
         }
@@ -116,7 +108,7 @@ namespace Core.Command.CreateAuction
 
             try
             {
-                _auctionImageRepository.UpdateManyMetadata(auction.AuctionImages
+                _deps.auctionImageRepository.UpdateManyMetadata(auction.AuctionImages
                     .Where(image => image != null)
                     .SelectMany(img => new string[3] {img.Size1Id, img.Size2Id, img.Size3Id}.AsEnumerable())
                     .ToArray(), new AuctionImageMetadata()
@@ -126,7 +118,7 @@ namespace Core.Command.CreateAuction
             }
             catch (Exception e)
             {
-                _logger.LogError("Cannot set auction images metadata");
+                _deps.logger.LogError("Cannot set auction images metadata");
                 throw;
             }
         }
@@ -140,7 +132,7 @@ namespace Core.Command.CreateAuction
 
             try
             {
-                _auctionImageRepository.UpdateManyMetadata(auction.AuctionImages
+                _deps.auctionImageRepository.UpdateManyMetadata(auction.AuctionImages
                     .Where(image => image != null)
                     .SelectMany(img => new string[3] { img.Size1Id, img.Size2Id, img.Size3Id }.AsEnumerable())
                     .ToArray(), new AuctionImageMetadata()
@@ -150,7 +142,7 @@ namespace Core.Command.CreateAuction
             }
             catch (Exception e)
             {
-                _logger.LogCritical("Cannot rollback set auction images metadata");
+                _deps.logger.LogCritical("Cannot rollback set auction images metadata");
                 throw;
             }
         }
@@ -159,26 +151,26 @@ namespace Core.Command.CreateAuction
         {
             try
             {
-                _eventBusService.Publish(auction.PendingEvents, command.CorrelationId, command);
-                //_eventBusService.Publish(user.PendingEvents, command.CorrelationId, command);
+                _deps.eventBusService.Publish(auction.PendingEvents, command.CorrelationId, command);
+                //_deps.eventBusService.Publish(user.PendingEvents, command.CorrelationId, command);
                 auction.MarkPendingEventsAsHandled();
             }
             catch (Exception e)
             {
-                _logger.LogCritical($"Cannot publish aution's pending events");
+                _deps.logger.LogCritical($"Cannot publish aution's pending events");
                 throw new CommandException("Cannot publish aution's pending events", e);
             }
         }
 
         private User GetSignedInUser()
         {
-            var userIdentity = _userIdService.GetSignedInUserIdentity();
+            var userIdentity = _deps.userIdService.GetSignedInUserIdentity();
             if (userIdentity == null)
             {
                 throw new UserNotSignedInException("User not signed in");
             }
 
-            var user = _userRepository.FindUser(userIdentity);
+            var user = _deps.userRepository.FindUser(userIdentity);
             if (user == null)
             {
                 throw new DomainException($"Cannot find user {userIdentity.UserName}");
@@ -189,7 +181,7 @@ namespace Core.Command.CreateAuction
 
         private AuctionArgs GetAuctionArgs(CreateAuctionCommand request, UserIdentity owner)
         {
-            var category = _categoryBuilder.FromCategoryNamesList(request.Category);
+            var category = _deps.categoryBuilder.FromCategoryNamesList(request.Category);
             var builder = new AuctionArgs.Builder()
                 .SetStartDate(request.StartDate)
                 .SetEndDate(request.EndDate)
@@ -208,15 +200,15 @@ namespace Core.Command.CreateAuction
         public virtual Task<Unit> Handle(CreateAuctionCommand request, CancellationToken cancellationToken)
         {
             var user = GetSignedInUser();
-            var auctionCreateSession = _auctionCreateSessionService.GetSessionForSignedInUser();
+            var auctionCreateSession = _deps.auctionCreateSessionService.GetSessionForSignedInUser();
 
             var auction = auctionCreateSession.CreateAuction(GetAuctionArgs(request, user.UserIdentity));
 
-            _auctionCreateSessionService.RemoveSessionForSignedInUser();
+            _deps.auctionCreateSessionService.RemoveSessionForSignedInUser();
 
             var addAuctionSequence = new AtomicSequence<Auction>()
-                .AddTask(AddToRepository, RollbackAddToRepository)
-                .AddTask(SheduleAuctionEndTask, RollbackScheduleAuctionEndTask)
+                .AddTask(AddToRepository, AddToRepository_Rollback)
+                .AddTask(SheduleAuctionEndTask, ScheduleAuctionEndTask_Rollback)
                 .AddTask(ChangeImagesMetadata, ChangeImagesMetadata_Rollback)
                 .AddTask((param, _) => PublishEvents(auction, user, request), null);
 

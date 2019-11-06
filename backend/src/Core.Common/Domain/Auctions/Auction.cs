@@ -9,15 +9,28 @@ using Core.Common.Domain.Products;
 using Core.Common.Domain.Users;
 
 [assembly: InternalsVisibleTo("IntegrationTests")]
-
+[assembly: InternalsVisibleTo("Core.DomainModelTests")]
 namespace Core.Common.Domain.Auctions
 {
+    internal static class AuctionConstantsFactory
+    {
+        public const int DEFAULT_MAX_IMAGES = 6;
+        public const int DEFAULT_MAX_TODAY_MIN_OFFSET = 15;
+        public const int DEFAULT_MIN_AUCTION_TIME_M = 120;
+        public const int DEFAULT_MIN_TAGS = 1;
+
+        internal static int MaxImages { get; set; } = DEFAULT_MAX_IMAGES;
+        internal static int MaxTodayMinOffset { get; set; } = DEFAULT_MAX_TODAY_MIN_OFFSET;
+        internal static int MinAuctionTimeM { get; set; } = DEFAULT_MIN_AUCTION_TIME_M;
+        internal static int MinTags { get; set; } = DEFAULT_MIN_TAGS;
+    }
+
     public partial class Auction : AggregateRoot<Auction>
     {
-        public const int MAX_IMAGES = 6;
-        public const int MAX_TODAY_MIN_OFFSET = 15;
-        public const int MIN_AUCTION_TIME_M = MAX_TODAY_MIN_OFFSET + 120;
-        public const int MIN_TAGS = 1;
+        public static int MAX_IMAGES => AuctionConstantsFactory.MaxImages;
+        public static int MAX_TODAY_MIN_OFFSET => AuctionConstantsFactory.MaxTodayMinOffset;
+        public static int MIN_AUCTION_TIME_M => AuctionConstantsFactory.MinAuctionTimeM;
+        public static int MIN_TAGS => AuctionConstantsFactory.MinTags;
 
         private List<AuctionImage> _auctionImages = new List<AuctionImage>(new AuctionImage[MAX_IMAGES]);
         private List<Bid> _bids = new List<Bid>();

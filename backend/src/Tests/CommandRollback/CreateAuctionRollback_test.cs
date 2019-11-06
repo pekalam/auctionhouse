@@ -33,13 +33,8 @@ namespace FunctionalTests.CommandRollback
         {
             private CreateAuctionRollbackHandler _createAuctionRollbackHandler;
 
-            public TestCreateAuctionCommandHandler(IAuctionRepository auctionRepository,
-                IUserIdentityService userIdService, IAuctionSchedulerService auctionSchedulerService,
-                EventBusService eventBusService, ILogger<CreateAuctionCommandHandler> logger,
-                CategoryBuilder categoryBuilder, IUserRepository userRepository, IAuctionCreateSessionService cs,
-                IAuctionImageRepository imageRepository,
-                CreateAuctionRollbackHandler rollbackHandler) : base(auctionRepository,
-                userIdService, auctionSchedulerService, eventBusService, logger, categoryBuilder, userRepository, cs, imageRepository)
+            public TestCreateAuctionCommandHandler(CreateAuctionCommandHandlerDepedencies depedencies,
+                CreateAuctionRollbackHandler rollbackHandler) : base(depedencies)
             {
                 _createAuctionRollbackHandler = rollbackHandler;
             }
@@ -109,8 +104,10 @@ namespace FunctionalTests.CommandRollback
 
 
             var eventHandler = new Mock<TestAuctionCreatedHandler>(
-                services.AppEventBuilder, services.DbContext,
-                Mock.Of<IEventSignalingService>());
+                services.AppEventBuilder,
+                services.DbContext,
+                Mock.Of<IEventSignalingService>()
+            );
             eventHandler.CallBase = true;
             eventHandler
                 .Setup(f => f.Consume(It.IsAny<IAppEvent<AuctionCreated>>())
@@ -124,25 +121,33 @@ namespace FunctionalTests.CommandRollback
             services.SetupEventBus(eventHandler.Object);
 
             var implProv = new Mock<IImplProvider>();
-            implProv.Setup(f => f.Get<IAuctionRepository>())
+            implProv
+                .Setup(f => f.Get<IAuctionRepository>())
                 .Returns(services.AuctionRepository);
             RollbackHandlerRegistry.ImplProvider = implProv.Object;
             var testRollbackHandler = new Mock<TestCreateAuctionRollbackHandler>(implProv.Object);
             testRollbackHandler.CallBase = true;
-            testRollbackHandler.Setup(f => f.Rollback(It.IsAny<IAppEvent<Event>>()))
+            testRollbackHandler
+                .Setup(f => f.Rollback(It.IsAny<IAppEvent<Event>>()))
                 .CallBase();
             testRollbackHandler.Object.AfterAction = () => { sem2.Release(); };
 
 
             var session = user.UserIdentity.GetAuctionCreateSession();
 
-            var commandHandler =
-                new TestCreateAuctionCommandHandler(services.AuctionRepository, userIdService.Object,
-                    services.SchedulerService, services.EventBus,
-                    Mock.Of<ILogger<CreateAuctionCommandHandler>>(),
-                    new CategoryBuilder(services.CategoryTreeService), userRepository.Object,
-                    services.GetAuctionCreateSessionService(session), services.AuctionImageRepository,
-                    testRollbackHandler.Object);
+            var handlerDepedencies = new CreateAuctionCommandHandlerDepedencies()
+            {
+                auctionRepository = services.AuctionRepository,
+                userIdService = userIdService.Object,
+                auctionSchedulerService = services.SchedulerService,
+                eventBusService = services.EventBus,
+                logger = Mock.Of<ILogger<CreateAuctionCommandHandler>>(),
+                auctionCreateSessionService = services.GetAuctionCreateSessionService(session),
+                auctionImageRepository = services.AuctionImageRepository,
+                categoryBuilder = new CategoryBuilder(services.CategoryTreeService),
+                userRepository = userRepository.Object
+            };
+            var commandHandler = new TestCreateAuctionCommandHandler(handlerDepedencies, testRollbackHandler.Object);
 
             commandHandler.Handle(command, CancellationToken.None);
             sem.Wait(TimeSpan.FromSeconds(5));

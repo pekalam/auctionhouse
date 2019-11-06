@@ -20,7 +20,7 @@ namespace IntegrationTests
         {
             var esConnectionContext = new ESConnectionContext(new EventStoreConnectionSettings()
             {
-                IPAddress = "127.0.0.1",
+                IPAddress = "192.168.1.25",
                 Port = 1113
             });
             esConnectionContext.Connect();
@@ -83,7 +83,7 @@ namespace IntegrationTests
         {
             var esConnectionContext = new ESConnectionContext(new EventStoreConnectionSettings()
             {
-                IPAddress = "127.0.0.1",
+                IPAddress = "192.168.1.25",
                 Port = 1113
             });
             esConnectionContext.Connect();

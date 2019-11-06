@@ -131,13 +131,12 @@ namespace Core.DomainModelTests
         }
 
         [TestCase(0, 0, true)]
-        [TestCase(0, Auction.MIN_AUCTION_TIME_M - 1, true)]
-        [TestCase(-Auction.MAX_TODAY_MIN_OFFSET, 0, true)]
-        [TestCase(-Auction.MAX_TODAY_MIN_OFFSET + 1, 0, true)]
-        [TestCase(-Auction.MAX_TODAY_MIN_OFFSET + 1, Auction.MIN_AUCTION_TIME_M - Auction.MAX_TODAY_MIN_OFFSET, true)]
-        [TestCase(-Auction.MAX_TODAY_MIN_OFFSET + 1, Auction.MIN_AUCTION_TIME_M - Auction.MAX_TODAY_MIN_OFFSET + 1,
-            false)]
-        [TestCase(0, Auction.MIN_AUCTION_TIME_M, false)]
+        [TestCase(0, AuctionConstantsFactory.DEFAULT_MIN_AUCTION_TIME_M - 1, true)]
+        [TestCase(-AuctionConstantsFactory.DEFAULT_MAX_TODAY_MIN_OFFSET, 0, true)]
+        [TestCase(-AuctionConstantsFactory.DEFAULT_MAX_TODAY_MIN_OFFSET + 1, 0, true)]
+        [TestCase(-AuctionConstantsFactory.DEFAULT_MAX_TODAY_MIN_OFFSET + 1, AuctionConstantsFactory.DEFAULT_MIN_AUCTION_TIME_M - AuctionConstantsFactory.DEFAULT_MAX_TODAY_MIN_OFFSET, true)]
+        [TestCase(-AuctionConstantsFactory.DEFAULT_MAX_TODAY_MIN_OFFSET + 1, AuctionConstantsFactory.DEFAULT_MIN_AUCTION_TIME_M - AuctionConstantsFactory.DEFAULT_MAX_TODAY_MIN_OFFSET + 1, false)]
+        [TestCase(0, AuctionConstantsFactory.DEFAULT_MIN_AUCTION_TIME_M, false)]
         public void AuctionConstructor_when_invalid_end_date_args_throws(int minutesStart, int minutesEnd, bool throws)
         {
             var date = DateTime.UtcNow;

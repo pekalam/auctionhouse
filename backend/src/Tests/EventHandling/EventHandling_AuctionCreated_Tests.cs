@@ -69,16 +69,20 @@ namespace FunctionalTests.EventHandling
                 Img = File.ReadAllBytes("./test_image.jpg")
             });
             var sessionService = services.GetAuctionCreateSessionService(session);
-            
-            commandHandler =
-                new CreateAuctionCommandHandler(services.AuctionRepository, 
-                    userIdService.Object,
-                    services.SchedulerService, services.EventBus,
-                    Mock.Of<ILogger<CreateAuctionCommandHandler>>(),
-                    new CategoryBuilder(services.CategoryTreeService), 
-                    userRepository.Object,
-                    sessionService, services.AuctionImageRepository
-                    );
+
+            var handlerDepedencies = new CreateAuctionCommandHandlerDepedencies()
+            {
+                auctionRepository = services.AuctionRepository,
+                userIdService = userIdService.Object,
+                auctionSchedulerService = services.SchedulerService,
+                eventBusService = services.EventBus,
+                logger = Mock.Of<ILogger<CreateAuctionCommandHandler>>(),
+                auctionCreateSessionService = sessionService,
+                auctionImageRepository = services.AuctionImageRepository,
+                categoryBuilder = new CategoryBuilder(services.CategoryTreeService),
+                userRepository = userRepository.Object
+            };
+            commandHandler = new CreateAuctionCommandHandler(handlerDepedencies);
         }
 
         CreateAuctionCommand GetCreateCommand()
