@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -e
+
+echo "wait-for eventst"
+wait-for eventst:2113 -t 180
+wait-for eventst:1113 -t 180
+echo "eventst started" 
+echo "wait-for quartz_web_task_service"
+wait-for quartz_web_task_service:80 -t 180
+echo "quartz_web_task_service started"
+echo "wait-for rabbitmq"
+wait-for rabbitmq:5672 -t 180
+echo "rabbitmq started"
+echo "wait-for mongodb"
+wait-for mongodb:32112 -t 180
+echo "mongodb started"

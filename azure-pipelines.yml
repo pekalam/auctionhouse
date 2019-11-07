@@ -4,22 +4,23 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
+- develop
 
 pool:
   vmImage: 'ubuntu-latest'
 
 steps:
 - task: UseDotNet@2
-  displayName: 'Use .NET Core sdk'
+  displayName: 'Use .NET Core sdk 2.2.401'
   inputs:
     packageType: sdk
     version: 2.2.401
     installationPath: $(Agent.ToolsDirectory)/dotnet
 - task: ShellScript@2
+  displayName: 'Run functional tests'
   inputs:
-    scriptPath: 'backend/cli/build.sh'
+    scriptPath: 'backend/src/docker-run_functional_tests.sh'
     #args: '' # Optional
     #disableAutoCwd: false # Optional
-    cwd: 'backend/cli' # Optional
+    cwd: 'backend/src'
     #failOnStandardError: false

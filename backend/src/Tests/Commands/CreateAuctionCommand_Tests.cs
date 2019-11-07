@@ -33,17 +33,20 @@ namespace FunctionalTests.Commands
     public class CreateAuctionCommand_Tests
     {
         private FluentMockServer server;
-
         private bool called;
         private DateTime startDate;
         private DateTime endDate;
         private TestCreateAuctionCommandHandler testCommandHandler;
         private TestDepedencies testDepedencies = TestDepedencies.Instance.Value;
-
         private List<string> categories = new List<string>()
         {
             "Fake category", "Fake subcategory", "Fake subsubcategory 0"
         };
+
+        public CreateAuctionCommand_Tests()
+        {
+            SetUpFakeTimeTaskServer();
+        }
 
         private void SetUpFakeTimeTaskServer()
         {
@@ -98,18 +101,12 @@ namespace FunctionalTests.Commands
         public void SetUp()
         {
             AuctionConstantsFactory.MinAuctionTimeM = -1;
-            SetUpFakeTimeTaskServer();
             called = false;
             startDate = DateTime.UtcNow.AddSeconds(10);
             endDate = DateTime.UtcNow.AddSeconds(20);
             SetUpCommandHandler();
         }
 
-        [TearDown]
-        public void TearDown()
-        {
-            server.Stop();
-        }
 
         [Test]
         public void Handle_when_called_adds_auction_to_repository_and_schedules_end()

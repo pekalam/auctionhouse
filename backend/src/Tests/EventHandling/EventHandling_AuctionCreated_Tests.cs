@@ -22,6 +22,22 @@ using NUnit.Framework;
 
 namespace FunctionalTests.EventHandling
 {
+    public class TestAuctionCreatedHandler : AuctionCreatedHandler
+    {
+        public Action<IAppEvent<AuctionCreated>> OnConsumeCalled { get; set; }
+
+        public TestAuctionCreatedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext,
+            IEventSignalingService eventSignalingService) : base(appEventBuilder, dbContext, eventSignalingService)
+        {
+        }
+
+        public override void Consume(IAppEvent<AuctionCreated> message)
+        {
+            base.Consume(message);
+            OnConsumeCalled?.Invoke(message);
+        }
+    }
+
     public class EventHandling_AuctionCreated_Tests
     {
         private User user;
@@ -122,38 +138,28 @@ namespace FunctionalTests.EventHandling
             string idFromHandler = "";
             CorrelationId correlationIdFromHandler = null;
 
-            var eventHandler = new Mock<AuctionCreatedHandler>(
-                services.AppEventBuilder, services.DbContext,
-                Mock.Of<IEventSignalingService>());
-            eventHandler
-                .Setup(f => f.Consume(
-                    It.Is<IAppEvent<AuctionCreated>>(v => VerifyEvent(v.Event, command)))
-                )
-                .Callback((IAppEvent<AuctionCreated> ev) =>
-                {
-                    idFromHandler = ev.Event.AuctionId.ToString();
-                    correlationIdFromHandler = ev.CorrelationId;
-                    sem.Release();
-                })
-                .CallBase();
 
-            services.SetupEventBus(eventHandler.Object);
+            var eventHandler = new TestAuctionCreatedHandler(services.AppEventBuilder, services.DbContext, Mock.Of<IEventSignalingService>());
+            eventHandler.OnConsumeCalled = ev =>
+            {
+                Assert.True(VerifyEvent(ev.Event, command));
+                idFromHandler = ev.Event.AuctionId.ToString();
+                correlationIdFromHandler = ev.CorrelationId;
+                sem.Release();
+            };
+
+            services.SetupEventBus(eventHandler);
             SetUpCommandHandler();
 
             //act
             commandHandler.Handle(command, CancellationToken.None);
             sem.Wait(TimeSpan.FromSeconds(5));
-            Thread.Sleep(4000);
 
             var auctionReadModel = services.DbContext.AuctionsReadModel.Find(a => a.AuctionId == idFromHandler)
                 .FirstOrDefault();
             UserReadModel userReadModel = services.DbContext.UsersReadModel
                 .Find(f => f.UserIdentity.UserId == user.UserIdentity.UserId.ToString())
                 .FirstOrDefault();
-
-
-            eventHandler.Verify(f => f.Consume(It.Is<IAppEvent<AuctionCreated>>(v => VerifyEvent(v.Event, command))),
-                Times.Once);
 
             auctionReadModel.Should()
                 .NotBeNull();

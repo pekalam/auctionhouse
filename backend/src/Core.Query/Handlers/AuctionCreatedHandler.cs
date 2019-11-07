@@ -48,8 +48,8 @@ namespace Core.Query.Handlers
             session.StartTransaction();
             try
             {
-                _dbContext.AuctionsReadModel.WithWriteConcern(WriteConcern.WMajority).InsertOne(session,auction);
-                _dbContext.UsersReadModel.FindOneAndUpdate(session, filter, update);
+                _dbContext.AuctionsReadModel.WithWriteConcern(WriteConcern.WMajority).InsertOne(session, auction);
+                _dbContext.UsersReadModel.UpdateOne(session, filter, update);
                 session.CommitTransaction();
             }
             catch (Exception)

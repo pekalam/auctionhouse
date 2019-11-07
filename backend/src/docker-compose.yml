@@ -7,9 +7,9 @@ services:
       context: .
       dockerfile: Web/Dockerfile
 
-  timetask_service:
+  quartz_web_task_service:
     hostname: timetask
-    image: ${DOCKER_REGISTRY-}timetask_service
+    image: ${DOCKER_REGISTRY-}quartz_web_task_service
     ports:
       - "5001:80"
     environment: 

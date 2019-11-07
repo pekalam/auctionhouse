@@ -1,0 +1,45 @@
+version: '3.4'
+
+services:
+  quartz_web_task_service:
+    container_name: quartz_web_task_service
+    image: marekbf3/quartz-web-task-service
+    environment: 
+      - "ClientKey=testk"
+      - "ManagmentKey=testm"
+
+  mongodb:
+    container_name: mongodb
+    tmpfs: /data/db
+    build:
+      context: ./Tests
+      dockerfile: Dockerfile-mongo-standalone-replicaset
+
+
+  eventst:
+    container_name: eventst
+    image: eventstore/eventstore
+    environment:
+      - EVENTSTORE_MEM_DB=true
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    tmpfs: /var/lib/rabbitmq
+
+  auctionhouse-functional-tests:
+    container_name: auctionhouse-functional-tests
+    build:
+      context: .
+    command: >
+      /bin/bash -c "wait-for-services && dotnet test --no-build -s docker.runsettings"
+    build:
+      context: .
+      dockerfile: Tests/Dockerfile
+    depends_on:
+      - eventst
+      - rabbitmq
+      - mongodb
+      - quartz_web_task_service
+
+
