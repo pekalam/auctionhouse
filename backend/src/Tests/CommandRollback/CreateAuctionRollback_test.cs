@@ -21,6 +21,7 @@ using FluentAssertions;
 using FunctionalTests.EventHandling;
 using FunctionalTests.Utils;
 using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
 using Moq;
 using NUnit.Framework;
 
@@ -72,6 +73,14 @@ namespace FunctionalTests.CommandRollback
             {
                 throw new Exception();
             }
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            var testDepedencies = TestDepedencies.Instance.Value;
+            testDepedencies.DisconnectEventBus();
+            testDepedencies.DbContext.AuctionsReadModel.DeleteMany(FilterDefinition<AuctionReadModel>.Empty);
         }
 
         [Test]

@@ -3,19 +3,15 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/core/sdk:2.2-stretch AS build
 WORKDIR /src
-COPY ["Infrastructure.IntegrationTests/Infrastructure.IntegrationTests.csproj", "Infrastructure.IntegrationTests/"]
-COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
-COPY ["Domain/Domain.csproj", "Domain/"]
-RUN dotnet restore "Domain/Domain.csproj"
-RUN dotnet restore "Infrastructure/Infrastructure.csproj"
-RUN dotnet restore "Infrastructure.IntegrationTests/Infrastructure.IntegrationTests.csproj"
-COPY . .
-WORKDIR "/src/Domain"
-RUN dotnet build
-WORKDIR "/src/Infrastructure"
-RUN dotnet build
-WORKDIR "/src/Infrastructure.IntegrationTests"
-RUN dotnet build "Infrastructure.IntegrationTests.csproj"
-
-WORKDIR "/src/Infrastructure.IntegrationTests"
-ENTRYPOINT ["dotnet", "test", "-v", "d", ".", "--", "-noshadow"]
+COPY ["Core.Common", "Core.Common/"]
+COPY ["Core.Command", "Core.Command/"]
+COPY ["Core.Query", "Core.Query/"]
+COPY ["Infrastructure", "Infrastructure/"]
+COPY ["Tests", "Tests/"]
+RUN dotnet build "Tests/FunctionalTests.csproj"
+RUN apt-get update
+RUN apt-get -y install netcat
+COPY ["Tests/wait-for", "/bin/wait-for"]
+EXPOSE 9998
+WORKDIR "/src/Tests"
+CMD ["dotnet", "test", "--no-build", "-s", "docker.runsettings"] 

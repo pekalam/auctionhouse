@@ -4,6 +4,8 @@
   <TestRunParameters>
     <Parameter name="eventstore-ip" value="eventst" />
 	<Parameter name="rabbitmq-connection-string" value="host=rabbitmq" />
-	<Parameter name="mongodb-connection-string" value="mongodb://mongo:27017" />
+	<Parameter name="mongodb-connection-string" value="mongodb://mongodb:27017" />
+	<Parameter name="quartz-web-task-service" value="http://quartz_web_task_service:80"/>
+	<Parameter name="quartz-web-task-target-endpoint" value="http://auctionhouse-functional-tests:9998/test"/>
   </TestRunParameters>
 </RunSettings>

@@ -32,8 +32,9 @@ namespace FunctionalTests.EventHandling
                     .SetStartDate(DateTime.UtcNow.AddMinutes(10))
                     .SetEndDate(DateTime.UtcNow.AddDays(1))
                     .SetCategory(new Category("test", 0))
-                    .SetOwner(user)
+                    .SetOwner(new UserIdentity(){UserId = Guid.NewGuid(), UserName = "owner"})
                     .SetProduct(product)
+                    .SetTags(new string[]{"tag1", "tag2"})
                     .Build();
             var auction = new Auction(auctionArgs);
             var sem = new SemaphoreSlim(0, 1);

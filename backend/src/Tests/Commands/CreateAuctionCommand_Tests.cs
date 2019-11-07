@@ -114,7 +114,7 @@ namespace FunctionalTests.Commands
         [Test]
         public void Handle_when_called_adds_auction_to_repository_and_schedules_end()
         {
-            startDate = DateTime.UtcNow.AddSeconds(30);
+            startDate = DateTime.UtcNow;
             endDate = DateTime.UtcNow.AddSeconds(35);
             var command = new CreateAuctionCommand(Decimal.One, new Product {Name = "name", Description = "desc"},
                 startDate, endDate,
@@ -246,16 +246,21 @@ namespace FunctionalTests.Commands
 
     class TestAuctionSchedulerService : AuctionSchedulerService
     {
+        private readonly TimeTaskServiceSettings _serviceSettings;
+
         public TestAuctionSchedulerService(ITimeTaskClient timeTaskClient, TimeTaskServiceSettings serviceSettings)
             : base(timeTaskClient, serviceSettings)
         {
+            _serviceSettings = serviceSettings;
         }
 
         protected override ScheduleRequest<AuctionEndTimeTaskValues> CreateScheduleRequest(Auction auction)
         {
             var request = base.CreateScheduleRequest(auction);
-            request.Endpoint = "http://host.docker.internal:9998/test";
+            request.Endpoint = _serviceSettings.AuctionEndEchoTaskEndpoint;
             return request;
         }
+
+
     }
 }

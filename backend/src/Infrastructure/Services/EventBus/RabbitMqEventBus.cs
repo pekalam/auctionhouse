@@ -32,23 +32,32 @@ namespace Infrastructure.Services.EventBus
         private readonly RabbitMqSettings _settings;
         private readonly ILogger<RabbitMqEventBus> _logger;
         private IBus _bus;
+        private List<ISubscriptionResult> _subscriptions = new List<ISubscriptionResult>();
 
 
         public RabbitMqEventBus(RabbitMqSettings settings, ILogger<RabbitMqEventBus> logger)
         {
             _settings = settings;
             _logger = logger;
+            _bus = RabbitHutch.CreateBus(_settings.ConnectionString);
         }
 
         internal void InitSubscribers(params RabbitMqEventConsumerFactory[] subscriberFactories)
         {
-            _bus = RabbitHutch.CreateBus(_settings.ConnectionString);
 
             SetupErrorQueueSubscribtion();
 
             foreach (var eventConsumer in subscriberFactories)
             {
                 Subscribe(eventConsumer);
+            }
+        }
+
+        internal void CancelSubscriptions()
+        {
+            foreach (var subscription in _subscriptions)
+            {
+                subscription.ConsumerCancellation.Dispose();
             }
         }
 
@@ -96,7 +105,7 @@ namespace Infrastructure.Services.EventBus
             string messageName = toCamel(eventConsumerFactory.MessageName);
             Func<IEventConsumer> factory = eventConsumerFactory.FactoryFunc;
 
-            _bus.Subscribe(typeof(IAppEvent<Event>), messageName,
+            var subscription = _bus.Subscribe(typeof(IAppEvent<Event>), messageName,
                 o => factory
                         .Invoke()
                         .Dispatch(o),
@@ -105,6 +114,7 @@ namespace Infrastructure.Services.EventBus
                     configuration.WithTopic(messageName);
                     configuration.WithQueueName(messageName);
                 });
+            _subscriptions.Add(subscription);
         }
 
         public void Publish<T>(IAppEvent<T> @event) where T : Event

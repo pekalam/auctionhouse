@@ -47,6 +47,9 @@ namespace FunctionalTests.EventHandling
         {
             var testDepedencies = TestDepedencies.Instance.Value;
             testDepedencies.AuctionImageRepository.Remove("img1-1");
+            testDepedencies.DbContext.UsersReadModel.DeleteMany(FilterDefinition<UserReadModel>.Empty);
+            testDepedencies.DbContext.AuctionsReadModel.DeleteMany(FilterDefinition<AuctionReadModel>.Empty);
+            testDepedencies.DisconnectEventBus();
         }
 
         private void SetUpCommandHandler()

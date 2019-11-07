@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <!-- Parameters used by tests at runtime -->
+  <TestRunParameters>
+    <Parameter name="eventstore-ip" value="localhost" />
+	<Parameter name="rabbitmq-connection-string" value="host=localhost" />
+	<Parameter name="mongodb-connection-string" value="mongodb://localhost:27017" />
+  </TestRunParameters>
+</RunSettings>

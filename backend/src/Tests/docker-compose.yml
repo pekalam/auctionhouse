@@ -1,0 +1,52 @@
+version: '3.4'
+
+services:
+  quartz_web_task_service:
+    image: ${DOCKER_REGISTRY-}timetask_service
+    ports:
+      - "5001:80"
+    environment: 
+      - "ClientKey=testk"
+      - "ManagmentKey=testm"
+
+
+  mongodb:
+    image: ${DOCKER_REGISTRY-}mongo-standalone-replicaset
+    tmpfs: /data/db
+    ports:
+      - "27017:27017"
+
+  eventst:
+    image: ${DOCKER_REGISTRY-}eventstore/eventstore
+    ports:
+      - "2113:2113"
+      - "1113:1113"
+    environment:
+      - EVENTSTORE_MEM_DB=true
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    tmpfs: /var/lib/rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+
+
+  auctionhouse-functional-tests:
+    image: ${DOCKER_REGISTRY-}auctionhouse-functional-tests
+    command: >
+      /bin/bash -c "wait-for eventst:2113 -t 30 && wait-for eventst:1113 -t 30 && wait-for quartz_web_task_service:80 -t 30 && wait-for rabbitmq:5672 -t 30 && wait-for mongodb:32112 -t 30 && dotnet test --no-build -s docker.runsettings"
+    ports:
+      - "9998:9998"
+    build:
+      context: .
+      dockerfile: Tests/Dockerfile
+    depends_on:
+      - eventst
+      - rabbitmq
+      - mongodb
+      - quartz_web_task_service
+
+
+
+
