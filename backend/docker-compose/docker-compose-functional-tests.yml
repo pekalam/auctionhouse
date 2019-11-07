@@ -12,7 +12,7 @@ services:
     container_name: mongodb
     tmpfs: /data/db
     build:
-      context: ./Tests
+      context: ../src/Tests
       dockerfile: Dockerfile-mongo-standalone-replicaset
 
 
@@ -29,12 +29,10 @@ services:
 
   auctionhouse-functional-tests:
     container_name: auctionhouse-functional-tests
-    build:
-      context: .
     command: >
       /bin/bash -c "wait-for-services && dotnet test --no-build -s docker.runsettings"
     build:
-      context: .
+      context: ../src
       dockerfile: Tests/Dockerfile
     depends_on:
       - eventst

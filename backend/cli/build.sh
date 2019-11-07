@@ -7,8 +7,7 @@ else
 fi
 
 if [ "$TEST" = "test" ] ; then
-	echo "Running domain tests..."
-	dotnet test ../src/Core.DomainModelTests || { echo "Domain tests failed"; exit 1; }
+	./local-run_domain_tests.sh
 fi
 
 echo "Building update-server docker image..."

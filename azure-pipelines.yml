@@ -17,10 +17,18 @@ steps:
     version: 2.2.401
     installationPath: $(Agent.ToolsDirectory)/dotnet
 - task: ShellScript@2
-  displayName: 'Run functional tests'
+  displayName: 'Run domain tests'
   inputs:
-    scriptPath: 'backend/src/docker-run_functional_tests.sh'
+    scriptPath: 'backend/cli/local-run_domain_tests.sh'
     #args: '' # Optional
     #disableAutoCwd: false # Optional
-    cwd: 'backend/src'
+    cwd: 'backend/cli'
+    #failOnStandardError: false
+- task: ShellScript@2
+  displayName: 'Run functional tests'
+  inputs:
+    scriptPath: 'backend/cli/docker-run_functional_tests.sh'
+    #args: '' # Optional
+    #disableAutoCwd: false # Optional
+    cwd: 'backend/cli'
     #failOnStandardError: false
