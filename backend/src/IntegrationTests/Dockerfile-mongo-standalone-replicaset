@@ -1,0 +1,9 @@
+FROM mongo
+RUN apt-get update
+RUN apt-get -y install netcat
+COPY ["mongo-standalone-entrypoint.sh", "/root"]
+COPY ["init.js", "/root"]
+COPY ["init-collections.js", "/root"]
+EXPOSE 32112
+RUN chmod +x /root/mongo-standalone-entrypoint.sh
+ENTRYPOINT ["/root/mongo-standalone-entrypoint.sh"]

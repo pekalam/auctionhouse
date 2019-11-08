@@ -23,7 +23,8 @@ namespace IntegrationTests
         {
             var settings = new ImageDbSettings()
             {
-                ConnectionString = "mongodb://localhost:27017",
+                
+                ConnectionString = TestContextUtils.GetParameterOrDefault("mongodb-connection-string", "mongodb://localhost:27017"),
                 DatabaseName = "appDb"
             };
             var dbContext = new ImageDbContext(settings);

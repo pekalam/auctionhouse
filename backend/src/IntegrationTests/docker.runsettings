@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+	<!-- Parameters used by tests at runtime -->
+	<TestRunParameters>
+		<Parameter name="eventstore-connection-string" value="eventst" />
+		<Parameter name="mongodb-connection-string" value="mongodb://mongodb:27017" />
+	</TestRunParameters>
+</RunSettings>

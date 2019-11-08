@@ -25,6 +25,22 @@ steps:
     cwd: 'backend/cli'
     #failOnStandardError: false
 - task: ShellScript@2
+  displayName: 'Run unit tests'
+  inputs:
+    scriptPath: 'backend/cli/local-run_unit_tests.sh'
+    #args: '' # Optional
+    #disableAutoCwd: false # Optional
+    cwd: 'backend/cli'
+    #failOnStandardError: false
+- task: ShellScript@2
+  displayName: 'Run integration tests'
+  inputs:
+    scriptPath: 'backend/cli/docker-run_integration_tests.sh'
+    #args: '' # Optional
+    #disableAutoCwd: false # Optional
+    cwd: 'backend/cli'
+    #failOnStandardError: false
+- task: ShellScript@2
   displayName: 'Run functional tests'
   inputs:
     scriptPath: 'backend/cli/docker-run_functional_tests.sh'

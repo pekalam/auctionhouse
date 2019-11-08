@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -e
+
+echo "wait-for eventst"
+wait-for eventst:2113 -t 180
+wait-for eventst:1113 -t 180
+echo "eventst started"
+echo "wait-for mongodb"
+wait-for mongodb:32112 -t 180
+echo "mongodb started"

@@ -1,0 +1,28 @@
+version: '3.4'
+
+services:
+  mongodb:
+    container_name: mongodb
+    tmpfs: /data/db
+    build:
+      context: ../src/IntegrationTests
+      dockerfile: Dockerfile-mongo-standalone-replicaset
+
+  eventst:
+    container_name: eventst
+    image: eventstore/eventstore
+    environment:
+      - EVENTSTORE_MEM_DB=true
+
+  auctionhouse-integration-tests:
+    container_name: auctionhouse-integration-tests
+    command: >
+      /bin/bash -c "wait-for-services && dotnet test --no-build -s docker.runsettings"
+    build:
+      context: ../src
+      dockerfile: IntegrationTests/Dockerfile
+    depends_on:
+      - eventst
+      - mongodb
+
+
