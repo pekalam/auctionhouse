@@ -28,7 +28,7 @@
       <div class="views-container">
         <span>Views: {{auction.views}}</span>
       </div>
-      <div class="auction-buttons-container" *ngIf="(authenticationStateService.currentUser | async).userId !== auction.creator.userId">
+      <div class="auction-buttons-container" *ngIf="currentUser && (currentUser.userId !== auction.creator.userId)">
         <button class="buynow-btn" (click)="onBuyNow()" [disabled]="showAuctionButtons || auction.buyNowPrice == null">Buy now</button>
         <button class="bid-btn" (click)="onBid()" [disabled]="showAuctionButtons">Bid</button>
       </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -13,6 +13,10 @@ import { SignInCommand } from '../../../core/commands/SignInCommand';
   styleUrls: ['./sign-in-page.component.scss']
 })
 export class SignInPageComponent implements OnInit {
+
+  @ViewChild('signInForm', {static: true})
+  signInForm;
+
   validPassword = true;
   form = new FormGroup({
     username: new FormControl('', [Validators.required]),
@@ -42,13 +46,11 @@ export class SignInPageComponent implements OnInit {
           }
         }, (err) => {
           this.validPassword = false;
-          this.form.controls.password.reset();
+          let lastUsername = this.form.value.username;
+          this.signInForm.resetForm();
+          this.form.reset({username: lastUsername, password: ''});
         });
     }
-  }
-
-  onPasswordKeyDown() {
-    this.validPassword = true;
   }
 
 }

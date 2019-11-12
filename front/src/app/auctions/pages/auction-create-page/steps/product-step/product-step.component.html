@@ -3,33 +3,52 @@
     <div class="g1">
       <mat-form-field>
         Product name
-        <input matInput type="text" formControlName="productName" (change)="onChange()" />
+        <input matInput type="text" formControlName="productName" (keydown)="onChange()" />
+        <mat-error>
+          <ng-container *ngIf="form.controls.productName.errors">
+            <span *ngIf="form.controls.productName.errors.required">This field is required</span>
+          </ng-container>
+        </mat-error>
       </mat-form-field>
 
-      <mat-radio-group formControlName="buyNow">
-        <mat-radio-button>Buy now</mat-radio-button>
-      </mat-radio-group>
 
+      <mat-checkbox (change)="onBuyNowChange($event.checked) || onChange()" formControlName="buyNow">Buy now
+      </mat-checkbox>
 
       <mat-form-field>
         Buy now price
-        <input [disabled]="" type="number" matInput formControlName="buyNowPrice" (change)="onChange()" />
+        <input type="number" matInput formControlName="buyNowPrice" (keydown)="onChange()" />
+        <mat-error>
+          <ng-container *ngIf="form.controls.buyNowPrice.errors">
+            <span *ngIf="form.controls.buyNowPrice.errors.required">This field is required</span>
+          </ng-container>
+        </mat-error>
       </mat-form-field>
 
       <mat-form-field>
         Start date
         <input [matDatepicker]="picker1" matInput [(ngModel)]="defaultStartDate" formControlName="startDate"
           (change)="onChange()" />
-          <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-          <mat-datepicker #picker1></mat-datepicker>
+        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+        <mat-error>
+          <ng-container *ngIf="form.controls.startDate.errors">
+            <span *ngIf="form.controls.startDate.errors.required">This field is required</span>
+          </ng-container>
+        </mat-error>
       </mat-form-field>
 
       <mat-form-field>
         End date
         <input [matDatepicker]="picker2" [(ngModel)]="defaultEndDate" matInput formControlName="endDate"
           (change)="onChange()" />
-          <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-          <mat-datepicker #picker2></mat-datepicker>
+        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
+        <mat-error>
+          <ng-container *ngIf="form.controls.endDate.errors">
+            <span *ngIf="form.controls.endDate.errors.required">This field is required</span>
+          </ng-container>
+        </mat-error>
       </mat-form-field>
 
     </div>
@@ -37,8 +56,33 @@
     <div class="g2">
       <mat-form-field>
         Product description
-        <textarea matInput formControlName="productDescription" (change)="onChange()"></textarea>
+        <textarea matInput formControlName="productDescription" (keydown)="onChange()"></textarea>
+        <mat-error>
+          <ng-container *ngIf="form.controls.productDescription.errors">
+            <span *ngIf="form.controls.productDescription.errors.required">This field is required</span>
+          </ng-container>
+        </mat-error>
       </mat-form-field>
+      <mat-form-field>
+        Tags&nbsp;&nbsp;<span style="font-size: 10px" *ngIf="showTagsHelp">(enter tag names separated by space)</span>
+        <input matInput type="text" formControlName="tags" [errorStateMatcher]="tagsErrorStateMatcher" (keyup)="onTagsChange() || onChange()" autocomplete="off"/>
+        <mat-error>
+          <ng-container *ngIf="form.controls.tags.errors">
+            <span *ngIf="form.controls.tags.errors.required">This field is required</span>
+            <span *ngIf="form.controls.tags.errors.tagsMaxLength">Tag name is too long</span>
+          </ng-container>
+        </mat-error>
+      </mat-form-field>
+      <div class="tags-container">
+        <div class="tag-div" *ngFor="let tag of tags">
+          <div>
+              <i class="fas fa-tag" style="margin-right: 3px;"></i>{{tag}}
+          </div>
+        </div>
+      </div>
     </div>
+
+
+
   </form>
 </div>

@@ -5,6 +5,7 @@ import { SignUpPageComponent } from './pages/sign-up-page/sign-up-page.component
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../material.module';
 import { RouterModule } from '@angular/router';
+import { SharedModule } from '../shared/shared.module';
 
 
 
@@ -14,7 +15,8 @@ import { RouterModule } from '@angular/router';
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
-    MaterialModule
+    MaterialModule,
+    SharedModule
   ],
   exports: [SignUpPageComponent, SignInPageComponent]
 })

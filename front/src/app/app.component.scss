@@ -2,11 +2,10 @@
 
 .app-container {
   min-height: calc(100vh - 70px - 71px);
-  text-align: center;
   .app-content {
     max-width: $maxContentWidth;
     width: 100%;
-    display: inline-block;
-    text-align: initial;
+    position: relative;
+    margin: 0 auto;
   }
 }

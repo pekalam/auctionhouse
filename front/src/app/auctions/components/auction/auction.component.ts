@@ -3,6 +3,7 @@ import { Auction } from '../../../core/models/Auctions';
 import { Router } from '@angular/router';
 import { AuctionImageQuery } from 'src/app/core/queries/AuctionImageQuery';
 import { AuthenticationStateService } from '../../../core/services/AuthenticationStateService';
+import { UserIdentity } from '../../../core/models/UserIdentity';
 
 @Component({
   selector: 'app-auction',
@@ -36,6 +37,7 @@ export class AuctionComponent implements OnInit, OnDestroy {
   auction: Auction;
   daysLeft = 0;
   imgs = [];
+  currentUser: UserIdentity = null;
 
   private setDaysLeft(){
     let d1 = new Date(this.auction.endDate);
@@ -44,6 +46,7 @@ export class AuctionComponent implements OnInit, OnDestroy {
   }
 
   constructor(private auctionImageQuery: AuctionImageQuery, public authenticationStateService: AuthenticationStateService) {
+    authenticationStateService.currentUser.subscribe((u) => this.currentUser = u);
     authenticationStateService.checkIsAuthenticated();
   }
 
@@ -54,6 +57,7 @@ export class AuctionComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.clearAuctionTimeCalcInterval();
   }
+
 
   private clearAuctionTimeCalcInterval() {
     if (this.timeoutHandle) {

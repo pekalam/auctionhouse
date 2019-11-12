@@ -28,6 +28,24 @@ namespace Core.Command.CreateAuction
         public IUserRepository userRepository;
         public IAuctionCreateSessionService auctionCreateSessionService;
         public IAuctionImageRepository auctionImageRepository;
+
+        public CreateAuctionCommandHandlerDepedencies(IAuctionRepository auctionRepository, IUserIdentityService userIdService, IAuctionSchedulerService auctionSchedulerService, EventBusService eventBusService, ILogger<CreateAuctionCommandHandler> logger, CategoryBuilder categoryBuilder, IUserRepository userRepository, IAuctionCreateSessionService auctionCreateSessionService, IAuctionImageRepository auctionImageRepository)
+        {
+            this.auctionRepository = auctionRepository;
+            this.userIdService = userIdService;
+            this.auctionSchedulerService = auctionSchedulerService;
+            this.eventBusService = eventBusService;
+            this.logger = logger;
+            this.categoryBuilder = categoryBuilder;
+            this.userRepository = userRepository;
+            this.auctionCreateSessionService = auctionCreateSessionService;
+            this.auctionImageRepository = auctionImageRepository;
+        }
+
+        public CreateAuctionCommandHandlerDepedencies()
+        {
+            
+        }
     }
 
     public class CreateAuctionCommandHandler : IRequestHandler<CreateAuctionCommand>

@@ -43,7 +43,7 @@ namespace Web.Api
         }
 
         [Authorize(Roles = "User"), HttpPost("createAuction")]
-        public async Task<ActionResult> Bid([FromBody] CreateAuctionCommandDto commandDto)
+        public async Task<ActionResult> CreateAuction([FromBody] CreateAuctionCommandDto commandDto)
         {
             var command = new CreateAuctionCommand(
                 commandDto.BuyNowPrice,

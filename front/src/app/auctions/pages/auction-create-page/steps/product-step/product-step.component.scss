@@ -10,6 +10,7 @@
   }
   mat-form-field {
     display: block;
+    margin-bottom: 4px;
     ::ng-deep .mat-form-field-infix{
       font-size: 14px;
     }
@@ -22,16 +23,15 @@
     flex-flow: row;
     width: 100%;
     .g1{
-      flex-grow: 1;
+      flex-grow: 0;
+      flex-basis: 33%;
     }
     .g2 {
-      flex-grow: 2;
+      flex-grow: 0;
+      flex-basis: 66%;
       padding-left: 40px;
       display: flex;
       flex-direction: column;
-      mat-form-field{
-        flex-grow: 2;
-      }
       textarea{
         margin-top: 10px;
         height: 10em;
@@ -49,4 +49,13 @@
       }
     }
   }
+}
+
+
+.tag-div{
+  font-size: 12px;
+  display: inline-block;
+  margin: 5px 10px 5px 0;
+  padding: 4px;
+  background-color: aquamarine;
 }

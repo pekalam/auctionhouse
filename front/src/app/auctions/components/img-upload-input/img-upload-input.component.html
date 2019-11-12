@@ -1,9 +1,9 @@
-<div class="add-img-btn">
+<div [id]="'add-img-btn-' + imgNum" class="add-img-btn">
   <div [hidden]="preview">
     <label class="plus-btn" [for]="'upload-photo-' + imgNum">+</label>
-    <input accept=".jpg" type="file" class="upload-photo-input" name="photo" [id]="'upload-photo-' + imgNum" />
+    <input accept=".jpg, .png" type="file" class="upload-photo-input" name="photo" [id]="'upload-photo-' + imgNum" />
   </div>
-  <div class="preview-container" *ngIf="preview">
+  <div [id]="'preview-container-' + imgNum" class="preview-container" *ngIf="preview">
     <div class="cancel-btn" (click)="onCancelClick()">
       <span>X</span>
     </div>

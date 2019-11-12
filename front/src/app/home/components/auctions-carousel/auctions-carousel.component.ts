@@ -10,8 +10,8 @@ import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/l
 })
 export class AuctionsCarouselComponent implements OnInit {
 
-  auctions: MostViewedAuction[];
-  imgSources: string[];
+  auctions: MostViewedAuction[] = [];
+  imgSources: string[] = [];
 
   @Input('auctions')
   set setAuctions(auctions: MostViewedAuction[]) {

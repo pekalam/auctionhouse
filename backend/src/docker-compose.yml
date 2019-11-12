@@ -9,7 +9,7 @@ services:
 
   quartz_web_task_service:
     hostname: timetask
-    image: ${DOCKER_REGISTRY-}quartz_web_task_service
+    image: marekbf3/quartz-web-task-service
     ports:
       - "5001:80"
     environment: 

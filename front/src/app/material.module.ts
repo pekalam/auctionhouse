@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule, MatExpansionModule, MatRadioModule, MatMenuModule, MatProgressSpinnerModule, MatTabsModule, MatPaginatorModule, MatDialogModule, MatInputModule, MatFormFieldModule, MatButtonModule, MatListModule, MatSelectModule, NativeDateModule, MatDatepickerModule, MatDialogRef, MAT_DIALOG_DATA, MAT_DATE_FORMATS } from '@angular/material';
+import { MatTableModule, MatExpansionModule, MatRadioModule, MatMenuModule, MatProgressSpinnerModule, MatTabsModule, MatPaginatorModule, MatDialogModule, MatInputModule, MatFormFieldModule, MatButtonModule, MatListModule, MatSelectModule, NativeDateModule, MatDatepickerModule, MatDialogRef, MAT_DIALOG_DATA, MAT_DATE_FORMATS, MatCheckbox, MatCheckboxModule, ErrorStateMatcher } from '@angular/material';
 import { MatCardModule } from '@angular/material/card';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSliderModule } from '@angular/material/slider';
@@ -40,7 +40,8 @@ export const MY_FORMATS = {
     MatTabsModule,
     MatSliderModule,
     MatExpansionModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatCheckboxModule,
   ],
   providers: [
     { provide: MatDialogRef, useValue: {} },

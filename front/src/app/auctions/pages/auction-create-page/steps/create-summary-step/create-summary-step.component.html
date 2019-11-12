@@ -1,4 +1,14 @@
 <div class="container" *ngIf="commandArgs">
-  <p><span>Product: </span>{{commandArgs.product.name}}</p>
-  <p><span>Description: </span>{{commandArgs.product.name}}</p>
+  <p>Product name:&nbsp;{{commandArgs.product.name}}</p>
+  <p *ngIf="commandArgs.buyNow">Buy now price:&nbsp;{{commandArgs.buyNowPrice}}</p>
+  <p>Start date: {{commandArgs.startDate | date:'medium'}}</p>
+  <p>End date: {{commandArgs.endDate | date:'medium'}}</p>
+  <p>Tags:</p>
+
+  <div *ngFor="let tag of commandArgs.tags">
+    <div>
+      <i class="fas fa-tag" style="margin-right: 3px;"></i>{{tag}}
+    </div>
+  </div>
+
 </div>

@@ -9,20 +9,18 @@ import { AuctionCreateStep } from '../../../../auctionCreateStep';
 })
 export class CreateSummaryStepComponent extends AuctionCreateStep<void> implements OnInit {
 
+  titleMsg = 'Summary';
 
   @Input("commandArgs")
   commandArgs: CreateAuctionCommandArgs;
 
-  constructor() { super(); }
+  constructor() { super(); this.ready = true; }
 
   ngOnInit() {
   }
 
   onOkClick() {
     this.outputOnStepComplete.emit();
-  }
-  checkIsReady() {
-    this.onStepReady.emit();
   }
 
 }

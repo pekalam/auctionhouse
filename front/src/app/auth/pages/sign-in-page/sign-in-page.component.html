@@ -1,6 +1,6 @@
 <div id="container">
 
-  <form id="sign-in-form" [formGroup]="form" (ngSubmit)="onSignIn()">
+  <form #signInForm="ngForm" id="sign-in-form" [formGroup]="form" (ngSubmit)="onSignIn()">
     <div class="field-container">
       <mat-form-field id="username-field">
         <input matInput type="text" placeholder="Username" formControlName="username" />
@@ -13,16 +13,14 @@
     </div>
     <div class="field-container">
       <mat-form-field id="password">
-        <input matInput type="password" placeholder="Password" formControlName="password"
-          (keydown)="onPasswordKeyDown()" />
+        <input matInput type="password" placeholder="Password" formControlName="password"/>
         <mat-error>
           <ng-container *ngIf="form.controls.password.errors">
             <span *ngIf="form.controls.password.errors.required">Password cannot be empty</span>
           </ng-container>
-          <span *ngIf="!validPassword">Invalid password</span>
         </mat-error>
       </mat-form-field>
-
+      <p class="invalid-creds" [appVisible]="validPassword">Invalid credentials</p>
     </div>
     <div class="submit-button-container">
       <button mat-raised-button color="primary" id="sign-in-button" type="submit">Sign in</button>

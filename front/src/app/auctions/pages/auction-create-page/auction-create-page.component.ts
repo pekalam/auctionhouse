@@ -20,33 +20,32 @@ import { first } from 'rxjs/operators';
   styleUrls: ['./auction-create-page.component.scss']
 })
 export class AuctionCreatePageComponent implements OnInit, OnDestroy {
-  private totalSteps: number = 4;
+  private totalSteps = 4;
   private categorySelectStep: CategorySelectStep;
   private productStep: ProductStep;
   private connectionStartedSub: Subscription;
 
-  @ViewChild("categoryStep", { static: true })
+  @ViewChild('categoryStep', { static: true })
   categoryStepComponent;
-  @ViewChild("productStep", { static: true })
+  @ViewChild('productStep', { static: true })
   productStepComponent;
-  @ViewChild("imageStep", { static: true })
+  @ViewChild('imageStep', { static: true })
   imageStepComponent;
-  @ViewChild("summaryStep", { static: true })
+  @ViewChild('summaryStep', { static: true })
   summaryStepComponent;
 
   createAuctionArgs: CreateAuctionCommandArgs;
-  step = 1;
   error: string = null;
-  canMoveForward = false;
   showCreateForm = false;
-  showOk = false;
-  formMessage: string;
+
+  step = 0;
+  stepComponents = [];
 
   constructor(private startAuctionCreateSessionCommand: StartAuctionCreateSessionCommand,
-    private createAuctionCommand: CreateAuctionCommand,
-    private serverMessageService: ServerMessageService,
-    private router: Router,
-    public location: Location) {
+              private createAuctionCommand: CreateAuctionCommand,
+              private serverMessageService: ServerMessageService,
+              private router: Router,
+              public location: Location) {
   }
 
   ngOnInit() {
@@ -58,8 +57,12 @@ export class AuctionCreatePageComponent implements OnInit, OnDestroy {
       }
     });
     this.serverMessageService.ensureConnected();
-    this.changeFormMessage();
-    this.checkIsComponentReady();
+    this.stepComponents = [
+      this.categoryStepComponent,
+      this.productStepComponent,
+      this.imageStepComponent,
+      this.summaryStepComponent
+    ];
   }
 
   ngOnDestroy(): void {
@@ -68,77 +71,32 @@ export class AuctionCreatePageComponent implements OnInit, OnDestroy {
 
   private nextStep() {
     this.step++;
-    this.showOk = false;
-    this.changeFormMessage();
-    this.checkIsComponentReady();
   }
 
   private previousStep() {
     this.step--;
-    this.showOk = false;
-    this.changeFormMessage();
-    this.checkIsComponentReady()
   }
 
   private startAuctionCreateSession() {
-    console.log("starting session");
+    console.log('starting session');
     this.startAuctionCreateSessionCommand.execute().subscribe((msg) => {
       if (msg.result === 'completed') {
-        console.log('Create session started');
+        console.log('session started');
         this.showCreateForm = true;
       } else {
-        console.log('Cannot start create session');
-        this.showCreateForm = false;
+        console.log('Cannot start session');
       }
     }, (err) => {
-      console.log('Cannot start create session');
+      console.log('Cannot start session');
     });
   }
 
   private createCommandArgs() {
-    let categories = [this.categorySelectStep.selectedMainCategory.categoryName,
+    const categories = [this.categorySelectStep.selectedMainCategory.categoryName,
     this.categorySelectStep.selectedSubCategory.categoryName,
     this.categorySelectStep.selectedSubCategory2.categoryName];
     this.createAuctionArgs = new CreateAuctionCommandArgs(this.productStep.buyNowPrice, this.productStep.startDate,
-      this.productStep.endDate, categories, '123', this.productStep.product);
-  }
-
-  private changeFormMessage() {
-    switch (this.step) {
-      case 0:
-        this.formMessage = "Select categories";
-        break;
-      case 1:
-        this.formMessage = "Basic info";
-        break;
-      case 2:
-        this.formMessage = "Auction images";
-        break;
-      case 3:
-        this.formMessage = "Summary"
-        break;
-      default:
-        break;
-    }
-  }
-
-  private checkIsComponentReady(){
-    switch (this.step) {
-      case 0:
-        this.categoryStepComponent.checkIsReady();
-        break;
-      case 1:
-        this.productStepComponent.checkIsReady();
-        break;
-      case 2:
-        this.imageStepComponent.checkIsReady();
-        break;
-      case 3:
-        this.summaryStepComponent.checkIsReady();
-        break;
-      default:
-        break;
-    }
+      this.productStep.endDate, categories, '123', this.productStep.product, this.productStep.tags);
   }
 
   onCategorySelectedStep(stepResult: CategorySelectStep) {
@@ -196,10 +154,10 @@ export class AuctionCreatePageComponent implements OnInit, OnDestroy {
       if (msg.result === 'completed') {
         this.router.navigate(['/user']);
       } else {
-        this.error = 'Cannot create an auction'
+        this.error = 'Cannot create an auction';
       }
     }, (err) => {
-      this.error = 'Cannot create an auction'
+      this.error = 'Cannot create an auction';
     });
   }
 }

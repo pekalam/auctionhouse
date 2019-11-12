@@ -5,6 +5,7 @@ $imgBtnSize: 200px;
   opacity: 0;
   position: absolute;
   z-index: -1;
+  width: 0;
 }
 
 .plus-btn {
@@ -14,6 +15,7 @@ $imgBtnSize: 200px;
   text-align: center;
   vertical-align: middle;
   line-height: $imgBtnSize;
+  font-size: 24px;
 }
 
 .add-img-btn {
@@ -22,7 +24,7 @@ $imgBtnSize: 200px;
   width: $imgBtnSize;
   height: $imgBtnSize;
   max-height: $imgBtnSize;
-  background-color: rgb(151, 143, 143);
+  border: 1px solid #c7c7c7;
 }
 
 .preview-container{
@@ -33,7 +35,8 @@ $imgBtnSize: 200px;
     position: absolute;
     top: -12px;
     left: $imgBtnSize - 13px;
-    background-color: red;
+    background-color: #d32f2f;
+    color: white;
     border-radius: 50%;
     font-size: 14px;
     line-height: 25px;

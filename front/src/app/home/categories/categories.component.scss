@@ -26,6 +26,8 @@ $containerHeight: 560px;
     }
   }
   #subcategories-container {
+    overflow-y: auto;
+    max-height: 82vh;
     position: relative;
     bottom: $containerHeight;
     box-sizing: border-box;

@@ -3,24 +3,20 @@
     <div class="navig-btn-container">
       <button class="nav-btn back" (click)="onBackClick()" [appVisible]="step === 0">Back</button>
     </div>
-    <div class="text">{{formMessage}}</div>
+    <div class="text">{{stepComponents[step].titleMsg}}</div>
     <hr>
   </div>
   <div class="container">
-    <app-category-select-step #categoryStep (outputOnStepComplete)="onCategorySelectedStep($event)"
-      (onStepReady)="showOk = true" [hidden]="step !== 0">
-    </app-category-select-step>
-    <app-product-step #productStep (outputOnStepComplete)="onProductStep($event)" (onStepReady)="showOk = true"
-      [hidden]="step !== 1"></app-product-step>
-    <app-add-image-step #imageStep (outputOnStepComplete)="onImagesStep($event)" (onStepReady)="showOk = true"
-      [hidden]="step !== 2"></app-add-image-step>
-    <app-create-summary-step #summaryStep [commandArgs]="createAuctionArgs" (outputOnStepComplete)="onSummaryStep()"
-      (onStepReady)="showOk = true" [hidden]="step !== 3"></app-create-summary-step>
+    <app-category-select-step #categoryStep (outputOnStepComplete)="onCategorySelectedStep($event)" [hidden]="categoryStep !== stepComponents[step]"></app-category-select-step>
+    <app-product-step #productStep (outputOnStepComplete)="onProductStep($event)" [hidden]="productStep !== stepComponents[step]"></app-product-step>
+    <app-add-image-step #imageStep (outputOnStepComplete)="onImagesStep($event)" [hidden]="imageStep !== stepComponents[step]"></app-add-image-step>
+    <app-create-summary-step #summaryStep [commandArgs]="createAuctionArgs" (outputOnStepComplete)="onSummaryStep()" [hidden]="summaryStep !== stepComponents[step]"></app-create-summary-step>
   </div>
   <div class="create-container">
     <button class="cancel-btn" (click)="location.back()">Cancel</button>
-    <button class="create-btn" (click)="onOkClick()"
-      *ngIf="showOk">{{step != 3 ? 'Continue' : 'Create auction'}}</button>
+    <button class="create-btn" (click)="onOkClick()" *ngIf="stepComponents[step].ready">
+      {{step != 3 ? 'Continue':'Create auction'}}
+    </button>
     <p class="err-msg">{{error}}</p>
   </div>
 </div>

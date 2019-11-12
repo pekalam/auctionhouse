@@ -9,6 +9,7 @@ using Core.Common.Domain.Categories;
 using Core.Common.Domain.Users;
 using Core.Common.EventBus;
 using Core.Common.SchedulerService;
+using Core.Command.CreateAuction;
 using Infrastructure.Auth;
 using Infrastructure.Repositories.AuctionImage;
 using Infrastructure.Repositories.EventStore;
@@ -134,6 +135,7 @@ namespace Infrastructure.Bootstraper
 
 //                serviceCollection.AddSingleton<IImplProvider, DefaultDIImplProvider>(provider =>
 //                    new DefaultDIImplProvider(provider));
+				serviceCollection.AddScoped<CreateAuctionCommandHandlerDepedencies>();
             }
 
             public static void Start(IServiceProvider serviceProvider)

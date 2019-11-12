@@ -18,6 +18,7 @@ export class CategorySelectStepComponent extends AuctionCreateStep<CategorySelec
   selectedSubCategory: CategoryTreeNode;
   selectedSubCategory2: CategoryTreeNode;
 
+  titleMsg = 'Select categories';
 
   constructor(private categoriesQuery: CategoriesQuery) {
     super();
@@ -31,44 +32,34 @@ export class CategorySelectStepComponent extends AuctionCreateStep<CategorySelec
 
   checkIsReady() {
     if (this.selectedMainCategory && this.selectedSubCategory && this.selectedSubCategory2) {
-      this.onStepReady.emit();
+      //this.onStepReady.emit();
     }
   }
 
   selectMainCategory(selectedCategoryName: string) {
-    console.log(selectedCategoryName);
-    if (!selectedCategoryName) {
-      this.selectedSubCategory = null;
-      this.selectedSubCategory2 = null;
-      this.selectedMainCategory = null;
-      return;
-    }
     this.selectedMainCategory =
-      this.mainCategories.filter(c => c.categoryName === selectedCategoryName)[0];
-    this.subCategories = this.selectedMainCategory.subCategories;
+      this.mainCategories.filter(c => c.categoryName === selectedCategoryName)[0] || null;
+    this.subCategories = this.selectedMainCategory ? this.selectedMainCategory.subCategories : null;
     this.selectedSubCategory = null;
     this.selectedSubCategory2 = null;
     this.subCategories2 = [];
-    console.log(this.subCategories);
+    this.ready = false;
   }
 
   selectSubCategory(selectedCategoryName: string) {
-    if (!selectedCategoryName) {
-      this.selectedSubCategory = null;
-      this.selectedSubCategory2 = null;
-      return;
-    }
     this.selectedSubCategory
-      = this.subCategories.filter(c => c.categoryName === selectedCategoryName)[0];
-    this.subCategories2 = this.selectedSubCategory.subCategories;
+      = this.subCategories.filter(c => c.categoryName === selectedCategoryName)[0] || null;
+    this.subCategories2 = this.selectedSubCategory ? this.selectedSubCategory.subCategories : null;
+    this.ready = false;
   }
 
   selectSubCategory2(selectedCategoryName: string) {
     if (!selectedCategoryName) {
+      this.ready = false;
       return;
     }
     this.selectedSubCategory2 = this.subCategories2.filter(c => c.categoryName === selectedCategoryName)[0];
-    this.onStepReady.emit();
+    this.ready = true;
   }
 
   onOkClick() {

@@ -10,20 +10,16 @@ import { AuctionCreateStep } from '../../../../auctionCreateStep';
 export class AddImageStepComponent extends AuctionCreateStep<ImgUploadResult[]> implements OnInit {
   imgIds = [0, 1, 2, 3, 4, 5];
   show = [1, 1, 1, 0, 0, 0];
-
   imgUploadResults: Array<ImgUploadResult> = new Array<ImgUploadResult>(6);
+  titleMsg = 'Add images';
 
-  constructor() { super(); }
+  constructor() { super(); this.ready = true; }
 
   ngOnInit() {
   }
 
   onAddImg(result: ImgUploadResult) {
     this.imgUploadResults[result.id] = result;
-  }
-
-  checkIsReady() {
-    this.onStepReady.emit();
   }
 
   onImgSelect(result: ImgUploadResult) {
