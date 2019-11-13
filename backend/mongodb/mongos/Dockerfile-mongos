@@ -1,0 +1,9 @@
+FROM mongo
+RUN apt-get update && apt-get -y install netcat
+EXPOSE 32112
+COPY ["scripts", "/scripts/"]
+COPY ["wait-for", "/bin/wait-for"]
+COPY ["mongos-entrypoint.sh", "/root"]
+RUN ls /root
+RUN chmod +x /root/mongos-entrypoint.sh && chmod +x /bin/wait-for
+ENTRYPOINT ["/root/mongos-entrypoint.sh"]

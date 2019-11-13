@@ -4,9 +4,8 @@ services:
   update-server:
     hostname: update-server
     container_name: update-server
-    image: update-server
+    build:
+      context: views/
+      dockerfile: Dockerfile-update-server
     tty: true
-networks:
-    default:
-        external:
-            name: auctionhouse_network
+    command: ["--wait-for", "db-mongos1:32112"]

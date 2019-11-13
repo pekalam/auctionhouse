@@ -1,12 +1,6 @@
 version: '3.4'
 
 services:
-  web:
-    image: ${DOCKER_REGISTRY-}web
-    build:
-      context: .
-      dockerfile: Web/Dockerfile
-
   quartz_web_task_service:
     hostname: timetask
     image: marekbf3/quartz-web-task-service
@@ -22,8 +16,8 @@ services:
     ports:
       - "2113:2113"
       - "1113:1113"
-#    environment:
-#      - EVENTSTORE_MEM_DB=true
+    environment:
+      - EVENTSTORE_MEM_DB=true
 
   rabbitmq:
     hostname: rabbitmq

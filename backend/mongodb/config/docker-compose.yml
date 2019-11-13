@@ -4,22 +4,8 @@ services:
   db-config1:
     hostname: db-config1
     container_name: db-config1
-    image: mongo
+    build:
+      context: config/
+      dockerfile: Dockerfile-config
     tmpfs: /data/configdb
     command: "--configsvr --replSet configRS --bind_ip_all"
-  db-config2:
-    hostname: db-config2
-    container_name: db-config2
-    image: mongo
-    tmpfs: /data/configdb
-    command: "--configsvr --replSet configRS --bind_ip_all"
-  db-config3:
-    hostname: db-config3
-    container_name: db-config3
-    image: mongo
-    tmpfs: /data/configdb
-    command: "--configsvr --replSet configRS --bind_ip_all"
-networks:
-    default:
-        external:
-            name: auctionhouse_network
