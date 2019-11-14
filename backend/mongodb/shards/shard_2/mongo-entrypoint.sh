@@ -28,5 +28,5 @@ echo "running init.js..."
 mongo appDb --port 27018 /scripts/init.js
 
 echo "mongodb initialized"
-nc -l -s 0.0.0.0 -p 32112 &
+nc -l -k -s 0.0.0.0 -p 32112 &
 fg %1

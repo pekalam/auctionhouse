@@ -28,5 +28,5 @@ echo "running init.js..."
 mongo --port 27019 /scripts/init.js
 
 echo "mongo configsvr initialized"
-nc -l -s 0.0.0.0 -p 32112 &
+nc -l -k -s 0.0.0.0 -p 32112 &
 fg %1

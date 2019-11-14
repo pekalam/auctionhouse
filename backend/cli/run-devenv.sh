@@ -2,7 +2,7 @@
 
 echo "Starting mongodb dev..."
 pushd ../mongodb
-./run.sh dev
+./run.sh dev $1 $2
 popd
 
 echo "Starting rabbitmq, eventstore, quartzWebTaskService..."

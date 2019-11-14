@@ -27,6 +27,6 @@ wait-for localhost:27017 -t 180
 echo "running init.js..."
 mongo /scripts/init.js
 
-nc -l -s 0.0.0.0 -p 32112 &
+nc -l -k -s 0.0.0.0 -p 32112 &
 echo "mongos initialized"
 fg %1

@@ -1,0 +1,9 @@
+version: '3.4'
+
+services:
+  db-node1:
+    hostname: db-node1
+    container_name: db-node1
+    build:
+      context: shards/shard_1/
+    command: [ "--bind_ip_all", "--replSet", "n1", "--shardsvr" ]
