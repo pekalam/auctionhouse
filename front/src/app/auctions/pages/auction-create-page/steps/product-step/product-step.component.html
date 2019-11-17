@@ -1,9 +1,9 @@
 <div class="container">
-  <form class="form-grid" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <form class="form-grid" [formGroup]="form">
     <div class="g1">
-      <mat-form-field>
+      <mat-form-field id="product-name-field">
         Product name
-        <input matInput type="text" formControlName="productName" (keydown)="onChange()" />
+        <input matInput type="text" formControlName="productName" (keyup)="onChange()" />
         <mat-error>
           <ng-container *ngIf="form.controls.productName.errors">
             <span *ngIf="form.controls.productName.errors.required">This field is required</span>
@@ -11,52 +11,18 @@
         </mat-error>
       </mat-form-field>
 
-
-      <mat-checkbox (change)="onBuyNowChange($event.checked) || onChange()" formControlName="buyNow">Buy now
-      </mat-checkbox>
-
-      <mat-form-field>
-        Buy now price
-        <input type="number" matInput formControlName="buyNowPrice" (keydown)="onChange()" />
-        <mat-error>
-          <ng-container *ngIf="form.controls.buyNowPrice.errors">
-            <span *ngIf="form.controls.buyNowPrice.errors.required">This field is required</span>
-          </ng-container>
-        </mat-error>
-      </mat-form-field>
-
-      <mat-form-field>
-        Start date
-        <input [matDatepicker]="picker1" matInput [(ngModel)]="defaultStartDate" formControlName="startDate"
-          (change)="onChange()" />
-        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-        <mat-datepicker #picker1></mat-datepicker>
-        <mat-error>
-          <ng-container *ngIf="form.controls.startDate.errors">
-            <span *ngIf="form.controls.startDate.errors.required">This field is required</span>
-          </ng-container>
-        </mat-error>
-      </mat-form-field>
-
-      <mat-form-field>
-        End date
-        <input [matDatepicker]="picker2" [(ngModel)]="defaultEndDate" matInput formControlName="endDate"
-          (change)="onChange()" />
-        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-        <mat-datepicker #picker2></mat-datepicker>
-        <mat-error>
-          <ng-container *ngIf="form.controls.endDate.errors">
-            <span *ngIf="form.controls.endDate.errors.required">This field is required</span>
-          </ng-container>
-        </mat-error>
-      </mat-form-field>
+      <p>Condition</p>
+      <mat-radio-group formControlName="condition" [selected]="used">
+          <mat-radio-button #used [value]="0">Used</mat-radio-button>
+          <mat-radio-button #new [value]="1">New</mat-radio-button>
+        </mat-radio-group>
 
     </div>
 
     <div class="g2">
       <mat-form-field>
         Product description
-        <textarea matInput formControlName="productDescription" (keydown)="onChange()"></textarea>
+        <textarea matInput formControlName="productDescription" (keyup)="onChange()"></textarea>
         <mat-error>
           <ng-container *ngIf="form.controls.productDescription.errors">
             <span *ngIf="form.controls.productDescription.errors.required">This field is required</span>

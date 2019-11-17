@@ -9,7 +9,7 @@ namespace Core.Common.Domain.Auctions.Events
         public Guid AuctionId { get; }
 
         public AuctionImageAdded(AuctionImage addedImage, int num, Guid auctionId)
-            : base(EventsNames.AuctionImageAddedEventName)
+            : base(EventNames.AuctionImageAddedEventName)
         {
             AddedImage = addedImage;
             Num = num;

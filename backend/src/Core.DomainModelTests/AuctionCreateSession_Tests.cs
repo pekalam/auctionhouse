@@ -31,10 +31,11 @@ namespace Core.DomainModelTests
                 .SetBuyNow(12)
                 .SetStartDate(DateTime.UtcNow.AddMinutes(20))
                 .SetEndDate(DateTime.UtcNow.AddDays(1))
-                .SetProduct(new Product() { Name = "name", Description = "desc" })
+                .SetProduct(new Product("name", "desc", Condition.New))
                 .SetCategory(new Category("", 0))
                 .SetOwner(new UserIdentity())
-                .SetTags(new string[]{"tag1"})
+                .SetTags(new []{"tag1"})
+                .SetName("Test name")
                 .Build();
         }
 

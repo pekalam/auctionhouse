@@ -23,7 +23,7 @@ namespace Core.Query.Handlers
         public override void Consume(IAppEvent<AuctionCreated> message)
         {
             var ev = message.Event;
-            var auction = new AuctionReadModel()
+            var auction = new AuctionRead()
             {
                 Id = ObjectId.GenerateNewId(),
                 Product = ev.AuctionArgs.Product,
@@ -39,8 +39,8 @@ namespace Core.Query.Handlers
                 Tags = ev.AuctionArgs.Tags
             };
 
-            var filter = Builders<UserReadModel>.Filter.Eq(f => f.UserIdentity.UserId, ev.AuctionArgs.Creator.UserId.ToString());
-            var update = Builders<UserReadModel>.Update.Push(f => f.CreatedAuctions, ev.AuctionId.ToString());
+            var filter = Builders<UserRead>.Filter.Eq(f => f.UserIdentity.UserId, ev.AuctionArgs.Creator.UserId.ToString());
+            var update = Builders<UserRead>.Update.Push(f => f.CreatedAuctions, ev.AuctionId.ToString());
 
 
             var session = _dbContext.Client.StartSession();

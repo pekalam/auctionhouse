@@ -1,17 +1,22 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'app-carousel',
   templateUrl: './carousel.component.html',
   styleUrls: ['./carousel.component.scss']
 })
-export class CarouselComponent implements OnInit {
+export class CarouselComponent implements OnInit, AfterViewInit {
+
+  @ViewChild('image', {static: false})
+  image: ElementRef;
 
   @Input('img-height')
   imgHeight = 250;
   imgs = [];
   imgInd = [];
   shown = 0;
+
+  h = 0;
 
   @Input('sources')
   set sources(srcs: Array<string>) {
@@ -28,6 +33,14 @@ export class CarouselComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+
+  }
+
+  ngAfterViewInit() {
+    console.log(this.image.nativeElement);
+    this.h = this.image.nativeElement.height;
+    console.log(this.h);
+
   }
 
   onPrev(){

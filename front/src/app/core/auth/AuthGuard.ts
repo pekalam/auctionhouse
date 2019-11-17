@@ -12,10 +12,12 @@ export class AuthGuard implements CanActivate {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): boolean {
-    return this.checkIsLoggedIn(state.url, next.data.msg ? next.data.msg : '');
+    return this.checkIsLoggedIn(next.url.map((p) => p.path).reduce((p, c) => p += `/${c}`, ''), next.data.msg ? next.data.msg : '');
   }
 
   private checkIsLoggedIn(redirectUrl: string, message: string): boolean {
+    console.log(redirectUrl);
+
     if (this.authenticationStateService.checkIsAuthenticated()) {
       return true;
     }

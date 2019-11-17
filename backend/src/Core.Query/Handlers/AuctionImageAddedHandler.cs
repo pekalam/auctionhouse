@@ -28,8 +28,8 @@ namespace Core.Query.Handlers
 
         private void AddImg(AuctionImageAdded auctionEvent)
         {
-            var filter = Builders<AuctionReadModel>.Filter.Eq(f => f.AuctionId, auctionEvent.AuctionId.ToString());
-            var update = Builders<AuctionReadModel>.Update.Push(f => f.AuctionImages, auctionEvent.AddedImage);
+            var filter = Builders<AuctionRead>.Filter.Eq(f => f.AuctionId, auctionEvent.AuctionId.ToString());
+            var update = Builders<AuctionRead>.Update.Push(f => f.AuctionImages, auctionEvent.AddedImage);
             try
             {
                 _dbContext.AuctionsReadModel.FindOneAndUpdate(filter, update);

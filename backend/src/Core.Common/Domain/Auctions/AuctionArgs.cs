@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using Core.Common.Domain.Categories;
 using Core.Common.Domain.Products;
 using Core.Common.Domain.Users;
@@ -7,15 +9,16 @@ namespace Core.Common.Domain.Auctions
 {
     public class AuctionArgs
     {
-        public decimal BuyNowPrice { get; set; } = 0;
-        public bool BuyNowOnly { get; set; } = false;
-        public AuctionImage[] AuctionImages { get; set; } = null;
+        public decimal BuyNowPrice { get; set; }
+        public bool BuyNowOnly { get; set; }
+        public AuctionImage[] AuctionImages { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public UserIdentity Creator { get; set; }
         public Product Product { get; set; }
         public Category Category { get; set; }
         public string[] Tags { get; set; }
+        public string Name { get; set; }
 
         public class Builder
         {
@@ -23,13 +26,14 @@ namespace Core.Common.Domain.Auctions
 
             private void CheckCanBuild()
             {
-                if (args.Product == default || 
-                    args.StartDate == default || 
-                    args.EndDate == default || 
+                if (args.Product == default ||
+                    args.StartDate == default ||
+                    args.EndDate == default ||
                     args.Creator == default ||
-                    args.Category == default || 
+                    args.Category == default ||
                     args.Tags == default ||
-                    (args.BuyNowOnly && args.BuyNowPrice == 0))
+                    args.Name == default
+                )
                 {
                     throw new DomainException("Invalid auctionArgs");
                 }
@@ -91,6 +95,12 @@ namespace Core.Common.Domain.Auctions
             public Builder SetImages(AuctionImage[] images)
             {
                 args.AuctionImages = images;
+                return this;
+            }
+
+            public Builder SetName(string name)
+            {
+                args.Name = name;
                 return this;
             }
 

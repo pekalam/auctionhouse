@@ -19,7 +19,7 @@ namespace Infrastructure.Services.SchedulerService
         protected virtual ScheduleRequest<AuctionEndTimeTaskValues> CreateScheduleRequest(Auction auction)
         {
             var sheduleRequest = new ScheduleRequest<AuctionEndTimeTaskValues>();
-            sheduleRequest.StartDate = auction.EndDate.ToUniversalTime();
+            sheduleRequest.StartDate = auction.EndDate.Value;
             sheduleRequest.Endpoint = _serviceSettings.AuctionEndEchoTaskEndpoint;
             sheduleRequest.Type = "echo";
             sheduleRequest.Values = new AuctionEndTimeTaskValues(auction);

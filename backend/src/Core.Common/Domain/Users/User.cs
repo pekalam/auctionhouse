@@ -2,8 +2,18 @@
 
 namespace Core.Common.Domain.Users
 {
+    public class InvalidUsernameException : DomainException
+    {
+        public InvalidUsernameException(string message) : base(message)
+        {
+        }
+    }
+
     public partial class User : AggregateRoot<User>
     {
+        public const int MIN_USERNAME_LENGTH = 4;
+
+
         public UserIdentity UserIdentity { get; private set; }
 
         public User()
@@ -18,6 +28,10 @@ namespace Core.Common.Domain.Users
             if (UserIdentity != null)
             {
                 throw new DomainException($"User {username} is already registered");
+            }
+            if (username.Length < MIN_USERNAME_LENGTH)
+            {
+                throw new InvalidUsernameException("Too short username");
             }
             UserIdentity = new UserIdentity()
             {

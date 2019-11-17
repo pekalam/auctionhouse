@@ -113,9 +113,10 @@ namespace FunctionalTests.Commands
         {
             startDate = DateTime.UtcNow;
             endDate = DateTime.UtcNow.AddSeconds(35);
-            var command = new CreateAuctionCommand(Decimal.One, new Product {Name = "name", Description = "desc"},
+            var command = new CreateAuctionCommand(Decimal.One,
+                new Product("name", "desc", Condition.New),
                 startDate, endDate,
-                categories, new CorrelationId(""), new []{"tag1"});
+                categories, new CorrelationId(""), new []{"tag1"}, "test name");
 
             testCommandHandler.Handle(command, CancellationToken.None)
                 .Wait();
@@ -133,8 +134,9 @@ namespace FunctionalTests.Commands
         public void Handle_when_repository_throws_exception_throws()
         {
             testCommandHandler.AuctionRepositoryThrows = true;
-            var command = new CreateAuctionCommand(Decimal.One, new Product {Name = "name", Description = "desc"},
-                startDate, endDate, categories, new CorrelationId(""), new []{"tag1"});
+            var command = new CreateAuctionCommand(Decimal.One,
+                new Product("name", "desc", Condition.New),
+                startDate, endDate, categories, new CorrelationId(""), new []{"tag1"}, "test name");
 
             Assert.Throws<Exception>(() =>
             {
@@ -152,9 +154,10 @@ namespace FunctionalTests.Commands
         public void Handle_when_eventbus_throws_exception_throws_and_rolls_back()
         {
             testCommandHandler.EventBusThrows = true;
-            var command = new CreateAuctionCommand(Decimal.One, new Product {Name = "name", Description = "desc"},
+            var command = new CreateAuctionCommand(Decimal.One,
+                new Product("name", "desc", Condition.New),
                 startDate,
-                endDate, categories, new CorrelationId(""), new []{"tag1"});
+                endDate, categories, new CorrelationId(""), new []{"tag1"}, "test name");
 
             Assert.Throws<Exception>(() =>
             {

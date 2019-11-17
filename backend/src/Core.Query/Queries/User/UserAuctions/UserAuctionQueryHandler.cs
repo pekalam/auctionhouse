@@ -36,7 +36,7 @@ namespace Core.Query.Queries.User.UserAuctions
         {
             var user = GetSignedInUserIdentity();
 
-            var userReadModelFilter = Builders<UserReadModel>.Filter.Eq(field => field.UserIdentity.UserId, user.UserId.ToString());
+            var userReadModelFilter = Builders<UserRead>.Filter.Eq(field => field.UserIdentity.UserId, user.UserId.ToString());
             var idsToJoin = await _dbContext.UsersReadModel
                 .Find(userReadModelFilter)
                 .Project(model => new { AuctionsIds = model.CreatedAuctions.Select(s => s).ToArray()})
@@ -44,7 +44,7 @@ namespace Core.Query.Queries.User.UserAuctions
 
             if (idsToJoin != null)
             {
-                var userAuctionsFilter = Builders<AuctionReadModel>.Filter
+                var userAuctionsFilter = Builders<AuctionRead>.Filter
                     .In(field => field.AuctionId, idsToJoin.AuctionsIds);
                 var userAuctions = await _dbContext.AuctionsReadModel
                     .Find(userAuctionsFilter)

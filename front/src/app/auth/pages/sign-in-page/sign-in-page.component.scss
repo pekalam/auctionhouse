@@ -2,28 +2,32 @@
 
 #container{
   padding-top: 50px;
-  background-color: white;
   width: 50%;
-  margin: 20px auto;
+  margin: 0 auto;
   padding: 20px;
-  @include section-shadow;
-  #sign-in-form{
-    .field-container{
-      padding: 15px;
-      display: block;
-      text-align: center;
-    }
-    #sign-in-button{
-      cursor: pointer;
-    }
-
+  #section{
+    background-color: white;
+    padding: 20px;
+    @include section-shadow;
   }
-  .submit-button-container{
+}
+
+#sign-in-form{
+  .field-container{
+    padding: 15px;
     display: block;
     text-align: center;
-    #signup-button{
-      margin-top: 30px;
-    }
+  }
+  #sign-in-button{
+    cursor: pointer;
+  }
+
+}
+.submit-button-container{
+  display: block;
+  text-align: center;
+  #signup-button{
+    margin-top: 30px;
   }
 }
 

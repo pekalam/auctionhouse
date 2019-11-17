@@ -12,19 +12,22 @@
 
   <ItemGroup>
     <Reference Include="Core.Command">
-      <HintPath>..\..\src\Web\bin\Debug\netcoreapp2.2\Core.Command.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Marek\source\repos\New folder\backend\src\Web\bin\Debug\netcoreapp2.2\Core.Command.dll</HintPath>
     </Reference>
     <Reference Include="Core.Common">
-      <HintPath>..\..\src\Web\bin\Debug\netcoreapp2.2\Core.Common.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Marek\source\repos\New folder\backend\src\Web\bin\Debug\netcoreapp2.2\Core.Common.dll</HintPath>
     </Reference>
     <Reference Include="Core.Query">
-      <HintPath>..\..\src\Web\bin\Debug\netcoreapp2.2\Core.Query.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Marek\source\repos\New folder\backend\src\Web\bin\Debug\netcoreapp2.2\Core.Query.dll</HintPath>
+    </Reference>
+    <Reference Include="Handlebars">
+      <HintPath>..\..\..\..\..\..\..\..\Marek\source\repos\New folder\backend\src\Web\bin\Debug\netcoreapp2.2\Handlebars.dll</HintPath>
     </Reference>
     <Reference Include="Infrastructure">
-      <HintPath>..\..\src\Web\bin\Debug\netcoreapp2.2\Infrastructure.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Marek\source\repos\New folder\backend\src\Web\bin\Debug\netcoreapp2.2\Infrastructure.dll</HintPath>
     </Reference>
     <Reference Include="Web">
-      <HintPath>..\..\src\Web\bin\Debug\netcoreapp2.2\Web.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Marek\source\repos\New folder\backend\src\Web\bin\Debug\netcoreapp2.2\Web.dll</HintPath>
     </Reference>
   </ItemGroup>
 

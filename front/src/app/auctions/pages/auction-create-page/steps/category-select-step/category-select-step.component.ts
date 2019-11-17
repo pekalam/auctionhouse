@@ -30,12 +30,6 @@ export class CategorySelectStepComponent extends AuctionCreateStep<CategorySelec
   ngOnInit() {
   }
 
-  checkIsReady() {
-    if (this.selectedMainCategory && this.selectedSubCategory && this.selectedSubCategory2) {
-      //this.onStepReady.emit();
-    }
-  }
-
   selectMainCategory(selectedCategoryName: string) {
     this.selectedMainCategory =
       this.mainCategories.filter(c => c.categoryName === selectedCategoryName)[0] || null;

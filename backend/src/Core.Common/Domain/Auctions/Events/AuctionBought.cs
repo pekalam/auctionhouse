@@ -8,7 +8,7 @@ namespace Core.Common.Domain.Auctions.Events
         public Guid AuctionId { get; }
         public UserIdentity UserIdentity { get; }
 
-        public AuctionBought(Guid auctionId, UserIdentity userIdentity) : base(EventsNames.AuctionBoughtEventName)
+        public AuctionBought(Guid auctionId, UserIdentity userIdentity) : base(EventNames.AuctionBoughtEventName)
         {
             AuctionId = auctionId;
             UserIdentity = userIdentity;

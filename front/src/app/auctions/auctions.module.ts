@@ -18,6 +18,7 @@ import { CreateSummaryStepComponent } from './pages/auction-create-page/steps/cr
 import { AuctionFiltersComponent } from './components/auction-filters/auction-filters.component';
 import {LayoutModule} from '@angular/cdk/layout';
 import { ErrorModule } from '../error/error.module';
+import { AuctionDataStepComponent } from './pages/auction-create-page/steps/auction-data-step/auction-data-step.component';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { ErrorModule } from '../error/error.module';
     AddImageStepComponent,
     ImgUploadInputComponent,
     CreateSummaryStepComponent,
-    AuctionFiltersComponent],
+    AuctionFiltersComponent,
+    AuctionDataStepComponent],
   imports: [
     AuctionsRoutingModule,
     ReactiveFormsModule,

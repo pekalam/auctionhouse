@@ -52,10 +52,10 @@ namespace FunctionalTests.EventHandling
             user = new User();
             user.Register("testUserName");
             user.MarkPendingEventsAsHandled();
-            product = new Product() {Name = "test product", Description = "desc"};
+            product = new Product("name", "desc", Condition.New);
             correlationId = new CorrelationId("test_correlationId");
-            services.DbContext.UsersReadModel.InsertOne(new UserReadModel()
-                {UserIdentity = new UserIdentityReadModel(user.UserIdentity)});
+            services.DbContext.UsersReadModel.InsertOne(new UserRead()
+                {UserIdentity = new UserIdentityRead(user.UserIdentity)});
         }
 
         [TearDown]
@@ -63,8 +63,8 @@ namespace FunctionalTests.EventHandling
         {
             var testDepedencies = TestDepedencies.Instance.Value;
             testDepedencies.AuctionImageRepository.Remove("img1-1");
-            testDepedencies.DbContext.UsersReadModel.DeleteMany(FilterDefinition<UserReadModel>.Empty);
-            testDepedencies.DbContext.AuctionsReadModel.DeleteMany(FilterDefinition<AuctionReadModel>.Empty);
+            testDepedencies.DbContext.UsersReadModel.DeleteMany(FilterDefinition<UserRead>.Empty);
+            testDepedencies.DbContext.AuctionsReadModel.DeleteMany(FilterDefinition<AuctionRead>.Empty);
             testDepedencies.DisconnectEventBus();
         }
 
@@ -112,7 +112,7 @@ namespace FunctionalTests.EventHandling
             };
             return new CreateAuctionCommand(20.0m, product, DateTime.UtcNow.AddMinutes(20),
                 DateTime.UtcNow.AddDays(12),
-                categories, correlationId, new[] {"tag1"});
+                categories, correlationId, new[] {"tag1"}, "test name");
         }
 
         private bool VerifyEvent(AuctionCreated auctionCreated, CreateAuctionCommand command)
@@ -157,7 +157,7 @@ namespace FunctionalTests.EventHandling
 
             var auctionReadModel = services.DbContext.AuctionsReadModel.Find(a => a.AuctionId == idFromHandler)
                 .FirstOrDefault();
-            UserReadModel userReadModel = services.DbContext.UsersReadModel
+            UserRead userRead = services.DbContext.UsersReadModel
                 .Find(f => f.UserIdentity.UserId == user.UserIdentity.UserId.ToString())
                 .FirstOrDefault();
 
@@ -166,9 +166,9 @@ namespace FunctionalTests.EventHandling
             auctionReadModel.Product.Should()
                 .BeEquivalentTo(product);
             auctionReadModel.Creator.UserId.Should()
-                .Be(userReadModel.UserIdentity.UserId);
+                .Be(userRead.UserIdentity.UserId);
 
-            userReadModel.CreatedAuctions.Count.Should()
+            userRead.CreatedAuctions.Count.Should()
                 .Be(1);
 
             services.AuctionImageRepository.Find("img1-1")

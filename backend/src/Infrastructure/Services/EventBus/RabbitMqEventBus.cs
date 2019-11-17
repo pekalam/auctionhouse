@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 using IEventBus = Core.Common.EventBus.IEventBus;
 
 [assembly: InternalsVisibleTo("FunctionalTests")]
-
+[assembly: InternalsVisibleTo("IntegrationTests")]
 namespace Infrastructure.Services.EventBus
 {
     internal class RabbitMqEventConsumerFactory
@@ -80,15 +80,23 @@ namespace Infrastructure.Services.EventBus
 
         private void HandleErrorMessage(IMessage<Error> message, MessageReceivedInfo info)
         {
-            _logger.LogError($"Error message {info.RoutingKey}");
-            var commandEvent = ParseEventFromMessage(message);
-            if (commandEvent != null)
+            try
             {
-                var commandName = commandEvent.Command.GetType()
-                    .Name;
-                var handler = RollbackHandlerRegistry.GetCommandRollbackHandler(commandName);
-                handler.Rollback(commandEvent);
+                _logger.LogError($"Error message {info.RoutingKey}");
+                IAppEvent<Event> commandEvent = ParseEventFromMessage(message);
+                if (commandEvent != null)
+                {
+                    var commandName = commandEvent.Command?.GetType()
+                        .Name;
+                    var handler = RollbackHandlerRegistry.GetCommandRollbackHandler(commandName);
+                    handler.Rollback(commandEvent);
+                }
             }
+            catch (Exception)
+            {
+                _logger.LogError("Cannot handle error message");
+            }
+
         }
 
         private void SetupErrorQueueSubscribtion()

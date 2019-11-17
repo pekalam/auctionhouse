@@ -7,7 +7,7 @@ import { Product } from '../models/Product';
 
 export class CreateAuctionCommandArgs {
   constructor(public buyNowPrice: number | null, public startDate: Date, public endDate: Date, public category: Array<string>
-              , public correlationId: string, public product: Product, public tags: string[]) {
+              , public correlationId: string, public product: Product, public tags: string[], public name: string) {
 
   }
 }

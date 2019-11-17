@@ -1,12 +1,13 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Core.Query.ReadModel;
+using Core.Query.Views;
 using MediatR;
 using MongoDB.Driver;
 
 namespace Core.Query.Queries.Auction.TopAuctionsByTag
 {
-    public class TopAuctionsByTagQuery : IRequest<TopAuctionsInTagReadModel>
+    public class TopAuctionsByTagQuery : IRequest<TopAuctionsInTag>
     {
         public const int MAX_PER_PAGE = 20;
 
@@ -14,7 +15,7 @@ namespace Core.Query.Queries.Auction.TopAuctionsByTag
         public int Page { get; set; }
     }
 
-    public class TopAuctionsByTagQueryHandler : IRequestHandler<TopAuctionsByTagQuery, TopAuctionsInTagReadModel>
+    public class TopAuctionsByTagQueryHandler : IRequestHandler<TopAuctionsByTagQuery, TopAuctionsInTag>
     {
         private readonly ReadModelDbContext _dbContext;
 
@@ -24,7 +25,7 @@ namespace Core.Query.Queries.Auction.TopAuctionsByTag
         }
 
 
-        public Task<TopAuctionsInTagReadModel> Handle(TopAuctionsByTagQuery request, CancellationToken cancellationToken)
+        public Task<TopAuctionsInTag> Handle(TopAuctionsByTagQuery request, CancellationToken cancellationToken)
         {
             var tagsAuctions = _dbContext.TagsAuctionsCollection.Find(t => t.Tag == request.Tag)
                 .Skip(request.Page * TopAuctionsByTagQuery.MAX_PER_PAGE)

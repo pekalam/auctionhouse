@@ -1,0 +1,52 @@
+version: '3.4'
+
+services:
+  quartz_web_task_service:
+    container_name: quartz_web_task_service
+    image: marekbf3/quartz-web-task-service
+    ports:
+      - "5001:80"
+    environment: 
+      - "ClientKey=testk"
+      - "ManagmentKey=testm"
+
+  mongodb:
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    build:
+      context: .
+      dockerfile: Dockerfile-mongo-standalone-replicaset-restore
+
+
+  eventst:
+    container_name: eventst
+    build:
+      context: .
+      dockerfile: Dockerfile-eventstore-backup
+    ports:
+      - "2113:2113"
+      - "1113:1113"
+    volumes:
+      - "./data"
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    tmpfs: /var/lib/rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+
+
+
+
+
+
+
+

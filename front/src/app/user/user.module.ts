@@ -7,15 +7,18 @@ import { RouterModule } from '@angular/router';
 import { UserDataPageComponent } from './pages/user-page/subpages/user-data-page/user-data-page.component';
 import { UserAuctionsPageComponent } from './pages/user-page/subpages/user-auctions-page/user-auctions-page.component';
 import { UserAuctionsListItemComponent } from './components/user-auctions-list-item/user-auctions-list-item.component';
+import { AuctionEditPageComponent } from './pages/auction-edit-page/auction-edit-page.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 
 @NgModule({
-  declarations: [UserPageComponent, UserDataPageComponent, UserAuctionsPageComponent, UserAuctionsListItemComponent],
+  declarations: [UserPageComponent, UserDataPageComponent, UserAuctionsPageComponent, UserAuctionsListItemComponent, AuctionEditPageComponent],
   imports: [
     CommonModule,
     MaterialModule,
     UserRoutingModule,
+    ReactiveFormsModule,
     RouterModule
   ]
 })

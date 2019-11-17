@@ -1,5 +1,4 @@
-import { Product } from '../core/models/Product';
+import { Product, Condition } from '../core/models/Product';
 export class ProductStep {
-  constructor(public product: Product, public startDate: Date, public endDate: Date,
-            public buyNowPrice: number, public buyNow: boolean, public tags: string[]){}
+  constructor(public product: Product, public tags: string[]){}
 }

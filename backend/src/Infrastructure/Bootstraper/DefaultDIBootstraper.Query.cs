@@ -87,17 +87,17 @@ namespace Infrastructure.Bootstraper
                 var rabbitmq = (RabbitMqEventBus) implProvider.Get<IEventBus>();
                 rabbitmq.InitSubscribers(
                     new RabbitMqEventConsumerFactory(() => implProvider.Get<AuctionCreatedHandler>(),
-                        EventsNames.AuctionCreatedEventName),
+                        EventNames.AuctionCreatedEventName),
                     new RabbitMqEventConsumerFactory(() => implProvider.Get<AuctionRaisedHandler>(),
-                        EventsNames.AuctionRaisedEventName),
+                        EventNames.AuctionRaisedEventName),
                     new RabbitMqEventConsumerFactory(() => implProvider.Get<UserRegisteredHandler>(),
-                        EventsNames.UserRegisteredEventName),
+                        EventNames.UserRegisteredEventName),
                     new RabbitMqEventConsumerFactory(
                         () => implProvider.Get<AuctionImageAddedHandler>(),
-                        EventsNames.AuctionImageAddedEventName),
+                        EventNames.AuctionImageAddedEventName),
                     new RabbitMqEventConsumerFactory(
                         () => implProvider.Get<AuctionCompletedHandler>(),
-                        EventsNames.AuctionCompletedEventName)
+                        EventNames.AuctionCompletedEventName)
                 );
             }
         }

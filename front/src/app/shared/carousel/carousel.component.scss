@@ -1,13 +1,18 @@
-@import'global';
+@import "global";
 
 .container {
   text-align: center;
-  display: flex;
-  align-items: center;
   height: 100%;
-  .container-center{
-    display: block;
-    flex-grow: 1;
+  width: 100%;
+  position: relative;
+  .container-center {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    top: 0;
+    height: 100%;
   }
 }
 
@@ -16,7 +21,9 @@
   z-index: 900;
   display: flex;
   justify-content: space-between;
-  button{
+  height: 100%;
+  top: -50%;
+  button {
     @include app-btn;
     height: 25px;
     position: relative;
@@ -24,15 +31,18 @@
   }
 }
 
-.img-container{
+.img-container {
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .img {
+  max-width: 100%;
+  max-height: 100%;
 }
 
 #next {
 }
 
 #prev {
-
 }

@@ -21,8 +21,8 @@ namespace Core.Query.Handlers
         private void UserBidsUpdate(IClientSessionHandle session, AuctionCompleted ev)
         {
             var bidFilter = Builders<UserBid>.Filter.Eq(f => f.AuctionId, ev.AuctionId.ToString());
-            var filter = Builders<UserReadModel>.Filter.ElemMatch(model => model.UserBids, bidFilter);
-            var update = Builders<UserReadModel>.Update.Set(f => f.UserBids[-1].AuctionCompleted, true);
+            var filter = Builders<UserRead>.Filter.ElemMatch(model => model.UserBids, bidFilter);
+            var update = Builders<UserRead>.Update.Set(f => f.UserBids[-1].AuctionCompleted, true);
 
             try
             {
@@ -38,11 +38,11 @@ namespace Core.Query.Handlers
         {
             AuctionCompleted ev = message.Event;
 
-            var auctionFilter = Builders<AuctionReadModel>.Filter.Eq(field => field.AuctionId, ev.AuctionId.ToString());
-            var auctionUpdate = Builders<AuctionReadModel>.Update
+            var auctionFilter = Builders<AuctionRead>.Filter.Eq(field => field.AuctionId, ev.AuctionId.ToString());
+            var auctionUpdate = Builders<AuctionRead>.Update
                 .Set(field => field.Completed, true)
                 .Set(field => field.Buyer, ev.WinningBid?.UserIdentity)
-                .Set(field => field.WinningBid, ev.WinningBid);
+                .Set(field => field.WinningBid, new BidRead(ev.WinningBid));
 
             var session = _dbContext.Client.StartSession();
             session.StartTransaction();

@@ -1,0 +1,5 @@
+FROM eventstore/eventstore:latest
+#COPY ["data/es-backup.gz", "/root"]
+#RUN tar -xvf /root/es-backup.gz .
+ADD data/es-backup.gz /var/lib/eventstore
+#RUN cp /var/lib/eventstore/chaser.chk /var/lib/eventstore/truncate.chk

@@ -28,14 +28,14 @@ namespace Core.Query.Queries.Auction.Auctions.ByTag
         public async Task<IEnumerable<AuctionsQueryResult>> Handle(AuctionsByTagQuery request, CancellationToken cancellationToken)
         {
             var mapper = MapperConfigHolder.Configuration.CreateMapper();
-            var tagFilter = Builders<AuctionReadModel>.Filter
+            var tagFilter = Builders<AuctionRead>.Filter
                 .AnyIn(model => model.Tags, new[] {request.Tag});
             
             var filtersArr = CreateFilterDefs(request);
             filtersArr.Add(tagFilter);
 
             var auctions = await _dbContext.AuctionsReadModel
-                .Find(Builders<AuctionReadModel>.Filter.And(filtersArr))
+                .Find(Builders<AuctionRead>.Filter.And(filtersArr))
                 .Skip(request.Page * PageSize)
                 .Project(model => mapper.Map<AuctionsQueryResult>(model))
                 .Limit(PageSize)

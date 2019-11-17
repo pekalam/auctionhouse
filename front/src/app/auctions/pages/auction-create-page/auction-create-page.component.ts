@@ -13,6 +13,7 @@ import { StartAuctionCreateSessionCommand } from '../../../core/commands/StartAu
 import { ServerMessageService } from '../../../core/services/ServerMessageService';
 import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
+import { AuctionDataStep } from '../../auctionDataStep';
 
 @Component({
   selector: 'app-auction-create-page',
@@ -23,6 +24,7 @@ export class AuctionCreatePageComponent implements OnInit, OnDestroy {
   private totalSteps = 4;
   private categorySelectStep: CategorySelectStep;
   private productStep: ProductStep;
+  private auctionDataStep: AuctionDataStep;
   private connectionStartedSub: Subscription;
 
   @ViewChild('categoryStep', { static: true })
@@ -33,6 +35,8 @@ export class AuctionCreatePageComponent implements OnInit, OnDestroy {
   imageStepComponent;
   @ViewChild('summaryStep', { static: true })
   summaryStepComponent;
+  @ViewChild('auctionDataStep', {static: true})
+  auctionDataStepComponent;
 
   createAuctionArgs: CreateAuctionCommandArgs;
   error: string = null;
@@ -59,6 +63,7 @@ export class AuctionCreatePageComponent implements OnInit, OnDestroy {
     this.serverMessageService.ensureConnected();
     this.stepComponents = [
       this.categoryStepComponent,
+      this.auctionDataStepComponent,
       this.productStepComponent,
       this.imageStepComponent,
       this.summaryStepComponent
@@ -95,12 +100,17 @@ export class AuctionCreatePageComponent implements OnInit, OnDestroy {
     const categories = [this.categorySelectStep.selectedMainCategory.categoryName,
     this.categorySelectStep.selectedSubCategory.categoryName,
     this.categorySelectStep.selectedSubCategory2.categoryName];
-    this.createAuctionArgs = new CreateAuctionCommandArgs(this.productStep.buyNowPrice, this.productStep.startDate,
-      this.productStep.endDate, categories, '123', this.productStep.product, this.productStep.tags);
+    this.createAuctionArgs = new CreateAuctionCommandArgs(this.auctionDataStep.buyNowPrice, this.auctionDataStep.startDate,
+      this.auctionDataStep.endDate, categories, '123', this.productStep.product, this.productStep.tags, this.auctionDataStep.name);
   }
 
   onCategorySelectedStep(stepResult: CategorySelectStep) {
     this.categorySelectStep = stepResult;
+    this.nextStep();
+  }
+
+  onAuctionDataStep(stepResult: AuctionDataStep){
+    this.auctionDataStep = stepResult;
     this.nextStep();
   }
 
@@ -131,22 +141,7 @@ export class AuctionCreatePageComponent implements OnInit, OnDestroy {
   }
 
   onOkClick() {
-    switch (this.step) {
-      case 0:
-        this.categoryStepComponent.onOkClick();
-        break;
-      case 1:
-        this.productStepComponent.onOkClick();
-        break;
-      case 2:
-        this.imageStepComponent.onOkClick();
-        break;
-      case 3:
-        this.summaryStepComponent.onOkClick();
-        break;
-      default:
-        break;
-    }
+    this.stepComponents[this.step].onOkClick();
   }
 
   onSummaryStep() {

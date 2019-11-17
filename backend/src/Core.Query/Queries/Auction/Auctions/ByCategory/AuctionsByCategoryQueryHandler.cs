@@ -24,9 +24,9 @@ namespace Core.Query.Queries.Auction.Auctions.ByCategory
         {
             var mapper = MapperConfigHolder.Configuration.CreateMapper();
             var category = _categoryBuilder.FromCategoryNamesList(request.CategoryNames);
-            var catFilter = Builders<AuctionReadModel>.Filter.Eq(f => f.Category, category);
+            var catFilter = Builders<AuctionRead>.Filter.Eq(f => f.Category, category);
 
-            var filtersArr = new List<FilterDefinition<AuctionReadModel>>()
+            var filtersArr = new List<FilterDefinition<AuctionRead>>()
             {
                 catFilter
             };
@@ -34,7 +34,7 @@ namespace Core.Query.Queries.Auction.Auctions.ByCategory
             filtersArr.AddRange(filtersFromBase);
 
             var auctions = await _dbContext.AuctionsReadModel
-                .Find(Builders<AuctionReadModel>.Filter.And(filtersArr))
+                .Find(Builders<AuctionRead>.Filter.And(filtersArr))
                 .Skip(request.Page * PageSize)
                 .Project(model => mapper.Map<AuctionsQueryResult>(model))
                 .Limit(PageSize)

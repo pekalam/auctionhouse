@@ -65,12 +65,13 @@ namespace CreateAuction
                 .RuleFor(dto => dto.CorrelationId, "123")
                 .RuleFor(dto => dto.StartDate, faker => DateTime.UtcNow.AddMinutes(20))
                 .RuleFor(dto => dto.EndDate, faker => DateTime.UtcNow.AddDays(faker.Random.Int(5, 10)))
-                .RuleFor(dto => dto.Product, faker => new Product()
+                .RuleFor(dto => dto.Product, faker => new ProductDto()
                 {
                     Name = faker.Commerce.ProductName(),
                     Description = faker.Lorem.Lines(20),
                     Condition = faker.Random.Bool() ? Condition.New : Condition.Used
                 })
+                .RuleFor(dto => dto.Name, faker => faker.Commerce.ProductName() + " " + faker.Commerce.Color())
                 .RuleFor(dto => dto.Tags, faker => faker.Random.Bool() ? new []{"tag1", "tag2", "tag3"} : new[] { "tag4", "tag5", "tag6" })
                 .RuleSet("buyNowAndAuction", set =>
                 {

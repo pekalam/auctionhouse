@@ -1,9 +1,13 @@
 @import 'global';
 
 .container{
-  @include section-shadow;
   width: 90%;
   max-width: 1500px;
-  background-color: white;
-  margin: 30px auto;
+  margin: 0 auto;
+  padding-top: 30px;
+  #section{
+    @include section-shadow;
+    background-color: white;
+
+  }
 }

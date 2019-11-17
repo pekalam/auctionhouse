@@ -5,6 +5,7 @@
 .container {
   background-color: white;
   text-align: left;
+  font-size: 14px;
   mat-radio-button{
     font-size: 14px;
   }
@@ -34,7 +35,7 @@
       flex-direction: column;
       textarea{
         margin-top: 10px;
-        height: 10em;
+        min-height: 10em;
       }
       .ok-container{
         flex-grow: 1;
@@ -51,11 +52,20 @@
   }
 }
 
+mat-radio-button{
+  display: block;
+  margin: 10px;
+}
 
-.tag-div{
-  font-size: 12px;
-  display: inline-block;
-  margin: 5px 10px 5px 0;
-  padding: 4px;
-  background-color: aquamarine;
+
+
+.tags-container{
+  min-height: 50px;
+  .tag-div{
+    font-size: 12px;
+    display: inline-block;
+    margin: 5px 10px 5px 0;
+    padding: 4px;
+    background-color: aquamarine;
+  }
 }

@@ -3,9 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Core.Command.AuctionCreateSession_AddAuctionImage;
-using Core.Command.AuctionCreateSession_RemoveImage;
-using Core.Command.AuctionCreateSession_StartAuctionCreateSession;
+using Core.Command.AuctionCreateSession.AuctionCreateSession_AddAuctionImage;
+using Core.Command.AuctionCreateSession.AuctionCreateSession_RemoveImage;
+using Core.Command.AuctionCreateSession.AuctionCreateSession_StartAuctionCreateSession;
 using Core.Command.Bid;
 using Core.Command.CreateAuction;
 using Core.Command.EndAuction;
@@ -45,15 +45,7 @@ namespace Web.Api
         [Authorize(Roles = "User"), HttpPost("createAuction")]
         public async Task<ActionResult> CreateAuction([FromBody] CreateAuctionCommandDto commandDto)
         {
-            var command = new CreateAuctionCommand(
-                commandDto.BuyNowPrice,
-                commandDto.Product,
-                commandDto.StartDate,
-                commandDto.EndDate,
-                commandDto.Category,
-                new CorrelationId(commandDto.CorrelationId),
-                commandDto.Tags
-            );
+            var command = _mapper.Map<CreateAuctionCommand>(commandDto);
             await _mediator.Send(command);
             return Ok();
         }

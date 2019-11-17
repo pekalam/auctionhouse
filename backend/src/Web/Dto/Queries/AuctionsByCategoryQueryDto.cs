@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Query.Queries.Auction.Auctions;
@@ -10,8 +11,10 @@ namespace Web.Dto.Queries
     public class AuctionsByCategoryQueryDto
     {
         [FromQuery(Name = "page")]
-        public int Page { get; set; }
-        [FromQuery(Name = "categories")] public string[] CategoryNames { get; set; }
+        public int Page { get; set; } = 0;
+        [FromQuery(Name = "categories")]
+        [Required]
+        public string[] CategoryNames { get; set; }
 
         [FromQuery(Name = "cond")]
         public ConditionQuery ConditionQuery { get; set; } = ConditionQuery.All;

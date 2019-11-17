@@ -10,7 +10,7 @@ namespace Core.Common.Domain.Auctions.Events
         public Guid AuctionId { get; }
         public AuctionArgs AuctionArgs { get; }
 
-        public AuctionCreated(Guid auctionId, AuctionArgs auctionArgs) : base(EventsNames.AuctionCreatedEventName)
+        public AuctionCreated(Guid auctionId, AuctionArgs auctionArgs) : base(EventNames.AuctionCreatedEventName)
         {
             AuctionId = auctionId;
             AuctionArgs = auctionArgs;

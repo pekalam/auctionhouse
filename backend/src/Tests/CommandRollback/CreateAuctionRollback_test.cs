@@ -80,7 +80,7 @@ namespace FunctionalTests.CommandRollback
         {
             var testDepedencies = TestDepedencies.Instance.Value;
             testDepedencies.DisconnectEventBus();
-            testDepedencies.DbContext.AuctionsReadModel.DeleteMany(FilterDefinition<AuctionReadModel>.Empty);
+            testDepedencies.DbContext.AuctionsReadModel.DeleteMany(FilterDefinition<AuctionRead>.Empty);
         }
 
         [Test]
@@ -90,7 +90,7 @@ namespace FunctionalTests.CommandRollback
             var user = new User();
             user.Register("testUserName");
             user.MarkPendingEventsAsHandled();
-            var product = new Product() {Name = "test product", Description = "desc"};
+            var product = new Product("name", "desc", Condition.New);
             var sem = new SemaphoreSlim(0, 1);
             var sem2 = new SemaphoreSlim(0, 1);
             var correlationId = new CorrelationId("test_correlationId");
@@ -107,7 +107,7 @@ namespace FunctionalTests.CommandRollback
 
             var command = new CreateAuctionCommand(20.0m, product, DateTime.UtcNow.AddMinutes(10),
                 DateTime.UtcNow.AddDays(12),
-                categories, correlationId, new[] {"tag1"});
+                categories, correlationId, new[] {"tag1"}, "test name");
 
             IAppEvent<AuctionCreated> publishedEvent = null;
 

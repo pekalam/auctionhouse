@@ -1,7 +1,6 @@
 <div class="container" *ngIf="auctions.length > 0">
-  <app-carousel class="carousel" [sources]="imgSources"
-  [img-height]="imgHeight" (imgSelected)="selectedImg = $event"></app-carousel>
-  <div class="auction">
+  <app-carousel class="carousel" [sources]="imgSources" (imgSelected)="selectedImg = $event"></app-carousel>
+  <div class="auction" [routerLink]="['/auction']" [queryParams]="{auctionId: auctions[selectedImg].auctionId}" >
     <h3>{{auctions[selectedImg].productName}}</h3>
     <p class="current-price">{{auctions[selectedImg].actualPrice | currency}}</p>
     <p class="views">Views: {{auctions[selectedImg].views}}</p>

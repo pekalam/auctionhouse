@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Common.Domain.Categories;
+using Core.Query.Views;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
@@ -34,17 +35,17 @@ namespace Core.Query.ReadModel
 
         public virtual IMongoClient Client => _client;
 
-        public virtual IMongoCollection<AuctionReadModel> AuctionsReadModel =>
-            _db.GetCollection<AuctionReadModel>("AuctionsReadModel");
+        public virtual IMongoCollection<AuctionRead> AuctionsReadModel =>
+            _db.GetCollection<AuctionRead>("AuctionsReadModel");
 
-        public virtual IMongoCollection<UserReadModel> UsersReadModel =>
-            _db.GetCollection<UserReadModel>("UsersReadModel");
+        public virtual IMongoCollection<UserRead> UsersReadModel =>
+            _db.GetCollection<UserRead>("UsersReadModel");
 
-        public virtual IMongoCollection<TopAuctionsInTagReadModel> TagsAuctionsCollection =>
-            _db.GetCollection<TopAuctionsInTagReadModel>("TopAuctionsInTag");
+        public virtual IMongoCollection<TopAuctionsInTag> TagsAuctionsCollection =>
+            _db.GetCollection<TopAuctionsInTag>("TopAuctionsInTag");
 
-        public virtual IMongoCollection<CommonTagsReadModel> CommonTagsCollection =>
-            _db.GetCollection<CommonTagsReadModel>("CommonTags");
+        public virtual IMongoCollection<CommonTags> CommonTagsCollection =>
+            _db.GetCollection<CommonTags>("CommonTags");
         
     }
 }

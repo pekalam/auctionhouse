@@ -22,11 +22,11 @@ export class SignInPageComponent implements OnInit {
     username: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required])
   });
-  private redirectUrl: string;
+  private redirect: any;
 
-  constructor(private activatedRoute: ActivatedRoute, private signInCommand: SignInCommand, private router: Router) {
+  constructor(private signInCommand: SignInCommand, private router: Router) {
     if (this.router.getCurrentNavigation().extras.state) {
-      this.redirectUrl = this.router.getCurrentNavigation().extras.state.redirect;
+      this.redirect = this.router.getCurrentNavigation().extras.state.redirect;
     }
   }
 
@@ -39,8 +39,10 @@ export class SignInPageComponent implements OnInit {
       this.signInCommand
         .execute(this.form.value.username, this.form.value.password)
         .subscribe((userIdentity) => {
-          if (this.redirectUrl) {
-            this.router.navigateByUrl(this.redirectUrl);
+          console.log(this.redirect);
+
+          if (this.redirect) {
+            this.router.navigateByUrl(this.redirect);
           } else {
             this.router.navigate(['home']);
           }

@@ -1,0 +1,38 @@
+version: '3.4'
+
+services:
+  quartz_web_task_service:
+    hostname: timetask
+    image: marekbf3/quartz-web-task-service
+    ports:
+      - "5001:80"
+    environment: 
+      - "ClientKey=testk"
+      - "ManagmentKey=testm"
+
+  eventst:
+    hostname: eventst
+    image: eventstore/eventstore
+    ports:
+      - "2113:2113"
+      - "1113:1113"
+    environment:
+      - EVENTSTORE_MEM_DB=true
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+
+  rabbitmq:
+    hostname: rabbitmq
+    image: rabbitmq:3-management
+    tmpfs: /var/lib/rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+
+
+
+
+
+

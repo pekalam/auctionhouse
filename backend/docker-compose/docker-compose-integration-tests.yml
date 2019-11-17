@@ -7,12 +7,26 @@ services:
     build:
       context: ../src/IntegrationTests
       dockerfile: Dockerfile-mongo-standalone-replicaset
+    ports:
+      - "27017:27017"
 
   eventst:
     container_name: eventst
     image: eventstore/eventstore
     environment:
       - EVENTSTORE_MEM_DB=true
+    ports:
+      - "2113:2113"
+      - "1113:1113"
+
+  rabbitmq:
+    hostname: rabbitmq
+    image: rabbitmq:3-management
+    tmpfs: /var/lib/rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+
 
   auctionhouse-integration-tests:
     container_name: auctionhouse-integration-tests

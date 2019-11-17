@@ -8,5 +8,7 @@
         {
             Value = value;
         }
+
+        public static implicit operator CorrelationId(string value) => new CorrelationId(value);
     }
 }

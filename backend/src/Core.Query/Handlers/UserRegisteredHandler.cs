@@ -22,8 +22,8 @@ namespace Core.Query.Handlers
         {
             UserRegistered ev = message.Event;
 
-            var userReadModel = new UserReadModel();
-            userReadModel.UserIdentity = new UserIdentityReadModel(ev.UserIdentity);
+            var userReadModel = new UserRead();
+            userReadModel.UserIdentity = new UserIdentityRead(ev.UserIdentity);
 
             try
             {

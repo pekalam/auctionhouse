@@ -13,7 +13,7 @@ namespace Infrastructure
             _serviceProvider = serviceProvider;
         }
 
-        public T Get<T>()
+        public T Get<T>() where T : class
         {
             using (var scope = _serviceProvider.CreateScope())
             {

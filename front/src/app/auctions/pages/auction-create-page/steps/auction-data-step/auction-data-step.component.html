@@ -1,0 +1,69 @@
+<div class="container">
+  <form class="form" [formGroup]="form">
+
+    <mat-form-field id="name-form-field">
+      Auction name
+      <input matInput type="text" formControlName="name" (keydown)="onChange()" />
+      <mat-error>
+        <ng-container *ngIf="form.controls.name.errors">
+          <span *ngIf="form.controls.name.errors.required">This field is required</span>
+        </ng-container>
+      </mat-error>
+    </mat-form-field>
+    <div class="group">
+      <div class="g1">
+
+        <mat-checkbox id="auction-checkbox" (change)="onAuctionChange($event.checked) || onChange()"
+          formControlName="auction">Auction
+        </mat-checkbox>
+        <mat-checkbox id="buynow-checkbox" (change)="onBuyNowChange($event.checked) || onChange()"
+          formControlName="buyNow">
+          Buy now
+        </mat-checkbox>
+
+        <mat-form-field id="buy-now-field">
+          <span [style.color]="(!form.controls.buyNow.value ? 'grey': 'initial')">Buy now price</span>
+          <input type="number" matInput formControlName="buyNowPrice" (keydown)="onChange()" />
+          <mat-error>
+            <ng-container *ngIf="form.controls.buyNowPrice.errors">
+              <span *ngIf="form.controls.buyNowPrice.errors.required">This field is required</span>
+            </ng-container>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="g2">
+        <mat-form-field>
+          Start date
+          <input [matDatepicker]="picker1" matInput [(ngModel)]="defaultStartDate" formControlName="startDate"
+            (change)="onChange()" />
+          <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
+          <mat-error>
+            <ng-container *ngIf="form.controls.startDate.errors">
+              <span *ngIf="form.controls.startDate.errors.required">This field is required</span>
+            </ng-container>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          End date
+          <input [matDatepicker]="picker2" [(ngModel)]="defaultEndDate" matInput formControlName="endDate"
+            (change)="onChange()" />
+          <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+          <mat-error>
+            <ng-container *ngIf="form.controls.endDate.errors">
+              <span *ngIf="form.controls.endDate.errors.required">This field is required</span>
+            </ng-container>
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+
+
+
+
+  </form>
+
+</div>

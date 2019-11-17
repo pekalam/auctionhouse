@@ -134,7 +134,7 @@ namespace Core.Command.CreateAuction
                     IsAssignedToAuction = true
                 });
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 _deps.logger.LogError("Cannot set auction images metadata");
                 throw;
@@ -158,7 +158,7 @@ namespace Core.Command.CreateAuction
                     IsAssignedToAuction = false
                 });
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 _deps.logger.LogCritical("Cannot rollback set auction images metadata");
                 throw;
@@ -206,6 +206,7 @@ namespace Core.Command.CreateAuction
                 .SetCategory(category)
                 .SetProduct(request.Product)
                 .SetTags(request.Tags)
+                .SetName(request.Name)
                 .SetOwner(owner);
             if (request.BuyNowPrice.HasValue)
             {

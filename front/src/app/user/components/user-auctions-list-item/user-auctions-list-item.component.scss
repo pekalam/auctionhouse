@@ -5,8 +5,6 @@
   cursor: pointer;
   .left{
     width: 30%;
-    height: 100px;
-    background-color: blue;
     float: left;
   }
   .right{
@@ -18,4 +16,8 @@
   &:hover{
     background-color: $secondaryLightColor;
   }
+}
+
+.img-preview{
+  width: 33%;
 }

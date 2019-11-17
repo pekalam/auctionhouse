@@ -19,23 +19,23 @@ namespace Core.DomainModelTests
             Assert.Throws<DomainException>(() => builder.Build());
             builder.SetOwner(new UserIdentity());
             Assert.Throws<DomainException>(() => builder.Build());
-            builder.SetProduct(new Product());
+            builder.SetProduct(new Product("name", "desc", Condition.New));
             Assert.Throws<DomainException>(() => builder.Build());
             builder.SetStartDate(DateTime.UtcNow.AddMinutes(20));
             Assert.Throws<DomainException>(() => builder.Build());
             builder.SetEndDate(DateTime.UtcNow.AddDays(5));
             Assert.Throws<DomainException>(() => builder.Build());
 
-            builder.SetTags(new string[] {"t1", "t2"});
+            builder.SetTags(new [] {"t1", "t2"});
+            Assert.Throws<DomainException>(() => builder.Build());
+            builder.SetName("Example name");
             Assert.DoesNotThrow(() => builder.Build());
             builder.SetBuyNow(20.0m);
             Assert.DoesNotThrow(() => builder.Build());
             builder.SetBuyNowOnly(false);
             Assert.DoesNotThrow(() => builder.Build());
 
-            builder.SetBuyNow(0);
-            builder.SetBuyNowOnly(true);
-            Assert.Throws<DomainException>(() => builder.Build());
+
             builder.SetBuyNow(20.0m);
             Assert.DoesNotThrow(() => builder.Build());
         }

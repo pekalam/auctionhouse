@@ -21,10 +21,12 @@ namespace Core.Command.CreateAuction
         public List<string> Category { get; }
         [Required]
         public CorrelationId CorrelationId { get; }
-        
+
         public string[] Tags { get; }
 
-        public CreateAuctionCommand(decimal? buyNowPrice, Product product, DateTime startDate, DateTime endDate, List<string> category, CorrelationId correlationId, string[] tags)
+        public string Name { get; }
+
+        public CreateAuctionCommand(decimal? buyNowPrice, Product product, DateTime startDate, DateTime endDate, List<string> category, CorrelationId correlationId, string[] tags, string name)
         {
             BuyNowPrice = buyNowPrice;
             Product = product;
@@ -33,6 +35,7 @@ namespace Core.Command.CreateAuction
             Category = category;
             CorrelationId = correlationId;
             Tags = tags;
+            Name = name;
         }
     }
 }

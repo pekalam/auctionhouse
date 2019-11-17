@@ -17,10 +17,5 @@
             Description = description;
             Condition = condition;
         }
-
-        public Product()
-        {
-            
-        }
     }
 }

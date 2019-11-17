@@ -17,11 +17,8 @@
     <PackageReference Include="MediatR" Version="7.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Primitives" Version="3.0.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.7.12" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +26,12 @@
     <ProjectReference Include="..\Core.Common\Core.Common.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\Core.Query\Core.Query.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Handlebars">
+      <HintPath>..\..\..\..\..\..\.nuget\packages\handlebars.net\1.9.5\lib\netstandard2.0\Handlebars.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

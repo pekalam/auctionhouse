@@ -8,6 +8,7 @@
   </div>
   <div class="container">
     <app-category-select-step #categoryStep (outputOnStepComplete)="onCategorySelectedStep($event)" [hidden]="categoryStep !== stepComponents[step]"></app-category-select-step>
+    <app-auction-data-step #auctionDataStep (outputOnStepComplete)="onAuctionDataStep($event)" [hidden]="auctionDataStep !== stepComponents[step]"></app-auction-data-step>
     <app-product-step #productStep (outputOnStepComplete)="onProductStep($event)" [hidden]="productStep !== stepComponents[step]"></app-product-step>
     <app-add-image-step #imageStep (outputOnStepComplete)="onImagesStep($event)" [hidden]="imageStep !== stepComponents[step]"></app-add-image-step>
     <app-create-summary-step #summaryStep [commandArgs]="createAuctionArgs" (outputOnStepComplete)="onSummaryStep()" [hidden]="summaryStep !== stepComponents[step]"></app-create-summary-step>
@@ -15,7 +16,7 @@
   <div class="create-container">
     <button class="cancel-btn" (click)="location.back()">Cancel</button>
     <button class="create-btn" (click)="onOkClick()" *ngIf="stepComponents[step].ready">
-      {{step != 3 ? 'Continue':'Create auction'}}
+      {{step != stepComponents.length - 1 ? 'Continue':'Create auction'}}
     </button>
     <p class="err-msg">{{error}}</p>
   </div>

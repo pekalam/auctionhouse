@@ -1,9 +1,11 @@
 <div class="container">
-  <p class="msg">{{msg.length > 0 ? msg : "You must be signed in"}}</p>
-  <div style="text-align: center; margin-top: 50px;">
-    <span style="margin-right: 20px;">Please</span>
-    <button mat-raised-button color="primary" [routerLink]="['/sign-in']">Sign in</button>
-    <span style="margin: 0 20px 0 20px">or</span>
-    <button mat-raised-button id="signup-button" [routerLink]="['/sign-up']">Sign up</button>
+  <div id="section">
+    <p class="msg">{{msg.length > 0 ? msg : "You must be signed in"}}</p>
+    <div style="text-align: center; margin-top: 50px;">
+      <span style="margin-right: 20px;">Please</span>
+      <button mat-raised-button color="primary" (click)="onSignInClick()">Sign in</button>
+      <span style="margin: 0 20px 0 20px">or</span>
+      <button mat-raised-button id="signup-button" [routerLink]="['/sign-up']">Sign up</button>
+    </div>
   </div>
 </div>

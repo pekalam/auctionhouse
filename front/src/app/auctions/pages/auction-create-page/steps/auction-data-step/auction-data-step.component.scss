@@ -1,0 +1,44 @@
+.container {
+  background-color: white;
+  text-align: left;
+  padding: 10px;
+  mat-radio-button{
+    font-size: 14px;
+  }
+  mat-form-field {
+    display: block;
+    margin-bottom: 4px;
+    ::ng-deep .mat-form-field-infix{
+      font-size: 16px;
+    }
+    input{
+      margin-top: 20px;
+    }
+  }
+}
+
+.group{
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+  .g1, .g2{
+    flex-grow: 1;
+    padding: 10px;
+  }
+  .g1{
+    padding-top: 20px;
+  }
+}
+
+#name-form-field{
+  width: 90%;
+  margin: 0 auto;
+}
+
+#auction-checkbox, #buynow-checkbox{
+  display: block;
+}
+
+#buy-now-field{
+  width: 100px;
+}

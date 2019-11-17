@@ -1,4 +1,5 @@
-﻿using Core.Common;
+﻿using System;
+using Core.Common;
 using Core.Common.Domain;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Auctions.Events;
@@ -18,9 +19,17 @@ namespace Core.Command.CreateAuction
 
         public virtual void Rollback(IAppEvent<Event> commandEvent)
         {
-            var cmd = (CreateAuctionCommand)commandEvent.Command;
-            var ev = (AuctionCreated)commandEvent.Event;
-            _auctionRepository.RemoveAuction(ev.AuctionId);
+            try
+            {
+                var cmd = (CreateAuctionCommand)commandEvent.Command;
+                var ev = (AuctionCreated)commandEvent.Event;
+                _auctionRepository.RemoveAuction(ev.AuctionId);
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
         }
     }
 }

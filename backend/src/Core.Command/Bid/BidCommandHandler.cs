@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using System;
+using System.Collections.Generic;
+using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Command.Bid;
@@ -16,11 +18,14 @@ namespace Command.Bid
         private readonly IUserIdentityService _userIdService;
         private readonly EventBusService _eventBusService;
 
-        public BidCommandHandler(IAuctionRepository auctionRepository, IUserIdentityService userIdService, EventBusService eventBusService)
+        public BidCommandHandler(IAuctionRepository auctionRepository, IUserIdentityService userIdService,
+            EventBusService eventBusService)
         {
             _auctionRepository = auctionRepository;
             _userIdService = userIdService;
             _eventBusService = eventBusService;
+            RollbackHandlerRegistry.RegisterCommandRollbackHandler(nameof(BidCommand),
+                provider => new BidRollbackHandler(provider));
         }
 
         public virtual Task<Unit> Handle(BidCommand request, CancellationToken cancellationToken)
@@ -36,13 +41,27 @@ namespace Command.Bid
             {
                 throw new CommandException("Invalid auction id");
             }
-            var bid = new Core.Common.Domain.Bids.Bid(auction.AggregateId, signedInUser, request.Price);
+
+            var bid = new Core.Common.Domain.Bids.Bid(auction.AggregateId, signedInUser, request.Price,
+                DateTime.UtcNow);
 
             auction.Raise(bid);
 
-            _auctionRepository.UpdateAuction(auction);
-            _eventBusService.Publish(auction.PendingEvents, request.CorrelationId, request);
-            auction.MarkPendingEventsAsHandled();
+            //weak solution to concurrency problem due to lack of transaction support in eventstore
+            //TODO: external lock mechanism per auction / SQLServer as event database
+            var check = _auctionRepository.FindAuction(request.AuctionId);
+            if (check.Version + 1 == auction.Version)
+            {
+                _auctionRepository.UpdateAuction(auction);
+                _eventBusService.Publish(auction.PendingEvents, request.CorrelationId, request);
+                auction.MarkPendingEventsAsHandled();
+            }
+            else
+            {
+                throw new CommandException("Invalid auction versions");
+            }
+            
+
             return Task.FromResult(Unit.Value);
         }
     }

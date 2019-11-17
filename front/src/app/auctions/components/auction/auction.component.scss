@@ -43,32 +43,35 @@
 
 .right-content {
   padding-left: 25px;
+
+  .prop-title{
+    color: #767676;
+    font-size: 16px;
+  }
+
   .date-div {
-    margin-top: 25px;
-    #start{
-      margin-bottom: 5px;
-      display: block;
-    }
-    #end{
-      margin-bottom: 5px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    .date{
+      margin-bottom: 10px;
       display: block;
     }
   }
   .current-price-div {
-    margin-top: 25px;
+    margin-top: 10px;
     .price {
       font-weight: bold;
     }
   }
   .buynow-price-div {
-    margin-top: 25px;
+    margin-top: 20px;
     .price {
       font-weight: bold;
     }
   }
 
   .bid-info-container {
-    margin-top: 25px;
+    margin-top: 30px;
     margin-bottom: 20px;
     .nobids {
       color: chocolate;

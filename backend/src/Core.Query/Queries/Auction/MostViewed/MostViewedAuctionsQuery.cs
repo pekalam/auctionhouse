@@ -18,7 +18,7 @@ namespace Core.Query.Queries.Auction.MostViewed
     {
         public MostViewedAuctionsMapperProfile()
         {
-            CreateMap<AuctionReadModel, MostViewedAuctionsResult>()
+            CreateMap<AuctionRead, MostViewedAuctionsResult>()
                 .ForMember(d => d.ProductName, opt => opt.MapFrom(s => s.Product.Name));
         }
     }

@@ -12,6 +12,7 @@ using Core.Query.Queries.Auction.MostViewed;
 using Core.Query.Queries.Auction.SingleAuction;
 using Core.Query.Queries.Auction.TopAuctionsByTag;
 using Core.Query.ReadModel;
+using Core.Query.Views;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Web.Dto.Queries;
@@ -42,7 +43,7 @@ namespace Web.Api
         }
 
         [HttpGet("auction")]
-        public async Task<ActionResult<AuctionReadModel>> Auction([FromQuery] AuctionQueryDto queryDto)
+        public async Task<ActionResult<AuctionRead>> Auction([FromQuery] AuctionQueryDto queryDto)
         {
             var auction = await _mediator.Send(new AuctionQuery(queryDto.AuctionId));
             return Ok(auction);
@@ -67,7 +68,7 @@ namespace Web.Api
         }
 
         [HttpGet("topAuctionsByTag")]
-        public async Task<ActionResult<TopAuctionsInTagReadModel>> TopAuctionsByTagQuery(
+        public async Task<ActionResult<TopAuctionsInTag>> TopAuctionsByTagQuery(
             [FromQuery] AuctionsByTagQueryDto queryDto)
         {
             var result = await _mediator.Send(new TopAuctionsByTagQuery() { Tag = queryDto.Tag, Page = queryDto.Page });
@@ -75,7 +76,7 @@ namespace Web.Api
         }
 
         [HttpGet("commonTags")]
-        public async Task<ActionResult<CommonTagsReadModel>> CommonTags([FromQuery] CommonTagsQueryDto queryDto)
+        public async Task<ActionResult<CommonTags>> CommonTags([FromQuery] CommonTagsQueryDto queryDto)
         {
             var result = await _mediator.Send(new CommonTagsQuery() { Tag = queryDto.Tag });
             return Ok(result);

@@ -45,22 +45,34 @@ class SelectCategoryPageObj {
   }
 }
 
-class ProductStepPageObj {
-  static typeProductName(name) {
-    cy.get("#mat-input-2").type(name);
+class AuctionDataStepPagObj{
+  static typeAuctionName(name){
+    cy.get('input[formcontrolname=name]').type(name);
   }
 
   static buyNow(isBuyNow) {
     isBuyNow
-      ? cy.get("#mat-checkbox-1-input").check({ force: true })
-      : cy.get("#mat-checkbox-1-input").uncheck({ force: true });
+      ? cy.get("#buynow-checkbox-input").check({ force: true })
+      : cy.get("#buynow-checkbox-input").uncheck({ force: true });
     isBuyNow
       ? cy.get("input[formcontrolname=buyNowPrice]").should("be.enabled")
       : cy.get("input[formcontrolname=buyNowPrice]").should("not.be.enabled");
   }
 
-  static typeBuyNowPrice(price) {
+  static buyNowPrice(price){
     cy.get("input[formcontrolname=buyNowPrice]").type(price);
+  }
+
+  static fillAllFields() {
+    this.typeAuctionName("Test auction name");
+    this.buyNow(true);
+    this.buyNowPrice(20);
+  }
+}
+
+class ProductStepPageObj {
+  static typeProductName(name) {
+    cy.get("input[formcontrolname=productName]").type(name);
   }
 
   static typeProductDescription(description) {
@@ -76,9 +88,6 @@ class ProductStepPageObj {
 
   static fillAllFields() {
     this.typeProductName("e2e test product name");
-    this.buyNow(false);
-    this.buyNow(true);
-    this.typeBuyNowPrice(23);
     this.typeProductDescription("Product description");
     this.typeTags("tag1 tag2 tag3");
   }
@@ -212,6 +221,11 @@ describe("Auction create page steps", function() {
     cy.get(".create-btn")
       .should("be.visible")
       .click();
+    cy.get(".back").should("be.visible");
+    AuctionDataStepPagObj.fillAllFields();
+    cy.get(".create-btn")
+    .should("be.visible")
+    .click();
     cy.get(".back").should("be.visible");
     ProductStepPageObj.fillAllFields();
     cy.get(".create-btn")

@@ -1,13 +1,16 @@
 @import 'global';
 
+
 .container{
-  padding-top: 50px;
-  background-color: white;
   width: 70%;
-  margin: 20px auto;
+  margin: 0 auto;
   padding: 20px;
   text-align: center;
-  @include section-shadow;
+  #section{
+    @include section-shadow;
+    background-color: white;
+    padding: 20px;
+  }
   .msg{
     font-weight: bold;
     color: #f72f2f;

@@ -29,8 +29,14 @@ export class AuctionPageComponent implements OnInit {
   private setAuction(auction: Auction) {
     this.authenticationStateService.currentUser.subscribe((user) => {
       console.log("current user: " + user);
+      console.log(user);
+      console.log(auction);
+
+
       this.auction = auction;
       if (!user || user.userId !== auction.creator.userId) {
+        console.log("shows");
+
         this.showAuctionButtons = true;
       }
     })

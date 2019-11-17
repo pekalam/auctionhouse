@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Core.Common.Domain.Auctions.Events;
@@ -35,19 +36,20 @@ namespace Core.Common.Domain.Auctions
         private List<AuctionImage> _auctionImages = new List<AuctionImage>(new AuctionImage[MAX_IMAGES]);
         private List<Bid> _bids = new List<Bid>();
         private int _imgNum = 0;
+        public AuctionName Name { get; private set; }
         public bool BuyNowOnly { get; private set; }
-        public decimal BuyNowPrice { get; private set; }
+        public BuyNowPrice BuyNowPrice { get; private set; }
         public decimal ActualPrice { get; private set; }
         public IReadOnlyCollection<Bid> Bids => _bids;
-        public DateTime StartDate { get; private set; }
-        public DateTime EndDate { get; private set; }
+        public AuctionDate StartDate { get; private set; }
+        public AuctionDate EndDate { get; private set; }
         public UserIdentity Owner { get; private set; }
-        public bool Completed { get; private set; }
         public Product Product { get; private set; }
         public UserIdentity Buyer { get; private set; } = UserIdentity.Empty;
         public Category Category { get; private set; }
+        public bool Completed { get; private set; }
         public bool Canceled { get; private set; }
-        public string[] Tags { get; private set; }
+        public Tag[] Tags { get; private set; }
         public IReadOnlyList<AuctionImage> AuctionImages => _auctionImages;
 
         public Auction()
@@ -70,14 +72,16 @@ namespace Core.Common.Domain.Auctions
             Product = auctionArgs.Product;
             Category = auctionArgs.Category;
             BuyNowOnly = auctionArgs.BuyNowOnly;
-            if (auctionArgs.Tags.Length < MIN_TAGS || auctionArgs.Tags.Contains(null) || auctionArgs.Tags.Contains(string.Empty))
+            Name = auctionArgs.Name;
+            if (auctionArgs.Tags.Length < MIN_TAGS)
             {
                 throw new DomainException("Not enough auction tags");
             }
             else
             {
-                Tags = new string[auctionArgs.Tags.Length];
-                Array.Copy(auctionArgs.Tags, Tags, Tags.Length);
+                Tag[] tagsToCpy = auctionArgs.Tags.Distinct().Select(s => (Tag)s).ToArray();
+                Tags = new Tag[tagsToCpy.Length];
+                Array.Copy(tagsToCpy, Tags, tagsToCpy.Length);
             }
             if (auctionArgs.AuctionImages != null)
             {
@@ -91,7 +95,7 @@ namespace Core.Common.Domain.Auctions
             }
         }
 
-        private void ValidateDates(DateTime startDate, DateTime endDate, bool compareToNow)
+        private void ValidateDates(AuctionDate startDate, AuctionDate endDate, bool compareToNow)
         {
             bool startLessThanOffset = false;
             if (compareToNow)
@@ -99,15 +103,20 @@ namespace Core.Common.Domain.Auctions
                 startLessThanOffset = (DateTime.UtcNow.Subtract(startDate).TotalMinutes > MAX_TODAY_MIN_OFFSET);
             }
 
-            bool hasMinTime = (endDate.Subtract(startDate)).TotalMinutes >= MIN_AUCTION_TIME_M;
-            bool startLessThanEnd = startDate.CompareTo(endDate) == -1;
-            bool startNotEqualMax = !startDate.Equals(DateTime.MaxValue);
-            bool startNotEqualMin = !startDate.Equals(DateTime.MinValue);
-            bool endNotEqualMax = !endDate.Equals(DateTime.MaxValue);
-            bool endNotEqualMin = !endDate.Equals(DateTime.MinValue);
+            if (startLessThanOffset)
+            {
+                throw new DomainException("");
+            }
 
-            if (!startLessThanEnd || startLessThanOffset || !hasMinTime || !startNotEqualMax || !startNotEqualMin || !endNotEqualMin ||
-                !endNotEqualMax)
+            bool hasMinTime = (endDate.Value.Subtract(startDate)).TotalMinutes >= MIN_AUCTION_TIME_M;
+
+            if (!hasMinTime)
+            {
+                throw new DomainException("");
+            }
+            bool startLessThanEnd = startDate.Value.CompareTo(endDate) == -1;
+
+            if (!startLessThanEnd)
             {
                 throw new DomainException("Invalid auction date");
             }
@@ -134,15 +143,21 @@ namespace Core.Common.Domain.Auctions
             }
         }
 
+
+
+
         public void Raise(Bid bid)
         {
             ThrowIfBuyNowOnly();
             ThrowIfCompletedOrCanceled();
+            if (bid.AuctionId != AggregateId)
+            {
+                throw new DomainException("Invalid auction id");
+            }
             if (bid.Price <= ActualPrice)
             {
                 throw new DomainException("Price is to low");
             }
-
             if (bid.UserIdentity.UserId == Owner.UserId)
             {
                 throw new DomainException("Auction cannot be raised by auction creator");
@@ -158,7 +173,7 @@ namespace Core.Common.Domain.Auctions
             ThrowIfBuyNowOnly();
             ThrowIfCompletedOrCanceled();
 
-            var existingBid = Bids.FirstOrDefault(b => b.BidId.Equals(bid.BidId));
+            var existingBid = _bids.FirstOrDefault(b => b.BidId.Equals(bid.BidId));
             if (existingBid == null)
             {
                 throw new DomainException($"Cannot find bid with BidId: {bid.BidId}");
@@ -180,7 +195,7 @@ namespace Core.Common.Domain.Auctions
             }
         }
 
-        public void ChangeEndDate(DateTime newEndDate)
+        public void ChangeEndDate(AuctionDate newEndDate)
         {
             ThrowIfCompletedOrCanceled();
             ValidateDates(StartDate, newEndDate, false);
@@ -226,6 +241,25 @@ namespace Core.Common.Domain.Auctions
 
             _auctionImages[_imgNum] = img;
             AddEvent(new AuctionImageAdded(img, _imgNum++, AggregateId));
+        }
+
+        public void RemoveBid(Bid bid)
+        {
+            var existingBid = _bids.FirstOrDefault(b => b.BidId.Equals(bid.BidId));
+            if (existingBid == null)
+            {
+                throw new DomainException($"Cannot find bid with BidId: {bid.BidId}");
+            }
+
+            _bids.Remove(existingBid);
+
+            AddEvent(new BidRemoved(bid));
+            if (existingBid.Price.Equals(ActualPrice))
+            {
+                var topBid = Bids.First(b => b.Price == Bids.Max(mbid => mbid.Price));
+                ActualPrice = topBid.Price;
+            }
+
         }
     }
 }

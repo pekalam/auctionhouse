@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Core.Query.Queries.Auction.SingleAuction
 {
-    public class AuctionQuery : IRequest<AuctionReadModel>
+    public class AuctionQuery : IRequest<AuctionRead>
     {
         public string AuctionId { get; }
 

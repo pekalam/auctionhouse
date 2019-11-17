@@ -37,18 +37,15 @@ export class ProductStepComponent extends AuctionCreateStep<ProductStep> impleme
 
 
 
-  titleMsg = 'Basic info';
+  titleMsg = 'Product info';
 
   defaultStartDate: Date;
   defaultEndDate: Date;
   form = new FormGroup({
-    startDate: new FormControl(this.defaultStartDate, [Validators.required]),
-    endDate: new FormControl(this.defaultEndDate, [Validators.required]),
     productName: new FormControl('', [Validators.required]),
     productDescription: new FormControl('', [Validators.required]),
-    buyNowPrice: new FormControl({ disabled: true, value: '' }, [Validators.required]),
-    buyNow: new FormControl(false, []),
     tags: new FormControl('', [Validators.required, tagsValidator()]),
+    condition: new FormControl(0, [Validators.required]),
   });
   tags: string[] = [];
   tagsErrorStateMatcher = new InstantErrorStateMatcher();
@@ -66,10 +63,6 @@ export class ProductStepComponent extends AuctionCreateStep<ProductStep> impleme
   ngOnInit() {
   }
 
-  onSubmit() {
-
-  }
-
   onTagsChange() {
     if (this.form.controls.tags.valid) {
       this.tags = this.form.value.tags.split(' ').filter((s) => s.length > 0);
@@ -79,19 +72,10 @@ export class ProductStepComponent extends AuctionCreateStep<ProductStep> impleme
     this.showTagsHelp = this.form.value.tags.split(' ').filter((s) => s.length === 0).length > 1;
   }
 
-  onBuyNowChange(checked) {
-    if (checked) {
-      this.form.controls.buyNowPrice.enable();
-      this.form.controls.buyNowPrice.setValidators([Validators.required]);
-      this.form.controls.buyNowPrice.updateValueAndValidity();
-    } else {
-      this.form.controls.buyNowPrice.disable();
-      this.form.controls.buyNowPrice.reset();
-    }
-  }
-
   onChange() {
     this.ready = this.form.valid;
+    console.log(this.form.value);
+
   }
 
 
@@ -105,13 +89,9 @@ export class ProductStepComponent extends AuctionCreateStep<ProductStep> impleme
       const product: Product = {
         name: this.form.value.productName,
         description: this.form.value.productDescription,
-        condition: Condition.New
+        condition: this.form.value.condition
       };
-      const startDate = this.form.value.startDate;
-      const endDate = this.form.value.endDate;
-      const buyNow = this.form.value.buyNow;
-      const buyNowPrice = this.form.value.buyNowPrice;
-      const productStep = new ProductStep(product, startDate, endDate, buyNowPrice, buyNow, this.tags);
+      const productStep = new ProductStep(product, this.tags);
       this.completeStep(productStep);
     }
   }

@@ -36,13 +36,13 @@ namespace FunctionalTests.Queries
         [TearDown]
         public void TearDown()
         {
-            var filter1 = Builders<AuctionReadModel>.Filter.Empty;
-            var filter2 = Builders<UserReadModel>.Filter.Empty;
+            var filter1 = Builders<AuctionRead>.Filter.Empty;
+            var filter2 = Builders<UserRead>.Filter.Empty;
             _dbContext.AuctionsReadModel.DeleteMany(filter1);
             _dbContext.UsersReadModel.DeleteMany(filter2);
         }
 
-        private AuctionReadModel[] GetFakeAuctionsReadModels()
+        private AuctionRead[] GetFakeAuctionsReadModels()
         {
             var testCategoryTree = _categoryTreeService.GetCategoriesTree();
             var testCategory = new Category(testCategoryTree.SubCategories[0]
@@ -55,11 +55,11 @@ namespace FunctionalTests.Queries
                 .SubCategories[0]
                 .CategoryName, 2);
 
-            var auctions = new AuctionReadModel[AuctionsByCategoryQueryHandler.PageSize * 2];
+            var auctions = new AuctionRead[AuctionsByCategoryQueryHandler.PageSize * 2];
 
             for (var i = 0; i < auctions.Length; i++)
             {
-                auctions[i] = new AuctionReadModel()
+                auctions[i] = new AuctionRead()
                 {
                     ActualPrice = 20,
                     AuctionId = Guid.NewGuid()
@@ -76,7 +76,7 @@ namespace FunctionalTests.Queries
             return auctions;
         }
 
-        private void CompareResults(List<AuctionsQueryResult> results, AuctionReadModel[] stubAuctions)
+        private void CompareResults(List<AuctionsQueryResult> results, AuctionRead[] stubAuctions)
         {
             var mapper = MapperConfigHolder.Configuration.CreateMapper();
             for (int i = 0; i < results.Count; i++)

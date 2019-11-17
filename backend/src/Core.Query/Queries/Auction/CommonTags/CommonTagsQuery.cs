@@ -18,12 +18,12 @@ namespace Core.Query.Queries.Auction.CommonTags
 //        public TreeNode[] Children { get; set; }
 //    }
 
-    public class CommonTagsQuery : IRequest<CommonTagsReadModel>
+    public class CommonTagsQuery : IRequest<Views.CommonTags>
     {
         public string Tag { get; set; }
     }
 
-    public class CommonTagsQueryHandler : IRequestHandler<CommonTagsQuery, CommonTagsReadModel>
+    public class CommonTagsQueryHandler : IRequestHandler<CommonTagsQuery, Views.CommonTags>
     {
         private readonly ReadModelDbContext _dbContext;
 
@@ -33,7 +33,7 @@ namespace Core.Query.Queries.Auction.CommonTags
         }
 
 
-        public Task<CommonTagsReadModel> Handle(CommonTagsQuery request, CancellationToken cancellationToken)
+        public Task<Views.CommonTags> Handle(CommonTagsQuery request, CancellationToken cancellationToken)
         {
             var commonTags = _dbContext.CommonTagsCollection.Find(m => m.Tag == request.Tag).FirstOrDefault();
             return Task.FromResult(commonTags);

@@ -17,7 +17,7 @@ namespace FunctionalTests.Queries
     {
         private ReadModelDbContext _dbContext;
         private CategoryTreeService _categoryTreeService;
-        private AuctionReadModel stubAuction;
+        private AuctionRead stubAuction;
 
         [SetUp]
         public void SetUp()
@@ -28,7 +28,7 @@ namespace FunctionalTests.Queries
             var testCategory = new Category(testCategoryTree.SubCategories[0].CategoryName, 0);
             testCategory.SubCategory = new Category(testCategoryTree.SubCategories[0].SubCategories[0].CategoryName, 1);
             testCategory.SubCategory.SubCategory = new Category(testCategoryTree.SubCategories[0].SubCategories[0].SubCategories[0].CategoryName, 2);
-            stubAuction = new AuctionReadModel()
+            stubAuction = new AuctionRead()
             {
                 ActualPrice = 20,
                 AuctionId = Guid.NewGuid().ToString(),
@@ -36,19 +36,15 @@ namespace FunctionalTests.Queries
                 StartDate = DateTime.UtcNow.AddMinutes(12),
                 EndDate = DateTime.UtcNow.AddDays(1),
                 Category = testCategory,
-                Product = new Product()
-                {
-                    Name = "test",
-                    Description = "desc"
-                }
+                Product = new Product("name", "desc", Condition.New)
             };
         }
 
         [TearDown]
         public void TearDown()
         {
-            var filter1 = Builders<AuctionReadModel>.Filter.Empty;
-            var filter2 = Builders<UserReadModel>.Filter.Empty;
+            var filter1 = Builders<AuctionRead>.Filter.Empty;
+            var filter2 = Builders<UserRead>.Filter.Empty;
             _dbContext.AuctionsReadModel.DeleteMany(filter1);
             _dbContext.UsersReadModel.DeleteMany(filter2);
         }

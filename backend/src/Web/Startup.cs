@@ -112,11 +112,12 @@ namespace Web
             DefaultDIBootstraper.Query.Start(serviceProvider);
 
             app.UseCors();
-            app.UseMiddleware<ExceptionHandlingMiddleware>();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 
             app.UseAuthentication();
             app.UseSignalR(builder => { builder.MapHub<ApplicationHub>("/app"); });

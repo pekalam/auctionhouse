@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.Command.Exceptions;
 using Core.Common.ApplicationServices;
 using Core.Common.Auth;
 using Core.Common.Domain.Users;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Core.Command.SignUp
 {
-    public class UsernameConflictException : Exception
+    public class UsernameConflictException : CommandException
     {
         public UsernameConflictException(string message, Exception innerException) : base(message, innerException)
         {

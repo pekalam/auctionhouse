@@ -35,7 +35,7 @@ namespace Core.Query.Queries.User.UserBids
         {
             var user = GetSignedInUserIdentity();
 
-            var userReadModelFilter = Builders<UserReadModel>.Filter.Eq(field => field.UserIdentity.UserId, user.UserId.ToString());
+            var userReadModelFilter = Builders<UserRead>.Filter.Eq(field => field.UserIdentity.UserId, user.UserId.ToString());
             var result = await _dbContext.UsersReadModel
                 .Find(userReadModelFilter)
                 .Project(model => new UserBidsQueryResult(){UserBids = model.UserBids})
