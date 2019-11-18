@@ -2,10 +2,14 @@
   <div id="section">
     <mat-tab-group [selectedIndex]="1">
       <mat-tab label="My data">
-        <app-user-data-page></app-user-data-page>
+        <div class="tab-content">
+          <app-user-data-page></app-user-data-page>
+        </div>
       </mat-tab>
       <mat-tab isActive="true" label="My auctions">
-        <app-user-auctions-page></app-user-auctions-page>
+        <div class="tab-content">
+          <app-user-auctions-page></app-user-auctions-page>
+        </div>
       </mat-tab>
       <mat-tab label="My bids"> Content 3 </mat-tab>
     </mat-tab-group>

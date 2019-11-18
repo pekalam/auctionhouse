@@ -1,4 +1,7 @@
-﻿using Core.Common.Domain.Users.Events;
+﻿using System;
+using System.Collections.Generic;
+using Core.Common.Domain.Auctions;
+using Core.Common.Domain.Users.Events;
 
 namespace Core.Common.Domain.Users
 {
@@ -40,5 +43,6 @@ namespace Core.Common.Domain.Users
             };
             AddEvent(new UserRegistered(UserIdentity));
         }
+
     }
 }

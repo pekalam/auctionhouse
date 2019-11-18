@@ -19,7 +19,7 @@ namespace Core.DomainModelTests
             Assert.Throws<DomainException>(() => builder.Build());
             builder.SetOwner(new UserIdentity());
             Assert.Throws<DomainException>(() => builder.Build());
-            builder.SetProduct(new Product("name", "desc", Condition.New));
+            builder.SetProduct(new Product("test name", "desccription 1111", Condition.New));
             Assert.Throws<DomainException>(() => builder.Build());
             builder.SetStartDate(DateTime.UtcNow.AddMinutes(20));
             Assert.Throws<DomainException>(() => builder.Build());

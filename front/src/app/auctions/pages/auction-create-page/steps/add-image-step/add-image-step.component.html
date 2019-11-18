@@ -1,9 +1,0 @@
-<div class="container">
-  <div class="img-btn-container">
-
-    <div class="add-img-btn-container" *ngFor="let id of imgIds">
-      <app-img-upload-input [imgnum]="id" (imgSelect)="onImgSelect($event)" [hidden]="show[id] === 0"></app-img-upload-input>
-    </div>
-
-  </div>
-</div>

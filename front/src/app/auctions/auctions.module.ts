@@ -9,27 +9,20 @@ import { AuctionCreatePageComponent } from './pages/auction-create-page/auction-
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuctionsRoutingModule } from './auctions-routing.module';
 import { MaterialModule } from '../material.module';
-import { CategorySelectStepComponent } from './pages/auction-create-page/steps/category-select-step/category-select-step.component';
-import { ProductStepComponent } from './pages/auction-create-page/steps/product-step/product-step.component';
 import { SharedModule } from '../shared/shared.module';
-import { AddImageStepComponent } from './pages/auction-create-page/steps/add-image-step/add-image-step.component';
-import { ImgUploadInputComponent } from './components/img-upload-input/img-upload-input.component';
-import { CreateSummaryStepComponent } from './pages/auction-create-page/steps/create-summary-step/create-summary-step.component';
 import { AuctionFiltersComponent } from './components/auction-filters/auction-filters.component';
-import {LayoutModule} from '@angular/cdk/layout';
+import { LayoutModule } from '@angular/cdk/layout';
 import { ErrorModule } from '../error/error.module';
-import { AuctionDataStepComponent } from './pages/auction-create-page/steps/auction-data-step/auction-data-step.component';
 
 
 @NgModule({
-  declarations: [AuctionsPageComponent, AuctionComponent, AuctionListItemComponent, AuctionPageComponent, AuctionCreatePageComponent,
-    CategorySelectStepComponent,
-    ProductStepComponent,
-    AddImageStepComponent,
-    ImgUploadInputComponent,
-    CreateSummaryStepComponent,
+  declarations: [AuctionsPageComponent,
+    AuctionComponent,
+    AuctionListItemComponent,
+    AuctionPageComponent,
+    AuctionCreatePageComponent,
     AuctionFiltersComponent,
-    AuctionDataStepComponent],
+  ],
   imports: [
     AuctionsRoutingModule,
     ReactiveFormsModule,

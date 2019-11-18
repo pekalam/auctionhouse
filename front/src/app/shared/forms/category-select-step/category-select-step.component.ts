@@ -1,8 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CategoryTreeNode } from 'src/app/core/models/CategoryTreeNode';
 import { CategoriesQuery } from 'src/app/core/queries/CategoriesQuery';
-import { CategorySelectStep } from '../../../../categorySelectStep';
-import { AuctionCreateStep } from '../../../../auctionCreateStep';
+import { CategorySelectStep } from './categorySelectStep';
+import { AuctionCreateStep } from '../auctionCreateStep';
+import { Category } from '../../../core/models/Category';
+
+
 
 @Component({
   selector: 'app-category-select-step',
@@ -10,6 +13,9 @@ import { AuctionCreateStep } from '../../../../auctionCreateStep';
   styleUrls: ['./category-select-step.component.scss']
 })
 export class CategorySelectStepComponent extends AuctionCreateStep<CategorySelectStep> implements OnInit {
+
+  @Input()
+  defaults: Category;
 
   mainCategories: CategoryTreeNode[] = [];
   subCategories: CategoryTreeNode[] = [];
@@ -24,6 +30,11 @@ export class CategorySelectStepComponent extends AuctionCreateStep<CategorySelec
     super();
     this.categoriesQuery.execute().subscribe((v) => {
       this.mainCategories = v.subCategories;
+      if (this.defaults) {
+        this.selectMainCategory(this.defaults.name);
+        this.selectSubCategory(this.defaults.subCategory.name);
+        this.selectSubCategory2(this.defaults.subCategory.subCategory.name);
+      }
     });
   }
 

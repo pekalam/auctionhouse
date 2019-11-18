@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using Core.Common.Auth;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Web.Exceptions;
 
 namespace Web.Adapters
 {
@@ -71,7 +73,7 @@ namespace Web.Adapters
             var userIdnIdentity = _userIdentityService.GetSignedInUserIdentity();
             if (userIdnIdentity == null)
             {
-                throw new Exception("not signed in");
+                throw new ApiException(HttpStatusCode.Unauthorized, "not signed in");
             }
 
             return userIdnIdentity;

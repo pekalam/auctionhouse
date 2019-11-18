@@ -10,7 +10,7 @@
     <app-category-select-step #categoryStep (outputOnStepComplete)="onCategorySelectedStep($event)" [hidden]="categoryStep !== stepComponents[step]"></app-category-select-step>
     <app-auction-data-step #auctionDataStep (outputOnStepComplete)="onAuctionDataStep($event)" [hidden]="auctionDataStep !== stepComponents[step]"></app-auction-data-step>
     <app-product-step #productStep (outputOnStepComplete)="onProductStep($event)" [hidden]="productStep !== stepComponents[step]"></app-product-step>
-    <app-add-image-step #imageStep (outputOnStepComplete)="onImagesStep($event)" [hidden]="imageStep !== stepComponents[step]"></app-add-image-step>
+    <app-add-image-step #imageStep (imgSelected)="onImgSelect($event)" (imgCanceled)="onImgCancel($event)" (outputOnStepComplete)="onImagesStep($event)" [hidden]="imageStep !== stepComponents[step]"></app-add-image-step>
     <app-create-summary-step #summaryStep [commandArgs]="createAuctionArgs" (outputOnStepComplete)="onSummaryStep()" [hidden]="summaryStep !== stepComponents[step]"></app-create-summary-step>
   </div>
   <div class="create-container">

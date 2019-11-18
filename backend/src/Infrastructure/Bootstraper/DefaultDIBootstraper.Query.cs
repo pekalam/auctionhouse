@@ -9,6 +9,7 @@ using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Categories;
 using Core.Common.EventBus;
 using Core.Query.Handlers;
+using Core.Query.Handlers.AuctionUpdateHandlers;
 using Core.Query.ReadModel;
 using Infrastructure.Repositories.AuctionImage;
 using Infrastructure.Services;
@@ -87,17 +88,17 @@ namespace Infrastructure.Bootstraper
                 var rabbitmq = (RabbitMqEventBus) implProvider.Get<IEventBus>();
                 rabbitmq.InitSubscribers(
                     new RabbitMqEventConsumerFactory(() => implProvider.Get<AuctionCreatedHandler>(),
-                        EventNames.AuctionCreatedEventName),
+                        EventNames.AuctionCreated),
                     new RabbitMqEventConsumerFactory(() => implProvider.Get<AuctionRaisedHandler>(),
-                        EventNames.AuctionRaisedEventName),
+                        EventNames.AuctionRaised),
                     new RabbitMqEventConsumerFactory(() => implProvider.Get<UserRegisteredHandler>(),
-                        EventNames.UserRegisteredEventName),
+                        EventNames.UserRegistered),
                     new RabbitMqEventConsumerFactory(
                         () => implProvider.Get<AuctionImageAddedHandler>(),
                         EventNames.AuctionImageAddedEventName),
                     new RabbitMqEventConsumerFactory(
                         () => implProvider.Get<AuctionCompletedHandler>(),
-                        EventNames.AuctionCompletedEventName)
+                        EventNames.AuctionCompleted)
                 );
             }
         }

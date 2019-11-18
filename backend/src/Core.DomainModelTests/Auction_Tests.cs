@@ -26,7 +26,7 @@ namespace Core.DomainModelTests
                 .SetBuyNow(123)
                 .SetStartDate(DateTime.UtcNow.AddDays(1))
                 .SetEndDate(DateTime.UtcNow.AddDays(2))
-                .SetProduct(new Product("name", "desc", Condition.New))
+                .SetProduct(new Product("test name", "desccription 1111", Condition.New))
                 .SetTags(new[] {"tag1"})
                 .SetName("Test name")
                 .Build();
@@ -41,7 +41,7 @@ namespace Core.DomainModelTests
                 .SetStartDate(DateTime.UtcNow.AddMinutes(20))
                 .SetEndDate(DateTime.UtcNow.AddDays(5))
                 .SetOwner(new UserIdentity())
-                .SetProduct(new Product("name", "desc", Condition.New))
+                .SetProduct(new Product("test name", "desccription 1111", Condition.New))
                 .SetCategory(new Category("test", 0))
                 .SetBuyNowOnly(false)
                 .SetTags(new[] {"tag1"})
@@ -58,7 +58,7 @@ namespace Core.DomainModelTests
                 .SetStartDate(DateTime.UtcNow.AddMinutes(20))
                 .SetEndDate(DateTime.UtcNow.AddDays(5))
                 .SetOwner(new UserIdentity())
-                .SetProduct(new Product("name", "desc", Condition.New))
+                .SetProduct(new Product("test name", "desccription 1111", Condition.New))
                 .SetCategory(new Category("test", 0))
                 .SetBuyNowOnly(false)
                 .SetName("Test name");
@@ -94,7 +94,7 @@ namespace Core.DomainModelTests
                 .SetStartDate(start)
                 .SetEndDate(end)
                 .SetOwner(owner)
-                .SetProduct(new Product("name", "desc", Condition.New))
+                .SetProduct(new Product("test name", "desccription 1111", Condition.New))
                 .SetCategory(new Category("test", 0))
                 .SetImages(imgs)
                 .SetTags(new[] {"tag1"})
@@ -162,7 +162,7 @@ namespace Core.DomainModelTests
                 .SetStartDate(date.AddMinutes(minutesStart))
                 .SetEndDate(date.AddMinutes(minutesEnd))
                 .SetOwner(new UserIdentity())
-                .SetProduct(new Product("name", "desc", Condition.New))
+                .SetProduct(new Product("test name", "desccription 1111", Condition.New))
                 .SetCategory(new Category("test", 0))
                 .SetTags(new[] {"t1"})
                 .SetName("test name")
@@ -188,7 +188,7 @@ namespace Core.DomainModelTests
                 .SetStartDate(start)
                 .SetEndDate(end)
                 .SetOwner(new UserIdentity())
-                .SetProduct(new Product("name", "desc", Condition.New))
+                .SetProduct(new Product("test name", "desccription 1111", Condition.New))
                 .SetCategory(new Category("test", 0))
                 .SetTags(new[] {"tag1"})
                 .SetName("Test name")
@@ -289,7 +289,7 @@ namespace Core.DomainModelTests
         {
             var end = auction.EndDate;
 
-            auction.ChangeEndDate(end.Value.AddDays(12));
+            auction.SetEndDate(end.Value.AddDays(12));
 
             auction.EndDate.Value.Should()
                 .Be(end.Value.AddDays(12));
@@ -298,8 +298,8 @@ namespace Core.DomainModelTests
         [Test]
         public void ChangeEndDate_when_invalid_endDate_throws()
         {
-            Assert.Throws<DomainException>(() => auction.ChangeEndDate(auction.StartDate));
-            Assert.Throws<DomainException>(() => auction.ChangeEndDate(auction.StartDate.Value.AddDays(-1)));
+            Assert.Throws<DomainException>(() => auction.SetEndDate(auction.StartDate));
+            Assert.Throws<DomainException>(() => auction.SetEndDate(auction.StartDate.Value.AddDays(-1)));
         }
 
         [Test]

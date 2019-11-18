@@ -33,8 +33,8 @@ namespace Core.Query.ReadModel
         [BsonId] public ObjectId Id { get; set; }
         public string AuctionId { get; set; }
 
-
-        public UserIdentity Creator { get; set; }
+        public string Name { get; set; }
+        public UserIdentityRead Creator { get; set; }
         public Product Product { get; set; }
         public Category Category { get; set; }
         public AuctionImage[] AuctionImages { get; set; }
@@ -55,7 +55,7 @@ namespace Core.Query.ReadModel
         [BsonDefaultValue(false)] public bool Completed { get; set; }
         [BsonDefaultValue(false)] public bool Canceled { get; set; }
         public bool Bought { get; set; }
-        public UserIdentity Buyer { get; set; }
+        public UserIdentityRead Buyer { get; set; }
         public BidRead WinningBid { get; set; }
 
         [BsonDefaultValue(0)] public long Version { get; set; }

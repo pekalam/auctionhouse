@@ -31,10 +31,10 @@ namespace Core.DomainModelTests
                 .SetBuyNow(12)
                 .SetStartDate(DateTime.UtcNow.AddMinutes(20))
                 .SetEndDate(DateTime.UtcNow.AddDays(1))
-                .SetProduct(new Product("name", "desc", Condition.New))
+                .SetProduct(new Product("test name", "desccription 1111", Condition.New))
                 .SetCategory(new Category("", 0))
                 .SetOwner(new UserIdentity())
-                .SetTags(new []{"tag1"})
+                .SetTags(new[] {"tag1"})
                 .SetName("Test name")
                 .Build();
         }
@@ -67,7 +67,9 @@ namespace Core.DomainModelTests
             var img = new AuctionImage("1", "2", "3");
             session.AddOrReplaceImage(img, 0);
             session.ResetSession();
-            session.AuctionImages[0].Should().BeNull();
+            session.AuctionImages[0]
+                .Should()
+                .BeNull();
         }
 
         [Test]
@@ -80,7 +82,7 @@ namespace Core.DomainModelTests
         }
 
         [Test]
-        public void AddOrReplaceImage_not_null_image_adds_to_auction_images()
+        public void AddOrReplaceImage_adds_to_auction_images()
         {
             AuctionCreateSession.SESSION_MAX_TIME = AuctionCreateSession.DEFAULT_SESSION_MAX_TIME;
             int imgNum = 1;
@@ -90,7 +92,8 @@ namespace Core.DomainModelTests
             var image1 = new AuctionImage("id1", "id2", "id3");
             session.AddOrReplaceImage(image1, imgNum);
 
-            session.AuctionImages.Count.Should().Be(Auction.MAX_IMAGES);
+            session.AuctionImages.Count.Should()
+                .Be(Auction.MAX_IMAGES);
             for (int i = 0; i < session.AuctionImages.Count; i++)
             {
                 if (i == imgNum)
@@ -98,11 +101,50 @@ namespace Core.DomainModelTests
                     continue;
                 }
 
-                session.AuctionImages[i].Should().BeNull();
+                session.AuctionImages[i]
+                    .Should()
+                    .BeNull();
             }
 
-            session.AuctionImages[imgNum].Should().Be(image1);
-            session.AuctionImages.Count.Should().Be(Auction.MAX_IMAGES);
+            session.AuctionImages[imgNum]
+                .Should()
+                .Be(image1);
+            session.AuctionImages.Count.Should()
+                .Be(Auction.MAX_IMAGES);
+        }
+
+        [Test]
+        public void AddOrReplaceImage_replaces_image()
+        {
+            AuctionCreateSession.SESSION_MAX_TIME = AuctionCreateSession.DEFAULT_SESSION_MAX_TIME;
+            int imgNum = 1;
+
+            user.Register(username);
+            var session = user.UserIdentity.GetAuctionCreateSession();
+            var image1 = new AuctionImage("id1", "id2", "id3");
+            var image2 = new AuctionImage("id1", "id2", "id3");
+            session.AddOrReplaceImage(image1, imgNum);
+            session.AddOrReplaceImage(image2, imgNum);
+
+            session.AuctionImages.Count.Should()
+                .Be(Auction.MAX_IMAGES);
+            for (int i = 0; i < session.AuctionImages.Count; i++)
+            {
+                if (i == imgNum)
+                {
+                    continue;
+                }
+
+                session.AuctionImages[i]
+                    .Should()
+                    .BeNull();
+            }
+
+            session.AuctionImages[imgNum]
+                .Should()
+                .Be(image2);
+            session.AuctionImages.Count.Should()
+                .Be(Auction.MAX_IMAGES);
         }
 
         [Test]
@@ -118,12 +160,19 @@ namespace Core.DomainModelTests
 
             var auction = session.CreateAuction(auctionArgs);
 
-            auction.AuctionImages.Count.Should().Be(Auction.MAX_IMAGES);
-            auction.AuctionImages[0].Should().Be(image1);
-            auction.AuctionImages[1].Should().Be(image2);
+            auction.AuctionImages.Count.Should()
+                .Be(Auction.MAX_IMAGES);
+            auction.AuctionImages[0]
+                .Should()
+                .Be(image1);
+            auction.AuctionImages[1]
+                .Should()
+                .Be(image2);
             for (int i = 2; i < auction.AuctionImages.Count; i++)
             {
-                auction.AuctionImages[i].Should().BeNull();
+                auction.AuctionImages[i]
+                    .Should()
+                    .BeNull();
             }
         }
 
@@ -137,10 +186,13 @@ namespace Core.DomainModelTests
 
             var auction = session.CreateAuction(auctionArgs);
 
-            auction.AuctionImages.Count.Should().Be(Auction.MAX_IMAGES);
+            auction.AuctionImages.Count.Should()
+                .Be(Auction.MAX_IMAGES);
             for (int i = 0; i < auction.AuctionImages.Count; i++)
             {
-                auction.AuctionImages[i].Should().BeNull();
+                auction.AuctionImages[i]
+                    .Should()
+                    .BeNull();
             }
         }
     }

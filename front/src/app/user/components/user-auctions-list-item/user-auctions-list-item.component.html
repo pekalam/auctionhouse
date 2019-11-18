@@ -1,6 +1,6 @@
 <div class="container" (click)="itemClick.emit(auction)"  *ngIf="auction">
   <div class="left">
-    <ng-container *ngFor="let img of auction.auctionImages">
+    <ng-container *ngFor="let img of auction.auctionImages.slice(0,3)">
         <img class="img-preview" *ngIf="img" [src]="'/api/auctionImage?img=' + img.size3Id"/>
     </ng-container>
   </div>

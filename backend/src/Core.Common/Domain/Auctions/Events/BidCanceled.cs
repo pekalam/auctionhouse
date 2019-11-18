@@ -6,7 +6,7 @@ namespace Core.Common.Domain.Auctions.Events
     {
         public Bid CanceledBid { get; }
 
-        public BidCanceled(Bid canceledBid) : base(EventNames.BidCanceledEventName)
+        public BidCanceled(Bid canceledBid) : base(EventNames.BidCanceled)
         {
             CanceledBid = canceledBid;
         }

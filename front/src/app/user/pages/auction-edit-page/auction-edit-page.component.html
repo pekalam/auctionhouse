@@ -1,15 +1,46 @@
 <div id="container">
   <div id="section">
-      <mat-tab-group>
-          <mat-tab label="Categories">
+    <mat-tab-group [selectedIndex]="0">
+      <mat-tab label="Categories">
+        <div class="tab-content">
+          <app-category-select-step #categoryForm [defaults]="auction.category"
+            (outputOnStepComplete)="onCategorySelectedStep($event)">
+          </app-category-select-step>
+          <div style="text-align: center;">
+            <hr>
+            <button class="save-btn" (click)="categoryForm.onOkClick()" [disabled]="!categoryForm.ready">Save</button>
+          </div>
+        </div>
+      </mat-tab>
+      <mat-tab label="Auction data">
+        <div class="tab-content">
+          <app-auction-data-step #auctionDataForm [defaults]="auctionDataFormValues" (outputOnStepComplete)="onAuctionDataFormSubmit($event)"></app-auction-data-step>
+          <div style="text-align: center;">
+            <hr>
+            <button class="save-btn" (click)="auctionDataForm.onOkClick()" [disabled]="!auctionDataForm.ready">Save</button>
+          </div>
+        </div>
+      </mat-tab>
+      <mat-tab label="Item data">
+        <div class="tab-content">
+          <app-product-step #productForm [defaults]="productFormDefaultValues"
+            (outputOnStepComplete)="onProductFormSubmit($event)" [disable]="{productName: true}"></app-product-step>
+          <div style="text-align: center;">
+            <hr>
+            <button class="save-btn" (click)="productForm.onOkClick()" [disabled]="!productForm.ready">Save</button>
+          </div>
+        </div>
+      </mat-tab>
+      <mat-tab label="Images">
+        <div class="tab-content">
+          <app-add-image-step #imageStep [defaults]="auctionImagesFormValues" (imgSelected)="onImageSelected($event)" (outputOnStepComplete)="onImagesFormSubmit($event)"></app-add-image-step>
 
-          </mat-tab>
-          <mat-tab label="Auction data">
-
-          </mat-tab>
-          <mat-tab label="My bids"></mat-tab>
-        </mat-tab-group>
+          <div style="text-align: center;">
+            <hr>
+            <button class="save-btn" (click)="imageStep.onOkClick()">Save</button>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
   </div>
 </div>
-
-

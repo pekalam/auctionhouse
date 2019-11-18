@@ -107,7 +107,6 @@ namespace IntegrationTests
             var handler = new TestHandler(new AppEventRabbitMQBuilder(), (ev) =>
             {
                 ev.Should().BeEquivalentTo(toPublish);
-                Assert.Fail();
                 sem.Release();
             });
 

@@ -4,7 +4,7 @@
     {
         public UserIdentity UserIdentity { get; }
 
-        public UserRegistered(UserIdentity userIdentity) : base(EventNames.UserRegisteredEventName)
+        public UserRegistered(UserIdentity userIdentity) : base(EventNames.UserRegistered)
         {
             UserIdentity = userIdentity;
         }

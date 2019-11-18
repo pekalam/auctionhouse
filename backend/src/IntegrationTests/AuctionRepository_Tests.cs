@@ -22,7 +22,7 @@ namespace IntegrationTests
                 .SetStartDate(DateTime.UtcNow.AddMinutes(10))
                 .SetEndDate(DateTime.UtcNow.AddDays(1))
                 .SetOwner(new UserIdentity() { UserName = "test", UserId = Guid.NewGuid() })
-                .SetProduct(new Product("name", "desc", Condition.New))
+                .SetProduct(new Product("product name", "description 1111", Condition.New))
                 .SetCategory(new Category("test", 0))
                 .SetTags(new []{"tag1", "tag2"})
                 .SetName("Test name")

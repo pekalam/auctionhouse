@@ -23,6 +23,16 @@ namespace Core.Common.Domain.Auctions
                 Apply(@event as AuctionImageAdded);
             else if (@event is AuctionCanceled)
                 Apply(@event as AuctionCanceled);
+            else if(@event is AuctionBuyNowPriceChanged)
+                Apply(@event as AuctionBuyNowPriceChanged);
+            else if (@event is AuctionEndDateChanged)
+                Apply(@event as AuctionEndDateChanged);
+            else if (@event is AuctionTagsChanged)
+                Apply(@event as AuctionTagsChanged);
+            else if(@event is AuctionCategoryChanged)
+                Apply(@event as AuctionCategoryChanged);
+            else if (@event is AuctionNameChanged)
+                Apply(@event as AuctionNameChanged);
             else
             {
                 throw new DomainException($"Unrecognized event: {@event.EventName}");
@@ -40,5 +50,10 @@ namespace Core.Common.Domain.Auctions
         private void Apply(AuctionCompleted @event) => EndAuction();
         private void Apply(AuctionImageAdded @event) => AddImage(@event.AddedImage);
         private void Apply(AuctionCanceled @event) => CancelAuction();
+        private void Apply(AuctionBuyNowPriceChanged ev) => SetBuyNowPrice(ev.BuyNowPrice);
+        private void Apply(AuctionEndDateChanged ev) => SetEndDate(ev.Date);
+        private void Apply(AuctionTagsChanged ev) => SetTags(ev.Tags);
+        private void Apply(AuctionCategoryChanged ev) => SetCategory(ev.Category);
+        private void Apply(AuctionNameChanged ev) => SetName(ev.AuctionName);
     }
 }

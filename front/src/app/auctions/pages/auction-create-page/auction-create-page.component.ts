@@ -1,19 +1,18 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { CategoriesQuery } from '../../../core/queries/CategoriesQuery';
 import { CreateAuctionCommandArgs, CreateAuctionCommand } from '../../../core/commands/CreateAuctionCommand';
-import { CategoryTreeNode } from '../../../core/models/CategoryTreeNode';
-import { Product } from '../../../core/models/Product';
-import { CategorySelectStep } from '../../categorySelectStep';
-import { ProductStep } from '../../productStep';
-import { ImgUploadResult } from '../../components/img-upload-input/img-upload-input.component';
+import { CategorySelectStep } from '../../../shared/forms/category-select-step/categorySelectStep';
+import { ProductFormResult } from '../../../shared/forms/product-step/productStep';
 import { Router } from '@angular/router';
 import { StartAuctionCreateSessionCommand } from '../../../core/commands/StartAuctionCreateSessionCommand';
 import { ServerMessageService } from '../../../core/services/ServerMessageService';
 import { Subscription } from 'rxjs';
-import { first } from 'rxjs/operators';
-import { AuctionDataStep } from '../../auctionDataStep';
+import { AuctionDataStep } from '../../../shared/forms/auction-data-step/auctionDataStep';
+import { AddImageFormResult } from '../../../shared/forms/add-image-step/add-image-step.component';
+import { AddAuctionImageCommand } from 'src/app/core/commands/AddAuctionImageCommand';
+import { RemoveAuctionImageCommand } from 'src/app/core/commands/RemoveAuctionImageCommand';
+import { ImgSelectedEvent } from 'src/app/shared/forms/img-upload-input/img-upload-input.component';
+import { AuctionImageQuery } from '../../../core/queries/AuctionImageQuery';
 
 @Component({
   selector: 'app-auction-create-page',
@@ -23,7 +22,7 @@ import { AuctionDataStep } from '../../auctionDataStep';
 export class AuctionCreatePageComponent implements OnInit, OnDestroy {
   private totalSteps = 4;
   private categorySelectStep: CategorySelectStep;
-  private productStep: ProductStep;
+  private productStep: ProductFormResult;
   private auctionDataStep: AuctionDataStep;
   private connectionStartedSub: Subscription;
 
@@ -48,6 +47,9 @@ export class AuctionCreatePageComponent implements OnInit, OnDestroy {
   constructor(private startAuctionCreateSessionCommand: StartAuctionCreateSessionCommand,
               private createAuctionCommand: CreateAuctionCommand,
               private serverMessageService: ServerMessageService,
+              private addAuctionImageCommand: AddAuctionImageCommand,
+              private removeAuctionImageCommand: RemoveAuctionImageCommand,
+              private auctionImageQuery: AuctionImageQuery,
               private router: Router,
               public location: Location) {
   }
@@ -114,18 +116,41 @@ export class AuctionCreatePageComponent implements OnInit, OnDestroy {
     this.nextStep();
   }
 
-  onProductStep(stepResult: ProductStep) {
+  onProductStep(stepResult: ProductFormResult) {
     this.productStep = stepResult;
     this.nextStep();
   }
 
-  onImagesStep(stepResult: ImgUploadResult[]) {
+  onImagesStep(stepResult: AddImageFormResult[]) {
     console.log('img step = ');
     console.log(stepResult);
     this.createCommandArgs();
     console.log(this.createAuctionArgs);
 
     this.nextStep();
+  }
+
+  onImgSelect(event: ImgSelectedEvent){
+    this.addAuctionImageCommand.execute(event.files, event.imgnum).subscribe((msg) => {
+      if (msg.result === 'completed') {
+        console.log('add image completed');
+        console.log(msg);
+        this.imageStepComponent.setImgPreview(event.imgnum, this.auctionImageQuery.execute(msg.values.imgSz1));
+      } else {
+        console.log('Cannot add image');
+      }
+    }, (err) => {
+      console.log('Cannot add image');
+    });
+  }
+
+  onImgCancel(imgnum: number){
+    this.removeAuctionImageCommand.execute(imgnum).subscribe((v) => {
+      console.log("img removed " + imgnum);
+    }, (err) => {
+      console.log("remove image error ");
+      console.log(err);
+    });
   }
 
   onForwardClick() {

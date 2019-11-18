@@ -1,7 +1,7 @@
 <div class="container">
   <form class="form-grid" [formGroup]="form">
     <div class="g1">
-      <mat-form-field id="product-name-field">
+      <mat-form-field id="product-name-field" [appVisible]="disable.productName">
         Product name
         <input matInput type="text" formControlName="productName" (keyup)="onChange()" />
         <mat-error>

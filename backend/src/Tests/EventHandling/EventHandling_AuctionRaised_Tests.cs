@@ -26,7 +26,7 @@ namespace FunctionalTests.EventHandling
 
 
             var user = new UserIdentity() {UserId = Guid.NewGuid(), UserName = "testUserName"};
-            var product = new Product("name", "desc", Condition.New);
+            var product = new Product("test name", "descripton 111", Condition.New);
             var auctionArgs = new AuctionArgs.Builder()
                     .SetBuyNow(20.0m)
                     .SetStartDate(DateTime.UtcNow.AddMinutes(10))

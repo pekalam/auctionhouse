@@ -41,7 +41,7 @@ namespace Core.Query.Handlers
             var auctionFilter = Builders<AuctionRead>.Filter.Eq(field => field.AuctionId, ev.AuctionId.ToString());
             var auctionUpdate = Builders<AuctionRead>.Update
                 .Set(field => field.Completed, true)
-                .Set(field => field.Buyer, ev.WinningBid?.UserIdentity)
+                .Set(field => field.Buyer, new UserIdentityRead(ev.WinningBid?.UserIdentity))
                 .Set(field => field.WinningBid, new BidRead(ev.WinningBid));
 
             var session = _dbContext.Client.StartSession();

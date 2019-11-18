@@ -43,4 +43,6 @@ export interface Auction {
   auctionImages: AuctionImage[];
   totalBids: number;
   views: number;
+  tags: string[];
+  name: string;
 }

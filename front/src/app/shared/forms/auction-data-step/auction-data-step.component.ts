@@ -1,7 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { AuctionCreateStep } from '../../../../auctionCreateStep';
-import { AuctionDataStep } from '../../../../auctionDataStep';
+import { Component, OnInit, Input } from '@angular/core';
+import { AuctionCreateStep } from '../auctionCreateStep';
+import { AuctionDataStep } from './auctionDataStep';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
+
+export interface AuctionDataFormValues {
+  name: string;
+  startDate: Date;
+  endDate: Date;
+  buyNow: boolean;
+  auction: boolean;
+  buyNowPrice: number;
+}
+
 
 @Component({
   selector: 'app-auction-data-step',
@@ -9,6 +19,16 @@ import { FormGroup, Validators, FormControl } from '@angular/forms';
   styleUrls: ['./auction-data-step.component.scss']
 })
 export class AuctionDataStepComponent extends AuctionCreateStep<AuctionDataStep> implements OnInit {
+
+  @Input('defaults')
+  set setDefaults(defaults: AuctionDataFormValues){
+    if(defaults){
+      this.form.setValue({...defaults});
+      this.onAuctionChange(defaults.auction);
+      this.onBuyNowChange(defaults.buyNow);
+      this.ready = this.form.valid;
+    }
+  }
 
   titleMsg = 'Auction data';
   defaultStartDate: Date;

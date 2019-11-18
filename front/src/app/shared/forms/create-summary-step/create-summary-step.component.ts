@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { CreateAuctionCommandArgs } from '../../../../../core/commands/CreateAuctionCommand';
-import { AuctionCreateStep } from '../../../../auctionCreateStep';
+import { CreateAuctionCommandArgs } from '../../../core/commands/CreateAuctionCommand';
+import { AuctionCreateStep } from '../auctionCreateStep';
 
 @Component({
   selector: 'app-create-summary-step',

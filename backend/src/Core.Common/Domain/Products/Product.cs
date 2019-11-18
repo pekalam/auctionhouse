@@ -7,8 +7,29 @@
 
     public class Product
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public const int NAME_MIN_LENGTH = 5;
+        public const int DESCRIPTION_MIN_LENGTH = 5;
+
+        private string _name;
+        private string _description;
+
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                _name = value.Length < NAME_MIN_LENGTH ? throw new DomainException("Too short product name") : value;
+            }
+        }
+
+        public string Description
+        {
+            get => _description;
+            set
+            {
+                _description = value.Length < DESCRIPTION_MIN_LENGTH ? throw new DomainException("Too short product description") : value;
+            }
+        }
         public Condition Condition { get; set; }
 
         public Product(string name, string description, Condition condition)
@@ -17,5 +38,7 @@
             Description = description;
             Condition = condition;
         }
+
+
     }
 }

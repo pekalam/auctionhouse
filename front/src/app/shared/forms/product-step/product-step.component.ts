@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, Validators, FormControl, ValidatorFn, ValidationErrors, AbstractControl, FormGroupDirective, NgForm } from '@angular/forms';
-import { Product, Condition } from 'src/app/core/models/Product';
-import { Auction } from '../../../../../core/models/Auctions';
-import { AuctionCreateStep } from '../../../../auctionCreateStep';
-import { ProductStep } from 'src/app/auctions/productStep';
+import { Product } from 'src/app/core/models/Product';
+import { AuctionCreateStep } from '../auctionCreateStep';
+import { ProductFormResult } from 'src/app/shared/forms/product-step/productStep';
 import { ErrorStateMatcher } from '@angular/material';
 
 
@@ -28,14 +27,31 @@ export class InstantErrorStateMatcher implements ErrorStateMatcher {
   }
 }
 
+export interface ProductFormValues {
+  productName: string;
+  productDescription: string;
+  tags: string;
+  condition: number;
+}
+
 @Component({
   selector: 'app-product-step',
   templateUrl: './product-step.component.html',
   styleUrls: ['./product-step.component.scss']
 })
-export class ProductStepComponent extends AuctionCreateStep<ProductStep> implements OnInit {
+export class ProductStepComponent extends AuctionCreateStep<ProductFormResult> implements OnInit {
 
+  @Input()
+  disable: {productName: boolean} = {productName: false};
 
+  @Input('defaults')
+  set setDefaults(defaults: ProductFormValues) {
+    if (defaults) {
+      this.form.setValue({ ...defaults });
+      this.onTagsChange();
+      this.ready = this.form.valid;
+    }
+  }
 
   titleMsg = 'Product info';
 
@@ -74,7 +90,7 @@ export class ProductStepComponent extends AuctionCreateStep<ProductStep> impleme
 
   onChange() {
     this.ready = this.form.valid;
-    console.log(this.form.value);
+    console.log(this.form);
 
   }
 
@@ -86,12 +102,15 @@ export class ProductStepComponent extends AuctionCreateStep<ProductStep> impleme
 
 
     if (this.form.valid) {
-      const product: Product = {
+      const productVal: Product = {
         name: this.form.value.productName,
         description: this.form.value.productDescription,
         condition: this.form.value.condition
       };
-      const productStep = new ProductStep(product, this.tags);
+      const productStep: ProductFormResult = {
+        product: productVal,
+        tags: this.tags
+      }
       this.completeStep(productStep);
     }
   }

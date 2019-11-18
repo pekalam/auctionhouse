@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Web.Dto.Commands;
+using Web.Utils;
 
 namespace Web.Api
 {
@@ -81,19 +82,10 @@ namespace Web.Api
         public async Task<ActionResult> AddAuctionImage([FromForm] AddAuctionImageCommandDto commandDto)
         {
             var correlationId = new CorrelationId(commandDto.CorrelationId);
-            var buffer = new byte[1024 * 1024 * 5];
-            using (var stream = new MemoryStream(buffer))
-            {
-                commandDto.Img.CopyTo(stream);
-                var imageRepresentation = new AuctionImageRepresentation()
-                {
-                    Img = stream.ToArray(),
-                    Metadata = new AuctionImageMetadata()
-                };
-                var command = new AddAuctionImageCommand(imageRepresentation, correlationId, commandDto.ImgNum);
-                await _mediator.Send(command);
-                return Ok();
-            }
+            var imgRepresentation = ImageRepresentationUtil.GetImageRepresentationFromFormFile(commandDto.Img);
+            var command = new AddAuctionImageCommand(imgRepresentation, correlationId, commandDto.ImgNum);
+            await _mediator.Send(command);
+            return Ok();
         }
     }
 }

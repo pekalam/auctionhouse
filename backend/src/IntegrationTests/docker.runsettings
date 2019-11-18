@@ -4,5 +4,6 @@
 	<TestRunParameters>
 		<Parameter name="eventstore-connection-string" value="eventst" />
 		<Parameter name="mongodb-connection-string" value="mongodb://mongodb:27017" />
+		<Parameter name="rabbitmq-connection-string" value="host=rabbitmq" />
 	</TestRunParameters>
 </RunSettings>

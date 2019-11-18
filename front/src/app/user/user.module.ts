@@ -9,17 +9,25 @@ import { UserAuctionsPageComponent } from './pages/user-page/subpages/user-aucti
 import { UserAuctionsListItemComponent } from './components/user-auctions-list-item/user-auctions-list-item.component';
 import { AuctionEditPageComponent } from './pages/auction-edit-page/auction-edit-page.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from '../shared/shared.module';
 
 
 
 @NgModule({
-  declarations: [UserPageComponent, UserDataPageComponent, UserAuctionsPageComponent, UserAuctionsListItemComponent, AuctionEditPageComponent],
+  declarations: [
+    UserPageComponent,
+    UserDataPageComponent,
+    UserAuctionsPageComponent,
+    UserAuctionsListItemComponent,
+    AuctionEditPageComponent
+  ],
   imports: [
     CommonModule,
     MaterialModule,
     UserRoutingModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
+    SharedModule
   ]
 })
 export class UserModule { }

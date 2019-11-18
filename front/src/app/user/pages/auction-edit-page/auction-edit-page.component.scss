@@ -8,6 +8,18 @@
   #section{
     @include section-shadow;
     background-color: white;
-
+    .tab-content{
+      padding: 20px;
+    }
   }
+
+}
+
+::ng-deep .mat-tab-body-content{
+  overflow: hidden !important;
+}
+
+.save-btn{
+  @include app-btn;
+  height: 32px;
 }

@@ -38,5 +38,6 @@ services:
     depends_on:
       - eventst
       - mongodb
+      - rabbitmq
 
 

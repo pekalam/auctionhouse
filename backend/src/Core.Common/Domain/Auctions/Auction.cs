@@ -35,7 +35,7 @@ namespace Core.Common.Domain.Auctions
 
         private List<AuctionImage> _auctionImages = new List<AuctionImage>(new AuctionImage[MAX_IMAGES]);
         private List<Bid> _bids = new List<Bid>();
-        private int _imgNum = 0;
+        private int _imgInd = 0;
         public AuctionName Name { get; private set; }
         public bool BuyNowOnly { get; private set; }
         public BuyNowPrice BuyNowPrice { get; private set; }
@@ -89,7 +89,7 @@ namespace Core.Common.Domain.Auctions
                 {
                     if (img != null)
                     {
-                        _auctionImages[_imgNum++] = img;
+                        _auctionImages[_imgInd++] = img;
                     }
                 }
             }
@@ -195,13 +195,6 @@ namespace Core.Common.Domain.Auctions
             }
         }
 
-        public void ChangeEndDate(AuctionDate newEndDate)
-        {
-            ThrowIfCompletedOrCanceled();
-            ValidateDates(StartDate, newEndDate, false);
-            EndDate = newEndDate;
-        }
-
         public void CancelAuction()
         {
             ThrowIfCompletedOrCanceled();
@@ -234,13 +227,43 @@ namespace Core.Common.Domain.Auctions
 
         public void AddImage(AuctionImage img)
         {
-            if (_imgNum == _auctionImages.Capacity - 1)
+            if (_imgInd == _auctionImages.Capacity - 1)
             {
                 throw new DomainException("Cannot add more auction images");
             }
 
-            _auctionImages[_imgNum] = img;
-            AddEvent(new AuctionImageAdded(img, _imgNum++, AggregateId));
+            _auctionImages[_imgInd] = img;
+            AddEvent(new AuctionImageAdded(img, _imgInd++, AggregateId, Owner));
+        }
+
+        public AuctionImage ReplaceImage(AuctionImage img, int imgNum)
+        {
+            if (imgNum > _auctionImages.Capacity - 1)
+            {
+                throw new DomainException($"Cannot replace {imgNum} image");
+            }
+            if (imgNum > _imgInd)
+            {
+                imgNum = _imgInd;
+            }
+
+            var replaced = _auctionImages[imgNum];
+            _auctionImages[imgNum] = img;
+            AddEvent(new AuctionImageReplaced(imgNum, img));
+            return replaced;
+        }
+
+        public AuctionImage RemoveImage(int imgNum)
+        {
+            if (imgNum > _auctionImages.Capacity - 1 || imgNum > _imgInd)
+            {
+                throw new DomainException($"Cannot remove {imgNum} image");
+            }
+
+            var removed = _auctionImages[imgNum];
+            _auctionImages[imgNum] = null;
+            AddEvent(new AuctionImageRemoved(imgNum));
+            return removed;
         }
 
         public void RemoveBid(Bid bid)
@@ -261,5 +284,48 @@ namespace Core.Common.Domain.Auctions
             }
 
         }
+
+
+
+
+        public void SetBuyNowPrice(BuyNowPrice newPrice)
+        {
+            if (newPrice == 0m && BuyNowOnly)
+            {
+                throw new DomainException("Cannot set buy now price to 0 if auction is buyNowOnly");
+            }
+            BuyNowPrice = newPrice;
+            AddEvent(new AuctionBuyNowPriceChanged(AggregateId, newPrice, Owner));
+        }
+
+        public void SetTags(Tag[] tags)
+        {
+            if (tags.Length < MIN_TAGS)
+            {
+                throw new DomainException("Not enough auction tags");
+            }
+            AddEvent(new AuctionTagsChanged(AggregateId, tags));
+        }
+
+        public void SetEndDate(AuctionDate newEndDate)
+        {
+            ThrowIfCompletedOrCanceled();
+            ValidateDates(StartDate, newEndDate, false);
+            EndDate = newEndDate;
+            AddEvent(new AuctionEndDateChanged(AggregateId, newEndDate));
+        }
+
+        public void SetCategory(Category category)
+        {
+            Category = category;
+            AddEvent(new AuctionCategoryChanged(AggregateId, category));
+        }
+
+        public void SetName(AuctionName name)
+        {
+            Name = name;
+            AddEvent(new AuctionNameChanged(AggregateId, name));
+        }
+
     }
 }

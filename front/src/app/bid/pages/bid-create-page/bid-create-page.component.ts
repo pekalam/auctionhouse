@@ -22,8 +22,8 @@ export class BidCreatePageComponent implements OnInit, OnDestroy {
   });
 
   constructor(private activatedRoute: ActivatedRoute, private bidCommand: BidCommand, private router: Router,
-    private serverMessageService: ServerMessageService) {
-    activatedRoute.data.subscribe((data) => {
+              private serverMessageService: ServerMessageService) {
+    this.activatedRoute.data.subscribe((data) => {
       this.auction = data.auction;
     });
   }
