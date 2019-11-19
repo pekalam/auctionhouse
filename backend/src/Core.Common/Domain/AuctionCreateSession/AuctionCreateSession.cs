@@ -5,6 +5,7 @@ using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Categories;
 using Core.Common.Domain.Products;
 using Core.Common.Domain.Users;
+using Core.Common.Exceptions;
 
 namespace Core.Common.Domain.AuctionCreateSession
 {
@@ -14,13 +15,14 @@ namespace Core.Common.Domain.AuctionCreateSession
         public static int SESSION_MAX_TIME { get; internal set; } = DEFAULT_SESSION_MAX_TIME;
 
         private AuctionImage[] _auctionImages = new AuctionImage[Auction.MAX_IMAGES];
-        private readonly UserIdentity _creator;
         private DateTime _dateCreated;
-        
+
+        public UserIdentity Creator { get; }
+
         //TODO: internal + serialization
         public AuctionCreateSession(UserIdentity creator)
         {
-            _creator = creator;
+            Creator = creator;
             _dateCreated = DateTime.UtcNow;
         }
 
@@ -68,14 +70,14 @@ namespace Core.Common.Domain.AuctionCreateSession
         public Auction CreateAuction(AuctionArgs auctionArgs)
         {
             CheckIsSessionValid();
-            if (_creator == null)
+            if (Creator == null)
             {
                 throw new DomainException("User must be registered to create auction");
             }
             var args = new AuctionArgs.Builder()
                 .From(auctionArgs)
                 .SetImages(_auctionImages)
-                .SetOwner(_creator)
+                .SetOwner(Creator)
                 .Build();
             var auction = new Auction(args);
             return auction;

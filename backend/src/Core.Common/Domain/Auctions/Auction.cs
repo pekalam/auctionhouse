@@ -8,6 +8,7 @@ using Core.Common.Domain.Bids;
 using Core.Common.Domain.Categories;
 using Core.Common.Domain.Products;
 using Core.Common.Domain.Users;
+using Core.Common.Exceptions;
 
 [assembly: InternalsVisibleTo("IntegrationTests")]
 [assembly: InternalsVisibleTo("Core.DomainModelTests")]

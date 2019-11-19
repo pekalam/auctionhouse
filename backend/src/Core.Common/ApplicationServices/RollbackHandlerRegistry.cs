@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Core.Common.Command;
 using Core.Common.Domain;
 using Core.Common.EventBus;
-using Core.Common.Interfaces;
 using Microsoft.Extensions.Logging;
 
 [assembly: InternalsVisibleTo("Infrastructure")]

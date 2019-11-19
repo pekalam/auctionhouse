@@ -1,5 +1,5 @@
-﻿using Core.Common.Domain;
-using Core.Common.Interfaces;
+﻿using Core.Common.Command;
+using Core.Common.Domain;
 
 namespace Core.Common.EventBus
 {

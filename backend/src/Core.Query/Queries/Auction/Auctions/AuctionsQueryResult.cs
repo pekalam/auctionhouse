@@ -2,6 +2,7 @@
 using Core.Common.Domain.Categories;
 using Core.Common.Domain.Products;
 using Core.Common.Domain.Users;
+using Core.Query.ReadModel;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -12,7 +13,7 @@ namespace Core.Query.Queries.Auction.Auctions
         [BsonId]
         public ObjectId Id { get; set; }
         public string AuctionId { get; set; }
-        public UserIdentity Creator { get; set; }
+        public UserIdentityRead Creator { get; set; }
         public string ProductName { get; set; }
         public Condition Condition { get; set; }
         public Category Category { get; set; }

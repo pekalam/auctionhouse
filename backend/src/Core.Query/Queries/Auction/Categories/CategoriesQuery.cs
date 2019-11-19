@@ -1,9 +1,10 @@
-﻿using Core.Common.Domain.Categories;
-using MediatR;
+﻿using Core.Common;
+using Core.Common.Domain.Categories;
+using Core.Common.Query;
 
 namespace Core.Query.Queries.Auction.Categories
 {
-    public class CategoriesQuery : IRequest<CategoryTreeNode>
+    public class CategoriesQuery : IQuery<CategoryTreeNode>
     {
     }
 }

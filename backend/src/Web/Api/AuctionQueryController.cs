@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Core.Common;
 using Core.Common.Domain.Categories;
+using Core.Common.Query;
 using Core.Query.Queries.Auction.AuctionImage;
 using Core.Query.Queries.Auction.Auctions;
 using Core.Query.Queries.Auction.Auctions.ByCategory;
@@ -23,11 +25,10 @@ namespace Web.Api
     [Route("api")]
     public class AuctionQueryController : ControllerBase
     {
-        private readonly IMediator _mediator;
+        private readonly QueryMediator _mediator;
         private readonly IMapper _mapper;
 
-
-        public AuctionQueryController(IMediator mediator, IMapper mapper)
+        public AuctionQueryController(QueryMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
             _mapper = mapper;

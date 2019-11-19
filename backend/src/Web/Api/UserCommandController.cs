@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Command.AddOrReplaceAuctionImage;
+using Core.Common;
+using Core.Common.Command;
 using Core.Common.EventBus;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -15,21 +17,22 @@ namespace Web.Api
     [ApiController]
     public class UserCommandController : Controller
     {
-        private readonly IMediator _mediator;
+        private readonly CommandMediator _mediator;
 
-        public UserCommandController(IMediator mediator)
+        public UserCommandController(CommandMediator mediator)
         {
             _mediator = mediator;
         }
 
         [HttpPost("userAddAuctionImage")]
-        public async Task<ActionResult> UserAddAuctionImage([FromForm] UserAddAuctionImageCommandDto commandDto)
+        public async Task<ActionResult<CommandResponseDto>> UserAddAuctionImage([FromForm] UserAddAuctionImageCommandDto commandDto)
         {
-            var correlationId = new CorrelationId(commandDto.CorrelationId);
             var imgRepresentation = ImageRepresentationUtil.GetImageRepresentationFromFormFile(commandDto.Img);
-            var cmd = new UserAddAuctionImageCommand(Guid.Parse(commandDto.AuctionId), imgRepresentation, correlationId);
-            await _mediator.Send(cmd);
-            return Ok();
+
+            var cmd = new UserAddAuctionImageCommand(Guid.Parse(commandDto.AuctionId), imgRepresentation, commandDto.CorrelationId);
+            var response = (CommandResponseDto)await _mediator.Send(cmd);
+
+            return Ok(response);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Core.Common.Interfaces;
+﻿using Core.Common.Command;
 
 namespace Core.Common.SchedulerService
 {

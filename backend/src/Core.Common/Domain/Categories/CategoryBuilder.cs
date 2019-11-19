@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Core.Common.Exceptions;
 
 namespace Core.Common.Domain.Categories
 {

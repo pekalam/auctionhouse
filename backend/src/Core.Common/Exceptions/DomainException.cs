@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Core.Common.Domain
+namespace Core.Common.Exceptions
 {
     public class DomainException : Exception
     {

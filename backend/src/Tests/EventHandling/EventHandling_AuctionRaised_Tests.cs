@@ -50,15 +50,13 @@ namespace FunctionalTests.EventHandling
 
             services.SetupEventBus(eventHandler.Object);
 
-            var userIdentityService = new Mock<IUserIdentityService>();
-            userIdentityService.Setup(f => f.GetSignedInUserIdentity())
-                .Returns(user);
-
-            var stubHandler = new BidCommandHandler(services.AuctionRepository, userIdentityService.Object,
-                services.EventBus);
+            var stubHandler = new BidCommandHandler(services.AuctionRepository,
+                services.EventBus, Mock.Of<ILogger<BidCommandHandler>>());
 
             services.AuctionRepository.AddAuction(auction);
-            stubHandler.Handle(new BidCommand(auction.AggregateId, 21.0m, new CorrelationId("123")), CancellationToken.None);
+            var cmd = new BidCommand(auction.AggregateId, 21.0m, "123");
+            cmd.SignedInUser = user;
+            stubHandler.Handle(cmd, CancellationToken.None);
 
 
             sem.Wait(TimeSpan.FromSeconds(5));

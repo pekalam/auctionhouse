@@ -2,6 +2,9 @@
 using System.Threading.Tasks;
 using Core.Command.SignIn;
 using Core.Command.SignUp;
+using Core.Common;
+using Core.Common.Command;
+using Core.Common.Domain.Users;
 using Core.Common.EventBus;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -17,32 +20,40 @@ namespace Web.Api
     [Route("api")]
     public class AuthenticationCommandController : Controller
     {
-        private readonly IMediator _mediator;
+        private readonly CommandMediator _mediator;
         private readonly JwtService _jwtService;
 
-        public AuthenticationCommandController(IMediator mediator, JwtService jwtService)
+        public AuthenticationCommandController(CommandMediator mediator, JwtService jwtService)
         {
             _mediator = mediator;
             _jwtService = jwtService;
         }
 
-
         [HttpPost("signup")]
-        public async Task<ActionResult> SignUp([FromBody] SignUpCommandDto signUpCommandDto)
+        public async Task<ActionResult<CommandResponse>> SignUp([FromBody] SignUpCommandDto signUpCommandDto)
         {
             var signUpCommand = new SignUpCommand(signUpCommandDto.Username, signUpCommandDto.Password,
                 new CorrelationId(signUpCommandDto.CorrelationId));
-            await _mediator.Send(signUpCommand);
-            return Ok();
+            var response = (CommandResponseDto) await _mediator.Send(signUpCommand);
+            return Ok(response);
         }
 
         [HttpPost("signin")]
         public async Task<ActionResult<string>> SignIn([FromBody] SignInCommandDto signInCommandDto)
         {
             var signInCommand = new SignInCommand(signInCommandDto.UserName, signInCommandDto.Password);
-            var userIdentity = await _mediator.Send(signInCommand);
-            var token = _jwtService.IssueToken(userIdentity.UserId, userIdentity.UserName);
-            return Ok(token);
+            var response = await _mediator.Send(signInCommand);
+            if (response.Status == Status.COMPLETED)
+            {
+                var userIdentity = (UserIdentity)response.ResponseData;
+                var token = _jwtService.IssueToken(userIdentity.UserId, userIdentity.UserName);
+
+                return Ok(token);
+            }
+            else
+            {
+                return Forbid();
+            }
         }
     }
 }

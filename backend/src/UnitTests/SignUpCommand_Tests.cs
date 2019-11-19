@@ -3,22 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Core.Command.SignUp;
+using Core.Common;
 using Core.Common.ApplicationServices;
 using Core.Common.Auth;
+using Core.Common.Command;
 using Core.Common.Domain;
 using Core.Common.Domain.Users;
 using Core.Common.Domain.Users.Events;
 using Core.Common.EventBus;
-using Core.Common.EventSignalingService;
-using Core.Common.Interfaces;
 using FluentAssertions;
-using Infrastructure.Auth;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 
-namespace Infrastructure.UnitTests
+namespace UnitTests
 {
     public class SignUpCommand_Tests
     {
@@ -56,7 +54,6 @@ namespace Infrastructure.UnitTests
                 .Verifiable();
 
             var commandHandler = new SignUpCommandHandler(mockEventBusService.Object, authRepo.Object,
-                Mock.Of<IEventSignalingService>(),
                 Mock.Of<IUserRepository>(),
                 Mock.Of<ILogger<SignUpCommandHandler>>());
             commandHandler.Handle(command, CancellationToken.None)
@@ -98,7 +95,6 @@ namespace Infrastructure.UnitTests
                 .Verifiable();
 
             var commandHandler = new SignUpCommandHandler(mockEventBusService.Object, stubAuthRepo.Object,
-                Mock.Of<IEventSignalingService>(),
                 Mock.Of<IUserRepository>(),
                 Mock.Of<ILogger<SignUpCommandHandler>>());
 

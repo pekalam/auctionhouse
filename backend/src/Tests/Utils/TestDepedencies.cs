@@ -47,9 +47,9 @@ namespace FunctionalTests.Utils
 		public IAuctionCreateSessionService GetAuctionCreateSessionService(AuctionCreateSession session)
 		{
 			var service = new Mock<IAuctionCreateSessionService>();
-			service.Setup(f => f.GetSessionForSignedInUser())
+			service.Setup(f => f.GetExistingSession())
 				.Returns(session);
-			service.Setup(f => f.RemoveSessionForSignedInUser());
+			service.Setup(f => f.RemoveSession());
 			return service.Object;
 		}
 

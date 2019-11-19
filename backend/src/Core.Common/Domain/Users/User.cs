@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Users.Events;
+using Core.Common.Exceptions;
 
 namespace Core.Common.Domain.Users
 {

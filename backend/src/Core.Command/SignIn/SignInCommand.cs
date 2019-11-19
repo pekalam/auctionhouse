@@ -1,10 +1,11 @@
-﻿using Core.Common.Domain.Users;
-using Core.Common.Interfaces;
+﻿using Core.Common;
+using Core.Common.Command;
+using Core.Common.Domain.Users;
 using MediatR;
 
 namespace Core.Command.SignIn
 {
-    public class SignInCommand : IRequest<UserIdentity>, ICommand
+    public class SignInCommand : ICommand
     {
         public string UserName { get; }
         public string Password { get; }

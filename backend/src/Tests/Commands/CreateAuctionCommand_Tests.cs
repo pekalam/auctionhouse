@@ -42,6 +42,7 @@ namespace FunctionalTests.Commands
         {
             "Fake category", "Fake subcategory", "Fake subsubcategory 0"
         };
+        private User user;
 
         public CreateAuctionCommand_Tests()
         {
@@ -61,30 +62,24 @@ namespace FunctionalTests.Commands
 
         private void SetUpCommandHandler()
         {
-            var user = new User();
+            user = new User();
             user.Register("test");
             user.MarkPendingEventsAsHandled();
-
-
-            var userIdentityService = new Mock<IUserIdentityService>();
-            userIdentityService.Setup(service => service.GetSignedInUserIdentity())
-                .Returns(user.UserIdentity);
 
             var userRepository = new Mock<IUserRepository>();
             userRepository.Setup(f => f.FindUser(It.IsAny<UserIdentity>()))
                 .Returns(user);
 
             var auctionCreateSessionService = new Mock<IAuctionCreateSessionService>();
-            auctionCreateSessionService.Setup(f => f.GetSessionForSignedInUser())
+            auctionCreateSessionService.Setup(f => f.GetExistingSession())
                 .Returns(user.UserIdentity.GetAuctionCreateSession());
-            auctionCreateSessionService.Setup(f => f.RemoveSessionForSignedInUser());
+            auctionCreateSessionService.Setup(f => f.RemoveSession());
 
             var eventBusService = new Mock<EventBusService>(Mock.Of<IEventBus>(), Mock.Of<IAppEventBuilder>());
 
             var handlerDepedencies = new CreateAuctionCommandHandlerDepedencies()
             {
                 auctionRepository = testDepedencies.AuctionRepository,
-                userIdService = userIdentityService.Object,
                 auctionSchedulerService = new TestAuctionSchedulerService(testDepedencies.TimeTaskClient,
                     testDepedencies.TimetaskServiceSettings),
                 eventBusService = eventBusService.Object,
@@ -117,6 +112,7 @@ namespace FunctionalTests.Commands
                 new Product("name", "desc", Condition.New),
                 startDate, endDate,
                 categories, new CorrelationId(""), new []{"tag1"}, "test name");
+            command.SignedInUser = user.UserIdentity;
 
             testCommandHandler.Handle(command, CancellationToken.None)
                 .Wait();
@@ -137,6 +133,8 @@ namespace FunctionalTests.Commands
             var command = new CreateAuctionCommand(Decimal.One,
                 new Product("name", "desc", Condition.New),
                 startDate, endDate, categories, new CorrelationId(""), new []{"tag1"}, "test name");
+            command.SignedInUser = user.UserIdentity;
+
 
             Assert.Throws<Exception>(() =>
             {
@@ -158,6 +156,8 @@ namespace FunctionalTests.Commands
                 new Product("name", "desc", Condition.New),
                 startDate,
                 endDate, categories, new CorrelationId(""), new []{"tag1"}, "test name");
+            command.SignedInUser = user.UserIdentity;
+
 
             Assert.Throws<Exception>(() =>
             {

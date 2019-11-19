@@ -1,4 +1,5 @@
 ﻿using System;
+using Core.Common.Exceptions;
 
 namespace Core.Common.Domain.Auctions
 {

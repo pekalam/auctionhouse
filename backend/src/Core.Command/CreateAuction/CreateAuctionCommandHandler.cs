@@ -2,15 +2,17 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Core.Command.Exceptions;
-using Core.Command.Exceptions.Common;
+using Core.Common;
 using Core.Common.ApplicationServices;
 using Core.Common.Auth;
+using Core.Common.Command;
 using Core.Common.Domain;
 using Core.Common.Domain.AuctionCreateSession;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Categories;
 using Core.Common.Domain.Users;
+using Core.Common.Exceptions;
+using Core.Common.Exceptions.Command;
 using Core.Common.SchedulerService;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -20,7 +22,6 @@ namespace Core.Command.CreateAuction
     public class CreateAuctionCommandHandlerDepedencies
     {
         public IAuctionRepository auctionRepository;
-        public IUserIdentityService userIdService;
         public IAuctionSchedulerService auctionSchedulerService;
         public EventBusService eventBusService;
         public ILogger<CreateAuctionCommandHandler> logger;
@@ -29,10 +30,9 @@ namespace Core.Command.CreateAuction
         public IAuctionCreateSessionService auctionCreateSessionService;
         public IAuctionImageRepository auctionImageRepository;
 
-        public CreateAuctionCommandHandlerDepedencies(IAuctionRepository auctionRepository, IUserIdentityService userIdService, IAuctionSchedulerService auctionSchedulerService, EventBusService eventBusService, ILogger<CreateAuctionCommandHandler> logger, CategoryBuilder categoryBuilder, IUserRepository userRepository, IAuctionCreateSessionService auctionCreateSessionService, IAuctionImageRepository auctionImageRepository)
+        public CreateAuctionCommandHandlerDepedencies(IAuctionRepository auctionRepository, IAuctionSchedulerService auctionSchedulerService, EventBusService eventBusService, ILogger<CreateAuctionCommandHandler> logger, CategoryBuilder categoryBuilder, IUserRepository userRepository, IAuctionCreateSessionService auctionCreateSessionService, IAuctionImageRepository auctionImageRepository)
         {
             this.auctionRepository = auctionRepository;
-            this.userIdService = userIdService;
             this.auctionSchedulerService = auctionSchedulerService;
             this.eventBusService = eventBusService;
             this.logger = logger;
@@ -48,11 +48,11 @@ namespace Core.Command.CreateAuction
         }
     }
 
-    public class CreateAuctionCommandHandler : IRequestHandler<CreateAuctionCommand>
+    public class CreateAuctionCommandHandler : CommandHandlerBase<CreateAuctionCommand>
     {
         private readonly CreateAuctionCommandHandlerDepedencies _deps;
 
-        public CreateAuctionCommandHandler(CreateAuctionCommandHandlerDepedencies depedencies)
+        public CreateAuctionCommandHandler(CreateAuctionCommandHandlerDepedencies depedencies) : base(depedencies.logger)
         {
             _deps = depedencies;
             SetupRollbackHandler();
@@ -180,18 +180,18 @@ namespace Core.Command.CreateAuction
             }
         }
 
-        private User GetSignedInUser()
+        private User GetSignedInUser(CreateAuctionCommand cmd)
         {
-            var userIdentity = _deps.userIdService.GetSignedInUserIdentity();
-            if (userIdentity == null)
-            {
-                throw new UserNotSignedInException("User not signed in");
-            }
+//            var userIdentity = _deps.userIdService.GetSignedInUserIdentity();
+//            if (userIdentity == null)
+//            {
+//                throw new UserNotSignedInException("User not signed in");
+//            }
 
-            var user = _deps.userRepository.FindUser(userIdentity);
+            var user = _deps.userRepository.FindUser(cmd.SignedInUser);
             if (user == null)
             {
-                throw new DomainException($"Cannot find user {userIdentity.UserName}");
+                throw new DomainException($"Cannot find user {cmd.SignedInUser.UserName}");
             }
 
             return user;
@@ -216,14 +216,14 @@ namespace Core.Command.CreateAuction
             return builder.Build();
         }
 
-        public virtual Task<Unit> Handle(CreateAuctionCommand request, CancellationToken cancellationToken)
+        protected override Task<CommandResponse> HandleCommand(CreateAuctionCommand request, CancellationToken cancellationToken)
         {
-            var user = GetSignedInUser();
-            var auctionCreateSession = _deps.auctionCreateSessionService.GetSessionForSignedInUser();
+            var user = GetSignedInUser(request);
+            var auctionCreateSession = _deps.auctionCreateSessionService.GetExistingSession();
 
             var auction = auctionCreateSession.CreateAuction(GetAuctionArgs(request, user.UserIdentity));
 
-            _deps.auctionCreateSessionService.RemoveSessionForSignedInUser();
+            _deps.auctionCreateSessionService.RemoveSession();
 
             var addAuctionSequence = new AtomicSequence<Auction>()
                 .AddTask(AddToRepository, AddToRepository_Rollback)
@@ -233,7 +233,8 @@ namespace Core.Command.CreateAuction
 
             addAuctionSequence.ExecuteSequence(auction);
 
-            return Task.FromResult(Unit.Value);
+            var response = new CommandResponse(request.CorrelationId, Status.PENDING);
+            return Task.FromResult(response);
         }
     }
 }

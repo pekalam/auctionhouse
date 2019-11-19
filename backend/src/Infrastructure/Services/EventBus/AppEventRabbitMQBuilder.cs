@@ -1,6 +1,8 @@
-﻿using Core.Common.Domain;
+﻿using Core.Command;
+using Core.Common;
+using Core.Common.Command;
+using Core.Common.Domain;
 using Core.Common.EventBus;
-using Core.Common.Interfaces;
 
 namespace Infrastructure.Services.EventBus
 {

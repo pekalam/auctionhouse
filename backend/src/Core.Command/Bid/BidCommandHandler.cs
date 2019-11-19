@@ -3,46 +3,44 @@ using System.Collections.Generic;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.Command;
 using Core.Command.Bid;
-using Core.Command.Exceptions;
-using Core.Command.Exceptions.Common;
+using Core.Common;
 using Core.Common.ApplicationServices;
 using Core.Common.Auth;
+using Core.Common.Command;
 using Core.Common.Domain.Auctions;
+using Core.Common.Exceptions;
+using Core.Common.Exceptions.Command;
+using Microsoft.Extensions.Logging;
 
 namespace Command.Bid
 {
-    public class BidCommandHandler : IRequestHandler<BidCommand>
+    public class BidCommandHandler : CommandHandlerBase<BidCommand>
     {
         private readonly IAuctionRepository _auctionRepository;
-        private readonly IUserIdentityService _userIdService;
         private readonly EventBusService _eventBusService;
+        private readonly ILogger<BidCommandHandler> _logger;
 
-        public BidCommandHandler(IAuctionRepository auctionRepository, IUserIdentityService userIdService,
-            EventBusService eventBusService)
+        public BidCommandHandler(IAuctionRepository auctionRepository,
+            EventBusService eventBusService, ILogger<BidCommandHandler> logger) : base(logger)
         {
             _auctionRepository = auctionRepository;
-            _userIdService = userIdService;
             _eventBusService = eventBusService;
+            _logger = logger;
             RollbackHandlerRegistry.RegisterCommandRollbackHandler(nameof(BidCommand),
                 provider => new BidRollbackHandler(provider));
         }
 
-        public virtual Task<Unit> Handle(BidCommand request, CancellationToken cancellationToken)
+        protected override Task<CommandResponse> HandleCommand(BidCommand request, CancellationToken cancellationToken)
         {
-            var signedInUser = _userIdService.GetSignedInUserIdentity();
-            if (signedInUser == null)
-            {
-                throw new UserNotSignedInException("User not signed in");
-            }
-
             var auction = _auctionRepository.FindAuction(request.AuctionId);
             if (auction == null)
             {
                 throw new CommandException("Invalid auction id");
             }
 
-            var bid = new Core.Common.Domain.Bids.Bid(auction.AggregateId, signedInUser, request.Price,
+            var bid = new Core.Common.Domain.Bids.Bid(auction.AggregateId, request.SignedInUser, request.Price,
                 DateTime.UtcNow);
 
             auction.Raise(bid);
@@ -60,9 +58,9 @@ namespace Command.Bid
             {
                 throw new CommandException("Invalid auction versions");
             }
-            
 
-            return Task.FromResult(Unit.Value);
+            var response = new CommandResponse(request.CorrelationId, Status.PENDING);
+            return Task.FromResult(response);
         }
     }
 }

@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Core.Command\Core.Command.csproj" />
     <ProjectReference Include="..\Core.Common\Core.Common.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>

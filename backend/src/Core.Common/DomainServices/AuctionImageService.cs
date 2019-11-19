@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Core.Common.Domain;
 using Core.Common.Domain.Auctions;
+using Core.Common.Exceptions;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Common.DomainServices

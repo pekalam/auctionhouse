@@ -1,4 +1,6 @@
-﻿namespace Core.Common.Domain.Products
+﻿using Core.Common.Exceptions;
+
+namespace Core.Common.Domain.Products
 {
     public enum Condition
     {

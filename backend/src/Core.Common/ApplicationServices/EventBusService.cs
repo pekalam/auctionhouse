@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using Core.Common.Command;
 using Core.Common.Domain;
 using Core.Common.EventBus;
-using Core.Common.Interfaces;
 
 namespace Core.Common.ApplicationServices
 {

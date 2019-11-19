@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Core.Common;
+using Core.Common.Query;
 using Core.Query.Queries.User.UserAuctions;
 using Core.Query.Queries.User.UserData;
 using MediatR;
@@ -17,9 +19,9 @@ namespace Web.Api
     [Authorize]
     public class UserQueryController : Controller
     {
-        private readonly IMediator _mediator;
+        private readonly QueryMediator _mediator;
 
-        public UserQueryController(IMediator mediator)
+        public UserQueryController(QueryMediator mediator)
         {
             _mediator = mediator;
         }

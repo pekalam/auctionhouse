@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Core.Common.Domain;
 using Core.Common.Domain.Categories;
+using Core.Common.Exceptions;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;

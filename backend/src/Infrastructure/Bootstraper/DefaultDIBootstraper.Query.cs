@@ -8,6 +8,7 @@ using Core.Common.Domain;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Categories;
 using Core.Common.EventBus;
+using Core.Common.Query;
 using Core.Query.Handlers;
 using Core.Query.Handlers.AuctionUpdateHandlers;
 using Core.Query.ReadModel;
@@ -69,16 +70,21 @@ namespace Infrastructure.Bootstraper
             {
                 serviceCollection.AddSingleton<ReadModelDbContext>();
 
-                ConfigureSettings(serviceCollection, mongoDbSettings, categoryNameServiceSettings, imageDbSettings, rabbitMqSettings);
+                ConfigureSettings(serviceCollection, mongoDbSettings, categoryNameServiceSettings, imageDbSettings,
+                    rabbitMqSettings);
                 //ConfigureCategoryService(serviceCollection);
                 //ConfigureImageServices(serviceCollection);
                 ConfigureEventBus(serviceCollection);
                 ConfigureEventHandlers(serviceCollection);
 
-                serviceCollection.AddMediatR(Assembly.Load("Core.Command"), Assembly.Load("Core.Query"));
+
+                serviceCollection.AddMediatR(new Assembly[]{ Assembly.Load("Core.Command"), Assembly.Load("Core.Query") },
+                    configuration => { configuration.AsScoped(); });
 
                 serviceCollection.AddSingleton<IImplProvider, DefaultDIImplProvider>(provider =>
                     new DefaultDIImplProvider(provider));
+
+                serviceCollection.AddScoped<QueryMediator>();
             }
 
             public static void Start(IServiceProvider serviceProvider)

@@ -1,4 +1,6 @@
-﻿namespace Core.Common.Domain.Auctions
+﻿using Core.Common.Exceptions;
+
+namespace Core.Common.Domain.Auctions
 {
     public class Tag
     {

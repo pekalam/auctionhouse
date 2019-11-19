@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using Core.Command;
 using Core.Common;
 using Core.Common.ApplicationServices;
+using Core.Common.Command;
 using Core.Common.Domain;
 using Core.Common.EventBus;
-using Core.Common.Interfaces;
 using FluentAssertions;
 using Infrastructure;
 using Infrastructure.Services.EventBus;

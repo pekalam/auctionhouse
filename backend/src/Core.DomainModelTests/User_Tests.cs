@@ -6,6 +6,7 @@ using System.Threading;
 using Core.Common.Domain;
 using Core.Common.Domain.Users;
 using Core.Common.Domain.Users.Events;
+using Core.Common.Exceptions;
 using FluentAssertions;
 using NUnit.Framework;
 

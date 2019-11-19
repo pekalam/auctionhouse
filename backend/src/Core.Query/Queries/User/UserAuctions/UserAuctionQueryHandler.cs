@@ -2,44 +2,31 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.Common;
 using Core.Common.Auth;
 using Core.Common.Domain.Users;
+using Core.Common.Query;
 using Core.Query.ReadModel;
-using MediatR;
 using MongoDB.Driver;
 
 namespace Core.Query.Queries.User.UserAuctions
 {
-    public class UserAuctionQueryHandler : IRequestHandler<UserAuctionsQuery, UserAuctionsQueryResult>
+    public class UserAuctionQueryHandler : QueryHandlerBase<UserAuctionsQuery, UserAuctionsQueryResult>
     {
         private readonly ReadModelDbContext _dbContext;
-        private readonly IUserIdentityService _userIdentityService;
         public const int PageSize = 10;
 
-        public UserAuctionQueryHandler(ReadModelDbContext dbContext, IUserIdentityService userIdentityService)
+        public UserAuctionQueryHandler(ReadModelDbContext dbContext)
         {
             _dbContext = dbContext;
-            _userIdentityService = userIdentityService;
         }
 
-        private UserIdentity GetSignedInUserIdentity()
+        protected async override Task<UserAuctionsQueryResult> HandleQuery(UserAuctionsQuery request, CancellationToken cancellationToken)
         {
-            var user = _userIdentityService.GetSignedInUserIdentity();
-            if (user == null)
-            {
-                throw new Exception("Not signed in");
-            }
-            return user;
-        }
-
-        public async Task<UserAuctionsQueryResult> Handle(UserAuctionsQuery request, CancellationToken cancellationToken)
-        {
-            var user = GetSignedInUserIdentity();
-
-            var userReadModelFilter = Builders<UserRead>.Filter.Eq(field => field.UserIdentity.UserId, user.UserId.ToString());
+            var userReadModelFilter = Builders<UserRead>.Filter.Eq(field => field.UserIdentity.UserId, request.SignedInUser.UserId.ToString());
             var idsToJoin = await _dbContext.UsersReadModel
                 .Find(userReadModelFilter)
-                .Project(model => new { AuctionsIds = model.CreatedAuctions.Select(s => s).ToArray()})
+                .Project(model => new { AuctionsIds = model.CreatedAuctions.Select(s => s).ToArray() })
                 .FirstOrDefaultAsync();
 
             if (idsToJoin != null)

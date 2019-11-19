@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Core.Command.Exceptions;
+using Core.Common;
 using Core.Common.ApplicationServices;
 using Core.Common.Auth;
+using Core.Common.Command;
 using Core.Common.Domain.Users;
 using Core.Common.EventSignalingService;
+using Core.Common.Exceptions.Command;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -22,24 +24,22 @@ namespace Core.Command.SignUp
         }
     }
 
-    public class SignUpCommandHandler : IRequestHandler<SignUpCommand>
+    public class SignUpCommandHandler : CommandHandlerBase<SignUpCommand>
     {
         private readonly EventBusService _eventBusService;
         private readonly IUserAuthenticationDataRepository _userAuthenticationDataRepository;
-        private readonly IEventSignalingService _eventSignalingService;
         private readonly IUserRepository _userRepository;
         private readonly ILogger<SignUpCommandHandler> _logger;
 
-        public SignUpCommandHandler(EventBusService eventBusService, IUserAuthenticationDataRepository userAuthenticationDataRepository, IEventSignalingService eventSignalingService, IUserRepository userRepository, ILogger<SignUpCommandHandler> logger)
+        public SignUpCommandHandler(EventBusService eventBusService, IUserAuthenticationDataRepository userAuthenticationDataRepository, IUserRepository userRepository, ILogger<SignUpCommandHandler> logger) : base(logger)
         {
             _eventBusService = eventBusService;
             _userAuthenticationDataRepository = userAuthenticationDataRepository;
-            _eventSignalingService = eventSignalingService;
             _userRepository = userRepository;
             _logger = logger;
         }
 
-        public Task<Unit> Handle(SignUpCommand request, CancellationToken cancellationToken)
+        protected override Task<CommandResponse> HandleCommand(SignUpCommand request, CancellationToken cancellationToken)
         {
             var existing = _userAuthenticationDataRepository.FindUserAuth(request.UserName);
             if (existing != null)
@@ -61,7 +61,9 @@ namespace Core.Command.SignUp
             _userRepository.AddUser(user);
             _eventBusService.Publish(user.PendingEvents, request.CorrelationId, request);
             user.MarkPendingEventsAsHandled();
-            return Task.FromResult(Unit.Value);
+
+            var response = new CommandResponse(request.CorrelationId, Status.COMPLETED);
+            return Task.FromResult(response);
         }
     }
 }

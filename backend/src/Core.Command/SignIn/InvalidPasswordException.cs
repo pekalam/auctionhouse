@@ -1,5 +1,5 @@
 ﻿using System;
-using Core.Command.Exceptions;
+using Core.Common.Exceptions.Command;
 
 namespace Core.Command.SignIn
 {

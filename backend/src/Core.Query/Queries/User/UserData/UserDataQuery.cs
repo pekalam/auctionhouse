@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Core.Common;
+using Core.Common.Attributes;
+using Core.Common.Query;
 using MediatR;
 
 namespace Core.Query.Queries.User.UserData
 {
-    public class UserDataQuery : IRequest<UserDataQueryResult>
+    [AuthorizationRequired]
+    public class UserDataQuery : IQuery<UserDataQueryResult>
     {
     }
 }

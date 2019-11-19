@@ -8,7 +8,7 @@ using MongoDB.Driver;
 
 namespace Core.Query.Queries.Auction.Auctions.ByCategory
 {
-    public class AuctionsByCategoryQueryHandler : AuctionsQueryHandlerBase, IRequestHandler<AuctionsByCategoryQuery, IEnumerable<AuctionsQueryResult>>
+    public class AuctionsByCategoryQueryHandler : AuctionsQueryHandlerBase<AuctionsByCategoryQuery>
     {
         private readonly ReadModelDbContext _dbContext;
         private readonly CategoryBuilder _categoryBuilder;
@@ -19,8 +19,7 @@ namespace Core.Query.Queries.Auction.Auctions.ByCategory
             _categoryBuilder = categoryBuilder;
         }
 
-        public async Task<IEnumerable<AuctionsQueryResult>> Handle(AuctionsByCategoryQuery request,
-            CancellationToken cancellationToken)
+        protected async override Task<IEnumerable<AuctionsQueryResult>> HandleQuery(AuctionsByCategoryQuery request, CancellationToken cancellationToken)
         {
             var mapper = MapperConfigHolder.Configuration.CreateMapper();
             var category = _categoryBuilder.FromCategoryNamesList(request.CategoryNames);

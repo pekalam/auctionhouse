@@ -98,9 +98,7 @@ namespace FunctionalTests.CommandRollback
             {
                 "Fake category", "Fake subcategory", "Fake subsubcategory 0"
             };
-            var userIdService = new Mock<IUserIdentityService>();
-            userIdService.Setup(f => f.GetSignedInUserIdentity())
-                .Returns(user.UserIdentity);
+
             var userRepository = new Mock<IUserRepository>();
             userRepository.Setup(f => f.FindUser(It.IsAny<UserIdentity>()))
                 .Returns(user);
@@ -108,6 +106,7 @@ namespace FunctionalTests.CommandRollback
             var command = new CreateAuctionCommand(20.0m, product, DateTime.UtcNow.AddMinutes(10),
                 DateTime.UtcNow.AddDays(12),
                 categories, correlationId, new[] {"tag1"}, "test name");
+            command.SignedInUser = user.UserIdentity;
 
             IAppEvent<AuctionCreated> publishedEvent = null;
 
@@ -147,7 +146,6 @@ namespace FunctionalTests.CommandRollback
             var handlerDepedencies = new CreateAuctionCommandHandlerDepedencies()
             {
                 auctionRepository = services.AuctionRepository,
-                userIdService = userIdService.Object,
                 auctionSchedulerService = services.SchedulerService,
                 eventBusService = services.EventBus,
                 logger = Mock.Of<ILogger<CreateAuctionCommandHandler>>(),

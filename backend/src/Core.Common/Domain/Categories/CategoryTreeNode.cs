@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Core.Common.Exceptions;
 
 [assembly: InternalsVisibleTo("Core.Query")]
 namespace Core.Common.Domain.Categories

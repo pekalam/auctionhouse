@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Common.Domain.Users;
+using Core.Common.Exceptions;
 
 namespace Core.Common.Domain.Bids
 {

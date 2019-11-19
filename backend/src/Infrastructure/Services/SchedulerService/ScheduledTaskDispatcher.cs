@@ -1,6 +1,8 @@
 ﻿using System;
+using Core.Command;
 using Core.Command.EndAuction;
-using Core.Common.Interfaces;
+using Core.Common;
+using Core.Common.Command;
 using Core.Common.SchedulerService;
 
 namespace Infrastructure.Services.SchedulerService

@@ -1,4 +1,6 @@
-﻿namespace Core.Query.Queries.Auction.Auctions
+﻿using Core.Common;
+
+namespace Core.Query.Queries.Auction.Auctions
 {
     public class AuctionsQueryBase
     {

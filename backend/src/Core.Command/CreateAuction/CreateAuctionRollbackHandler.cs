@@ -1,10 +1,10 @@
 ﻿using System;
 using Core.Common;
+using Core.Common.Command;
 using Core.Common.Domain;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Auctions.Events;
 using Core.Common.EventBus;
-using Core.Common.Interfaces;
 
 namespace Core.Command.CreateAuction
 {

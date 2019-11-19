@@ -1,10 +1,11 @@
 ﻿using System;
-using Core.Common.Interfaces;
+using Core.Common;
+using Core.Common.Command;
 using MediatR;
 
 namespace Core.Command.EndAuction
 {
-    public class EndAuctionCommand : IRequest, ICommand
+    public class EndAuctionCommand : ICommand
     {
         public Guid AuctionId { get; }
 

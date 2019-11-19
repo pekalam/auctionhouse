@@ -7,12 +7,10 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="EasyNetQ" Version="3.6.0" />
-    <PackageReference Include="MediatR" Version="7.0.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.9.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core.Command\Core.Command.csproj" />
     <ProjectReference Include="..\Core.Common\Core.Common.csproj" />
   </ItemGroup>
 

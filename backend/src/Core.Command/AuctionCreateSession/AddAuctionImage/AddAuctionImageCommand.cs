@@ -1,11 +1,12 @@
-﻿using Core.Common.Domain.Auctions;
+﻿using Core.Common.Attributes;
+using Core.Common.Command;
+using Core.Common.Domain.Auctions;
 using Core.Common.EventBus;
-using Core.Common.Interfaces;
-using MediatR;
 
 namespace Core.Command.AuctionCreateSession.AuctionCreateSession_AddAuctionImage
 {
-    public class AddAuctionImageCommand : IRequest, ICommand
+    [AuthorizationRequired]
+    public class AddAuctionImageCommand : ICommand
     {
         public AuctionImageRepresentation Img { get; }
         public CorrelationId CorrelationId { get; }

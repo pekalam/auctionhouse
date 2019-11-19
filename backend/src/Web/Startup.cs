@@ -88,7 +88,6 @@ namespace Web
             {
                 CategoriesFilePath = "./_data/categories.xml"
             }, imageDbSettings, rabbitMqSettings);
-
             services.AddSignalR();
             services.AddSingleton<IUserIdProvider, UserIdProvider>();
             services.AddDistributedMemoryCache();

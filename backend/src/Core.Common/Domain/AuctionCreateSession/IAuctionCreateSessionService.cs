@@ -2,9 +2,10 @@
 {
     public interface IAuctionCreateSessionService
     {
-        AuctionCreateSession GetSessionForSignedInUser();
-        void SaveSessionForSignedInUser(AuctionCreateSession session);
-        void RemoveSessionForSignedInUser();
+        AuctionCreateSession GetExistingSession();
+        AuctionCreateSession StartAndSaveNewSession();
+        void SaveSession(AuctionCreateSession session);
+        void RemoveSession();
         bool SessionExists();
     }
 }

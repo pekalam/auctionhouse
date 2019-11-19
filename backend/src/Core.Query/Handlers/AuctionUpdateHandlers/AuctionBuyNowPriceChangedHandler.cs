@@ -16,8 +16,11 @@ namespace Core.Query.Handlers.AuctionUpdateHandlers
         private readonly IEventSignalingService _eventSignalingService;
         private readonly ILogger<AuctionBuyNowPriceChangedHandler> _logger;
 
-        public AuctionBuyNowPriceChangedHandler(IAppEventBuilder appEventBuilder) : base(appEventBuilder)
+        public AuctionBuyNowPriceChangedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext, IEventSignalingService eventSignalingService, ILogger<AuctionBuyNowPriceChangedHandler> logger) : base(appEventBuilder)
         {
+            _dbContext = dbContext;
+            _eventSignalingService = eventSignalingService;
+            _logger = logger;
         }
 
         public override void Consume(IAppEvent<AuctionBuyNowPriceChanged> appEvent)

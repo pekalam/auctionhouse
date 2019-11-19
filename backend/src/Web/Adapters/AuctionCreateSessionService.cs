@@ -79,7 +79,7 @@ namespace Web.Adapters
             return userIdnIdentity;
         }
 
-        public AuctionCreateSession GetSessionForSignedInUser()
+        public AuctionCreateSession GetExistingSession()
         {
             var user = GetSignedInUserIdentity();
             var httpContext = _httpContextAccessor.HttpContext;
@@ -95,14 +95,22 @@ namespace Web.Adapters
             }
         }
 
-        public void SaveSessionForSignedInUser(AuctionCreateSession session)
+        public AuctionCreateSession StartAndSaveNewSession()
+        {
+            var user = GetSignedInUserIdentity();
+            var newSession = user.GetAuctionCreateSession();
+            SaveSession(newSession);
+            return newSession;
+        }
+
+        public void SaveSession(AuctionCreateSession session)
         {
             var user = GetSignedInUserIdentity();
             var httpContext = _httpContextAccessor.HttpContext;
             httpContext.Session.Set(GetSessionKey(user), SerializeSession(session));
         }
 
-        public void RemoveSessionForSignedInUser()
+        public void RemoveSession()
         {
             var user = GetSignedInUserIdentity();
             _httpContextAccessor.HttpContext.Session.Remove(GetSessionKey(user));

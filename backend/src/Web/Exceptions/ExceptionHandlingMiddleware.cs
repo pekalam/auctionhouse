@@ -1,11 +1,12 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading.Tasks;
-using Core.Command.Exceptions;
-using Core.Command.Exceptions.Common;
 using Core.Command.SignIn;
 using Core.Command.SignUp;
-using Core.Common.Domain;
 using Core.Common.Domain.Users;
+using Core.Common.Exceptions;
+using Core.Common.Exceptions.Command;
+using Core.Common.Exceptions.Query;
 using Microsoft.AspNetCore.Http;
 
 namespace Web.Exceptions
@@ -33,7 +34,15 @@ namespace Web.Exceptions
             {
                 HandleException(ex, context);
             }
+            catch (QueryException ex)
+            {
+                HandleException(ex, context);
+            }
             catch (DomainException ex)
+            {
+                HandleException(ex, context);
+            }
+            catch (Exception ex)
             {
                 HandleException(ex, context);
             }
@@ -58,9 +67,6 @@ namespace Web.Exceptions
                 case InvalidPasswordException e:
                     apiException = new ApiException(HttpStatusCode.Unauthorized, "Invalid credentials", e);
                     break;
-                case UserNotSignedInException e:
-                    apiException = new ApiException(HttpStatusCode.Forbidden, "user not signed in", e);
-                    break;
                 default:
                     apiException = new ApiException(HttpStatusCode.InternalServerError, "error", ex);
                     break;
@@ -83,5 +89,27 @@ namespace Web.Exceptions
             HandleException(apiException, context);
         }
 
+        private void HandleException(QueryException ex, HttpContext context)
+        {
+            ApiException apiException;
+
+            apiException = new ApiException(HttpStatusCode.InternalServerError, "Server error");
+            HandleException(apiException, context);
+        }
+
+        private void HandleException(Exception ex, HttpContext context)
+        {
+            ApiException apiException;
+            switch (ex)
+            {
+                case NotSignedInException e:
+                    apiException = new ApiException(HttpStatusCode.Forbidden, "Not signed in", e);
+                    break;
+                default:
+                    apiException = new ApiException(HttpStatusCode.InternalServerError, "Server error");
+                    break;
+            }
+            HandleException(apiException, context);
+        }
     }
 }

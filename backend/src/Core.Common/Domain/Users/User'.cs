@@ -1,4 +1,5 @@
 ﻿using Core.Common.Domain.Users.Events;
+using Core.Common.Exceptions;
 
 namespace Core.Common.Domain.Users
 {

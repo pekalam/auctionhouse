@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
+using Core.Common;
 using Core.Common.Domain.Products;
+using Core.Common.Query;
 using Core.Query.ReadModel;
 using MongoDB.Driver;
 
 namespace Core.Query.Queries.Auction.Auctions
 {
-    public class AuctionsQueryHandlerBase
+    public abstract class AuctionsQueryHandlerBase<T> : QueryHandlerBase<T, IEnumerable<AuctionsQueryResult>> where T : IQuery<IEnumerable<AuctionsQueryResult>>
     {
         public const int PageSize = 10;
 

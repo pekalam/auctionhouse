@@ -1,10 +1,11 @@
-﻿using Core.Common.EventBus;
-using Core.Common.Interfaces;
+﻿using Core.Common;
+using Core.Common.Command;
+using Core.Common.EventBus;
 using MediatR;
 
 namespace Core.Command.SignUp
 {
-    public class SignUpCommand : ICommand, IRequest
+    public class SignUpCommand : ICommand
     {
         public string UserName { get; }
         public string Password { get; }

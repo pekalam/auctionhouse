@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Core.Command.Exceptions
+namespace Core.Common.Exceptions.Command
 {
     public class CommandException : Exception
     {

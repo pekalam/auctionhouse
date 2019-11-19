@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Core.Common.Domain;
 using Core.Common.Domain.Auctions;
+using Core.Common.Exceptions;
 using FluentAssertions;
 using NUnit.Framework;
 

@@ -71,9 +71,6 @@ namespace FunctionalTests.EventHandling
         private void SetUpCommandHandler()
         {
             var services = TestDepedencies.Instance.Value;
-            var userIdService = new Mock<IUserIdentityService>();
-            userIdService.Setup(f => f.GetSignedInUserIdentity())
-                .Returns(user.UserIdentity);
 
             var userRepository = new Mock<IUserRepository>();
             userRepository.Setup(f => f.FindUser(It.IsAny<UserIdentity>()))
@@ -92,7 +89,6 @@ namespace FunctionalTests.EventHandling
             var handlerDepedencies = new CreateAuctionCommandHandlerDepedencies()
             {
                 auctionRepository = services.AuctionRepository,
-                userIdService = userIdService.Object,
                 auctionSchedulerService = services.SchedulerService,
                 eventBusService = services.EventBus,
                 logger = Mock.Of<ILogger<CreateAuctionCommandHandler>>(),
@@ -110,9 +106,11 @@ namespace FunctionalTests.EventHandling
             {
                 "Fake category", "Fake subcategory", "Fake subsubcategory 0"
             };
-            return new CreateAuctionCommand(20.0m, product, DateTime.UtcNow.AddMinutes(20),
+            var cmd = new CreateAuctionCommand(20.0m, product, DateTime.UtcNow.AddMinutes(20),
                 DateTime.UtcNow.AddDays(12),
                 categories, correlationId, new[] {"tag1"}, "test name");
+            cmd.SignedInUser = user.UserIdentity;
+            return cmd;
         }
 
         private bool VerifyEvent(AuctionCreated auctionCreated, CreateAuctionCommand command)

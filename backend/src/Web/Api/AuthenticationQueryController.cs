@@ -1,4 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Core.Common;
+using Core.Common.Query;
 using Core.Query.Queries.Auth.CheckUsername;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -11,12 +13,13 @@ namespace Web.Api
     [Route("api")]
     public class AuthenticationQueryController : Controller
     {
-        private readonly IMediator _mediator;
+        private readonly QueryMediator _mediator;
 
-        public AuthenticationQueryController(IMediator mediator, JwtService jwtService)
+        public AuthenticationQueryController(QueryMediator mediator)
         {
             _mediator = mediator;
         }
+
 
         [HttpGet("checkUsername")]
         public async Task<ActionResult<CheckUsernameQueryResult>> CheckUsername([FromQuery] CheckUsernameQueryDto queryDto)
