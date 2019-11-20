@@ -10,7 +10,7 @@ namespace Web.Dto.Queries
     public class AuctionQueryDto
     {
         [FromQuery(Name = "auctionId")]
-        [Required]
+        
         public string AuctionId { get; set; }
     }
 }

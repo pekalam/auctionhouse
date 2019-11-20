@@ -10,7 +10,6 @@ namespace Web.Dto.Queries
     public class CommonTagsQueryDto
     {
         [FromQuery(Name = "tag")]
-        [Required]
         public string Tag { get; set; }
     }
 }

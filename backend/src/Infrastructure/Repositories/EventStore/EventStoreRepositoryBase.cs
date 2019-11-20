@@ -25,7 +25,11 @@ namespace Infrastructure.Repositories.EventStore
 
             foreach (var @event in eventsToAppend)
             {
-                var json = JsonConvert.SerializeObject(@event, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.All });
+                var json = JsonConvert.SerializeObject(@event, new JsonSerializerSettings()
+                {
+                    TypeNameHandling = TypeNameHandling.All,
+                    DateTimeZoneHandling = DateTimeZoneHandling.Utc
+                });
                 var bytes = Encoding.UTF8.GetBytes(json);
                 var eventData = new EventData(Guid.NewGuid(), @event.EventName, true, bytes, null);
                 events.Add(eventData);
@@ -72,7 +76,11 @@ namespace Infrastructure.Repositories.EventStore
             var eventList = streamEvents.Select(e =>
             {
                 var json = Encoding.UTF8.GetString(e.Event.Data);
-                return JsonConvert.DeserializeObject<Event>(json, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.All });
+                return JsonConvert.DeserializeObject<Event>(json, new JsonSerializerSettings()
+                {
+                    TypeNameHandling = TypeNameHandling.All,
+                    FloatParseHandling = FloatParseHandling.Decimal
+                });
             }).ToList();
 
             return eventList;

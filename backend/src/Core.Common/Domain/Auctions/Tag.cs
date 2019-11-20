@@ -1,4 +1,5 @@
-﻿using Core.Common.Exceptions;
+﻿using System.Linq;
+using Core.Common.Exceptions;
 
 namespace Core.Common.Domain.Auctions
 {
@@ -20,6 +21,8 @@ namespace Core.Common.Domain.Auctions
             }
             Value = value.Trim();
         }
+
+        public static Tag[] From(string[] tags) => tags.Select(s => new Tag(s)).ToArray();
 
         public override bool Equals(object obj) => obj is Tag && ((Tag) obj).Value.Equals(this.Value);
         public override int GetHashCode() => this.Value.GetHashCode();

@@ -5,6 +5,7 @@ import { AuctionPreviewComponent } from './components/auction-preview/auction-pr
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../material.module';
 import { RouterModule } from '@angular/router';
+import { BidRoutingModule } from './bid-routing.module';
 
 
 
@@ -14,7 +15,8 @@ import { RouterModule } from '@angular/router';
     ReactiveFormsModule,
     CommonModule,
     MaterialModule,
-    RouterModule
+    RouterModule,
+    BidRoutingModule
   ],
   exports: [BidCreatePageComponent]
 })

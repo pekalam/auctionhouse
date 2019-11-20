@@ -4,11 +4,12 @@ import { AuctionsPageComponent } from './pages/auctions-page/auctions-page.compo
 import { AuctionCreatePageComponent } from './pages/auction-create-page/auction-create-page.component';
 import { AuthGuard } from '../core/auth/AuthGuard';
 import { AuctionPageComponent } from './pages/auction-page/auction-page.component';
+import { ServerConnectionGuard } from '../core/guards/ServerConnectionGuard';
 
 const routes: Routes = [
   { path: 'auction', component: AuctionPageComponent },
   { path: 'auctions/:mainCategory/:subCategory/:subCategory2', component: AuctionsPageComponent },
-  { path: 'auctions/create', canActivate: [AuthGuard],
+  { path: 'auctions/create', canActivate: [AuthGuard, ServerConnectionGuard],
     data: { msg: 'You must be signed in to create an auction' }, component: AuctionCreatePageComponent },
   { path: 'auctions', component: AuctionsPageComponent }
 ];

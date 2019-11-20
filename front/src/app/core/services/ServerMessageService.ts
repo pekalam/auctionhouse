@@ -85,6 +85,8 @@ export class ServerMessageService {
   private handleServerMessage(serverMessage: ServerMessage) {
     console.log('handling ' + serverMessage.eventName);
     console.log('result: ' + serverMessage.result);
+    console.log('correlationid: ' + serverMessage.correlationId);
+
 
     if (this.handlerMap.has(serverMessage.eventName)) {
       const handler = this.handlerMap.get(serverMessage.eventName);

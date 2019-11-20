@@ -26,4 +26,28 @@ namespace Core.Common.Common
             }
         }
     }
+
+    public class MaxCount : ValidationAttribute
+    {
+        private readonly int _maxElements;
+
+        public MaxCount(int maxElements)
+        {
+            this._maxElements = maxElements;
+        }
+
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            var collection = value as ICollection;
+
+            if (collection.Count > _maxElements)
+            {
+                return new ValidationResult($"{validationContext.DisplayName} does not contain at least {_maxElements} elements");
+            }
+            else
+            {
+                return ValidationResult.Success;
+            }
+        }
+    }
 }

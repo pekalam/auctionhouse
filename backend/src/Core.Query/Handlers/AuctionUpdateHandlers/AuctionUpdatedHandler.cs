@@ -37,9 +37,9 @@ namespace Core.Query.Handlers.AuctionUpdateHandlers
         {
             var filter = Builders<AuctionRead>.Filter.Eq(f => f.AuctionId, appEvent.Event.AggregateId.ToString());
             var updates = new List<UpdateDefinition<AuctionRead>>();
-            appEvent.Event.UpdateEvents.ForEach(ev => updates.Add(this.AsDynamic().UpdateAuction(appEvent.Event, ev)));
+            appEvent.Event.UpdateEvents.ForEach(ev => updates.Add((UpdateDefinition<AuctionRead>)this.AsDynamic().UpdateAuction(appEvent.Event, ev)));
 
-            var update = Builders<AuctionRead>.Update.Combine(updates.Distinct().AsEnumerable());
+            var update = Builders<AuctionRead>.Update.Combine(updates);
 
             try
             {

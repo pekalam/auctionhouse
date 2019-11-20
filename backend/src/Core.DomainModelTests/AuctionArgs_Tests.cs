@@ -27,7 +27,7 @@ namespace Core.DomainModelTests
             builder.SetEndDate(DateTime.UtcNow.AddDays(5));
             Assert.Throws<DomainException>(() => builder.Build());
 
-            builder.SetTags(new [] {"t1", "t2"});
+            builder.SetTags(new [] {"tag1", "tag2"});
             Assert.Throws<DomainException>(() => builder.Build());
             builder.SetName("Example name");
             Assert.DoesNotThrow(() => builder.Build());

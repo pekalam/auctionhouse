@@ -1,4 +1,5 @@
-﻿using Core.Common;
+﻿using System.ComponentModel.DataAnnotations;
+using Core.Common;
 using Core.Common.Attributes;
 using Core.Common.Command;
 using Core.Common.EventBus;
@@ -9,6 +10,7 @@ namespace Core.Command.AuctionCreateSession.AuctionCreateSession_StartAuctionCre
     [AuthorizationRequired]
     public class StartAuctionCreateSessionCommand : ICommand
     {
+        [Required]
         public CorrelationId CorrelationId { get; }
 
         public StartAuctionCreateSessionCommand(CorrelationId correlationId)

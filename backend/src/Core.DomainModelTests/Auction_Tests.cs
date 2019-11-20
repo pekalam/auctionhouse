@@ -63,21 +63,12 @@ namespace Core.DomainModelTests
                 .SetCategory(new Category("test", 0))
                 .SetBuyNowOnly(false)
                 .SetName("Test name");
-            var args = builder.SetTags(new String[1])
-                .Build();
-            Assert.Throws<DomainException>(() => new Auction(args));
-            args = builder.SetTags(new[] {"1", null})
-                .Build();
-            Assert.Throws<DomainException>(() => new Auction(args));
-            args = builder.SetTags(new[] {"1", ""})
-                .Build();
-            Assert.Throws<DomainException>(() => new Auction(args));
-            args = builder
-                .SetTags(Enumerable.Range(0, Auction.MIN_TAGS)
-                    .Select(i => $"{i}")
+            var args = builder
+                .SetTags(Enumerable.Range(0, Auction.MIN_TAGS - 1)
+                    .Select(i => $"tag1{i}")
                     .ToArray())
                 .Build();
-            Assert.DoesNotThrow(() => new Auction(args));
+            Assert.Throws<DomainException>(() => new Auction(args));
         }
 
         [Test]

@@ -18,10 +18,6 @@ namespace Core.Common.Domain.Users
         public UserUpdateEventGroup() : base("userUpdated")
         {
         }
-
-        public UserUpdateEventGroup(List<UpdateEvent> updateEvents) : base("userUpdated", updateEvents)
-        {
-        }
     }
 
     public partial class User : AggregateRoot<User, UserUpdateEventGroup>

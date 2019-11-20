@@ -10,7 +10,6 @@ namespace Web.Dto.Commands
     public class RemoveImageCommandDto
     {
         [FromQuery(Name= "num")]
-        [Required]
         public int ImgNum { get; set; }
     }
 }

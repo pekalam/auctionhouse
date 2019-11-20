@@ -11,6 +11,7 @@ namespace Core.Command.EndAuction
 
         public EndAuctionCommand(Guid auctionId)
         {
+            if (auctionId.Equals(Guid.Empty)) { throw new InvalidCommandException($"Invalid field AuctionId = {auctionId}"); }
             AuctionId = auctionId;
         }
     }

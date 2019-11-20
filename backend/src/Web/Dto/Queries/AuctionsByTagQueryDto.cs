@@ -11,7 +11,7 @@ namespace Web.Dto.Queries
     public class AuctionsByTagQueryDto
     {
         [FromQuery(Name = "tag")]
-        [Required]
+        
         public string Tag { get; set; }
         [FromQuery(Name = "page")]
         public int Page { get; set; } = 0;

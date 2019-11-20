@@ -19,6 +19,7 @@ using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using Moq;
 using NUnit.Framework;
+using Tag = Core.Common.Domain.Auctions.Tag;
 
 namespace FunctionalTests.EventHandling
 {
@@ -108,7 +109,7 @@ namespace FunctionalTests.EventHandling
             };
             var cmd = new CreateAuctionCommand(20.0m, product, DateTime.UtcNow.AddMinutes(20),
                 DateTime.UtcNow.AddDays(12),
-                categories, correlationId, new[] {"tag1"}, "test name");
+                categories, correlationId, Tag.From(new[] {"tag1"}), "test name");
             cmd.SignedInUser = user.UserIdentity;
             return cmd;
         }
@@ -120,7 +121,7 @@ namespace FunctionalTests.EventHandling
             var v3 = auctionCreated.AuctionArgs.Product.Name.Equals(command.Product.Name) &&
                      auctionCreated.AuctionArgs.Product.Description.Equals(command.Product.Description);
             var v4 = auctionCreated.AuctionArgs.BuyNowPrice.Equals(command.BuyNowPrice);
-            var v5 = auctionCreated.AuctionArgs.StartDate.CompareTo(command.StartDate) == 0;
+            var v5 = auctionCreated.AuctionArgs.StartDate.Value.CompareTo(command.StartDate) == 0;
             var v6 = auctionCreated.AuctionArgs.Creator.UserId.Equals(user.UserIdentity.UserId);
             return v1 && v2 && v3 && v4 && v5 && v6;
         }

@@ -1,4 +1,6 @@
-﻿namespace Core.Common.Domain
+﻿using System.Data;
+
+namespace Core.Common.Domain
 {
     public sealed class EventNames
     {
@@ -19,7 +21,7 @@
         public const string AuctionEndDateChanged = "auctionEndDateChanged";
         public const string AuctionCategoryChanged = "auctionCategoryChanged";
         public const string AuctionNameChanged = "auctionNameChanged";
-
+        public const string AuctionUpdated = "auctionUpdated";
 
 
         private EventNames() { }

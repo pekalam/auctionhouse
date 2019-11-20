@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Core.Common.Attributes;
 using Core.Common.Command;
 using Core.Common.Domain.Users;
@@ -11,6 +12,7 @@ namespace Core.Command.Bid
     {
         public Guid AuctionId { get; set; }
         public decimal Price { get; set; }
+        [Required]
         public CorrelationId CorrelationId { get; set; }
 
         [SignedInUser]
@@ -18,6 +20,7 @@ namespace Core.Command.Bid
 
         public BidCommand(Guid auctionId, decimal price, CorrelationId correlationId)
         {
+            if (auctionId.Equals(Guid.Empty)) { throw new InvalidCommandException($"Invalid field AuctionId = {auctionId}");}
             AuctionId = auctionId;
             Price = price;
             CorrelationId = correlationId;

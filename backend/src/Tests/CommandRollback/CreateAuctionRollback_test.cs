@@ -24,6 +24,7 @@ using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using Moq;
 using NUnit.Framework;
+using Tag = Core.Common.Domain.Auctions.Tag;
 
 namespace FunctionalTests.CommandRollback
 {
@@ -105,7 +106,7 @@ namespace FunctionalTests.CommandRollback
 
             var command = new CreateAuctionCommand(20.0m, product, DateTime.UtcNow.AddMinutes(10),
                 DateTime.UtcNow.AddDays(12),
-                categories, correlationId, new[] {"tag1"}, "test name");
+                categories, correlationId, Tag.From(new[] {"tag1"}), "test name");
             command.SignedInUser = user.UserIdentity;
 
             IAppEvent<AuctionCreated> publishedEvent = null;

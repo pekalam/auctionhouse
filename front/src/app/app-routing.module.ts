@@ -14,10 +14,6 @@ import { AuctionCreatePageComponent } from './auctions/pages/auction-create-page
 const routes: Routes = [
   { path: 'sign-up', component: SignUpPageComponent },
   { path: 'sign-in', component: SignInPageComponent },
-  {
-    path: 'createbid', component: BidCreatePageComponent, resolve:
-      { auction: AuctionResolver }
-  },
   { path: 'home', component: HomePageComponent },
   { path: 'category/:id', component: CategoryPageComponent },
   { path: '', pathMatch: 'full', redirectTo: 'home' },

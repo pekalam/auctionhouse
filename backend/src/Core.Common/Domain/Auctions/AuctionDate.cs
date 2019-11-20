@@ -7,18 +7,18 @@ namespace Core.Common.Domain.Auctions
     {
         public DateTime Value { get; }
 
-        public AuctionDate(DateTime dateTime)
+        public AuctionDate(DateTime value)
         {
-            if (dateTime.Kind != DateTimeKind.Utc)
+            if (value.Kind != DateTimeKind.Utc)
             {
                 throw new DomainException("Auction date is not in UTC format");
             }
-            if (dateTime.Equals(DateTime.MinValue) || dateTime.Equals(DateTime.MaxValue))
+            if (value.Equals(DateTime.MinValue) || value.Equals(DateTime.MaxValue))
             {
                 throw new DomainException("Auction date cannot be max or min datetime value");
             }
 
-            Value = dateTime;
+            Value = value;
         }
 
 

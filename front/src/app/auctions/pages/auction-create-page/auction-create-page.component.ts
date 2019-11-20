@@ -5,8 +5,6 @@ import { CategorySelectStep } from '../../../shared/forms/category-select-step/c
 import { ProductFormResult } from '../../../shared/forms/product-step/productStep';
 import { Router } from '@angular/router';
 import { StartAuctionCreateSessionCommand } from '../../../core/commands/StartAuctionCreateSessionCommand';
-import { ServerMessageService } from '../../../core/services/ServerMessageService';
-import { Subscription } from 'rxjs';
 import { AuctionDataStep } from '../../../shared/forms/auction-data-step/auctionDataStep';
 import { AddImageFormResult } from '../../../shared/forms/add-image-step/add-image-step.component';
 import { AddAuctionImageCommand } from 'src/app/core/commands/AddAuctionImageCommand';
@@ -19,12 +17,11 @@ import { AuctionImageQuery } from '../../../core/queries/AuctionImageQuery';
   templateUrl: './auction-create-page.component.html',
   styleUrls: ['./auction-create-page.component.scss']
 })
-export class AuctionCreatePageComponent implements OnInit, OnDestroy {
+export class AuctionCreatePageComponent implements OnInit{
   private totalSteps = 4;
   private categorySelectStep: CategorySelectStep;
   private productStep: ProductFormResult;
   private auctionDataStep: AuctionDataStep;
-  private connectionStartedSub: Subscription;
 
   @ViewChild('categoryStep', { static: true })
   categoryStepComponent;
@@ -46,7 +43,6 @@ export class AuctionCreatePageComponent implements OnInit, OnDestroy {
 
   constructor(private startAuctionCreateSessionCommand: StartAuctionCreateSessionCommand,
               private createAuctionCommand: CreateAuctionCommand,
-              private serverMessageService: ServerMessageService,
               private addAuctionImageCommand: AddAuctionImageCommand,
               private removeAuctionImageCommand: RemoveAuctionImageCommand,
               private auctionImageQuery: AuctionImageQuery,
@@ -55,14 +51,7 @@ export class AuctionCreatePageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.connectionStartedSub = this.serverMessageService.connectionStarted.subscribe((connected) => {
-      if (connected) {
-        this.startAuctionCreateSession();
-      } else {
-        this.router.navigate(['/home']);
-      }
-    });
-    this.serverMessageService.ensureConnected();
+    this.startAuctionCreateSession();
     this.stepComponents = [
       this.categoryStepComponent,
       this.auctionDataStepComponent,
@@ -70,10 +59,6 @@ export class AuctionCreatePageComponent implements OnInit, OnDestroy {
       this.imageStepComponent,
       this.summaryStepComponent
     ];
-  }
-
-  ngOnDestroy(): void {
-    this.connectionStartedSub.unsubscribe();
   }
 
   private nextStep() {
@@ -92,9 +77,11 @@ export class AuctionCreatePageComponent implements OnInit, OnDestroy {
         this.showCreateForm = true;
       } else {
         console.log('Cannot start session');
+        this.router.navigate(['/error']);
       }
     }, (err) => {
       console.log('Cannot start session');
+      this.router.navigate(['/error']);
     });
   }
 

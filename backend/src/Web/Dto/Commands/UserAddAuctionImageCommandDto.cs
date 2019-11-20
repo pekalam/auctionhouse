@@ -13,10 +13,10 @@ namespace Web.Dto.Commands
         [FromForm(Name = "auction-id")]
         public string AuctionId { get; set; }
         [FromForm(Name = "img")]
-        [Required]
+        
         public IFormFile Img { get; set; }
         [FromForm(Name = "correlation-id")]
-        [Required]
+        
         public string CorrelationId { get; set; }
     }
 }

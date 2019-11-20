@@ -62,8 +62,7 @@ namespace Web.Adapters
                 ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
                 ContractResolver = new MyContractResolver(),
                 NullValueHandling = NullValueHandling.Ignore,
-                
-
+                DateTimeZoneHandling = DateTimeZoneHandling.Utc
             });
             return deserialized;
         }

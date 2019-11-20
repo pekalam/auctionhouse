@@ -10,16 +10,16 @@ namespace Core.Common.Domain.Auctions
 {
     public class AuctionArgs
     {
-        public decimal BuyNowPrice { get; set; }
+        public BuyNowPrice BuyNowPrice { get; set; }
         public bool BuyNowOnly { get; set; }
         public AuctionImage[] AuctionImages { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public AuctionDate StartDate { get; set; }
+        public AuctionDate EndDate { get; set; }
         public UserIdentity Creator { get; set; }
         public Product Product { get; set; }
         public Category Category { get; set; }
-        public string[] Tags { get; set; }
-        public string Name { get; set; }
+        public Tag[] Tags { get; set; }
+        public AuctionName Name { get; set; }
 
         public class Builder
         {
@@ -27,13 +27,13 @@ namespace Core.Common.Domain.Auctions
 
             private void CheckCanBuild()
             {
-                if (args.Product == default ||
+                if (args.Product == null ||
                     args.StartDate == default ||
                     args.EndDate == default ||
-                    args.Creator == default ||
-                    args.Category == default ||
-                    args.Tags == default ||
-                    args.Name == default
+                    args.Creator == null ||
+                    args.Category == null ||
+                    args.Tags == null ||
+                    args.Name == null
                 )
                 {
                     throw new DomainException("Invalid auctionArgs");
@@ -48,10 +48,15 @@ namespace Core.Common.Domain.Auctions
 
             public Builder SetTags(string[] tags)
             {
+                this.args.Tags = tags.Select(s => (Tag)s).ToArray();
+                return this;
+            }
+            public Builder SetTags(Tag[] tags)
+            {
                 this.args.Tags = tags;
                 return this;
             }
-            public Builder SetBuyNow(decimal buyNowPrice)
+            public Builder SetBuyNow(BuyNowPrice buyNowPrice)
             {
                 args.BuyNowPrice = buyNowPrice;
                 return this;
@@ -63,13 +68,13 @@ namespace Core.Common.Domain.Auctions
                 return this;
             }
 
-            public Builder SetStartDate(DateTime startDate)
+            public Builder SetStartDate(AuctionDate startDate)
             {
                 args.StartDate = startDate;
                 return this;
             }
 
-            public Builder SetEndDate(DateTime endDate)
+            public Builder SetEndDate(AuctionDate endDate)
             {
                 args.EndDate = endDate;
                 return this;
@@ -99,7 +104,7 @@ namespace Core.Common.Domain.Auctions
                 return this;
             }
 
-            public Builder SetName(string name)
+            public Builder SetName(AuctionName name)
             {
                 args.Name = name;
                 return this;

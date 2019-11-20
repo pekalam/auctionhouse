@@ -13,7 +13,7 @@ namespace Web.Dto.Queries
         [FromQuery(Name = "page")]
         public int Page { get; set; } = 0;
         [FromQuery(Name = "categories")]
-        [Required]
+        
         public string[] CategoryNames { get; set; }
 
         [FromQuery(Name = "cond")]

@@ -1,4 +1,5 @@
-﻿using Core.Common.EventBus;
+﻿using System;
+using Core.Common.EventBus;
 using MediatR;
 
 namespace Core.Common.Command
@@ -16,7 +17,7 @@ namespace Core.Common.Command
 
         public CommandResponse(Status status, object responseData = null)
         {
-            CorrelationId = new CorrelationId();
+            CorrelationId = new CorrelationId(Guid.NewGuid().ToString());
             Status = status;
             ResponseData = responseData;
         }

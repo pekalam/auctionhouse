@@ -26,10 +26,6 @@ namespace Core.DomainModelTests
         public TestUpdateEventGroup() : base("testGroup")
         {
         }
-
-        public TestUpdateEventGroup(List<UpdateEvent> updateEvents) : base("testGroup", updateEvents)
-        {
-        }
     }
 
     public class TestAggRoot : AggregateRoot<TestAggRoot, TestUpdateEventGroup>

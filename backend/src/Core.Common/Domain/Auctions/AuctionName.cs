@@ -5,6 +5,7 @@ namespace Core.Common.Domain.Auctions
     public class AuctionName
     {
         public const int MAX_LENGTH = 40;
+        public const int MIN_LENGTH = 5;
 
         public string Value { get; }
 
@@ -13,6 +14,11 @@ namespace Core.Common.Domain.Auctions
             if (string.IsNullOrWhiteSpace(value))
             {
                 throw new DomainException("Invalid auction name value");
+            }
+
+            if (value.Trim().Length < MIN_LENGTH)
+            {
+                throw new DomainException("Auction name is too short");
             }
             if (value.Trim().Length > MAX_LENGTH)
             {

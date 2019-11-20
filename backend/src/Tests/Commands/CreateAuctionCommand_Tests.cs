@@ -111,7 +111,7 @@ namespace FunctionalTests.Commands
             var command = new CreateAuctionCommand(Decimal.One,
                 new Product("name", "desc", Condition.New),
                 startDate, endDate,
-                categories, new CorrelationId(""), new []{"tag1"}, "test name");
+                categories, new CorrelationId(""), Tag.From(new []{"tag1"}), "test name");
             command.SignedInUser = user.UserIdentity;
 
             testCommandHandler.Handle(command, CancellationToken.None)
@@ -132,7 +132,7 @@ namespace FunctionalTests.Commands
             testCommandHandler.AuctionRepositoryThrows = true;
             var command = new CreateAuctionCommand(Decimal.One,
                 new Product("name", "desc", Condition.New),
-                startDate, endDate, categories, new CorrelationId(""), new []{"tag1"}, "test name");
+                startDate, endDate, categories, new CorrelationId(""), Tag.From(new []{"tag1"}), "test name");
             command.SignedInUser = user.UserIdentity;
 
 
@@ -155,7 +155,7 @@ namespace FunctionalTests.Commands
             var command = new CreateAuctionCommand(Decimal.One,
                 new Product("name", "desc", Condition.New),
                 startDate,
-                endDate, categories, new CorrelationId(""), new []{"tag1"}, "test name");
+                endDate, categories, new CorrelationId(""), Tag.From(new []{"tag1"}), "test name");
             command.SignedInUser = user.UserIdentity;
 
 

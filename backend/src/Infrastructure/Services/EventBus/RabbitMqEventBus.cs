@@ -68,7 +68,10 @@ namespace Infrastructure.Services.EventBus
                 return JsonConvert.DeserializeObject<AppEventRabbitMQ<Event>>(message.Body.Message,
                     new JsonSerializerSettings()
                     {
-                        TypeNameHandling = TypeNameHandling.All
+                        TypeNameHandling = TypeNameHandling.All,
+                        DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+                        DateFormatHandling = DateFormatHandling.MicrosoftDateFormat,
+                        DateParseHandling = DateParseHandling.DateTime
                     });
             }
             catch (Exception e)

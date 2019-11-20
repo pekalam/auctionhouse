@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Common;
@@ -13,6 +14,17 @@ using Microsoft.Extensions.Logging;
 
 namespace Core.Command.UpdateAuction
 {
+    public class UnauthorizedAccessException : CommandException
+    {
+        public UnauthorizedAccessException(string message) : base(message)
+        {
+        }
+
+        public UnauthorizedAccessException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+    }
+
     public class UpdateAuctionCommandHandler : CommandHandlerBase<UpdateAuctionCommand>
     {
         private readonly IAuctionRepository _auctionRepository;
@@ -43,43 +55,42 @@ namespace Core.Command.UpdateAuction
 
         protected override Task<CommandResponse> HandleCommand(UpdateAuctionCommand request, CancellationToken cancellationToken)
         {
-            var signedInUser = _userIdentityService.GetSignedInUserIdentity();
-            if (signedInUser == null)
-            {
-                throw new CommandException("User not signed in");
-            }
-
             var auction = GetAuction(request);
-            if (request.Description != null)
-            {
-                auction.Product.Description = request.Description;
-            }
 
-            if (request.Tags != null)
+            if (!auction.Owner.UserId.Equals(request.SignedInUser.UserId))
             {
-                auction.SetTags(request.Tags.Select(s => new Tag(s)).ToArray());
+                throw new UnauthorizedAccessException($"User is not owner of an auction {auction.AggregateId}");
             }
-
-            if (request.Name != null)
-            {
-                auction.SetName(request.Name);
-            }
-
-            //TODO
+//            if (request.Description != null)
+//            {
+//                auction.Product.Description = request.Description;
+//            }
+//
+//            if (request.Tags != null)
+//            {
+//                auction.SetTags(request.Tags.Select(s => new Tag(s)).ToArray());
+//            }
+//
+//            if (request.Name != null)
+//            {
+//                auction.SetName(request.Name);
+//            }
+//
+//            //TODO
             auction.SetBuyNowPrice(request.BuyNowPrice);
-
-
-            if (request.EndDate.HasValue)
-            {
-                auction.SetEndDate(request.EndDate);
-                //TODO
-            }
-
-            if (request.Category != null)
-            {
-                var newCategory = _categoryBuilder.FromCategoryNamesList(request.Category);
-                auction.SetCategory(newCategory);
-            }
+//
+//
+//            if (request.EndDate.HasValue)
+//            {
+//                auction.SetEndDate(request.EndDate);
+//                //TODO
+//            }
+//
+//            if (request.Category != null)
+//            {
+//                var newCategory = _categoryBuilder.FromCategoryNamesList(request.Category);
+//                auction.SetCategory(newCategory);
+//            }
 
             _eventBusService.Publish(auction.PendingEvents, request.CorrelationId, request);
             _auctionRepository.UpdateAuction(auction);

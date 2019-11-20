@@ -12,35 +12,19 @@ import { first } from 'rxjs/operators';
   templateUrl: './bid-create-page.component.html',
   styleUrls: ['./bid-create-page.component.scss']
 })
-export class BidCreatePageComponent implements OnInit, OnDestroy {
-  private connectionStartedSub: Subscription;
-
-  showForm = false;
+export class BidCreatePageComponent implements OnInit{
   auction: Auction;
   form = new FormGroup({
     price: new FormControl('', [Validators.required])
   });
 
-  constructor(private activatedRoute: ActivatedRoute, private bidCommand: BidCommand, private router: Router,
-              private serverMessageService: ServerMessageService) {
+  constructor(private activatedRoute: ActivatedRoute, private bidCommand: BidCommand, private router: Router) {
     this.activatedRoute.data.subscribe((data) => {
       this.auction = data.auction;
     });
   }
 
   ngOnInit() {
-    this.connectionStartedSub = this.serverMessageService.connectionStarted.subscribe((connected) => {
-      if (connected) {
-        this.showForm = true;
-      } else {
-        this.router.navigate(['/home']);
-      }
-    });
-    this.serverMessageService.ensureConnected();
-  }
-
-  ngOnDestroy(): void {
-    this.connectionStartedSub.unsubscribe();
   }
 
   onBidSubmit() {
@@ -53,6 +37,7 @@ export class BidCreatePageComponent implements OnInit, OnDestroy {
             this.router.navigate(['/auction'], { queryParams: { auctionId: this.auction.auctionId } });
           } else {
             console.log('error ' + msg);
+            this.router.navigate(['/error']);
           }
         });
     }

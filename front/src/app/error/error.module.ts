@@ -4,11 +4,12 @@ import { NotAuthenticatedComponent } from './pages/not-authenticated/not-authent
 import { ErrorRoutingModule } from './error-routing.module';
 import { RouterModule } from '@angular/router';
 import { MaterialModule } from '../material.module';
+import { ServerErrorPageComponent } from './pages/server-error-page/server-error-page.component';
 
 
 
 @NgModule({
-  declarations: [NotAuthenticatedComponent],
+  declarations: [NotAuthenticatedComponent, ServerErrorPageComponent],
   imports: [
     ErrorRoutingModule,
     CommonModule,

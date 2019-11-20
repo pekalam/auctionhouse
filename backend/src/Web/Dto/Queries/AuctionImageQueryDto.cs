@@ -10,7 +10,6 @@ namespace Web.Dto.Queries
     public class AuctionImageQueryDto
     {
         [FromQuery(Name = "img")]
-        [Required]
         public string ImageId { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace Web.Dto.Commands
 {
     public class StartAuctionCreateSessionCommandDto
     {
-        [Required]
+        
         public string CorrelationId { get; set; }
     }
 }

@@ -8,6 +8,7 @@ using Core.Common.Exceptions;
 using Core.Common.Exceptions.Command;
 using Core.Common.Exceptions.Query;
 using Microsoft.AspNetCore.Http;
+using UnauthorizedAccessException = Core.Command.UpdateAuction.UnauthorizedAccessException;
 
 namespace Web.Exceptions
 {
@@ -42,10 +43,10 @@ namespace Web.Exceptions
             {
                 HandleException(ex, context);
             }
-            catch (Exception ex)
-            {
-                HandleException(ex, context);
-            }
+//            catch (Exception ex)
+//            {
+//                HandleException(ex, context);
+//            }
         }
 
         private void HandleException(ApiException ex, HttpContext context)
@@ -66,6 +67,9 @@ namespace Web.Exceptions
                     break;
                 case InvalidPasswordException e:
                     apiException = new ApiException(HttpStatusCode.Unauthorized, "Invalid credentials", e);
+                    break;
+                case UnauthorizedAccessException e:
+                    apiException = new ApiException(HttpStatusCode.Unauthorized, "Unauthorize access", e);
                     break;
                 default:
                     apiException = new ApiException(HttpStatusCode.InternalServerError, "error", ex);

@@ -10,6 +10,7 @@ import { AuctionImagesFormValues, AddImageFormResult } from '../../../shared/for
 import { ImgSelectedEvent } from 'src/app/shared/forms/img-upload-input/img-upload-input.component';
 import {DomSanitizer} from '@angular/platform-browser';
 import { UserAddAuctionImageCommand } from '../../../core/commands/UserAddAuctionImageCommand';
+import { UpdateAuctionCommand } from '../../../core/commands/UpdateAuctionCommand';
 
 @Component({
   selector: 'app-auction-edit-page',
@@ -35,7 +36,9 @@ export class AuctionEditPageComponent implements OnInit {
   auctionDataFormValues: AuctionDataFormValues;
   auctionImagesFormValues: AuctionImagesFormValues;
 
-  constructor(private router: Router, private sanitizer: DomSanitizer, private addImageCommand: UserAddAuctionImageCommand) {
+  constructor(private router: Router, private sanitizer: DomSanitizer,
+              private addImageCommand: UserAddAuctionImageCommand,
+              private updateAuctionCommand: UpdateAuctionCommand) {
     if (this.router.getCurrentNavigation().extras.state) {
       this.auction = this.router.getCurrentNavigation().extras.state.auction;
       this.createDefaultProductFormValues();
@@ -80,7 +83,19 @@ export class AuctionEditPageComponent implements OnInit {
   }
 
   onAuctionDataFormSubmit(result: AuctionDataStep) {
+    this.updateAuctionCommand.execute({
+      auctionId: this.auction.auctionId,
+      buyNowPrice: result.buyNowPrice,
+      correlationId: '1234',
+      category: [this.auction.category.name, this.auction.category.subCategory.name, this.auction.category.subCategory.subCategory.name],
+      description: this.auction.product.description,
+      endDate: null,
+      tags: this.auction.tags,
+      name: this.auction.name
+    }).subscribe((v) => {
+      console.log("Auction updated");
 
+    })
   }
 
   onImageSelected(event: ImgSelectedEvent){
@@ -91,7 +106,7 @@ export class AuctionEditPageComponent implements OnInit {
   }
 
   onImagesFormSubmit(results: AddImageFormResult[]) {
-    console.log("img  form result");
+    console.log('img  form result');
     console.log(results);
     for (const formResult of results) {
       if(formResult.added){

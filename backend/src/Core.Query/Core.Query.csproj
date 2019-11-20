@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
-    <PackageReference Include="EasyNetQ" Version="3.6.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.9.2" />
     <PackageReference Include="ReflectionMagic" Version="4.1.0" />
   </ItemGroup>
