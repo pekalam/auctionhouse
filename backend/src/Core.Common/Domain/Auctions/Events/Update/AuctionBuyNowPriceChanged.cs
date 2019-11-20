@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Core.Common.Domain.Users;
 
-namespace Core.Common.Domain.Auctions.Events
+namespace Core.Common.Domain.Auctions.Events.Update
 {
-    public class AuctionBuyNowPriceChanged : Event
+    public class AuctionBuyNowPriceChanged : UpdateEvent
     {
         public Guid AuctionId { get; }
         public BuyNowPrice BuyNowPrice { get; }

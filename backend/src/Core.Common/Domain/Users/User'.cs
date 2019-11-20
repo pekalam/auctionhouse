@@ -20,6 +20,11 @@ namespace Core.Common.Domain.Users
             }
         }
 
+        protected override UserUpdateEventGroup CreateUpdateEventGroup()
+        {
+            return new UserUpdateEventGroup();
+        }
+
         private void Apply(UserRegistered @event)
         {
             AggregateId = @event.UserIdentity.UserId;

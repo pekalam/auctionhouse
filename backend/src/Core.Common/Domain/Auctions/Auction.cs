@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Core.Common.Domain.Auctions.Events;
+using Core.Common.Domain.Auctions.Events.Update;
 using Core.Common.Domain.Bids;
 using Core.Common.Domain.Categories;
 using Core.Common.Domain.Products;
@@ -27,7 +28,7 @@ namespace Core.Common.Domain.Auctions
         internal static int MinTags { get; set; } = DEFAULT_MIN_TAGS;
     }
 
-    public partial class Auction : AggregateRoot<Auction>
+    public partial class Auction : AggregateRoot<Auction, AuctionUpdateEventGroup>
     {
         public static int MAX_IMAGES => AuctionConstantsFactory.MaxImages;
         public static int MAX_TODAY_MIN_OFFSET => AuctionConstantsFactory.MaxTodayMinOffset;
@@ -296,7 +297,7 @@ namespace Core.Common.Domain.Auctions
                 throw new DomainException("Cannot set buy now price to 0 if auction is buyNowOnly");
             }
             BuyNowPrice = newPrice;
-            AddEvent(new AuctionBuyNowPriceChanged(AggregateId, newPrice, Owner));
+            AddUpdateEvent(new AuctionBuyNowPriceChanged(AggregateId, newPrice, Owner));
         }
 
         public void SetTags(Tag[] tags)
@@ -305,7 +306,8 @@ namespace Core.Common.Domain.Auctions
             {
                 throw new DomainException("Not enough auction tags");
             }
-            AddEvent(new AuctionTagsChanged(AggregateId, tags));
+            Tags = tags;
+            AddUpdateEvent(new AuctionTagsChanged(AggregateId, tags));
         }
 
         public void SetEndDate(AuctionDate newEndDate)
@@ -313,19 +315,19 @@ namespace Core.Common.Domain.Auctions
             ThrowIfCompletedOrCanceled();
             ValidateDates(StartDate, newEndDate, false);
             EndDate = newEndDate;
-            AddEvent(new AuctionEndDateChanged(AggregateId, newEndDate));
+            AddUpdateEvent(new AuctionEndDateChanged(AggregateId, newEndDate));
         }
 
         public void SetCategory(Category category)
         {
             Category = category;
-            AddEvent(new AuctionCategoryChanged(AggregateId, category));
+            AddUpdateEvent(new AuctionCategoryChanged(AggregateId, category));
         }
 
         public void SetName(AuctionName name)
         {
             Name = name;
-            AddEvent(new AuctionNameChanged(AggregateId, name));
+            AddUpdateEvent(new AuctionNameChanged(AggregateId, name));
         }
 
     }

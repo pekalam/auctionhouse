@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Core.Common.Domain.Auctions.Events
+namespace Core.Common.Domain.Auctions.Events.Update
 {
-    public class AuctionTagsChanged : Event
+    public class AuctionTagsChanged : UpdateEvent
     {
         public Guid AuctionId { get; }
         public Tag[] Tags { get; }

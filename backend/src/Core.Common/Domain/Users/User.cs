@@ -13,7 +13,18 @@ namespace Core.Common.Domain.Users
         }
     }
 
-    public partial class User : AggregateRoot<User>
+    public class UserUpdateEventGroup : UpdateEventGroup
+    {
+        public UserUpdateEventGroup() : base("userUpdated")
+        {
+        }
+
+        public UserUpdateEventGroup(List<UpdateEvent> updateEvents) : base("userUpdated", updateEvents)
+        {
+        }
+    }
+
+    public partial class User : AggregateRoot<User, UserUpdateEventGroup>
     {
         public const int MIN_USERNAME_LENGTH = 4;
 

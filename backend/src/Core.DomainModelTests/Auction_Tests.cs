@@ -492,5 +492,22 @@ namespace Core.DomainModelTests
                 .Should()
                 .BeOfType<BidRemoved>();
         }
+
+
+        [Test]
+        public void When_built_from_events_containing_update_event_group_builds_valid_object()
+        {
+            auction.SetBuyNowPrice(300m);
+            auction.SetTags(new Tag[]{new Tag("update test1"), new Tag("update test2")});
+            auction.SetCategory(new Category("update test category", 1));
+
+            var recreated = Auction.FromEvents(auction.PendingEvents);
+
+            Assert.IsTrue(recreated.BuyNowPrice == 300m);
+            recreated.AggregateId.Should().Be(auction.AggregateId);
+            recreated.Tags[0].Value.Should().Be("update test1");
+            recreated.Tags[1].Value.Should().Be("update test2");
+            recreated.Category.Name.Should().Be("update test category");
+        }
     }
 }
