@@ -1,10 +1,5 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-- develop
+- ci-update
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -16,35 +11,32 @@ steps:
     packageType: sdk
     version: 2.2.401
     installationPath: $(Agent.ToolsDirectory)/dotnet
-- task: ShellScript@2
-  displayName: 'Run domain tests'
+- task: DotNetCoreCLI@2
   inputs:
-    scriptPath: 'backend/cli/local-run_domain_tests.sh'
-    #args: '' # Optional
-    #disableAutoCwd: false # Optional
-    cwd: 'backend/cli'
-    #failOnStandardError: false
-- task: ShellScript@2
-  displayName: 'Run unit tests'
+    command: test
+    publishTestResults: true
+    testRunTitle: 'Domain unit tests'
+    restoreDirectory: backend/src/Core.DomainModelTests
+    workingDirectory: backend/src/Core.DomainModelTests
+- task: DotNetCoreCLI@2
   inputs:
-    scriptPath: 'backend/cli/local-run_unit_tests.sh'
-    #args: '' # Optional
-    #disableAutoCwd: false # Optional
-    cwd: 'backend/cli'
-    #failOnStandardError: false
+    command: test
+    publishTestResults: true
+    testRunTitle: 'Infrastructure unit tests'
+    restoreDirectory: backend/src/UnitTests
+    workingDirectory: backend/src/UnitTests
 - task: ShellScript@2
   displayName: 'Run integration tests'
   inputs:
     scriptPath: 'backend/cli/docker-run_integration_tests.sh'
-    #args: '' # Optional
-    #disableAutoCwd: false # Optional
     cwd: 'backend/cli'
-    #failOnStandardError: false
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'NUnit'
+    testResultsFiles: '*.trx'
+    searchFolder: '$(System.DefaultWorkingDirectory)'
 - task: ShellScript@2
   displayName: 'Run functional tests'
   inputs:
     scriptPath: 'backend/cli/docker-run_functional_tests.sh'
-    #args: '' # Optional
-    #disableAutoCwd: false # Optional
     cwd: 'backend/cli'
-    #failOnStandardError: false

@@ -31,10 +31,12 @@ services:
   auctionhouse-integration-tests:
     container_name: auctionhouse-integration-tests
     command: >
-      /bin/bash -c "wait-for-services && dotnet test --no-build -s docker.runsettings"
+      /bin/bash -c "wait-for-services && dotnet test --no-build -s docker.runsettings -v n --results-directory /results --logger trx"
     build:
       context: ../src
       dockerfile: IntegrationTests/Dockerfile
+    volumes: 
+      - ".:/results"
     depends_on:
       - eventst
       - mongodb
