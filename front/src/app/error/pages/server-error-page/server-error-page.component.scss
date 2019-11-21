@@ -1,24 +1,19 @@
-@import 'global';
-
+@import 'page-content-block';
 
 .container{
   width: 70%;
-  margin: 0 auto;
-  padding: 20px;
   text-align: center;
   height: 50vh;
-  #section{
-    @include section-shadow;
-    background-color: white;
-    padding: 20px;
-    height: 40vh;
+  .content-block{
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 50vh;
   }
-  .msg{
-    text-align: center;
-    font-size: 20px;
-    font-weight: bold;
-  }
+}
+
+.msg{
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
 }

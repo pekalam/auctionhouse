@@ -32,7 +32,7 @@ export class AuctionComponent implements OnInit, OnDestroy {
   @Output() bid = new EventEmitter<Auction>();
   @Output() auctionTimeout = new EventEmitter<Auction>();
 
-  showTimer = true;
+  showTimer = false;
   timer = { m: '', s: '' };
   auction: Auction;
   daysLeft = 0;

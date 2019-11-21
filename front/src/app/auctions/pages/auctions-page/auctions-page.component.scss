@@ -1,10 +1,12 @@
 @import 'global';
+@import 'page-content-block';
 
-.container{
-  padding: 20px;
+.content-block{
   display: flex;
   flex-direction: row;
   align-items: flex-start;
+  background-color: transparent !important;
+  box-shadow: unset !important;
   .auctions-container{
     width: calc(100% - 20px - 300px);
     background-color: white;

@@ -1,14 +1,10 @@
 @import 'global';
+@import 'page-content-block';
 
-#container{
-  padding-top: 50px;
-  width: 50%;
-  margin: 0 auto;
-  padding: 20px;
-  #section{
-    background-color: white;
+.container{
+  max-width: 700px;
+  .content-block{
     padding: 20px;
-    @include section-shadow;
   }
 }
 

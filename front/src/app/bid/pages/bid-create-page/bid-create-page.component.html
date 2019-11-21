@@ -1,16 +1,18 @@
 <div class="container">
-  <div class="left">
-    <app-auction-preview [auction]="auction"></app-auction-preview>
-  </div>
-  <div class="right">
-    <form [formGroup]="form" (ngSubmit)="onBidSubmit()">
-      <h3>Your offer</h3>
-      <p>Current price: {{auction.winningBid ? auction.winningBid.price : "none"}}</p>
-      <mat-form-field id="offer-field">
-        <input matInput type="number" placeholder="Your offer" formControlName="price" />
-      </mat-form-field>
-      <br>
-      <button id="submit-btn" type="submit">Submit bid</button>
-    </form>
+  <div class="content-block">
+    <div class="left">
+      <app-auction-preview [auction]="auction"></app-auction-preview>
+    </div>
+    <div class="right">
+      <form [formGroup]="form" (ngSubmit)="onBidSubmit()">
+        <h3>Your offer</h3>
+        <p>Current price: {{auction.winningBid ? auction.winningBid.price : "none"}}</p>
+        <mat-form-field id="offer-field">
+          <input matInput type="number" placeholder="Your offer" formControlName="price" />
+        </mat-form-field>
+        <br>
+        <button id="submit-btn" type="submit">Submit bid</button>
+      </form>
+    </div>
   </div>
 </div>

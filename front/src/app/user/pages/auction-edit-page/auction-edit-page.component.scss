@@ -1,19 +1,14 @@
 @import 'global';
+@import 'page-content-block';
 
-#container{
+.container{
   width: 90%;
-  max-width: 1500px;
-  margin: 0 auto;
-  padding-top: 30px;
-  #section{
-    @include section-shadow;
-    background-color: white;
-    .tab-content{
-      padding: 20px;
-    }
-  }
-
 }
+
+.tab-content{
+  padding: 20px;
+}
+
 
 ::ng-deep .mat-tab-body-content{
   overflow: hidden !important;

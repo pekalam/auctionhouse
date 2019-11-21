@@ -1,18 +1,19 @@
 @import 'global';
+@import 'page-content-block';
 
 .container{
-  @include section-shadow;
-  max-width: 1200px;
-  padding: 20px;
-  background-color: white;
-  margin: 25px auto;
-  display: flex;
-  .left{
-    flex-grow: 2;
+  width: 90%;
+  .content-block{
+    display: flex;
+    padding: 20px;
   }
-  .right{
-    flex-grow: 1;
-  }
+}
+
+.left{
+  flex-grow: 2;
+}
+.right{
+  flex-grow: 1;
 }
 
 #submit-btn{

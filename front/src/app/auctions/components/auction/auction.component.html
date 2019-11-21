@@ -8,7 +8,7 @@
       <span><span class="prop-title">From:</span> {{auction.creator.userName}}</span>
       <p *ngIf="showTimer" class="timer">TIME LEFT: {{timer.m}}:{{timer.s}}</p>
       <hr>
-      <div class="date-div">
+      <div class="date-container">
         <span class="date" id="start"><span class="prop-title">Starts:</span> {{auction.startDate | date : "yyyy MMMM dd"}}</span>
         <span class="date" id="end"><span class="prop-title">Ends:</span> {{auction.endDate | date : "yyyy MMMM dd"}}</span>
         <span class="date" id="days-left" *ngIf="!showTimer"><span class="prop-title">Days left:</span> {{daysLeft}}</span>
@@ -16,11 +16,11 @@
       </div>
       <hr>
 
-      <div class="current-price-div">
+      <div class="current-price-container">
         <span class="prop-title">Current price:</span>
         <span class="price"> {{auction.actualPrice | currency}}</span>
       </div>
-      <div class="buynow-price-div">
+      <div class="buynow-price-container">
         <span class="prop-title">Buy now price:</span>
         <span class="price"> {{auction.buyNowPrice | currency}}</span>
       </div>
@@ -33,7 +33,7 @@
       <div class="views-container">
         <span><span class="prop-title">Views:</span> {{auction.views}}</span>
       </div>
-      <div class="auction-buttons-container" *ngIf="showAuctionButtons">
+      <div class="buttons-container" *ngIf="showAuctionButtons">
         <button class="buynow-btn" (click)="onBuyNow()" [disabled]="!showAuctionButtons || auction.buyNowPrice == null">Buy now</button>
         <button class="bid-btn" (click)="onBid()" [disabled]="!showAuctionButtons">Bid</button>
       </div>

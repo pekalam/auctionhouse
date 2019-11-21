@@ -1,12 +1,8 @@
 @import "global";
 
 .auction-container {
-  max-width: 1400px;
-  background-color: $primaryColor;
-  margin: 50px auto;
   padding: 20px;
   box-sizing: border-box;
-  @include section-shadow;
   .left {
     width: 45%;
     height: 400px;
@@ -49,7 +45,7 @@
     font-size: 16px;
   }
 
-  .date-div {
+  .date-container {
     margin-top: 20px;
     margin-bottom: 15px;
     .date{
@@ -57,13 +53,15 @@
       display: block;
     }
   }
-  .current-price-div {
+
+  .current-price-container {
     margin-top: 10px;
     .price {
       font-weight: bold;
     }
   }
-  .buynow-price-div {
+
+  .buynow-price-container {
     margin-top: 20px;
     .price {
       font-weight: bold;
@@ -81,8 +79,7 @@
     }
   }
 
-  .auction-buttons-container {
-    width: 100%;
+  .buttons-container {
     margin-top: 15px;
     button {
       @include app-btn;
@@ -100,4 +97,5 @@
       }
     }
   }
+
 }

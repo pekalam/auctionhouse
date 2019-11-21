@@ -1,15 +1,20 @@
-@import 'global';
+@import 'page-content-block';
 
 .container{
-  @include section-shadow;
-  background-color: white;
-  padding: 20px;
-  margin: 20px auto;
-  max-width: 1200px;
-  #mainCat{
-    text-align: center;
+  width: 90%;
+  .content-block{
+    padding: 10px;
   }
 }
+
+
+#mainCat{
+  text-align: left;
+  display: block;
+  margin: 0;
+  padding: 10px;
+}
+
 
 .category-grid{
   display: flex;

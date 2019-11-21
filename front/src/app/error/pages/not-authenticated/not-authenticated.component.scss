@@ -1,18 +1,16 @@
-@import 'global';
-
+@import 'page-content-block';
 
 .container{
   width: 70%;
-  margin: 0 auto;
-  padding: 20px;
   text-align: center;
-  #section{
-    @include section-shadow;
-    background-color: white;
+  .content-block{
     padding: 20px;
   }
-  .msg{
-    font-weight: bold;
-    color: #f72f2f;
-  }
+}
+
+
+
+.msg{
+  font-weight: bold;
+  color: #f72f2f;
 }

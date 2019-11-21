@@ -1,1 +1,8 @@
-<app-auction [auction]="auction" [showAuctionButtons]="showAuctionButtons" (bid)="onBidClick()" (auctionTimeout)="onAuctionTimeout()" (buyNow)="onBuyNowClick()"></app-auction>
+<div class="container">
+  <div class="content-block">
+      <app-auction [auction]="auction" [showAuctionButtons]="showAuctionButtons"
+      (bid)="onBidClick()" (auctionTimeout)="onAuctionTimeout()"
+      (buyNow)="onBuyNowClick()"></app-auction>
+  </div>
+</div>
+

@@ -1,15 +1,6 @@
-@import 'global';
+@import 'page-content-block';
 
 .container{
   width: 90%;
-  max-width: 1500px;
-  margin: 0 auto;
-  padding-top: 30px;
-  #section{
-    @include section-shadow;
-    background-color: white;
-
-  }
 }
-
 
