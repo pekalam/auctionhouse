@@ -9,6 +9,7 @@ $btnContainerSize: 250px;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-around;
+  justify-items: flex-start;
   .add-img-btn-container {
     width: $btnContainerSize;
     height: $btnContainerSize;
@@ -20,6 +21,5 @@ $btnContainerSize: 250px;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-
   }
 }

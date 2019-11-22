@@ -33,17 +33,48 @@ namespace Core.Query.Handlers.AuctionUpdateHandlers
             return Builders<AuctionRead>.Update.Set(read => read.BuyNowPrice, ev.BuyNowPrice.Value);
         }
 
+        private UpdateDefinition<AuctionRead> UpdateAuction(AuctionUpdateEventGroup eventGroup,
+            AuctionCategoryChanged ev)
+        {
+            return Builders<AuctionRead>.Update.Set(read => read.Category, ev.Category);
+        }
+
+        private UpdateDefinition<AuctionRead> UpdateAuction(AuctionUpdateEventGroup eventGroup,
+            AuctionEndDateChanged ev)
+        {
+            return Builders<AuctionRead>.Update.Set(read => read.EndDate, ev.Date.Value);
+        }
+
+        private UpdateDefinition<AuctionRead> UpdateAuction(AuctionUpdateEventGroup eventGroup,
+            AuctionNameChanged ev)
+        {
+            return Builders<AuctionRead>.Update.Set(read => read.Name, ev.AuctionName.Value);
+        }
+
+        private UpdateDefinition<AuctionRead> UpdateAuction(AuctionUpdateEventGroup eventGroup,
+            AuctionTagsChanged ev)
+        {
+            return Builders<AuctionRead>.Update.Set(read => read.Tags, ev.Tags.Select(tag => tag.Value));
+        }
+
+        private UpdateDefinition<AuctionRead> UpdateAuction(AuctionUpdateEventGroup eventGroup,
+            AuctionDescriptionChanged ev)
+        {
+            return Builders<AuctionRead>.Update.Set(read => read.Product.Description, ev.Description);
+        }
+
         public override void Consume(IAppEvent<AuctionUpdateEventGroup> appEvent)
         {
             var filter = Builders<AuctionRead>.Filter.Eq(f => f.AuctionId, appEvent.Event.AggregateId.ToString());
             var updates = new List<UpdateDefinition<AuctionRead>>();
-            appEvent.Event.UpdateEvents.ForEach(ev => updates.Add((UpdateDefinition<AuctionRead>)this.AsDynamic().UpdateAuction(appEvent.Event, ev)));
+            appEvent.Event.UpdateEvents.ForEach(ev =>
+                updates.Add((UpdateDefinition<AuctionRead>) this.AsDynamic().UpdateAuction(appEvent.Event, ev)));
 
             var update = Builders<AuctionRead>.Update.Combine(updates);
 
             try
             {
-                _dbContext.AuctionsReadModel.FindOneAndUpdate(filter, update);
+                _dbContext.AuctionsReadModel.UpdateMany(filter, update);
                 _eventSignalingService.TrySendEventCompletionToUser(appEvent, appEvent.Event.AuctionOwner);
             }
             catch (Exception)

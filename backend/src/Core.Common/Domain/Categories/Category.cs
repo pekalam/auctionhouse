@@ -17,5 +17,31 @@ namespace Core.Common.Domain.Categories
             Name = name;
             CategoryId = categoryId;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Category == false)
+            {
+                return false;
+            }
+
+            var cat = obj as Category;
+            while (cat.SubCategory != null && this.SubCategory != null)
+            {
+                return cat.SubCategory.Equals(this.SubCategory);
+            }
+
+            if (!(cat.SubCategory == null && this.SubCategory == null))
+            {
+                return false;
+            }
+
+            return cat.CategoryId == CategoryId;
+        }
+
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
+        }
     }
 }

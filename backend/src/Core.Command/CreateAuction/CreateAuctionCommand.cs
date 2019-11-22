@@ -30,6 +30,9 @@ namespace Core.Command.CreateAuction
         public CorrelationId CorrelationId { get; }
 
         [Required]
+        public bool? BuyNowOnly { get; }
+
+        [Required]
         [MinLength(AuctionConstantsFactory.DEFAULT_MIN_TAGS)]
         public Tag[] Tags { get; }
 
@@ -41,7 +44,7 @@ namespace Core.Command.CreateAuction
 
         public CreateAuctionCommand(BuyNowPrice buyNowPrice, Product product, 
             AuctionDate startDate, AuctionDate endDate, List<string> category, 
-            CorrelationId correlationId, Tag[] tags, AuctionName name)
+            CorrelationId correlationId, Tag[] tags, AuctionName name, bool? buyNowOnly)
         {
             BuyNowPrice = buyNowPrice;
             Product = product;
@@ -51,6 +54,7 @@ namespace Core.Command.CreateAuction
             CorrelationId = correlationId;
             Tags = tags;
             Name = name;
+            BuyNowOnly = buyNowOnly;
         }
     }
 }

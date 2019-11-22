@@ -207,6 +207,7 @@ namespace Core.Command.CreateAuction
                 .SetProduct(request.Product)
                 .SetTags(request.Tags)
                 .SetName(request.Name)
+                .SetBuyNowOnly(request.BuyNowOnly.Value)
                 .SetOwner(owner);
             if (request.BuyNowPrice != null)
             {

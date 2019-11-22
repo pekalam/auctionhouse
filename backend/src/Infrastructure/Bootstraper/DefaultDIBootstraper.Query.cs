@@ -35,9 +35,11 @@ namespace Infrastructure.Bootstraper
                 serviceCollection.AddScoped<AuctionCreatedHandler>();
                 serviceCollection.AddScoped<AuctionRaisedHandler>();
                 serviceCollection.AddScoped<UserRegisteredHandler>();
-                serviceCollection.AddScoped<AuctionImageAddedHandler>();
                 serviceCollection.AddScoped<AuctionCompletedHandler>();
                 serviceCollection.AddScoped<AuctionUpdatedHandler>();
+                serviceCollection.AddScoped<AuctionImageAddedHandler>();
+                serviceCollection.AddScoped<AuctionImageReplacedHandler>();
+                serviceCollection.AddScoped<AuctionImageRemovedHandler>();
             }
 
             private static void ConfigureImageServices(IServiceCollection serviceCollection)
@@ -108,7 +110,13 @@ namespace Infrastructure.Bootstraper
                         EventNames.AuctionCompleted),
                     new RabbitMqEventConsumerFactory(
                         () => implProvider.Get<AuctionUpdatedHandler>(),
-                        EventNames.AuctionUpdated)
+                        EventNames.AuctionUpdated),
+                    new RabbitMqEventConsumerFactory(
+                        () => implProvider.Get<AuctionImageReplacedHandler>(),
+                        EventNames.AuctionImageReplaced),
+                    new RabbitMqEventConsumerFactory(
+                        () => implProvider.Get<AuctionImageRemovedHandler>(),
+                        EventNames.AuctionImageRemoved)
                 );
             }
         }

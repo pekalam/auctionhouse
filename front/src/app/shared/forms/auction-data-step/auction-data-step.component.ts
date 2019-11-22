@@ -1,7 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { AuctionCreateStep } from '../auctionCreateStep';
 import { AuctionDataStep } from './auctionDataStep';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
+import { MatDatepicker } from '@angular/material';
+import {MomentDateAdapter} from '@angular/material-moment-adapter';
+
 
 export interface AuctionDataFormValues {
   name: string;
@@ -20,12 +23,27 @@ export interface AuctionDataFormValues {
 })
 export class AuctionDataStepComponent extends AuctionCreateStep<AuctionDataStep> implements OnInit {
 
+  @ViewChild('startDatepicker', {static: true}) startDatepicker: MatDatepicker<MomentDateAdapter>;
+  @ViewChild('endDatepicker', {static: true}) endDatepicker: MatDatepicker<MomentDateAdapter>;
+
+
+  @Input('disable')
+  set setDisable(obj) {
+    Object.assign(this.disable, obj);
+  }
+
+  disable: { startDate: boolean } = { startDate: false };
+
   @Input('defaults')
-  set setDefaults(defaults: AuctionDataFormValues){
-    if(defaults){
-      this.form.setValue({...defaults});
+  set setDefaults(defaults: AuctionDataFormValues) {
+    if (defaults) {
+      console.log(defaults);
+
+      this.form.setValue({ ...defaults });
       this.onAuctionChange(defaults.auction);
       this.onBuyNowChange(defaults.buyNow);
+      this.defaultEndDate = defaults.endDate;
+      this.defaultStartDate = defaults.startDate;
       this.ready = this.form.valid;
     }
   }
@@ -85,13 +103,24 @@ export class AuctionDataStepComponent extends AuctionCreateStep<AuctionDataStep>
 
   onOkClick() {
     if (this.form.valid) {
+/*       console.log(this.form.value.endDate);
+      console.log(this.form.value.endDate.toObject());
+      console.log(this.form.value.endDate.toString());
+      console.log(JSON.stringify(this.form.value.endDate));
+      console.log(typeof this.form.value.endDate); */
+
+
+
       let step: AuctionDataStep = {
         name: this.form.value.name,
         buyNow: this.form.value.buyNow,
         buyNowPrice: this.form.value.buyNowPrice,
         endDate: this.form.value.endDate,
-        startDate: this.form.value.startDate
+        startDate: this.form.value.startDate,
+        auction: this.form.value.auction
       };
+      console.log(step);
+
       this.completeStep(step)
     }
 

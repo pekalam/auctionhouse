@@ -61,36 +61,18 @@ namespace Core.Command.UpdateAuction
             {
                 throw new UnauthorizedAccessException($"User is not owner of an auction {auction.AggregateId}");
             }
-//            if (request.Description != null)
-//            {
-//                auction.Product.Description = request.Description;
-//            }
-//
-//            if (request.Tags != null)
-//            {
-//                auction.SetTags(request.Tags.Select(s => new Tag(s)).ToArray());
-//            }
-//
-//            if (request.Name != null)
-//            {
-//                auction.SetName(request.Name);
-//            }
-//
-//            //TODO
-            auction.SetBuyNowPrice(request.BuyNowPrice);
-//
-//
-//            if (request.EndDate.HasValue)
-//            {
-//                auction.SetEndDate(request.EndDate);
-//                //TODO
-//            }
-//
-//            if (request.Category != null)
-//            {
-//                var newCategory = _categoryBuilder.FromCategoryNamesList(request.Category);
-//                auction.SetCategory(newCategory);
-//            }
+
+            
+            auction.UpdateTags(request.Tags.Select(s => new Tag(s)).ToArray());
+            auction.UpdateName(request.Name);
+            auction.UpdateBuyNowPrice(request.BuyNowPrice);
+            auction.UpdateDescription(request.Description);
+            if (request.EndDate != null)
+            {
+                auction.UpdateEndDate(request.EndDate);
+            }
+            var newCategory = _categoryBuilder.FromCategoryNamesList(request.Category);
+            auction.UpdateCategory(newCategory);
 
             _eventBusService.Publish(auction.PendingEvents, request.CorrelationId, request);
             _auctionRepository.UpdateAuction(auction);

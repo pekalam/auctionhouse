@@ -90,7 +90,8 @@ export class AuctionCreatePageComponent implements OnInit{
     this.categorySelectStep.selectedSubCategory.categoryName,
     this.categorySelectStep.selectedSubCategory2.categoryName];
     this.createAuctionArgs = new CreateAuctionCommandArgs(this.auctionDataStep.buyNowPrice, this.auctionDataStep.startDate,
-      this.auctionDataStep.endDate, categories, '123', this.productStep.product, this.productStep.tags, this.auctionDataStep.name);
+      this.auctionDataStep.endDate, categories, '123', this.productStep.product, this.productStep.tags, this.auctionDataStep.name,
+      this.auctionDataStep.buyNow && !this.auctionDataStep.auction);
   }
 
   onCategorySelectedStep(stepResult: CategorySelectStep) {
@@ -134,6 +135,7 @@ export class AuctionCreatePageComponent implements OnInit{
   onImgCancel(imgnum: number){
     this.removeAuctionImageCommand.execute(imgnum).subscribe((v) => {
       console.log("img removed " + imgnum);
+      this.imageStepComponent.setImgPreview(imgnum, null);
     }, (err) => {
       console.log("remove image error ");
       console.log(err);

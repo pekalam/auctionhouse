@@ -3,7 +3,7 @@
 
     <div class="add-img-btn-container" *ngFor="let id of imgIds">
       <app-img-upload-input [imgnum]="id" [previewsrc]="previews[id]" (imgSelected)="onImgSelected($event)"
-      (cancel)="onImgCancel($event)" [hidden]="show[id] === 0"></app-img-upload-input>
+      (cancel)="onImgCancel($event)" [appVisible]="show[id] === 0"></app-img-upload-input>
     </div>
 
   </div>

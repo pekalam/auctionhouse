@@ -5,6 +5,7 @@ import { AddAuctionImageCommand } from 'src/app/core/commands/AddAuctionImageCom
 import { AuctionImageQuery } from 'src/app/core/queries/AuctionImageQuery';
 import { RemoveAuctionImageCommand } from 'src/app/core/commands/RemoveAuctionImageCommand';
 import { AuctionImage } from '../../../core/models/Auctions';
+import { ValidatorFn } from '@angular/forms';
 
 export interface AddImageFormResult {
   num: number;
@@ -28,12 +29,12 @@ export class AddImageStepComponent extends AuctionCreateStep<AddImageFormResult[
 
   @Input('defaults')
   set setDefaults(values: AuctionImagesFormValues) {
-    this.show = new Array<number>(6).fill(null).map((v, ind) => values.existingImages[ind] ? 1 : 0);
+    if(!values){return;}
+    this.show = new Array<number>(6).fill(null).map((_, ind) => (values.existingImages[ind] || ind < 3) ? 1 : 0);
     this.show[this.show.lastIndexOf(1) + 1 % this.show.length] = 1;
-    this.previews = values.existingImages.map((v) => v ? this.auctionImgQuery.execute(v.size1Id) : null);
-    for (let i = 0; i < this.previews.filter((v) => v != null).length; i++) {
-      this.imgUploadResults[i] = { num: i, added: false, deleted: false, replaced: false, files: null };
-    }
+    this.previews = new Array<number>(6)
+      .fill(null)
+      .map((v, ind) => values.existingImages[ind] ? this.auctionImgQuery.execute(values.existingImages[ind].size1Id) : null);
     this.defaultValues = values;
   }
 
@@ -51,17 +52,24 @@ export class AddImageStepComponent extends AuctionCreateStep<AddImageFormResult[
   imgUploadResults: Array<AddImageFormResult> = new Array<AddImageFormResult>(6);
   titleMsg = 'Add images';
 
-  constructor(private command: AddAuctionImageCommand,
-    private auctionImgQuery: AuctionImageQuery,
-    private removeAuctionImageCommand: RemoveAuctionImageCommand) {
+  constructor(private auctionImgQuery: AuctionImageQuery) {
     super();
     this.ready = true;
+    this.resetResults();
+  }
+
+  private resetResults(){
+    for (let i = 0; i < this.imgUploadResults.length; i++) {
+      this.imgUploadResults[i] = { num: i, added: false, deleted: false, replaced: false, files: null };
+    }
   }
 
   ngOnInit() {
   }
 
   setImgPreview(imgnum: number, imgSrc: string) {
+    console.log("set preview" +imgnum+ "to " + imgSrc);
+
     this.previews[imgnum] = imgSrc;
   }
 
@@ -75,37 +83,15 @@ export class AddImageStepComponent extends AuctionCreateStep<AddImageFormResult[
       files: null,
       replaced: false,
     };
-    /*     this.removeAuctionImageCommand.execute(imgnum).subscribe((v) => {
-          this.imgUploadResults[imgnum].imageId = null;
-          this.previews[imgnum] = null;
-        }, (err) => {
-          console.log("remove image error ");
-          console.log(err);
-        }); */
   }
 
   onImgSelected(event: ImgSelectedEvent) {
-    /*     this.command.execute(event.files, event.imgnum).subscribe((msg) => {
-          if (msg.result === 'completed') {
-            console.log('add image completed');
-            console.log(msg);
-            this.imgUploadResults[event.imgnum] = {
-              imageId: msg.values.imgSz1,
-              num: event.imgnum
-            }
-            this.previews[event.imgnum] = this.auctionImgQuery.execute(msg.values.imgSz1);
-          } else {
-            console.log('Cannot add image');
-          }
-        }, (err) => {
-          console.log('Cannot add image');
-        }); */
     this.imgUploadResults[event.imgnum] = {
       deleted: false,
-      added: true,
+      added: this.defaultValues ? this.defaultValues.existingImages[event.imgnum] == null : true,
       num: event.imgnum,
       files: event.files,
-      replaced: false,
+      replaced: this.defaultValues ? this.defaultValues.existingImages[event.imgnum] != null : false,
     };
     this.imgSelected.emit(event);
     const found = this.imgIds.find(v => v === event.imgnum);
@@ -117,14 +103,7 @@ export class AddImageStepComponent extends AuctionCreateStep<AddImageFormResult[
   }
 
   onOkClick() {
-    const results = this.imgUploadResults.filter(i => i != null);
-    if (this.defaultValues) {
-      results.forEach((v) => {
-        if (this.defaultValues.existingImages[v.num]) {
-          v.replaced = v.added;
-        }
-      });
-    }
-    this.completeStep(results);
+    this.completeStep(this.imgUploadResults);
+    this.resetResults();
   }
 }

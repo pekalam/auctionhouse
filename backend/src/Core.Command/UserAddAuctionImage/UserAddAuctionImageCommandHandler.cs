@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.Command.RemoveAuctionImage.Core.Command.RemoveAuctionImage;
 using Core.Common;
 using Core.Common.ApplicationServices;
 using Core.Common.Auth;
@@ -20,8 +21,8 @@ namespace Core.Command.AddOrReplaceAuctionImage
         private readonly ILogger<UserAddAuctionImageCommandHandler> _logger;
         private readonly IUserIdentityService _userIdentityService;
 
-        public UserAddAuctionImageCommandHandler(AuctionImageService auctionImageService, 
-            IAuctionRepository auctionRepository, EventBusService eventBusService, 
+        public UserAddAuctionImageCommandHandler(AuctionImageService auctionImageService,
+            IAuctionRepository auctionRepository, EventBusService eventBusService,
             ILogger<UserAddAuctionImageCommandHandler> logger, IUserIdentityService userIdentityService)
             : base(logger)
         {
@@ -32,14 +33,8 @@ namespace Core.Command.AddOrReplaceAuctionImage
             _userIdentityService = userIdentityService;
         }
 
-        protected override Task<CommandResponse> HandleCommand(UserAddAuctionImageCommand request, CancellationToken cancellationToken)
+        private void AddImage(UserAddAuctionImageCommand request, CancellationToken cancellationToken)
         {
-            var signedInUserIdentity = _userIdentityService.GetSignedInUserIdentity();
-            if (signedInUserIdentity == null)
-            {
-                throw new CommandException("");
-            }
-
             var auction = _auctionRepository.FindAuction(request.AuctionId);
             if (auction == null)
             {
@@ -47,9 +42,10 @@ namespace Core.Command.AddOrReplaceAuctionImage
                 throw new CommandException($"Cannot find auction {request.AuctionId}");
             }
 
-            if (!auction.Owner.UserId.Equals(signedInUserIdentity.UserId))
+            if (!auction.Owner.UserId.Equals(request.SignedInUser.UserId))
             {
-                throw new CommandException($"User {signedInUserIdentity.UserId} cannot modify auction ${auction.AggregateId}");
+                throw new CommandException(
+                    $"User {request.SignedInUser.UserId} cannot modify auction ${auction.AggregateId}");
             }
 
 
@@ -57,6 +53,7 @@ namespace Core.Command.AddOrReplaceAuctionImage
 
             auction.AddImage(newImg);
 
+            _auctionRepository.UpdateAuction(auction);
             try
             {
                 _eventBusService.Publish(auction.PendingEvents, request.CorrelationId, request);
@@ -67,7 +64,22 @@ namespace Core.Command.AddOrReplaceAuctionImage
                 _auctionImageService.RemoveAuctionImage(newImg);
                 throw;
             }
-            _auctionRepository.UpdateAuction(auction);
+        }
+
+        protected override Task<CommandResponse> HandleCommand(UserAddAuctionImageCommand request,
+            CancellationToken cancellationToken)
+        {
+            AuctionLock.Lock(request.AuctionId);
+
+            try
+            {
+                AddImage(request, cancellationToken);
+            }
+            finally
+            {
+                AuctionLock.ReleaseLock(request.AuctionId);
+            }
+
 
             var response = new CommandResponse(Status.COMPLETED);
             return Task.FromResult(response);

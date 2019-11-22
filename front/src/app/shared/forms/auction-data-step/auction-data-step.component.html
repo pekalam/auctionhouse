@@ -2,7 +2,7 @@
   <form class="form" [formGroup]="form">
 
     <mat-form-field id="name-form-field">
-      Auction name
+      <b>Auction name</b>
       <input matInput type="text" formControlName="name" (keydown)="onChange()" />
       <mat-error>
         <ng-container *ngIf="form.controls.name.errors">
@@ -32,9 +32,9 @@
         </mat-form-field>
       </div>
       <div class="g2">
-        <mat-form-field>
-          Start date
-          <input [matDatepicker]="picker1" matInput [(ngModel)]="defaultStartDate" formControlName="startDate"
+        <mat-form-field [hidden]="disable.startDate">
+          <b>Start date</b>
+          <input #startDatepicker [matDatepicker]="picker1" matInput [(ngModel)]="defaultStartDate" formControlName="startDate"
             (change)="onChange()" />
           <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1></mat-datepicker>
@@ -46,8 +46,8 @@
         </mat-form-field>
 
         <mat-form-field>
-          End date
-          <input [matDatepicker]="picker2" [(ngModel)]="defaultEndDate" matInput formControlName="endDate"
+          <b>End date</b>
+          <input #endDatepicker [matDatepicker]="picker2" [(ngModel)]="defaultEndDate" matInput formControlName="endDate"
             (change)="onChange()" />
           <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
           <mat-datepicker #picker2></mat-datepicker>

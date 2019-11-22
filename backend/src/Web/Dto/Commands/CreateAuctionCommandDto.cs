@@ -27,5 +27,6 @@ namespace Web.Dto.Commands
         public string CorrelationId { get; set; }
         public string[] Tags { get; set; }
         public string Name { get; set; }
+        public bool? BuyNowOnly { get; set; }
     }
 }

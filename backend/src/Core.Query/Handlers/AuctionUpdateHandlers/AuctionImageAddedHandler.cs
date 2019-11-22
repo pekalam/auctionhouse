@@ -28,7 +28,7 @@ namespace Core.Query.Handlers.AuctionUpdateHandlers
                 auctionEvent.AddedImage);
             try
             {
-                _dbContext.AuctionsReadModel.FindOneAndUpdate(filter, update);
+                _dbContext.AuctionsReadModel.UpdateMany(filter, update);
             }
             catch (Exception)
             {

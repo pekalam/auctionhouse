@@ -1,10 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule, MatExpansionModule, MatRadioModule, MatMenuModule, MatProgressSpinnerModule, MatTabsModule, MatPaginatorModule, MatDialogModule, MatInputModule, MatFormFieldModule, MatButtonModule, MatListModule, MatSelectModule, NativeDateModule, MatDatepickerModule, MatDialogRef, MAT_DIALOG_DATA, MAT_DATE_FORMATS, MatCheckbox, MatCheckboxModule, ErrorStateMatcher } from '@angular/material';
+import { MatTableModule, MatExpansionModule, MatRadioModule, MatMenuModule, MatProgressSpinnerModule, MatTabsModule, MatPaginatorModule,
+  MatDialogModule, MatInputModule, MatFormFieldModule, MatButtonModule, MatListModule, MatSelectModule, ErrorStateMatcher, MAT_DATE_LOCALE, MatDatepickerModule, MatCheckboxModule,
+  MAT_DATE_FORMATS } from '@angular/material';
 import { MatCardModule } from '@angular/material/card';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSliderModule } from '@angular/material/slider';
-import {MatTooltipModule} from '@angular/material/tooltip';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule} from '@angular/material-moment-adapter';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 export const MY_FORMATS = {
   parse: {
@@ -34,8 +38,8 @@ export const MY_FORMATS = {
     MatRadioModule,
     MatSelectModule,
     MatMenuModule,
-    NativeDateModule,
     MatDatepickerModule,
+    MatMomentDateModule,
     MatCardModule,
     MatTabsModule,
     MatSliderModule,
@@ -46,7 +50,9 @@ export const MY_FORMATS = {
   providers: [
     { provide: MatDialogRef, useValue: {} },
     { provide: MAT_DIALOG_DATA, useValue: [] },
-    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS }
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
+    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true }}
   ]
 })
 export class MaterialModule { }

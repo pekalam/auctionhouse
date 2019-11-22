@@ -3,5 +3,6 @@ export interface AuctionDataStep{
   startDate: Date;
   endDate: Date;
   buyNow: boolean;
+  auction: boolean;
   buyNowPrice: number;
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.Command.RemoveAuctionImage.Core.Command.RemoveAuctionImage;
 using Core.Common;
 using Core.Common.ApplicationServices;
 using Core.Common.Command;
@@ -18,8 +19,8 @@ namespace Core.Command.ReplaceAuctionImage.Core.Command.ReplaceAuctionImage
         private readonly EventBusService _eventBusService;
         private readonly ILogger<UserReplaceAuctionImageCommandHandler> _logger;
 
-        public UserReplaceAuctionImageCommandHandler(AuctionImageService auctionImageService, 
-            IAuctionRepository auctionRepository, EventBusService eventBusService, 
+        public UserReplaceAuctionImageCommandHandler(AuctionImageService auctionImageService,
+            IAuctionRepository auctionRepository, EventBusService eventBusService,
             ILogger<UserReplaceAuctionImageCommandHandler> logger) : base(logger)
         {
             _auctionImageService = auctionImageService;
@@ -28,7 +29,7 @@ namespace Core.Command.ReplaceAuctionImage.Core.Command.ReplaceAuctionImage
             _logger = logger;
         }
 
-        protected override Task<CommandResponse> HandleCommand(UserReplaceAuctionImageCommand request, CancellationToken cancellationToken)
+        private void ReplaceAuctionImage(UserReplaceAuctionImageCommand request, CancellationToken cancellationToken)
         {
             var auction = _auctionRepository.FindAuction(request.AuctionId);
             if (auction == null)
@@ -41,6 +42,7 @@ namespace Core.Command.ReplaceAuctionImage.Core.Command.ReplaceAuctionImage
 
             auction.ReplaceImage(newImg, request.ImgNum);
 
+            _auctionRepository.UpdateAuction(auction);
             try
             {
                 _eventBusService.Publish(auction.PendingEvents, request.CorrelationId, request);
@@ -51,7 +53,22 @@ namespace Core.Command.ReplaceAuctionImage.Core.Command.ReplaceAuctionImage
                 _auctionImageService.RemoveAuctionImage(newImg);
                 throw;
             }
-            _auctionRepository.UpdateAuction(auction);
+        }
+
+        protected override Task<CommandResponse> HandleCommand(UserReplaceAuctionImageCommand request,
+            CancellationToken cancellationToken)
+        {
+            AuctionLock.Lock(request.AuctionId);
+
+            try
+            {
+                ReplaceAuctionImage(request, cancellationToken);
+            }
+            finally
+            {
+                AuctionLock.ReleaseLock(request.AuctionId);
+            }
+
 
             var response = new CommandResponse(request.CorrelationId, Status.PENDING);
             return Task.FromResult(response);

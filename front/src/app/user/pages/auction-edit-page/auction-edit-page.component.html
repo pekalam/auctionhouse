@@ -4,7 +4,7 @@
       <mat-tab label="Categories">
         <div class="tab-content">
           <app-category-select-step #categoryForm [defaults]="auction.category"
-            (outputOnStepComplete)="onCategorySelectedStep($event)">
+            (outputOnStepComplete)="onCategoriesFormSubmit($event)">
           </app-category-select-step>
           <div style="text-align: center;">
             <hr>
@@ -14,7 +14,8 @@
       </mat-tab>
       <mat-tab label="Auction data">
         <div class="tab-content">
-          <app-auction-data-step #auctionDataForm [defaults]="auctionDataFormValues" (outputOnStepComplete)="onAuctionDataFormSubmit($event)"></app-auction-data-step>
+          <app-auction-data-step #auctionDataForm [defaults]="auctionDataFormValues" (outputOnStepComplete)="onAuctionDataFormSubmit($event)"
+           [disable]="{startDate: true}"></app-auction-data-step>
           <div style="text-align: center;">
             <hr>
             <button class="save-btn" (click)="auctionDataForm.onOkClick()" [disabled]="!auctionDataForm.ready">Save</button>

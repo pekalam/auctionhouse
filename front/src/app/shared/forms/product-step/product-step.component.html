@@ -1,8 +1,8 @@
 <div class="container">
   <form class="form-grid" [formGroup]="form">
     <div class="g1">
-      <mat-form-field id="product-name-field" [appVisible]="disable.productName">
-        Product name
+      <mat-form-field id="product-name-field" [hidden]="disable.productName">
+        <b>Product name</b>
         <input matInput type="text" formControlName="productName" (keyup)="onChange()" />
         <mat-error>
           <ng-container *ngIf="form.controls.productName.errors">
@@ -11,7 +11,7 @@
         </mat-error>
       </mat-form-field>
 
-      <p>Condition</p>
+      <p><b>Condition</b></p>
       <mat-radio-group formControlName="condition" [selected]="used">
           <mat-radio-button #used [value]="0">Used</mat-radio-button>
           <mat-radio-button #new [value]="1">New</mat-radio-button>
@@ -21,7 +21,7 @@
 
     <div class="g2">
       <mat-form-field>
-        Product description
+        <b>Product description</b>
         <textarea matInput formControlName="productDescription" (keyup)="onChange()"></textarea>
         <mat-error>
           <ng-container *ngIf="form.controls.productDescription.errors">

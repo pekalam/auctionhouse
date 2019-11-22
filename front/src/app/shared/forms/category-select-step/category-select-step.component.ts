@@ -71,7 +71,11 @@ export class CategorySelectStepComponent extends AuctionCreateStep<CategorySelec
     console.log("OK click");
 
     if (this.selectedMainCategory && this.selectedSubCategory && this.selectedSubCategory2) {
-      var step = new CategorySelectStep(this.selectedMainCategory, this.selectedSubCategory, this.selectedSubCategory2);
+      let step: CategorySelectStep = {
+        selectedMainCategory: this.selectedMainCategory,
+        selectedSubCategory: this.selectedSubCategory,
+        selectedSubCategory2: this.selectedSubCategory2
+      };
       this.completeStep(step);
     }
   }

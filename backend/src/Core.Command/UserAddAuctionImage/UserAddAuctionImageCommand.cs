@@ -21,6 +21,9 @@ namespace Core.Command.AddOrReplaceAuctionImage
         [Required]
         public CorrelationId CorrelationId { get; }
 
+        [SignedInUser]
+        public UserIdentity SignedInUser { get; set; }
+
         public UserAddAuctionImageCommand(Guid auctionId, AuctionImageRepresentation img, CorrelationId correlationId)
         {
             if (auctionId.Equals(Guid.Empty)) { throw new InvalidCommandException($"Invalid field AuctionId = {auctionId}"); }

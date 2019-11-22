@@ -7,7 +7,7 @@ import { Product } from '../models/Product';
 
 export class CreateAuctionCommandArgs {
   constructor(public buyNowPrice: number | null, public startDate: Date, public endDate: Date, public category: Array<string>
-              , public correlationId: string, public product: Product, public tags: string[], public name: string) {
+              , public correlationId: string, public product: Product, public tags: string[], public name: string, public buyNowOnly: boolean) {
 
   }
 }
@@ -24,6 +24,7 @@ export class CreateAuctionCommand {
 
   execute(commandArgs: CreateAuctionCommandArgs): Observable<ServerMessage> {
     const url = '/api/createAuction';
+    console.log(commandArgs);
 
     this.httpClient.post(url, commandArgs).subscribe((o) => {
       console.log(o);

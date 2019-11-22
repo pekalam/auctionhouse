@@ -281,7 +281,7 @@ namespace Core.DomainModelTests
         {
             var end = auction.EndDate;
 
-            auction.SetEndDate(end.Value.AddDays(12));
+            auction.UpdateEndDate(end.Value.AddDays(12));
 
             auction.EndDate.Value.Should()
                 .Be(end.Value.AddDays(12));
@@ -290,8 +290,8 @@ namespace Core.DomainModelTests
         [Test]
         public void ChangeEndDate_when_invalid_endDate_throws()
         {
-            Assert.Throws<DomainException>(() => auction.SetEndDate(auction.StartDate));
-            Assert.Throws<DomainException>(() => auction.SetEndDate(auction.StartDate.Value.AddDays(-1)));
+            Assert.Throws<DomainException>(() => auction.UpdateEndDate(auction.StartDate));
+            Assert.Throws<DomainException>(() => auction.UpdateEndDate(auction.StartDate.Value.AddDays(-1)));
         }
 
         [Test]
@@ -453,7 +453,7 @@ namespace Core.DomainModelTests
         {
             var image = new AuctionImage("id1", "id2", "id3");
             auction.MarkPendingEventsAsHandled();
-            for (int i = 1; i < Auction.MAX_IMAGES; i++)
+            for (int i = 1; i <= Auction.MAX_IMAGES; i++)
             {
                 auction.AddImage(image);
             }
@@ -488,9 +488,9 @@ namespace Core.DomainModelTests
         [Test]
         public void When_built_from_events_containing_update_event_group_builds_valid_object()
         {
-            auction.SetBuyNowPrice(300m);
-            auction.SetTags(new Tag[]{new Tag("update test1"), new Tag("update test2")});
-            auction.SetCategory(new Category("update test category", 1));
+            auction.UpdateBuyNowPrice(300m);
+            auction.UpdateTags(new Tag[]{new Tag("update test1"), new Tag("update test2")});
+            auction.UpdateCategory(new Category("update test category", 1));
 
             var recreated = Auction.FromEvents(auction.PendingEvents);
 

@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Core.Common;
 using Core.Common.ApplicationServices;
@@ -24,7 +25,7 @@ namespace Core.Command.RemoveAuctionImage.Core.Command.RemoveAuctionImage
             _logger = logger;
         }
 
-        protected override Task<CommandResponse> HandleCommand(UserRemoveAuctionImageCommand request, CancellationToken cancellationToken)
+        private void RemoveAuctionImage(UserRemoveAuctionImageCommand request, CancellationToken cancellationToken)
         {
             var auction = _auctionRepository.FindAuction(request.AuctionId);
             if (auction == null)
@@ -36,8 +37,24 @@ namespace Core.Command.RemoveAuctionImage.Core.Command.RemoveAuctionImage
             auction.RemoveImage(request.ImgNum);
 
 
-            _eventBusService.Publish(auction.PendingEvents, request.CorrelationId, request);
             _auctionRepository.UpdateAuction(auction);
+            _eventBusService.Publish(auction.PendingEvents, request.CorrelationId, request);
+        }
+
+        protected override Task<CommandResponse> HandleCommand(UserRemoveAuctionImageCommand request,
+            CancellationToken cancellationToken)
+        {
+            AuctionLock.Lock(request.AuctionId);
+
+            try
+            {
+                RemoveAuctionImage(request, cancellationToken);
+            }
+            finally
+            {
+                AuctionLock.ReleaseLock(request.AuctionId);
+            }
+
 
             var response = new CommandResponse(request.CorrelationId, Status.PENDING);
             return Task.FromResult(response);

@@ -41,8 +41,13 @@ export interface ProductFormValues {
 })
 export class ProductStepComponent extends AuctionCreateStep<ProductFormResult> implements OnInit {
 
-  @Input()
-  disable: {productName: boolean} = {productName: false};
+  @Input('disable')
+  set setDisable(obj) {
+    Object.assign(this.disable, obj);
+  }
+
+  disable: { productName: boolean } = { productName: false };
+
 
   @Input('defaults')
   set setDefaults(defaults: ProductFormValues) {
