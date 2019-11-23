@@ -11,6 +11,5 @@ namespace Web.Dto.Commands
     {
         public string AuctionId { get; set; }
         public decimal Price { get; set; }
-        public string CorrelationId { get; set; }
     }
 }

@@ -7,7 +7,6 @@
       <div class="text">{{stepComponents[step].titleMsg}}</div>
       <hr>
     </div>
-    <div class="container">
       <app-category-select-step #categoryStep (outputOnStepComplete)="onCategorySelectedStep($event)"
         [hidden]="categoryStep !== stepComponents[step]"></app-category-select-step>
       <app-auction-data-step #auctionDataStep (outputOnStepComplete)="onAuctionDataStep($event)"
@@ -19,7 +18,6 @@
       </app-add-image-step>
       <app-create-summary-step #summaryStep [commandArgs]="createAuctionArgs" (outputOnStepComplete)="onSummaryStep()"
         [hidden]="summaryStep !== stepComponents[step]"></app-create-summary-step>
-    </div>
     <div class="create-container">
       <button class="cancel-btn" (click)="location.back()">Cancel</button>
       <button class="create-btn" (click)="onOkClick()" *ngIf="stepComponents[step].ready">

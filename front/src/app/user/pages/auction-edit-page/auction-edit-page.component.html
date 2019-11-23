@@ -4,7 +4,7 @@
       <mat-tab label="Categories">
         <div class="tab-content">
           <app-category-select-step #categoryForm [defaults]="auction.category"
-            (outputOnStepComplete)="onCategoriesFormSubmit($event)">
+            (outputOnStepComplete)="onCategoriesFormSubmit($event)" style="margin: 0 auto;">
           </app-category-select-step>
           <div style="text-align: center;">
             <hr>
@@ -15,7 +15,7 @@
       <mat-tab label="Auction data">
         <div class="tab-content">
           <app-auction-data-step #auctionDataForm [defaults]="auctionDataFormValues" (outputOnStepComplete)="onAuctionDataFormSubmit($event)"
-           [disable]="{startDate: true}"></app-auction-data-step>
+           [disable]="{startDate: true}" style="margin: 0 auto;"></app-auction-data-step>
           <div style="text-align: center;">
             <hr>
             <button class="save-btn" (click)="auctionDataForm.onOkClick()" [disabled]="!auctionDataForm.ready">Save</button>
@@ -25,7 +25,7 @@
       <mat-tab label="Item data">
         <div class="tab-content">
           <app-product-step #productForm [defaults]="productFormDefaultValues"
-            (outputOnStepComplete)="onProductFormSubmit($event)" [disable]="{productName: true}"></app-product-step>
+            (outputOnStepComplete)="onProductFormSubmit($event)" [disable]="{productName: true}" style="margin: 0 auto;"></app-product-step>
           <div style="text-align: center;">
             <hr>
             <button class="save-btn" (click)="productForm.onOkClick()" [disabled]="!productForm.ready">Save</button>
@@ -34,7 +34,7 @@
       </mat-tab>
       <mat-tab label="Images">
         <div class="tab-content">
-          <app-add-image-step #imageStep [defaults]="auctionImagesFormValues" (imgSelected)="onImageSelected($event)" (outputOnStepComplete)="onImagesFormSubmit($event)"></app-add-image-step>
+          <app-add-image-step #imageStep [defaults]="auctionImagesFormValues" (imgSelected)="onImageSelected($event)" (outputOnStepComplete)="onImagesFormSubmit($event)" style="margin: 0 auto;"></app-add-image-step>
 
           <div style="text-align: center;">
             <hr>

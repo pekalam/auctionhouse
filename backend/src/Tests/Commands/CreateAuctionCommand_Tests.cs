@@ -111,7 +111,7 @@ namespace FunctionalTests.Commands
             var command = new CreateAuctionCommand(Decimal.One,
                 new Product("name", "desc", Condition.New),
                 startDate, endDate,
-                categories, new CorrelationId(""), Tag.From(new []{"tag1"}), "test name");
+                categories, Tag.From(new []{"tag1"}), "test name", false);
             command.SignedInUser = user.UserIdentity;
 
             testCommandHandler.Handle(command, CancellationToken.None)
@@ -132,7 +132,7 @@ namespace FunctionalTests.Commands
             testCommandHandler.AuctionRepositoryThrows = true;
             var command = new CreateAuctionCommand(Decimal.One,
                 new Product("name", "desc", Condition.New),
-                startDate, endDate, categories, new CorrelationId(""), Tag.From(new []{"tag1"}), "test name");
+                startDate, endDate, categories, Tag.From(new []{"tag1"}), "test name", false);
             command.SignedInUser = user.UserIdentity;
 
 
@@ -155,7 +155,7 @@ namespace FunctionalTests.Commands
             var command = new CreateAuctionCommand(Decimal.One,
                 new Product("name", "desc", Condition.New),
                 startDate,
-                endDate, categories, new CorrelationId(""), Tag.From(new []{"tag1"}), "test name");
+                endDate, categories, Tag.From(new []{"tag1"}), "test name", false);
             command.SignedInUser = user.UserIdentity;
 
 
@@ -233,14 +233,14 @@ namespace FunctionalTests.Commands
             base.ScheduleAuctionEndTask_Rollback(auction, context);
         }
 
-        protected override void PublishEvents(Auction auction, User user, CreateAuctionCommand createAuctionCommand)
+        protected override void PublishEvents(Auction auction, User user, CreateAuctionCommand createAuctionCommand, CorrelationId correlationId)
         {
             if (EventBusThrows)
             {
                 throw new NotImplementedException();
             }
 
-            base.PublishEvents(auction, user, createAuctionCommand);
+            base.PublishEvents(auction, user, createAuctionCommand, correlationId);
         }
     }
 

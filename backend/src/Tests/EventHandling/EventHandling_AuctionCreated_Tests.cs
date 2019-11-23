@@ -10,7 +10,7 @@ using Core.Common.Domain.Categories;
 using Core.Common.Domain.Products;
 using Core.Common.Domain.Users;
 using Core.Common.EventBus;
-using Core.Common.EventSignalingService;
+using Core.Common.RequestStatusService;
 using Core.Query.Handlers;
 using Core.Query.ReadModel;
 using FluentAssertions;
@@ -28,7 +28,7 @@ namespace FunctionalTests.EventHandling
         public Action<IAppEvent<AuctionCreated>> OnConsumeCalled { get; set; }
 
         public TestAuctionCreatedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext,
-            IEventSignalingService eventSignalingService) : base(appEventBuilder, dbContext, eventSignalingService)
+            IRequestStatusService requestStatusService) : base(appEventBuilder, dbContext, requestStatusService)
         {
         }
 
@@ -109,7 +109,7 @@ namespace FunctionalTests.EventHandling
             };
             var cmd = new CreateAuctionCommand(20.0m, product, DateTime.UtcNow.AddMinutes(20),
                 DateTime.UtcNow.AddDays(12),
-                categories, correlationId, Tag.From(new[] {"tag1"}), "test name");
+                categories, Tag.From(new[] {"tag1"}), "test name", false);
             cmd.SignedInUser = user.UserIdentity;
             return cmd;
         }
@@ -138,7 +138,7 @@ namespace FunctionalTests.EventHandling
             CorrelationId correlationIdFromHandler = null;
 
 
-            var eventHandler = new TestAuctionCreatedHandler(services.AppEventBuilder, services.DbContext, Mock.Of<IEventSignalingService>());
+            var eventHandler = new TestAuctionCreatedHandler(services.AppEventBuilder, services.DbContext, Mock.Of<IRequestStatusService>());
             eventHandler.OnConsumeCalled = ev =>
             {
                 Assert.True(VerifyEvent(ev.Event, command));

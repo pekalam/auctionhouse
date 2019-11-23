@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 export interface TopAuctionQueryItem {
   auctionId: string;
   auctionName: string;
+  auctionImage: {size1Id: string, size2Id: string, size3Id: string};
 }
 
 export interface TopAuctionsQueryResult {

@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
+using Core.Command.ChangePassword;
 using Core.Command.SignIn;
 using Core.Command.SignUp;
 using Core.Common;
@@ -30,11 +31,10 @@ namespace Web.Api
         }
 
         [HttpPost("signup")]
-        public async Task<ActionResult<CommandResponse>> SignUp([FromBody] SignUpCommandDto signUpCommandDto)
+        public async Task<ActionResult<RequestStatus>> SignUp([FromBody] SignUpCommandDto signUpCommandDto)
         {
-            var signUpCommand = new SignUpCommand(signUpCommandDto.Username, signUpCommandDto.Password,
-                new CorrelationId(signUpCommandDto.CorrelationId));
-            var response = (CommandResponseDto) await _mediator.Send(signUpCommand);
+            var signUpCommand = new SignUpCommand(signUpCommandDto.Username, signUpCommandDto.Password);
+            var response = (RequestStatusDto) await _mediator.Send(signUpCommand);
             return Ok(response);
         }
 
@@ -45,7 +45,7 @@ namespace Web.Api
             var response = await _mediator.Send(signInCommand);
             if (response.Status == Status.COMPLETED)
             {
-                var userIdentity = (UserIdentity)response.ResponseData;
+                var userIdentity = (UserIdentity)response.ExtraData["UserIdentity"];
                 var token = _jwtService.IssueToken(userIdentity.UserId, userIdentity.UserName);
 
                 return Ok(token);
@@ -54,6 +54,17 @@ namespace Web.Api
             {
                 return Forbid();
             }
+        }
+
+        [HttpPost("changePassword")]
+        public async Task<ActionResult<RequestStatus>> ChangePassword([FromBody] ChangePasswordCommandDto commandDto)
+        {
+            var cmd = new ChangePasswordCommand()
+            {
+                NewPassword = commandDto.NewPassword
+            };
+            var result = await _mediator.Send(cmd);
+            return result;
         }
     }
 }

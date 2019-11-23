@@ -1,29 +1,15 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Core.Common;
 using Core.Common.ApplicationServices;
 using Core.Common.Auth;
 using Core.Common.Command;
 using Core.Common.Domain.Users;
-using Core.Common.EventSignalingService;
-using Core.Common.Exceptions.Command;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Command.SignUp
 {
-    public class UsernameConflictException : CommandException
-    {
-        public UsernameConflictException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        public UsernameConflictException(string message) : base(message)
-        {
-        }
-    }
-
     public class SignUpCommandHandler : CommandHandlerBase<SignUpCommand>
     {
         private readonly EventBusService _eventBusService;
@@ -39,7 +25,7 @@ namespace Core.Command.SignUp
             _logger = logger;
         }
 
-        protected override Task<CommandResponse> HandleCommand(SignUpCommand request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(SignUpCommand request, CancellationToken cancellationToken)
         {
             var existing = _userAuthenticationDataRepository.FindUserAuth(request.UserName);
             if (existing != null)
@@ -51,6 +37,7 @@ namespace Core.Command.SignUp
             var user = new User();
             user.Register(request.UserName);
 
+            var response = new RequestStatus(Status.COMPLETED);
             var userAuth = new UserAuthenticationData()
             {
                 Password = request.Password,
@@ -59,10 +46,9 @@ namespace Core.Command.SignUp
             };
             _userAuthenticationDataRepository.AddUserAuth(userAuth);
             _userRepository.AddUser(user);
-            _eventBusService.Publish(user.PendingEvents, request.CorrelationId, request);
+            _eventBusService.Publish(user.PendingEvents, response.CorrelationId, request);
             user.MarkPendingEventsAsHandled();
 
-            var response = new CommandResponse(request.CorrelationId, Status.COMPLETED);
             return Task.FromResult(response);
         }
     }

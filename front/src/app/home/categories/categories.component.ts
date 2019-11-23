@@ -19,7 +19,7 @@ export class CategoriesComponent implements OnInit {
 
   mobile = false;
 
-  constructor(private categoriesQuery: CategoriesQuery, private router: Router, private breakpointObserver: BreakpointObserver) { }
+  constructor(private categoriesQuery: CategoriesQuery, public router: Router, private breakpointObserver: BreakpointObserver) { }
 
   ngOnInit() {
     this.categoriesQuery
@@ -44,5 +44,13 @@ export class CategoriesComponent implements OnInit {
 
   hideSubcategories() {
     this.subcategoriesShown = false;
+  }
+
+  toggleSubcategories(category: CategoryTreeNode) {
+    if (this.subcategoriesShown) {
+      this.hideSubcategories();
+    } else {
+      this.showSubcategories(category);
+    }
   }
 }

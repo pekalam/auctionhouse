@@ -3,22 +3,18 @@
 
 
 .container {
-  width: 90%;
+  width: fit-content;
   text-align: center;
-  * {
-    width: 100%;
-  }
   mat-form-field {
     display: block;
   }
   .content-block{
-    padding-bottom: 15px;
+    padding-bottom: 5px;
   }
 }
 
 .navig-btn-container {
   position: absolute;
-  width: 90%;
   display: flex;
   justify-content: space-between;
   .nav-btn {
@@ -56,7 +52,6 @@
   font-size: 16px;
   font-weight: bold;
   color: #5c5c5c;
-  width: 90%;
   margin: 0 auto;
   background-color: white;
   * {

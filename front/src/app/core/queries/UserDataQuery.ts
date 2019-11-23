@@ -9,7 +9,7 @@ export interface UserAddress{
 }
 
 export interface UserData{
-  userName: string;
+  username: string;
   address: UserAddress;
 }
 

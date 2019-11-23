@@ -12,14 +12,11 @@ namespace Core.Command.SignUp
         public string UserName { get; }
         [Required]
         public string Password { get; }
-        [Required]
-        public CorrelationId CorrelationId { get; }
 
-        public SignUpCommand(string userName, string password, CorrelationId correlationId)
+        public SignUpCommand(string userName, string password)
         {
             UserName = userName;
             Password = password;
-            CorrelationId = correlationId;
         }
     }
 }

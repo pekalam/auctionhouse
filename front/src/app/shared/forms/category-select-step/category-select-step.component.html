@@ -4,8 +4,8 @@
       <h4>Main category</h4>
       <mat-select (selectionChange)="selectMainCategory($event.value)" [value]="defaults ? defaults.name : ''">
         <mat-option selected></mat-option>
-        <ng-container *ngFor="let cat of mainCategories">
-          <mat-option [value]="cat.categoryName">{{cat.categoryName}}</mat-option>
+        <ng-container *ngFor="let cat of mainCategories; let i = index">
+          <mat-option [id]="'main-cat-' + i" [value]="cat.categoryName">{{cat.categoryName}}</mat-option>
         </ng-container>
       </mat-select>
     </mat-form-field>
@@ -15,8 +15,8 @@
       <h4>Subcategory</h4>
       <mat-select (selectionChange)="selectSubCategory($event.value)" [value]="defaults ? defaults.subCategory.name : ''">
         <mat-option selected></mat-option>
-        <ng-container *ngFor="let cat of subCategories">
-          <mat-option [value]="cat.categoryName">{{cat.categoryName}}</mat-option>
+        <ng-container *ngFor="let cat of subCategories; let i = index">
+          <mat-option [id]="'sub-cat-' + i" [value]="cat.categoryName">{{cat.categoryName}}</mat-option>
         </ng-container>
       </mat-select>
     </mat-form-field>
@@ -26,8 +26,8 @@
       <h4>Second subcategory</h4>
       <mat-select (selectionChange)="selectSubCategory2($event.value)" [value]="defaults ? defaults.subCategory.subCategory.name : ''">
         <mat-option selected></mat-option>
-        <ng-container *ngFor="let cat of subCategories2">
-          <mat-option [value]="cat.categoryName">{{cat.categoryName}}</mat-option>
+        <ng-container *ngFor="let cat of subCategories2; let i = index">
+          <mat-option [id]="'sub2-cat-' + i" [value]="cat.categoryName">{{cat.categoryName}}</mat-option>
         </ng-container>
       </mat-select>
     </mat-form-field>

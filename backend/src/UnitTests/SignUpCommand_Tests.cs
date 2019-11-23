@@ -38,7 +38,7 @@ namespace UnitTests
             var password = "pass";
 
             var authRepo = new Mock<IUserAuthenticationDataRepository>();
-            var command = new SignUpCommand(username, password, new CorrelationId("123"));
+            var command = new SignUpCommand(username, password);
 
             UserIdentity userIdentity = null;
             var mockEventBusService = new Mock<EventBusService>(Mock.Of<IEventBus>(), Mock.Of<IAppEventBuilder>());
@@ -84,7 +84,7 @@ namespace UnitTests
                     Password = password
                 });
 
-            var command = new SignUpCommand(username, password, new CorrelationId("123"));
+            var command = new SignUpCommand(username, password);
 
             var mockEventBusService = new Mock<EventBusService>(Mock.Of<IEventBus>(), Mock.Of<IAppEventBuilder>());
             mockEventBusService

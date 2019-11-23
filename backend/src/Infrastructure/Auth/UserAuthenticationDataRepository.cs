@@ -31,5 +31,16 @@ namespace Infrastructure.Auth
             _dbContext.UserAuth.InsertOne(UserAuthenticationDataAssembler.From(userAuthenticationData));
             return userAuthenticationData;
         }
+
+        public void SaveUserAuth(UserAuthenticationData userAuthenticationData)
+        {
+            var filter = Builders<UserAuthenticationDataMongo>.Filter.Eq(auth => auth.UserId, userAuthenticationData.UserId);
+            var update =
+                Builders<UserAuthenticationDataMongo>.Update.Set(auth => auth.Password,
+                    userAuthenticationData.Password);
+
+
+            _dbContext.UserAuth.UpdateOne(filter, update);
+        }
     }
 }

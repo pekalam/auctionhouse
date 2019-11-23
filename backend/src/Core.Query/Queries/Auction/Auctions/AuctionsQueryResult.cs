@@ -15,6 +15,7 @@ namespace Core.Query.Queries.Auction.Auctions
         public string AuctionId { get; set; }
         public UserIdentityRead Creator { get; set; }
         public string ProductName { get; set; }
+        public string Name { get; set; }
         public Condition Condition { get; set; }
         public Category Category { get; set; }
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]

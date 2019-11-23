@@ -31,9 +31,9 @@ export class BidCreatePageComponent implements OnInit{
     if (this.form.valid) {
 
       this.bidCommand
-        .execute(this.auction.auctionId, this.form.value.price, '1234')
+        .execute(this.auction.auctionId, this.form.value.price)
         .subscribe((msg: ServerMessage) => {
-          if (msg.result === 'completed') {
+          if (msg.status === 'COMPLETED') {
             this.router.navigate(['/auction'], { queryParams: { auctionId: this.auction.auctionId } });
           } else {
             console.log('error ' + msg);

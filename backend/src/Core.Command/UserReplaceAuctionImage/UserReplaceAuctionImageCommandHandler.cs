@@ -7,6 +7,7 @@ using Core.Common.ApplicationServices;
 using Core.Common.Command;
 using Core.Common.Domain.Auctions;
 using Core.Common.DomainServices;
+using Core.Common.EventBus;
 using Core.Common.Exceptions.Command;
 using Microsoft.Extensions.Logging;
 
@@ -29,7 +30,7 @@ namespace Core.Command.ReplaceAuctionImage.Core.Command.ReplaceAuctionImage
             _logger = logger;
         }
 
-        private void ReplaceAuctionImage(UserReplaceAuctionImageCommand request, CancellationToken cancellationToken)
+        private void ReplaceAuctionImage(UserReplaceAuctionImageCommand request, CancellationToken cancellationToken, CorrelationId correlationId)
         {
             var auction = _auctionRepository.FindAuction(request.AuctionId);
             if (auction == null)
@@ -45,7 +46,7 @@ namespace Core.Command.ReplaceAuctionImage.Core.Command.ReplaceAuctionImage
             _auctionRepository.UpdateAuction(auction);
             try
             {
-                _eventBusService.Publish(auction.PendingEvents, request.CorrelationId, request);
+                _eventBusService.Publish(auction.PendingEvents, correlationId, request);
             }
             catch (Exception e)
             {
@@ -55,14 +56,14 @@ namespace Core.Command.ReplaceAuctionImage.Core.Command.ReplaceAuctionImage
             }
         }
 
-        protected override Task<CommandResponse> HandleCommand(UserReplaceAuctionImageCommand request,
+        protected override Task<RequestStatus> HandleCommand(UserReplaceAuctionImageCommand request,
             CancellationToken cancellationToken)
         {
             AuctionLock.Lock(request.AuctionId);
-
+            var response = new RequestStatus(Status.PENDING);
             try
             {
-                ReplaceAuctionImage(request, cancellationToken);
+                ReplaceAuctionImage(request, cancellationToken, response.CorrelationId);
             }
             finally
             {
@@ -70,7 +71,6 @@ namespace Core.Command.ReplaceAuctionImage.Core.Command.ReplaceAuctionImage
             }
 
 
-            var response = new CommandResponse(request.CorrelationId, Status.PENDING);
             return Task.FromResult(response);
         }
     }

@@ -17,17 +17,17 @@ class SelectCategoryPageObj {
 
   static selectCat1() {
     cy.get("#mat-select-0", { timeout: 10000 }).click();
-    cy.get("#mat-option-3", { timeout: 10000 }).click();
+    cy.get("#main-cat-0", { timeout: 10000 }).click();
   }
 
   static selectCat2() {
     cy.get("#mat-select-1", { timeout: 10000 }).click();
-    cy.get("#mat-option-12", { timeout: 10000 }).click();
+    cy.get("#sub-cat-0", { timeout: 10000 }).click();
   }
 
   static selectCat3() {
     cy.get("#mat-select-2", { timeout: 10000 }).click();
-    cy.get("#mat-option-23", { timeout: 10000 }).click();
+    cy.get("#sub2-cat-0", { timeout: 10000 }).click();
   }
 
   static fillAllFields() {
@@ -45,9 +45,9 @@ class SelectCategoryPageObj {
   }
 }
 
-class AuctionDataStepPagObj{
-  static typeAuctionName(name){
-    cy.get('input[formcontrolname=name]').type(name);
+class AuctionDataStepPagObj {
+  static typeAuctionName(name) {
+    cy.get("input[formcontrolname=name]").type(name);
   }
 
   static buyNow(isBuyNow) {
@@ -59,7 +59,7 @@ class AuctionDataStepPagObj{
       : cy.get("input[formcontrolname=buyNowPrice]").should("not.be.enabled");
   }
 
-  static buyNowPrice(price){
+  static buyNowPrice(price) {
     cy.get("input[formcontrolname=buyNowPrice]").type(price);
   }
 
@@ -138,7 +138,7 @@ class AddImagesPageObj {
   }
 }
 
-function listenForServerEvent(evName) {
+function listenForRequestCompletion() {
   return new Promise((resolve, reject) => {
     let jwt = localStorage.getItem("user");
     console.log(jwt);
@@ -153,23 +153,17 @@ function listenForServerEvent(evName) {
       reject();
     });
 
-    connection.on("completed", (eventName, correlationId, values) =>
-      evName == eventName
-        ? resolve({
-            result: "completed",
-            eventName,
-            correlationId,
-            values
-          })
-        : null
+    connection.on("completed", responseStatus =>
+      resolve({
+        correlationId: responseStatus.correlationId,
+        status: responseStatus.status
+      })
     );
 
-    connection.on("failure", (eventName, correlationId, values) =>
+    connection.on("failed", responseStatus =>
       resolve({
-        result: "failure",
-        eventName,
-        correlationId,
-        values
+        correlationId: responseStatus.correlationId,
+        status: responseStatus.status
       })
     );
 
@@ -197,11 +191,13 @@ describe("Auction create page steps", function() {
 
     cy.get("input[formcontrolname=username]").type("test");
     cy.get("input[formcontrolname=password]").type("pass");
-    cy.get("#sign-in-button").click();
-
-    cy.wait("@api").then(xhr => {
-      assert.equal(xhr.status, 200, "User test should be able to sign in");
-    });
+    cy.get("#sign-in-button")
+      .click()
+      .then(() => {
+        cy.wait("@api").then(xhr => {
+          assert.equal(xhr.status, 200, "User test should be able to sign in");
+        });
+      });
   });
 
   it("Shows page after successful login", function() {
@@ -211,7 +207,7 @@ describe("Auction create page steps", function() {
       url: "/api/createAuction"
     }).as("api");
 
-    let prom = listenForServerEvent("auctionCreated");
+    let prom = listenForRequestCompletion("auctionCreated");
 
     cy.url().should("eq", "http://localhost:4200/home");
     cy.get("#sell-btn").click();
@@ -224,8 +220,8 @@ describe("Auction create page steps", function() {
     cy.get(".back").should("be.visible");
     AuctionDataStepPagObj.fillAllFields();
     cy.get(".create-btn")
-    .should("be.visible")
-    .click();
+      .should("be.visible")
+      .click();
     cy.get(".back").should("be.visible");
     ProductStepPageObj.fillAllFields();
     cy.get(".create-btn")
@@ -243,28 +239,29 @@ describe("Auction create page steps", function() {
         const txt = $el.text().toString();
         expect(txt).to.have.string("Create auction");
       })
-      .click();
+      .click()
+      .then(_ => {
+        cy.wait("@api")
+          .then(xhr => {
+            assert.equal(
+              xhr.status,
+              200,
+              "Create auction request should respond with 200 status code"
+            );
+            timeout = setTimeout(() => {
+              console.log(
+                "Create auction server message was not received within given time"
+              );
+              assert.fail();
+            }, 7000);
+            return prom;
+          })
+          .then(result => {
+            console.log("RESOLVED: " + result.correlationId);
+            clearTimeout(timeout);
+          });
+      });
 
     var timeout;
-
-    cy.wait("@api")
-      .then(xhr => {
-        assert.equal(
-          xhr.status,
-          200,
-          "Create auction request should respond with 200 status code"
-        );
-        timeout = setTimeout(() => {
-          console.log(
-            "Create auction server message was not received within given time"
-          );
-          assert.fail();
-        }, 7000);
-        return prom;
-      })
-      .then(result => {
-        console.log("RESOLVED: " + result.eventName);
-        clearTimeout(timeout);
-      });
   });
 });

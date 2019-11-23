@@ -16,6 +16,61 @@
   }
 }
 
+#auction-container{
+  height: 100%;
+}
+
+@keyframes fadeIn{
+  0% {
+    opacity:0;
+  }
+  100% {
+    opacity:1;
+  }
+}
+
+.next-btn-container{
+  display: flex;
+  justify-content: space-between;
+  clear: both;
+  height: 0;
+}
+
+.next-btn{
+  position: relative;
+  width: 50px;
+  height: 270px;
+  top: -270px;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 990;
+  visibility: visible;
+  display: inline-flex;
+  cursor: pointer;
+  &:hover{
+    background-color: #eceff138;
+  }
+}
+
+.progress-container{
+  text-align: center;
+  .progress{
+    width: 70%;
+    display: inline-flex;
+    .progress-element{
+      float: left;
+      height: 6px;
+      background-color: #e6e6e6;
+      flex-grow: 1;
+    }
+    .progress-element-active{
+      background-color: #8f8ffd;
+    }
+  }
+}
+
+
 .current-price{
   font-weight: bold;
   font-size: 16px;

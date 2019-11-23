@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { UserDataQuery, UserData } from '../../../../../core/queries/UserDataQuery';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ChangePasswordCommand } from '../../../../../core/commands/ChangePasswordCommand';
+
 
 @Component({
   selector: 'app-user-data-page',
@@ -9,19 +12,38 @@ import { UserDataQuery, UserData } from '../../../../../core/queries/UserDataQue
 export class UserDataPageComponent implements OnInit {
 
   userData: UserData;
-  error: string;
+  changePasswordForm = new FormGroup({
+    password: new FormControl('', [Validators.required, Validators.minLength(4)]),
+    confirm: new FormControl('', [Validators.required, Validators.minLength(4)])
+  });
+  editPassword = false;
+  passwordsMatch = true;
+  accountLoading = false;
 
-  constructor(userDataQuery: UserDataQuery) {
+  constructor(userDataQuery: UserDataQuery, private changePasswordCommand: ChangePasswordCommand) {
     userDataQuery.execute().subscribe((data) => {
-      this.displayFetchedData(data);
-    })
+      this.userData = data;
+    });
   }
 
-  displayFetchedData(data){
-    if (data) {
-      this.userData = data;
-    }else{
-      this.error = "Cannot fetch user data"
+  onConfirmType() {
+    if (this.changePasswordForm.value.confirm !== this.changePasswordForm.value.password) {
+      this.passwordsMatch = false;
+      this.changePasswordForm.controls.confirm.setErrors({ match: false });
+    } else {
+      this.passwordsMatch = true;
+      this.changePasswordForm.controls.confirm.setErrors(null);
+    }
+  }
+
+  onPasswordChangeFormSubmit() {
+    if (this.changePasswordForm.valid && this.passwordsMatch) {
+      this.accountLoading = true;
+      this.changePasswordCommand.execute(this.changePasswordForm.value.password)
+      .subscribe((v) => {
+        this.accountLoading = false;
+        this.editPassword = false;
+      }, (err) => console.log(err));
     }
   }
 

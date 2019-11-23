@@ -1,5 +1,18 @@
 @import 'global';
 
+$width: 900px;
+
+:host{
+  display: block;
+  width: $width;
+}
+
+@media only screen and (max-width: $width + 20px) {
+  :host{
+    width: 90vw;
+  }
+}
+
 h4{
   margin-bottom: 0;
 }

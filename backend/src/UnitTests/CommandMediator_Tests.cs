@@ -51,7 +51,7 @@ namespace UnitTests.CommandMediator_Tests
         [Test]
         public async Task Send_when_valid_command_passed_returns_response()
         {
-            var expectedResponse = new CommandResponse(Status.COMPLETED);
+            var expectedResponse = new RequestStatus(Status.COMPLETED);
             var mockMediatr = new Mock<IMediator>();
             mockMediatr
                 .Setup(f => f.Send(It.IsAny<TestCommand>(), It.IsAny<CancellationToken>()))
@@ -69,7 +69,7 @@ namespace UnitTests.CommandMediator_Tests
         [Test]
         public void Send_when_command_with_authorization_required_attribute_and_not_signed_in_throws()
         {
-            var expectedResponse = new CommandResponse(Status.COMPLETED);
+            var expectedResponse = new RequestStatus(Status.COMPLETED);
             var mockMediatr = new Mock<IMediator>();
 
             var stubUserIdentityService = new Mock<IUserIdentityService>();
@@ -84,7 +84,7 @@ namespace UnitTests.CommandMediator_Tests
             Assert.ThrowsAsync<NotSignedInException>(async () => await mediator.Send(new TestCommandAuth()));
         }
 
-        public bool VerifyTestCommand(IRequest<CommandResponse> req)
+        public bool VerifyTestCommand(IRequest<RequestStatus> req)
         {
             var cmd = (TestCommandAuthWithSignedUser) req;
             cmd.SignedInUser.UserName.Should().Be("test");
@@ -94,9 +94,9 @@ namespace UnitTests.CommandMediator_Tests
         [Test]
         public void Send_when_command_with_authorization_required_attribute_and_signed_in_sets_user_prop()
         {
-            var expectedResponse = new CommandResponse(Status.COMPLETED);
+            var expectedResponse = new RequestStatus(Status.COMPLETED);
             var mockMediatr = new Mock<IMediator>();
-            mockMediatr.Setup(f => f.Send(It.Is<IRequest<CommandResponse>>(
+            mockMediatr.Setup(f => f.Send(It.Is<IRequest<RequestStatus>>(
                     request => VerifyTestCommand(request)
                     ),
                 It.IsAny<CancellationToken>()));

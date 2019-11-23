@@ -5,7 +5,7 @@ using System.Text;
 using Core.Common.Domain.Auctions.Events;
 using Core.Common.Domain.Auctions.Events.Update;
 using Core.Common.EventBus;
-using Core.Common.EventSignalingService;
+using Core.Common.RequestStatusService;
 using Core.Query.ReadModel;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
@@ -16,14 +16,14 @@ namespace Core.Query.Handlers.AuctionUpdateHandlers
     public class AuctionUpdatedHandler : EventConsumer<AuctionUpdateEventGroup>
     {
         private ReadModelDbContext _dbContext;
-        private readonly IEventSignalingService _eventSignalingService;
+        private readonly IRequestStatusService _requestStatusService;
         private readonly ILogger<AuctionUpdatedHandler> _logger;
 
         public AuctionUpdatedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext,
-            IEventSignalingService eventSignalingService, ILogger<AuctionUpdatedHandler> logger) : base(appEventBuilder)
+            IRequestStatusService requestStatusService, ILogger<AuctionUpdatedHandler> logger) : base(appEventBuilder)
         {
             _dbContext = dbContext;
-            _eventSignalingService = eventSignalingService;
+            _requestStatusService = requestStatusService;
             _logger = logger;
         }
 
@@ -75,12 +75,12 @@ namespace Core.Query.Handlers.AuctionUpdateHandlers
             try
             {
                 _dbContext.AuctionsReadModel.UpdateMany(filter, update);
-                _eventSignalingService.TrySendEventCompletionToUser(appEvent, appEvent.Event.AuctionOwner);
+                _requestStatusService.TrySendReqestCompletionToUser(appEvent, appEvent.Event.AuctionOwner);
             }
             catch (Exception)
             {
                 _logger.LogError("Cannot add image to read model");
-                _eventSignalingService.TrySendEventFailureToUser(appEvent, appEvent.Event.AuctionOwner);
+                _requestStatusService.TrySendRequestFailureToUser(appEvent, appEvent.Event.AuctionOwner);
                 throw;
             }
         }

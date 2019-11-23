@@ -53,7 +53,7 @@ namespace Core.Common.Command
             _implProvider = implProvider;
         }
 
-        public async Task<CommandResponse> Send(ICommand command)
+        public async Task<RequestStatus> Send(ICommand command)
         {
             if (_commandAttributeStrategies.ContainsKey(command.GetType()))
             {

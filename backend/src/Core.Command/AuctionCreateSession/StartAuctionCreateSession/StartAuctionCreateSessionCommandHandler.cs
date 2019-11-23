@@ -6,25 +6,25 @@ using Core.Common.Auth;
 using Core.Common.Command;
 using Core.Common.Domain.AuctionCreateSession;
 using Core.Common.EventBus;
-using Core.Common.EventSignalingService;
+using Core.Common.RequestStatusService;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Command.AuctionCreateSession.AuctionCreateSession_StartAuctionCreateSession
 {
     public class StartAuctionCreateSessionCommandHandler : CommandHandlerBase<StartAuctionCreateSessionCommand>
     {
-        private readonly IEventSignalingService _eventSignalingService;
+        private readonly IRequestStatusService _requestStatusService;
         private readonly IAuctionCreateSessionService _auctionCreateSessionService;
         private readonly ILogger<StartAuctionCreateSessionCommandHandler> _logger;
 
-        public StartAuctionCreateSessionCommandHandler(IEventSignalingService eventSignalingService, IAuctionCreateSessionService auctionCreateSessionService, ILogger<StartAuctionCreateSessionCommandHandler> logger) : base(logger)
+        public StartAuctionCreateSessionCommandHandler(IRequestStatusService requestStatusService, IAuctionCreateSessionService auctionCreateSessionService, ILogger<StartAuctionCreateSessionCommandHandler> logger) : base(logger)
         {
-            _eventSignalingService = eventSignalingService;
+            _requestStatusService = requestStatusService;
             _auctionCreateSessionService = auctionCreateSessionService;
             _logger = logger;
         }
 
-        protected override Task<CommandResponse> HandleCommand(StartAuctionCreateSessionCommand request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(StartAuctionCreateSessionCommand request, CancellationToken cancellationToken)
         {
             Common.Domain.AuctionCreateSession.AuctionCreateSession session;
             if (_auctionCreateSessionService.SessionExists())
@@ -37,10 +37,8 @@ namespace Core.Command.AuctionCreateSession.AuctionCreateSession_StartAuctionCre
             {
                 session = _auctionCreateSessionService.StartAndSaveNewSession();
             }
-            _eventSignalingService
-                .TrySendCompletionToUser("auctionCreateSessionStarted", request.CorrelationId, session.Creator);
 
-            var response = new CommandResponse(request.CorrelationId, Status.COMPLETED);
+            var response = new RequestStatus(Status.COMPLETED);
             return Task.FromResult(response);
         }
     }

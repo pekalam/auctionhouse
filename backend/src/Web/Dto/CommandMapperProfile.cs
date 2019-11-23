@@ -15,6 +15,7 @@ namespace Web.Dto
             CreateMap<CreateAuctionCommandDto, CreateAuctionCommand>();
             CreateMap<UpdateAuctionCommandDto, UpdateAuctionCommand>()
                 .ForMember(cmd => cmd.AuctionId, opt => opt.MapFrom(dto => Guid.Parse(dto.AuctionId)));
+            
         }
     }
 }

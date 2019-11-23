@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Core.Common;
 using Core.Common.Auth;
@@ -21,7 +22,7 @@ namespace Core.Command.SignIn
             _logger = logger;
         }
 
-        protected override Task<CommandResponse> HandleCommand(SignInCommand command, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(SignInCommand command, CancellationToken cancellationToken)
         {
             var authData = _userAuthenticationDataRepository.FindUserAuth(command.UserName);
             if (authData != null)
@@ -29,7 +30,10 @@ namespace Core.Command.SignIn
                 if (authData.Password.Equals(command.Password))
                 {
                     var userIdentity = new UserIdentity() { UserId = authData.UserId, UserName = authData.UserName };
-                    var response = new CommandResponse(Status.COMPLETED, userIdentity);
+                    var response = new RequestStatus(Status.COMPLETED, new Dictionary<string, object>()
+                    {
+                        {"UserIdentity", userIdentity}
+                    });
                     return Task.FromResult(response);
                 }
                 else

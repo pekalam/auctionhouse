@@ -11,16 +11,13 @@ namespace Core.Command.AuctionCreateSession.AuctionCreateSession_AddAuctionImage
     {
         [Required]
         public AuctionImageRepresentation Img { get; }
-        [Required]
-        public CorrelationId CorrelationId { get; }
 
         [Range(0, AuctionConstantsFactory.DEFAULT_MAX_IMAGES - 1)]
         public int ImgNum { get; }
 
-        public AddAuctionImageCommand(AuctionImageRepresentation img, CorrelationId correlationId, int imgNum)
+        public AddAuctionImageCommand(AuctionImageRepresentation img, int imgNum)
         {
             Img = img;
-            CorrelationId = correlationId;
             ImgNum = imgNum;
         }
     }

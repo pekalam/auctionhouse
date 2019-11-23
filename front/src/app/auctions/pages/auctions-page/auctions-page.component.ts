@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Auction, AuctionListModel } from '../../../core/models/Auctions';
 import { Category } from '../../../core/models/Category';
 import { AuctionsQuery, ConditionQuery, AuctionFilters } from '../../../core/queries/AuctionsQuery';
@@ -26,7 +26,8 @@ export class AuctionsPageComponent implements OnInit {
   private tag: string = "";
 
   constructor(private activatedRoute: ActivatedRoute, private auctionsByCategoryQuery: AuctionsQuery,
-    private categoriesQuery: CategoriesQuery, private auctionsByTagQuery: AuctionsByTagQuery, private commonTagsQuery: CommonTagsQuery) {
+    private categoriesQuery: CategoriesQuery, private auctionsByTagQuery: AuctionsByTagQuery,
+    private commonTagsQuery: CommonTagsQuery, private router: Router) {
   }
 
   private createFilterCategoriesByCategory(mainCategoryName: string, treeNode: CategoryTreeNode) {
@@ -73,6 +74,9 @@ export class AuctionsPageComponent implements OnInit {
 
   private createFilterCategoryByTag(tag: string) {
     this.commonTagsQuery.execute(tag).subscribe((result) => {
+      if(!result){
+        this.router.navigateByUrl('/error');
+      }
       this.filterCategories = {
         link: null,
         value: "Tags",

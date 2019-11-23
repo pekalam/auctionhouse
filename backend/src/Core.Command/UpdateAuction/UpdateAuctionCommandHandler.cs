@@ -53,7 +53,7 @@ namespace Core.Command.UpdateAuction
         }
 
 
-        protected override Task<CommandResponse> HandleCommand(UpdateAuctionCommand request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(UpdateAuctionCommand request, CancellationToken cancellationToken)
         {
             var auction = GetAuction(request);
 
@@ -74,10 +74,10 @@ namespace Core.Command.UpdateAuction
             var newCategory = _categoryBuilder.FromCategoryNamesList(request.Category);
             auction.UpdateCategory(newCategory);
 
-            _eventBusService.Publish(auction.PendingEvents, request.CorrelationId, request);
+            var response = new RequestStatus(Status.PENDING);
+            _eventBusService.Publish(auction.PendingEvents, response.CorrelationId, request);
             _auctionRepository.UpdateAuction(auction);
 
-            var response = new CommandResponse(request.CorrelationId, Status.PENDING);
             return Task.FromResult(response);
         }
     }

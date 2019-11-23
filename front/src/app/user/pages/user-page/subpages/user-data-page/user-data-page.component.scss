@@ -1,0 +1,63 @@
+@import "global";
+
+.container {
+  padding: 30px;
+}
+
+.account-loading-div {
+  position: absolute;
+  left: calc(50% - 50px);
+  top: 208px;
+}
+
+input {
+  margin-left: 5px;
+}
+
+.card {
+  background-color: #fbfbfb;
+  margin: 20px 5px 5px 5px;
+  padding: 15px 15px 15px 25px;
+}
+
+mat-form-field {
+  margin: 7px 0 7px 0;
+}
+
+.change-field-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  button {
+    @include app-btn;
+    height: 30px;
+    margin-left: 20px;
+  }
+}
+
+#pass-save {
+  position: relative;
+  bottom: 20px;
+}
+
+#match-error {
+  display: block;
+  color: red;
+  font-size: 12px;
+  position: relative;
+  bottom: 10px;
+  margin-bottom: 20px;
+}
+
+@media only screen and (max-width: 610px) {
+  .card {
+    text-align: center;
+  }
+  .change-field-container {
+    justify-content: center;
+  }
+}
+
+::ng-deep .tab-content {
+  background-color: unset !important;
+}

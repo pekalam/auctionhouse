@@ -1,3 +1,17 @@
+$width: 1000px;
+
+:host{
+  display: block;
+  width: $width;
+}
+
+@media only screen and (max-width: $width + 20px) {
+  :host{
+    width: 90vw;
+  }
+}
+
+
 .container {
   background-color: white;
   text-align: left;

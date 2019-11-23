@@ -16,16 +16,12 @@ namespace Core.Command.RemoveAuctionImage
         public Guid AuctionId { get; }
         [Range(0, AuctionConstantsFactory.DEFAULT_MAX_IMAGES - 1)]
         public int ImgNum { get; }
-        [Required]
-        public CorrelationId CorrelationId { get; }
 
-        public UserRemoveAuctionImageCommand(Guid auctionId, int imgNum,
-            CorrelationId correlationId)
+        public UserRemoveAuctionImageCommand(Guid auctionId, int imgNum)
         {
             if (auctionId.Equals(Guid.Empty)) { throw new InvalidCommandException($"Invalid field AuctionId = {auctionId}"); }
             AuctionId = auctionId;
             ImgNum = imgNum;
-            CorrelationId = correlationId;
         }
     }
 }

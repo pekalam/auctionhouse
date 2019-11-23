@@ -14,7 +14,5 @@ namespace Web.Dto.Commands
         public string AuctionId { get; set; }
         [FromForm(Name = "img")]
         public IFormFile Img { get; set; }
-        [FromForm(Name = "correlation-id")]
-        public string CorrelationId { get; set; }
     }
 }

@@ -17,17 +17,13 @@ namespace Core.Command.ReplaceAuctionImage
         public AuctionImageRepresentation Img { get; }
         [Range(0, AuctionConstantsFactory.DEFAULT_MAX_IMAGES - 1)]
         public int ImgNum { get; }
-        [Required]
-        public CorrelationId CorrelationId { get; }
 
-        public UserReplaceAuctionImageCommand(Guid auctionId, AuctionImageRepresentation img, int imgNum,
-            CorrelationId correlationId)
+        public UserReplaceAuctionImageCommand(Guid auctionId, AuctionImageRepresentation img, int imgNum)
         {
             if (auctionId.Equals(Guid.Empty)) { throw new InvalidCommandException($"Invalid field AuctionId = {auctionId}"); }
             AuctionId = auctionId;
             Img = img;
             ImgNum = imgNum;
-            CorrelationId = correlationId;
         }
     }
 }

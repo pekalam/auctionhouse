@@ -6,7 +6,7 @@
     </div>
 
   </div>
-  <div class="btn-container">
+  <div class="btn-container" *ngIf="imageButtons">
     <button id="prev" (click)="onPrev()" [hidden]="imgInd.length == 1">Prev</button>
     <button id="next" (click)="onNext()" [hidden]="imgInd.length == 1">Next</button>
   </div>

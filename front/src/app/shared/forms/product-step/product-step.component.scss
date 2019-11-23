@@ -1,6 +1,18 @@
 @import 'global';
 
 
+$width: 1100px;
+
+:host{
+  display: block;
+  width: $width;
+}
+
+@media only screen and (max-width: $width + 20px) {
+  :host{
+    width: 90vw;
+  }
+}
 
 .container {
   text-align: left;

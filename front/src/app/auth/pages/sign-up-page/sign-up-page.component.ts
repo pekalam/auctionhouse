@@ -61,8 +61,7 @@ export class SignUpPageComponent implements OnInit {
     if (this.form.valid) {
       let commandArgs = new SignUpCommandArgs(
         this.form.value.username,
-        this.form.value.password,
-        '1234'
+        this.form.value.password
       );
       this.signUpCommand.execute(commandArgs)
         .subscribe((v) => {

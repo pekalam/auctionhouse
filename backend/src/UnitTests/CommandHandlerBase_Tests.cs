@@ -35,10 +35,10 @@ namespace UnitTests
         {
         }
 
-        protected override Task<CommandResponse> HandleCommand(TestCommand request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(TestCommand request, CancellationToken cancellationToken)
         {
             Assert.Fail("Should not be called");
-            return Task.FromResult(new CommandResponse(Status.FAILED));
+            return Task.FromResult(new RequestStatus(Status.FAILED));
         }
 
       

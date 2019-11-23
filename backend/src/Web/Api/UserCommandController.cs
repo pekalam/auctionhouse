@@ -34,42 +34,42 @@ namespace Web.Api
 
 
         [Authorize(Roles = "User"), HttpPost("userAddAuctionImage")]
-        public async Task<ActionResult<CommandResponseDto>> UserAddAuctionImage([FromForm] UserAddAuctionImageCommandDto commandDto)
+        public async Task<ActionResult<RequestStatusDto>> UserAddAuctionImage([FromForm] UserAddAuctionImageCommandDto commandDto)
         {
             var imgRepresentation = ImageRepresentationUtil.GetImageRepresentationFromFormFile(commandDto.Img);
 
-            var cmd = new UserAddAuctionImageCommand(Guid.Parse(commandDto.AuctionId), imgRepresentation, commandDto.CorrelationId);
-            var response = (CommandResponseDto)await _mediator.Send(cmd);
+            var cmd = new UserAddAuctionImageCommand(Guid.Parse(commandDto.AuctionId), imgRepresentation);
+            var response = (RequestStatusDto)await _mediator.Send(cmd);
 
             return Ok(response);
         }
 
         [Authorize(Roles = "User"), HttpPost("userReplaceAuctionImage")]
-        public async Task<ActionResult<CommandResponseDto>> UserReplaceAuctionImage([FromForm] UserReplaceAuctionImageCommandDto commandDto)
+        public async Task<ActionResult<RequestStatusDto>> UserReplaceAuctionImage([FromForm] UserReplaceAuctionImageCommandDto commandDto)
         {
             var imgRepresentation = ImageRepresentationUtil.GetImageRepresentationFromFormFile(commandDto.Img);
 
-            var cmd = new UserReplaceAuctionImageCommand(Guid.Parse(commandDto.AuctionId), imgRepresentation, commandDto.ImgNum, commandDto.CorrelationId);
-            var response = (CommandResponseDto)await _mediator.Send(cmd);
+            var cmd = new UserReplaceAuctionImageCommand(Guid.Parse(commandDto.AuctionId), imgRepresentation, commandDto.ImgNum);
+            var response = (RequestStatusDto)await _mediator.Send(cmd);
 
             return Ok(response);
         }
 
         [Authorize(Roles = "User"), HttpPost("userRemoveAuctionImage")]
-        public async Task<ActionResult<CommandResponseDto>> UserRemoveAuctionImage([FromForm] UserRemoveAuctionImageCommandDto commandDto)
+        public async Task<ActionResult<RequestStatusDto>> UserRemoveAuctionImage([FromForm] UserRemoveAuctionImageCommandDto commandDto)
         {
-            var cmd = new UserRemoveAuctionImageCommand(Guid.Parse(commandDto.AuctionId), commandDto.ImgNum, commandDto.CorrelationId);
-            var response = (CommandResponseDto)await _mediator.Send(cmd);
+            var cmd = new UserRemoveAuctionImageCommand(Guid.Parse(commandDto.AuctionId), commandDto.ImgNum);
+            var response = (RequestStatusDto)await _mediator.Send(cmd);
 
             return Ok(response);
         }
 
         [Authorize(Roles = "User"), HttpPost("userUpdateAuction")]
-        public async Task<ActionResult<CommandResponseDto>> UserUpdateAuction(
+        public async Task<ActionResult<RequestStatusDto>> UserUpdateAuction(
             [FromBody] UpdateAuctionCommandDto commandDto)
         {
             var cmd = _mapper.Map<UpdateAuctionCommand>(commandDto);
-            var response = (CommandResponseDto)await _mediator.Send(cmd);
+            var response = (RequestStatusDto)await _mediator.Send(cmd);
 
             return Ok(response);
         }

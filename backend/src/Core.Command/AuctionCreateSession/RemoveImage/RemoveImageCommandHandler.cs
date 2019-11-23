@@ -19,7 +19,7 @@ namespace Core.Command.AuctionCreateSession.AuctionCreateSession_RemoveImage
             _logger = logger;
         }
 
-        protected override Task<CommandResponse> HandleCommand(RemoveImageCommand request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(RemoveImageCommand request, CancellationToken cancellationToken)
         {
             var auctionCreateSession = _auctionCreateSessionService.GetExistingSession();
 
@@ -28,7 +28,7 @@ namespace Core.Command.AuctionCreateSession.AuctionCreateSession_RemoveImage
             _auctionCreateSessionService.SaveSession(auctionCreateSession);
             _logger.LogDebug($"Removed image {request.ImgNum} from auctionCreateSession user: {auctionCreateSession.Creator.UserName}");
 
-            var response = new CommandResponse(Status.COMPLETED);
+            var response = new RequestStatus(Status.COMPLETED);
             return Task.FromResult(response);
         }
     }

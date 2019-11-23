@@ -1,10 +1,20 @@
 @import "global";
 
 $btnContainerSize: 250px;
+$width: 1000px;
+
+:host{
+  display: block;
+  width: $width;
+}
+
+@media only screen and (max-width: $width + 20px) {
+  :host{
+    width: 90vw;
+  }
+}
 
 .container {
-  width: 80%;
-  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   background-color: white;

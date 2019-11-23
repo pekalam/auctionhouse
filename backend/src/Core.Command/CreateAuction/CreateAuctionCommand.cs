@@ -26,8 +26,6 @@ namespace Core.Command.CreateAuction
         [MinCount(3)]
         [MaxCount(3)]
         public List<string> Category { get; }
-        [Required]
-        public CorrelationId CorrelationId { get; }
 
         [Required]
         public bool? BuyNowOnly { get; }
@@ -44,14 +42,13 @@ namespace Core.Command.CreateAuction
 
         public CreateAuctionCommand(BuyNowPrice buyNowPrice, Product product, 
             AuctionDate startDate, AuctionDate endDate, List<string> category, 
-            CorrelationId correlationId, Tag[] tags, AuctionName name, bool? buyNowOnly)
+            Tag[] tags, AuctionName name, bool? buyNowOnly)
         {
             BuyNowPrice = buyNowPrice;
             Product = product;
             StartDate = startDate;
             EndDate = endDate;
             Category = category;
-            CorrelationId = correlationId;
             Tags = tags;
             Name = name;
             BuyNowOnly = buyNowOnly;

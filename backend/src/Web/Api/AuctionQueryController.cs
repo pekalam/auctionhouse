@@ -70,9 +70,17 @@ namespace Web.Api
 
         [HttpGet("topAuctionsByTag")]
         public async Task<ActionResult<TopAuctionsInTag>> TopAuctionsByTagQuery(
-            [FromQuery] AuctionsByTagQueryDto queryDto)
+            [FromQuery] TopAuctionsByTagQueryDto queryDto)
         {
-            var result = await _mediator.Send(new TopAuctionsByTagQuery() { Tag = queryDto.Tag, Page = queryDto.Page });
+            var result = await _mediator.Send(new TopAuctionsInTagQuery() { Tag = queryDto.Tag, Page = queryDto.Page });
+            return Ok(result);
+        }
+
+        [HttpGet("topAuctionsByProductName")]
+        public async Task<ActionResult<TopAuctionsByProductName>> TopAuctionsByProductName(
+            [FromQuery] TopAuctionsByProductNameDto queryDto)
+        {
+            var result = await _mediator.Send(new TopAuctionsByProductNameQuery() { ProductName = queryDto.ProductName, Page = queryDto.Page });
             return Ok(result);
         }
 

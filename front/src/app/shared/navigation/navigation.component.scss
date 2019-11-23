@@ -22,7 +22,7 @@ $itemsCount: 4;
     text-decoration: none;
     padding: 0 7px 0 7px;
     cursor: pointer;
-    &:hover {
+    &:hover{
       background-color: $secondaryColor;
       transition: background-color 0.5s ease;
       color: white;
@@ -39,12 +39,11 @@ $itemsCount: 4;
     img {
       vertical-align: middle;
     }
-    &:hover {
+    &:hover{
       background-color: $primaryColor;
     }
   }
   .navbar-group-left {
-    flex-grow: 1;
     display: flex;
     flex-direction: row-reverse;
     padding-right: 40px;
@@ -64,9 +63,6 @@ $itemsCount: 4;
   color: black;
   font-weight: bold;
   display: block;
-  &:hover {
-    background-color: $secondaryColor;
-  }
 }
 
 #sell-btn{

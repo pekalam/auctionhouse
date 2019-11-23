@@ -6,7 +6,7 @@ using Core.Common.Domain.Auctions.Events;
 using Core.Common.Domain.Bids;
 using Core.Common.Domain.Users;
 using Core.Common.EventBus;
-using Core.Common.EventSignalingService;
+using Core.Common.RequestStatusService;
 using Core.Query.ReadModel;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -34,12 +34,12 @@ namespace Core.Query.Handlers
     public class AuctionCreatedHandler : EventConsumer<AuctionCreated>
     {
         private readonly ReadModelDbContext _dbContext;
-        private readonly IEventSignalingService _eventSignalingService;
+        private readonly IRequestStatusService _requestStatusService;
 
-        public AuctionCreatedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext, IEventSignalingService eventSignalingService) : base(appEventBuilder)
+        public AuctionCreatedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext, IRequestStatusService requestStatusService) : base(appEventBuilder)
         {
             _dbContext = dbContext;
-            _eventSignalingService = eventSignalingService;
+            _requestStatusService = requestStatusService;
         }
 
         public override void Consume(IAppEvent<AuctionCreated> message)
@@ -65,11 +65,11 @@ namespace Core.Query.Handlers
             catch (Exception)
             {
                 session.AbortTransaction();
-                _eventSignalingService.TrySendEventFailureToUser(message, ev.AuctionArgs.Creator);
+                _requestStatusService.TrySendRequestFailureToUser(message, ev.AuctionArgs.Creator);
                 throw;
             }
 
-            _eventSignalingService.TrySendEventCompletionToUser(message, ev.AuctionArgs.Creator);
+            _requestStatusService.TrySendReqestCompletionToUser(message, ev.AuctionArgs.Creator);
         }
     }
 }

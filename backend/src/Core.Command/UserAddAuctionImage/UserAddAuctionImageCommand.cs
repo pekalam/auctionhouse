@@ -18,18 +18,15 @@ namespace Core.Command.AddOrReplaceAuctionImage
         public Guid AuctionId { get; }
         [Required]
         public AuctionImageRepresentation Img { get; }
-        [Required]
-        public CorrelationId CorrelationId { get; }
 
         [SignedInUser]
         public UserIdentity SignedInUser { get; set; }
 
-        public UserAddAuctionImageCommand(Guid auctionId, AuctionImageRepresentation img, CorrelationId correlationId)
+        public UserAddAuctionImageCommand(Guid auctionId, AuctionImageRepresentation img)
         {
             if (auctionId.Equals(Guid.Empty)) { throw new InvalidCommandException($"Invalid field AuctionId = {auctionId}"); }
             AuctionId = auctionId;
             Img = img;
-            CorrelationId = correlationId;
         }
     }
 }

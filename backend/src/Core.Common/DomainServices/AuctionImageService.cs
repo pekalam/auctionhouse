@@ -44,6 +44,11 @@ namespace Core.Common.DomainServices
 
         public AuctionImage AddAuctionImage(AuctionImageRepresentation representation)
         {
+            if (!_imageConverterService.ValidateImage(representation, new[] {"jpg", "png"}))
+            {
+                throw new DomainException("Invalid image");
+            }
+
             var img = new AuctionImage(
                 AuctionImage.GenerateImageId(AuctionImageSize.SIZE1),
                 AuctionImage.GenerateImageId(AuctionImageSize.SIZE2),

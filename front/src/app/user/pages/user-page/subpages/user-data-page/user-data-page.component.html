@@ -1,3 +1,55 @@
-<div *ngIf="userData">
-  <p>Username: {{userData.userName}}</p>
+<div *ngIf="userData" class="container">
+  <div class="card">
+    <div *ngIf="accountLoading" class="account-loading-div">
+      <mat-spinner></mat-spinner>
+    </div>
+    <div [appVisible]="accountLoading">
+      <h2>Account</h2>
+      <mat-form-field>
+        <input matInput placeholder="Username" [value]="userData.username">
+      </mat-form-field>
+      <div class="change-field-container" *ngIf="!editPassword">
+        <mat-form-field>
+          <input matInput placeholder="Password" value="*****" [readonly]="true">
+        </mat-form-field>
+        <button (click)="editPassword = true">
+          Change
+        </button>
+      </div>
+      <div *ngIf="editPassword">
+        <form class="form" [formGroup]="changePasswordForm" (ngSubmit)="onPasswordChangeFormSubmit()">
+          <mat-form-field>
+            <input matInput (keyup)="onConfirmType()" type="password" formControlName="password"
+              placeholder="New password">
+            <mat-error>
+              <ng-container *ngIf="changePasswordForm.controls.password.errors">
+                <span *ngIf="changePasswordForm.controls.password.errors.required">This field cannot be empty!</span>
+              </ng-container>
+            </mat-error>
+          </mat-form-field>
+          <div class="change-field-container">
+            <div>
+              <mat-form-field id="confirm-field">
+                <input matInput (keyup)="onConfirmType()" type="password" formControlName="confirm"
+                  placeholder="Confirm password">
+              </mat-form-field>
+              <span id="match-error" [appVisible]="passwordsMatch">Passwords aren't the same!</span>
+            </div>
+            <div>
+              <button id="pass-save" type="submit">
+                Save
+              </button>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Personal data</h2>
+    <p>City:&nbsp;{{userData}}</p>
+    <p>Street:&nbsp;{{userData}}</p>
+  </div>
 </div>

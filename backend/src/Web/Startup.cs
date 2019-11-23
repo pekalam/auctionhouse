@@ -9,7 +9,7 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
-using Core.Common.EventSignalingService;
+using Core.Common.RequestStatusService;
 using Core.Query.ReadModel;
 using Infrastructure.Auth;
 using Infrastructure.Repositories.AuctionImage;
@@ -68,12 +68,12 @@ namespace Web
                         .AllowAnyMethod()
                         .AllowCredentials()
                         .WithOrigins("http://localhost:4200");
-                    //.AllowAnyOrigin();
+                    	//.AllowAnyOrigin();
                 });
             });
             services.AddHttpContextAccessor();
             services.AddSingleton<JwtService>();
-            services.AddScoped<IEventSignalingService, EventSignalingService>();
+            services.AddScoped<IRequestStatusService, RequestStatusService>();
             services.AddAutoMapper(typeof(Startup).Assembly);
 
             DefaultDIBootstraper.Command.Configure<UserIdentityService, AuctionCreateSessionService>(

@@ -24,7 +24,7 @@
           <mat-error>
             <ng-container *ngIf="form.controls.password.errors">
               <span *ngIf="form.controls.password.errors.required">Password cannot be empty</span>
-              <span *ngIf="form.controls.username.errors.minlength">Too short password</span>
+              <span *ngIf="form.controls.password.errors.minlength">Too short password</span>
             </ng-container>
           </mat-error>
         </mat-form-field>

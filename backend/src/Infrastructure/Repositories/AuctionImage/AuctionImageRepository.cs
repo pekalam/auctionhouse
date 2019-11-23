@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Core.Common.Domain.Auctions;
 using Microsoft.Extensions.Logging;
@@ -11,10 +13,41 @@ namespace Infrastructure.Repositories.AuctionImage
 {
     public class AuctionImageSizeConverterService : IAuctionImageSizeConverterService
     {
+        private List<string[]> allowedFirstBytes = new List<string[]>();
+
+        public AuctionImageSizeConverterService()
+        {
+            var jpg = new string[] { "FF", "D8" };
+            var png = new string[] { "89", "50", "4E", "47", "0D", "0A", "1A", "0A" };
+            allowedFirstBytes.Add(jpg);
+            allowedFirstBytes.Add(png);
+        }
+
         public AuctionImageRepresentation ConvertTo(AuctionImageRepresentation imageRepresentation,
             AuctionImageSize size)
         {
             return imageRepresentation;
+        }
+
+        public bool ValidateImage(AuctionImageRepresentation imageRepresentation, string[] allowedExtensions)
+        {
+            using (var stream = new MemoryStream(imageRepresentation.Img))
+            {
+                var read = new List<string>();
+
+                for (int i = 0; i < 8; i++)
+                {
+                    var b = stream.ReadByte().ToString("X2");
+                    read.Add(b);
+                    bool isValid = allowedFirstBytes.Any(imgBytes => !imgBytes.Except(read).Any());
+                    if (isValid)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
         }
     }
 

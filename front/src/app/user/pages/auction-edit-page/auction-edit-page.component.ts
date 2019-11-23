@@ -90,7 +90,6 @@ export class AuctionEditPageComponent implements OnInit, OnDestroy {
     return {
       auctionId: this.auction.auctionId,
       buyNowPrice: this.auction.buyNowPrice,
-      correlationId: '1234',
       category: [this.auction.category.name, this.auction.category.subCategory.name, this.auction.category.subCategory.subCategory.name],
       description: this.auction.product.description,
       endDate: this.auction.endDate,

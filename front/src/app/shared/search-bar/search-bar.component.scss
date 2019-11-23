@@ -4,46 +4,99 @@ $searchInput_border: 2px;
 $searchInput_padding: 7px;
 $searchInput_height: 20px;
 
+$item_height: 48px;
+
 input {
-  width: 70%;
+  width: 90%;
   padding: $searchInput_padding;
   border: $searchInput_border solid #ddd;
   margin: 0;
   height: $searchInput_height;
   font-size: 15px;
 }
-.search-button-container {
-  width: 10%;
-  display: inline-block;
-  padding-left: 10px;
-  box-sizing: border-box;
-  text-align: left;
 
-  button {
+.search-input-container {
+  float: left;
+  width: 80%;
+  text-align: right;
+}
+
+.search-btn-container {
+  float: left;
+  width: 20%;
+  text-align: left;
+  #searchbtn {
     height: 2 * $searchInput_border + 2 * $searchInput_padding +
       $searchInput_height;
     font-weight: bold;
     @include app-btn;
+    margin-left: 12px;
   }
 }
 
-.auction-link{
-  &:hover{
+@media only screen and (max-width: 820px) {
+  .search-btn-container {
+    #searchbtn {
+      margin: 0;
+      width: 100%;
+    }
+  }
+  input {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 470px) {
+  .search-input-container{
+    width: 60%;
+  }
+  .search-btn-container{
+    width: 40%;
+
+  }
+}
+
+.auction-link {
+  height: $item_height;
+  &:hover {
     background-color: $secondaryLightColor;
   }
 }
 
-#show-more-option{
-  text-align: center;
-  font-weight: bold;
-  background-color: #979797;
-  &:hover{
-    background-color: #b7b7b7;
-
+.auction-img-container {
+  display: inline-block;
+  line-height: $item_height;
+  vertical-align: middle;
+  .auction-img {
+    width: $item_height - 16px;
+    height: $item_height - 16px;
+    background-color: turquoise;
+    display: block;
+    margin-right: 10px;
   }
-  color: white;
 }
 
-::ng-deep .mat-autocomplete-panel{
+.loading-container {
+  text-align: center;
+  line-height: $item_height;
+  vertical-align: middle;
+}
+
+#show-more-option {
+  text-align: center;
+  height: $item_height - 16px;
+  font-size: 15px;
+  &:hover {
+    background-color: #b7b7b7;
+    color: white;
+  }
+}
+
+.search-type-title {
+  padding-left: 10px;
+  font-size: 14px;
+}
+
+::ng-deep .mat-autocomplete-panel {
   max-height: unset !important;
 }

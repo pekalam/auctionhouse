@@ -72,7 +72,7 @@ export class AuctionCreatePageComponent implements OnInit{
   private startAuctionCreateSession() {
     console.log('starting session');
     this.startAuctionCreateSessionCommand.execute().subscribe((msg) => {
-      if (msg.result === 'completed') {
+      if (msg.status === 'COMPLETED') {
         console.log('session started');
         this.showCreateForm = true;
       } else {
@@ -90,7 +90,7 @@ export class AuctionCreatePageComponent implements OnInit{
     this.categorySelectStep.selectedSubCategory.categoryName,
     this.categorySelectStep.selectedSubCategory2.categoryName];
     this.createAuctionArgs = new CreateAuctionCommandArgs(this.auctionDataStep.buyNowPrice, this.auctionDataStep.startDate,
-      this.auctionDataStep.endDate, categories, '123', this.productStep.product, this.productStep.tags, this.auctionDataStep.name,
+      this.auctionDataStep.endDate, categories, this.productStep.product, this.productStep.tags, this.auctionDataStep.name,
       this.auctionDataStep.buyNow && !this.auctionDataStep.auction);
   }
 
@@ -120,10 +120,10 @@ export class AuctionCreatePageComponent implements OnInit{
 
   onImgSelect(event: ImgSelectedEvent){
     this.addAuctionImageCommand.execute(event.files, event.imgnum).subscribe((msg) => {
-      if (msg.result === 'completed') {
+      if (msg.status === 'COMPLETED') {
         console.log('add image completed');
         console.log(msg);
-        this.imageStepComponent.setImgPreview(event.imgnum, this.auctionImageQuery.execute(msg.values.imgSz1));
+        this.imageStepComponent.setImgPreview(event.imgnum, this.auctionImageQuery.execute(msg.extraData.imgSz1));
       } else {
         console.log('Cannot add image');
       }
@@ -160,7 +160,7 @@ export class AuctionCreatePageComponent implements OnInit{
 
   onSummaryStep() {
     this.createAuctionCommand.execute(this.createAuctionArgs).subscribe((msg) => {
-      if (msg.result === 'completed') {
+      if (msg.status === 'COMPLETED') {
         this.router.navigate(['/user']);
       } else {
         this.error = 'Cannot create an auction';

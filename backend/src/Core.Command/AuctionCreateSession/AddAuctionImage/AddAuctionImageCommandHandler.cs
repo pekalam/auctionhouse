@@ -8,7 +8,8 @@ using Core.Common.Command;
 using Core.Common.Domain.AuctionCreateSession;
 using Core.Common.Domain.Auctions;
 using Core.Common.DomainServices;
-using Core.Common.EventSignalingService;
+using Core.Common.EventBus;
+using Core.Common.RequestStatusService;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -18,22 +19,22 @@ namespace Core.Command.AuctionCreateSession.AuctionCreateSession_AddAuctionImage
     public class AddAuctionImageCommandHandler : CommandHandlerBase<AddAuctionImageCommand>
     {
         private readonly IAuctionCreateSessionService _auctionCreateSessionService;
-        private readonly IEventSignalingService _eventSignalingService;
+        private readonly IRequestStatusService _requestStatusService;
         private readonly ILogger<AddAuctionImageCommandHandler> _logger;
         private readonly AuctionImageService _auctionImageService;
 
         public AddAuctionImageCommandHandler(IAuctionCreateSessionService auctionCreateSessionService, 
-            IEventSignalingService eventSignalingService,
+            IRequestStatusService requestStatusService,
             ILogger<AddAuctionImageCommandHandler> logger,
             AuctionImageService auctionImageService) : base(logger)
         {
             _auctionCreateSessionService = auctionCreateSessionService;
-            _eventSignalingService = eventSignalingService;
+            _requestStatusService = requestStatusService;
             _logger = logger;
             _auctionImageService = auctionImageService;
         }
 
-        protected override Task<CommandResponse> HandleCommand(AddAuctionImageCommand request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(AddAuctionImageCommand request, CancellationToken cancellationToken)
         {
             var auctionCreateSession = _auctionCreateSessionService.GetExistingSession();
 
@@ -42,14 +43,19 @@ namespace Core.Command.AuctionCreateSession.AuctionCreateSession_AddAuctionImage
             auctionCreateSession.AddOrReplaceImage(added, request.ImgNum);
 
             _auctionCreateSessionService.SaveSession(auctionCreateSession);
-            _eventSignalingService.TrySendCompletionToUser("auctionImageAdded", request.CorrelationId, auctionCreateSession.Creator, new Dictionary<string, string>()
+//            _requestStatusService.TrySendRequestCompletionToUser("auctionImageAdded", request.CorrelationId, auctionCreateSession.Creator, new Dictionary<string, object>()
+//            {
+//                {"imgSz1", added.Size1Id},
+//                {"imgSz2", added.Size2Id},
+//                {"imgSz3", added.Size3Id}
+//            });
+
+            var response = new RequestStatus(Status.COMPLETED, new Dictionary<string, object>()
             {
                 {"imgSz1", added.Size1Id},
                 {"imgSz2", added.Size2Id},
                 {"imgSz3", added.Size3Id}
             });
-
-            var response = new CommandResponse(request.CorrelationId, Status.COMPLETED);
             return Task.FromResult(response);
         }
     }

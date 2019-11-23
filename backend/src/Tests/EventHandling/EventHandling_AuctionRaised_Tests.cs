@@ -9,7 +9,7 @@ using Core.Common.Domain.Categories;
 using Core.Common.Domain.Products;
 using Core.Common.Domain.Users;
 using Core.Common.EventBus;
-using Core.Common.EventSignalingService;
+using Core.Common.RequestStatusService;
 using Core.Query.Handlers;
 using FunctionalTests.Utils;
 using Microsoft.Extensions.Logging;
@@ -42,7 +42,7 @@ namespace FunctionalTests.EventHandling
             var services = TestDepedencies.Instance.Value;
 
             var eventHandler = new Mock<AuctionRaisedHandler>(services.AppEventBuilder,
-                services.DbContext, Mock.Of<IEventSignalingService>(), Mock.Of<ILogger<AuctionRaisedHandler>>());
+                services.DbContext, Mock.Of<IRequestStatusService>(), Mock.Of<ILogger<AuctionRaisedHandler>>());
             eventHandler.CallBase = true;
             eventHandler.Setup(f => f.Consume(It.IsAny<IAppEvent<AuctionRaised>>()))
                 .Callback(() => sem.Release());
@@ -54,7 +54,7 @@ namespace FunctionalTests.EventHandling
                 services.EventBus, Mock.Of<ILogger<BidCommandHandler>>());
 
             services.AuctionRepository.AddAuction(auction);
-            var cmd = new BidCommand(auction.AggregateId, 21.0m, "123");
+            var cmd = new BidCommand(auction.AggregateId, 21.0m);
             cmd.SignedInUser = user;
             stubHandler.Handle(cmd, CancellationToken.None);
 

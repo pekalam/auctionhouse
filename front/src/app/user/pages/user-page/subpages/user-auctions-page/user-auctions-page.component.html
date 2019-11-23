@@ -1,4 +1,4 @@
 <div class="container" *ngIf="userAuctions">
       <app-user-auctions-list-item  *ngFor="let auction of userAuctions.auctions" [auction]="auction" (itemClick)="onAuctionClick($event)"></app-user-auctions-list-item>
-
+      <hr style="margin-top: 0; color: black;">
 </div>

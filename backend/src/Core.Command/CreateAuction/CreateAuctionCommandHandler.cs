@@ -11,6 +11,7 @@ using Core.Common.Domain.AuctionCreateSession;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Categories;
 using Core.Common.Domain.Users;
+using Core.Common.EventBus;
 using Core.Common.Exceptions;
 using Core.Common.Exceptions.Command;
 using Core.Common.SchedulerService;
@@ -165,11 +166,11 @@ namespace Core.Command.CreateAuction
             }
         }
 
-        protected virtual void PublishEvents(Auction auction, User user, CreateAuctionCommand command)
+        protected virtual void PublishEvents(Auction auction, User user, CreateAuctionCommand command, CorrelationId correlationId)
         {
             try
             {
-                _deps.eventBusService.Publish(auction.PendingEvents, command.CorrelationId, command);
+                _deps.eventBusService.Publish(auction.PendingEvents, correlationId, command);
                 //_deps.eventBusService.Publish(user.PendingEvents, command.CorrelationId, command);
                 auction.MarkPendingEventsAsHandled();
             }
@@ -217,7 +218,7 @@ namespace Core.Command.CreateAuction
             return builder.Build();
         }
 
-        protected override Task<CommandResponse> HandleCommand(CreateAuctionCommand request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(CreateAuctionCommand request, CancellationToken cancellationToken)
         {
             var user = GetSignedInUser(request);
             var auctionCreateSession = _deps.auctionCreateSessionService.GetExistingSession();
@@ -226,15 +227,15 @@ namespace Core.Command.CreateAuction
 
             _deps.auctionCreateSessionService.RemoveSession();
 
+            var response = new RequestStatus(Status.PENDING);
             var addAuctionSequence = new AtomicSequence<Auction>()
                 .AddTask(AddToRepository, AddToRepository_Rollback)
                 .AddTask(SheduleAuctionEndTask, ScheduleAuctionEndTask_Rollback)
                 .AddTask(ChangeImagesMetadata, ChangeImagesMetadata_Rollback)
-                .AddTask((param, _) => PublishEvents(auction, user, request), null);
+                .AddTask((param, _) => PublishEvents(auction, user, request, response.CorrelationId), null);
 
             addAuctionSequence.ExecuteSequence(auction);
 
-            var response = new CommandResponse(request.CorrelationId, Status.PENDING);
             return Task.FromResult(response);
         }
     }

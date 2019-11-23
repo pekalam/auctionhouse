@@ -1,7 +1,7 @@
 ﻿using System;
 using Core.Common.Domain.Auctions.Events;
 using Core.Common.EventBus;
-using Core.Common.EventSignalingService;
+using Core.Common.RequestStatusService;
 using Core.Query.ReadModel;
 using MongoDB.Driver;
 
@@ -10,12 +10,12 @@ namespace Core.Query.Handlers
     public class AuctionCompletedHandler : EventConsumer<AuctionCompleted>
     {
         private ReadModelDbContext _dbContext;
-        private readonly IEventSignalingService _eventSignalingService;
+        private readonly IRequestStatusService _requestStatusService;
 
-        public AuctionCompletedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext, IEventSignalingService eventSignalingService) : base(appEventBuilder)
+        public AuctionCompletedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext, IRequestStatusService requestStatusService) : base(appEventBuilder)
         {
             _dbContext = dbContext;
-            _eventSignalingService = eventSignalingService;
+            _requestStatusService = requestStatusService;
         }
 
         private void UserBidsUpdate(IClientSessionHandle session, AuctionCompleted ev)

@@ -1,14 +1,13 @@
 import * as signalR from '@aspnet/signalr';
-import { Subject, Observable } from 'rxjs';
+import { Subject, Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { AuthenticationStateService } from './AuthenticationStateService';
 import { distinctUntilChanged, map, first } from 'rxjs/operators';
 
 export interface ServerMessage {
-  result: string;
   correlationId: string;
-  eventName: string;
-  values?: any;
+  status: string;
+  extraData?: any;
 }
 
 @Injectable({
@@ -18,6 +17,7 @@ export class ServerMessageService {
   private connection: signalR.HubConnection;
   private handlerMap = new Map<string, Subject<ServerMessage>>();
   private connectionStartedSubj = new Subject<boolean>();
+  private unhandledMesssages = new Array<ServerMessage>();
 
   connectionStarted: Observable<boolean> = this.connectionStartedSubj;
 
@@ -57,11 +57,11 @@ export class ServerMessageService {
       this.connectionStartedSubj.next(false);
     });
 
-    this.connection.on('completed', (eventName: string, correlationId: string, values?: object) =>
-      this.handleServerMessage({ result: 'completed', eventName, correlationId, values }));
+    this.connection.on('completed', (requestStatus: ServerMessage) =>
+      this.handleServerMessage(requestStatus));
 
-    this.connection.on('failure', (eventName: string, correlationId: string, values?: object) =>
-      this.handleServerMessage({ result: 'failure', eventName, correlationId, values }));
+    this.connection.on('failed', (requestStatus: ServerMessage) =>
+      this.handleServerMessage(requestStatus));
 
 
     this.connection.start().then(() => {
@@ -83,24 +83,32 @@ export class ServerMessageService {
   }
 
   private handleServerMessage(serverMessage: ServerMessage) {
-    console.log('handling ' + serverMessage.eventName);
-    console.log('result: ' + serverMessage.result);
-    console.log('correlationid: ' + serverMessage.correlationId);
+    console.log(serverMessage);
+
+    console.log('handling ' + serverMessage.correlationId);
+    console.log('status: ' + serverMessage.status);
+    console.log('extraData: ' + serverMessage.extraData);
 
 
-    if (this.handlerMap.has(serverMessage.eventName)) {
-      const handler = this.handlerMap.get(serverMessage.eventName);
+    if (this.handlerMap.has(serverMessage.correlationId)) {
+      const handler = this.handlerMap.get(serverMessage.correlationId);
       handler.next(serverMessage);
     } else {
-      throw new Error('no handler for ' + serverMessage.eventName);
+      this.unhandledMesssages.push(serverMessage);
     }
   }
 
-  setupServerMessageHandler(eventName: string): Observable<ServerMessage> {
-    console.log('registered handler for ' + eventName);
+  setupServerMessageHandler(correlationId: string): Observable<ServerMessage> {
+    console.log('registered handler for ' + correlationId);
+
+    let unhandled = this.unhandledMesssages.filter(m => m.correlationId === correlationId);
+    if (unhandled.length > 0) {
+      this.unhandledMesssages = this.unhandledMesssages.filter(m => m.correlationId !== correlationId);
+      return of(unhandled[0]);
+    }
 
     const newSubj = new Subject<ServerMessage>();
-    this.handlerMap.set(eventName, newSubj);
+    this.handlerMap.set(correlationId, newSubj);
     return newSubj.asObservable().pipe(first());
   }
 }

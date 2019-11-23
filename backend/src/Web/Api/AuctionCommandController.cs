@@ -37,55 +37,55 @@ namespace Web.Api
         }
 
         [Authorize(Roles = "User"), HttpPost("bid")]
-        public async Task<ActionResult<CommandResponseDto>> Bid([FromBody] BidCommandDto commandDto)
+        public async Task<ActionResult<RequestStatusDto>> Bid([FromBody] BidCommandDto commandDto)
         {
             var guid = Guid.Parse(commandDto.AuctionId);
-            var response = (CommandResponseDto) await _mediator.Send(new BidCommand(guid, commandDto.Price, commandDto.CorrelationId));
+            var response = (RequestStatusDto) await _mediator.Send(new BidCommand(guid, commandDto.Price));
 
             return Ok(response);
         }
 
         [Authorize(Roles = "User"), HttpPost("createAuction")]
-        public async Task<ActionResult<CommandResponseDto>> CreateAuction([FromBody] CreateAuctionCommandDto commandDto)
+        public async Task<ActionResult<RequestStatusDto>> CreateAuction([FromBody] CreateAuctionCommandDto commandDto)
         {
             var command = _mapper.Map<CreateAuctionCommand>(commandDto);
-            var response = (CommandResponseDto) await _mediator.Send(command);
+            var response = (RequestStatusDto) await _mediator.Send(command);
 
             return Ok(response);
         }
 
         [HttpPost("endAuction"), Authorize(AuthenticationSchemes = "X-API-Key", Roles = "TimeTaskService")]
-        public async Task<ActionResult<CommandResponseDto>> EndAuction([FromBody] EndAuctionCommand command)
+        public async Task<ActionResult<RequestStatusDto>> EndAuction([FromBody] EndAuctionCommand command)
         {
-            var response = (CommandResponseDto) await _mediator.Send(command);
+            var response = (RequestStatusDto) await _mediator.Send(command);
 
             return Ok(response);
         }
 
         [Authorize(Roles = "User"), HttpPost("startCreateSession")]
-        public async Task<ActionResult<CommandResponseDto>> StartCreateSession([FromBody] StartAuctionCreateSessionCommandDto commandDto)
+        public async Task<ActionResult<RequestStatusDto>> StartCreateSession()
         {
-            var command = new StartAuctionCreateSessionCommand(commandDto.CorrelationId);
-            var response = (CommandResponseDto) await _mediator.Send(command);
+            var command = new StartAuctionCreateSessionCommand();
+            var response = (RequestStatusDto) await _mediator.Send(command);
 
             return Ok(response);
         }
 
         [Authorize(Roles = "User"), HttpPost("removeAuctionImage")]
-        public async Task<ActionResult<CommandResponseDto>> RemoveAuctionImage([FromQuery] RemoveImageCommandDto commandDto)
+        public async Task<ActionResult<RequestStatusDto>> RemoveAuctionImage([FromQuery] RemoveImageCommandDto commandDto)
         {
             var command = new RemoveImageCommand(commandDto.ImgNum);
-            var response = (CommandResponseDto) await _mediator.Send(command);
+            var response = (RequestStatusDto) await _mediator.Send(command);
 
             return Ok(response);
         }
 
         [Authorize(Roles = "User"), HttpPost("addAuctionImage")]
-        public async Task<ActionResult<CommandResponseDto>> AddAuctionImage([FromForm] AddAuctionImageCommandDto commandDto)
+        public async Task<ActionResult<RequestStatusDto>> AddAuctionImage([FromForm] AddAuctionImageCommandDto commandDto)
         {
             var imgRepresentation = ImageRepresentationUtil.GetImageRepresentationFromFormFile(commandDto.Img);
-            var command = new AddAuctionImageCommand(imgRepresentation, commandDto.CorrelationId, commandDto.ImgNum);
-            var response = (CommandResponseDto) await _mediator.Send(command);
+            var command = new AddAuctionImageCommand(imgRepresentation, commandDto.ImgNum);
+            var response = (RequestStatusDto) await _mediator.Send(command);
 
             return Ok(response);
         }

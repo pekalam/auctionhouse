@@ -19,9 +19,6 @@ namespace Core.Command.UpdateAuction
     {
         public Guid AuctionId { get; }
 
-        [Required]
-        public CorrelationId CorrelationId { get; }
-
         //can be null
         public BuyNowPrice BuyNowPrice { get; }
         public AuctionDate EndDate { get; }
@@ -47,14 +44,13 @@ namespace Core.Command.UpdateAuction
         public UserIdentity SignedInUser { get; set; }
 
 
-        public UpdateAuctionCommand(Guid auctionId, CorrelationId correlationId, 
+        public UpdateAuctionCommand(Guid auctionId, 
             BuyNowPrice buyNowPrice, AuctionDate endDate, 
             List<string> category, string description, 
             Tag[] tags, AuctionName name)
         {
             if (auctionId.Equals(Guid.Empty)) { throw new InvalidCommandException($"Invalid field AuctionId = {auctionId}"); }
             AuctionId = auctionId;
-            CorrelationId = correlationId;
             BuyNowPrice = buyNowPrice;
             EndDate = endDate;
             Category = category;

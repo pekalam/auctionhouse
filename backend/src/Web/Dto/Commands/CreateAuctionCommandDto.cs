@@ -24,7 +24,6 @@ namespace Web.Dto.Commands
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public List<string> Category { get; set; }
-        public string CorrelationId { get; set; }
         public string[] Tags { get; set; }
         public string Name { get; set; }
         public bool? BuyNowOnly { get; set; }

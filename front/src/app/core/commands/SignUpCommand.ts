@@ -7,7 +7,7 @@ import { ServerMessageService, ServerMessage } from '../services/ServerMessageSe
 import { Injectable } from '@angular/core';
 
 export class SignUpCommandArgs {
-  constructor(public username: string, public password: string, public correlationId: string) {
+  constructor(public username: string, public password: string) {
 
   }
 }

@@ -16,6 +16,9 @@ export class CarouselComponent implements OnInit, AfterViewInit {
   imgInd = [];
   shown = 0;
 
+  @Input()
+  imageButtons = true;
+
   h = 0;
 
   @Input('sources')

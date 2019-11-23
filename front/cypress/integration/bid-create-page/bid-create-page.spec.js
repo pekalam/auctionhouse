@@ -222,9 +222,9 @@ describe("Bid create page tests", function() {
     cy.url().should("contain", "/auction?auctionId=");
     cy.get('.bid-btn').click();
     cy.url().should("contain", "/createbid?auctionId=")
-    cy.get("input[formcontrolname=price]").type(21);
+    cy.get("input[formcontrolname=price]").type(25);
     cy.get("#submit-btn").click();
-    cy.get('.current-price-div > .price').should("contain", "21.00")
-    cy.get('.winner').should("contain", "test2")
+    cy.get('.current-price-container > .price').should("contain.text", "25.00")
+    cy.get('.winner').should("contain.text", "test2")
   });
 });

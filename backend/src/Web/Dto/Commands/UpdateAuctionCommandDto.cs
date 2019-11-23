@@ -10,7 +10,6 @@ namespace Web.Dto.Commands
     public class UpdateAuctionCommandDto
     {
         public string AuctionId { get; set; }
-        public string CorrelationId { get; set; }
 
         //optional
         public decimal? BuyNowPrice { get; set; }

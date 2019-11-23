@@ -5,6 +5,7 @@ using Core.Common;
 using Core.Common.ApplicationServices;
 using Core.Common.Command;
 using Core.Common.Domain.Auctions;
+using Core.Common.EventBus;
 using Core.Common.Exceptions.Command;
 using Microsoft.Extensions.Logging;
 
@@ -25,7 +26,7 @@ namespace Core.Command.RemoveAuctionImage.Core.Command.RemoveAuctionImage
             _logger = logger;
         }
 
-        private void RemoveAuctionImage(UserRemoveAuctionImageCommand request, CancellationToken cancellationToken)
+        private void RemoveAuctionImage(UserRemoveAuctionImageCommand request, CancellationToken cancellationToken, CorrelationId correlationId)
         {
             var auction = _auctionRepository.FindAuction(request.AuctionId);
             if (auction == null)
@@ -38,17 +39,17 @@ namespace Core.Command.RemoveAuctionImage.Core.Command.RemoveAuctionImage
 
 
             _auctionRepository.UpdateAuction(auction);
-            _eventBusService.Publish(auction.PendingEvents, request.CorrelationId, request);
+            _eventBusService.Publish(auction.PendingEvents, correlationId, request);
         }
 
-        protected override Task<CommandResponse> HandleCommand(UserRemoveAuctionImageCommand request,
+        protected override Task<RequestStatus> HandleCommand(UserRemoveAuctionImageCommand request,
             CancellationToken cancellationToken)
         {
             AuctionLock.Lock(request.AuctionId);
-
+            var response = new RequestStatus(Status.PENDING);
             try
             {
-                RemoveAuctionImage(request, cancellationToken);
+                RemoveAuctionImage(request, cancellationToken, response.CorrelationId);
             }
             finally
             {
@@ -56,7 +57,6 @@ namespace Core.Command.RemoveAuctionImage.Core.Command.RemoveAuctionImage
             }
 
 
-            var response = new CommandResponse(request.CorrelationId, Status.PENDING);
             return Task.FromResult(response);
         }
     }

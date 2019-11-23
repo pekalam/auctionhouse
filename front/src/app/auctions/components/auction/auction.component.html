@@ -1,17 +1,20 @@
 <div class="auction-container" *ngIf="auction">
   <div class="left">
-      <app-carousel [sources]="imgs" [img-height]="200"></app-carousel>
+    <app-carousel [sources]="imgs" [img-height]="200"></app-carousel>
   </div>
   <div class="right">
     <div class="right-content">
-      <h3>{{auction.product.name}}</h3>
+      <h3>{{auction.name}}</h3>
       <span><span class="prop-title">From:</span> {{auction.creator.userName}}</span>
       <p *ngIf="showTimer" class="timer">TIME LEFT: {{timer.m}}:{{timer.s}}</p>
       <hr>
       <div class="date-container">
-        <span class="date" id="start"><span class="prop-title">Starts:</span> {{auction.startDate | date : "yyyy MMMM dd"}}</span>
-        <span class="date" id="end"><span class="prop-title">Ends:</span> {{auction.endDate | date : "yyyy MMMM dd"}}</span>
-        <span class="date" id="days-left" *ngIf="!showTimer"><span class="prop-title">Days left:</span> {{daysLeft}}</span>
+        <span class="date" id="start"><span class="prop-title">Starts:</span>
+          {{auction.startDate | date : "yyyy MMMM dd"}}</span>
+        <span class="date" id="end"><span class="prop-title">Ends:</span>
+          {{auction.endDate | date : "yyyy MMMM dd"}}</span>
+        <span class="date" id="days-left" *ngIf="!showTimer"><span class="prop-title">Days left:</span>
+          {{daysLeft}}</span>
 
       </div>
       <hr>
@@ -34,14 +37,33 @@
         <span><span class="prop-title">Views:</span> {{auction.views}}</span>
       </div>
       <div class="buttons-container" *ngIf="showAuctionButtons">
-        <button class="buynow-btn" (click)="onBuyNow()" [disabled]="!showAuctionButtons || auction.buyNowPrice == null">Buy now</button>
+        <button class="buynow-btn" (click)="onBuyNow()"
+          [disabled]="!showAuctionButtons || auction.buyNowPrice == null">Buy now</button>
         <button class="bid-btn" (click)="onBid()" [disabled]="!showAuctionButtons">Bid</button>
       </div>
 
     </div>
   </div>
-  <div class="description-container">
-    <div class="description-content">
+  <div class="params-container">
+    <div class="params-block">
+      <h2>Information</h2>
+      <div style="padding-left: 20px;">
+        <p><b>Product name:</b>&nbsp;&nbsp;<span>{{auction.product.name}}</span></p>
+        <p><b>Condition:</b>&nbsp;&nbsp;<span>{{auction.product.condition == 0 ? 'Used' : 'New'}}</span></p>
+        <p><b>Tags:</b>&nbsp;&nbsp;</p>
+          <div class="tags-container">
+              <div class="tag-div" *ngFor="let tag of auction.tags">
+                <div>
+                    <i class="fas fa-tag" style="margin-right: 3px;"></i>{{tag}}
+                </div>
+              </div>
+            </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="params-container">
+    <div class="params-block">
       <h2>Description</h2>
 
       <p class="description-text">{{auction.product.description}}</p>

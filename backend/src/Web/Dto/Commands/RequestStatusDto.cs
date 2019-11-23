@@ -8,19 +8,19 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Web.Dto.Commands
 {
-    public class CommandResponseDto
+    public class RequestStatusDto
     {
         public string CorrelationId { get; set; }
         public string Status { get; set; }
-        public object ResponseData { get; set; }
+        public Dictionary<string, object> ExtraData { get; set; }
 
-        public static explicit operator CommandResponseDto(CommandResponse response)
+        public static explicit operator RequestStatusDto(RequestStatus response)
         {
-            return new CommandResponseDto()
+            return new RequestStatusDto()
             {
                 CorrelationId = response.CorrelationId.Value,
                 Status = response.Status.ToString(),
-                ResponseData = response.ResponseData
+                ExtraData = response.ExtraData
             };
         }
     }

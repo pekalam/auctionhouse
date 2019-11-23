@@ -10,12 +10,5 @@ namespace Core.Command.AuctionCreateSession.AuctionCreateSession_StartAuctionCre
     [AuthorizationRequired]
     public class StartAuctionCreateSessionCommand : ICommand
     {
-        [Required]
-        public CorrelationId CorrelationId { get; }
-
-        public StartAuctionCreateSessionCommand(CorrelationId correlationId)
-        {
-            CorrelationId = correlationId;
-        }
     }
 }

@@ -8,6 +8,7 @@ using Core.Common.Auth;
 using Core.Common.Command;
 using Core.Common.Domain.Auctions;
 using Core.Common.DomainServices;
+using Core.Common.EventBus;
 using Core.Common.Exceptions.Command;
 using Microsoft.Extensions.Logging;
 
@@ -33,7 +34,7 @@ namespace Core.Command.AddOrReplaceAuctionImage
             _userIdentityService = userIdentityService;
         }
 
-        private void AddImage(UserAddAuctionImageCommand request, CancellationToken cancellationToken)
+        private void AddImage(UserAddAuctionImageCommand request, CancellationToken cancellationToken, CorrelationId correlationId)
         {
             var auction = _auctionRepository.FindAuction(request.AuctionId);
             if (auction == null)
@@ -56,7 +57,7 @@ namespace Core.Command.AddOrReplaceAuctionImage
             _auctionRepository.UpdateAuction(auction);
             try
             {
-                _eventBusService.Publish(auction.PendingEvents, request.CorrelationId, request);
+                _eventBusService.Publish(auction.PendingEvents, correlationId, request);
             }
             catch (Exception e)
             {
@@ -66,14 +67,14 @@ namespace Core.Command.AddOrReplaceAuctionImage
             }
         }
 
-        protected override Task<CommandResponse> HandleCommand(UserAddAuctionImageCommand request,
+        protected override Task<RequestStatus> HandleCommand(UserAddAuctionImageCommand request,
             CancellationToken cancellationToken)
         {
             AuctionLock.Lock(request.AuctionId);
-
+            var response = new RequestStatus(Status.COMPLETED);
             try
             {
-                AddImage(request, cancellationToken);
+                AddImage(request, cancellationToken, response.CorrelationId);
             }
             finally
             {
@@ -81,7 +82,6 @@ namespace Core.Command.AddOrReplaceAuctionImage
             }
 
 
-            var response = new CommandResponse(Status.COMPLETED);
             return Task.FromResult(response);
         }
     }

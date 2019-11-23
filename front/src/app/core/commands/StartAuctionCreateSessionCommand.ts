@@ -1,21 +1,16 @@
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { ServerMessage, ServerMessageService } from '../services/ServerMessageService';
-import { filter } from 'rxjs/operators';
+import { filter, catchError, switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-export class StartAuctionCreateSessionCommandArgs {
-  constructor(public correlationId: string) { }
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class StartAuctionCreateSessionCommand {
-  private handler: Observable<ServerMessage>;
 
   constructor(private httpClient: HttpClient, private serverMessageService: ServerMessageService) {
-    this.handler = serverMessageService.setupServerMessageHandler('auctionCreateSessionStarted');
   }
 
   execute() {
@@ -23,13 +18,20 @@ export class StartAuctionCreateSessionCommand {
 
     const url = '/api/startCreateSession';
     const correlationId = '1234';
-    let msgHandler = this.handler.pipe(filter((v) => v.correlationId === correlationId));
-    this.httpClient.post(url, new StartAuctionCreateSessionCommandArgs(correlationId)).subscribe((o) => {
-      console.log(o);
-    }, (err) => {
-      console.log(err);
-
-    });
-    return msgHandler;
+    return this.httpClient.post(url, {})
+      .pipe(
+        catchError((err) => {
+          console.log(err);
+          return of(err);
+        }),
+        switchMap((response: ServerMessage) => {
+          console.log(response);
+          if(response.status === "COMPLETED"){
+            return of(response);
+          }
+          let handler = this.serverMessageService.setupServerMessageHandler(response.correlationId);
+          return handler.pipe(filter((v) => v.correlationId === response.correlationId));
+        })
+      );
   }
 }

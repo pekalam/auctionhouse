@@ -1,7 +1,7 @@
 ﻿using System;
 using Core.Common.Domain.Auctions.Events;
 using Core.Common.EventBus;
-using Core.Common.EventSignalingService;
+using Core.Common.RequestStatusService;
 using Core.Query.ReadModel;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
@@ -11,13 +11,13 @@ namespace Core.Query.Handlers.AuctionUpdateHandlers
     public class AuctionImageAddedHandler : EventConsumer<AuctionImageAdded>
     {
         private ReadModelDbContext _dbContext;
-        private readonly IEventSignalingService _eventSignalingService;
+        private readonly IRequestStatusService _requestStatusService;
         private readonly ILogger<AuctionImageAddedHandler> _logger;
 
-        public AuctionImageAddedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext, IEventSignalingService eventSignalingService, ILogger<AuctionImageAddedHandler> logger) : base(appEventBuilder)
+        public AuctionImageAddedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext, IRequestStatusService requestStatusService, ILogger<AuctionImageAddedHandler> logger) : base(appEventBuilder)
         {
             _dbContext = dbContext;
-            _eventSignalingService = eventSignalingService;
+            _requestStatusService = requestStatusService;
             _logger = logger;
         }
 
@@ -42,7 +42,7 @@ namespace Core.Query.Handlers.AuctionUpdateHandlers
             AddImg(appEvent.Event);
             
 
-            _eventSignalingService.TrySendEventCompletionToUser(appEvent, appEvent.Event.AuctionOwner);
+            _requestStatusService.TrySendReqestCompletionToUser(appEvent, appEvent.Event.AuctionOwner);
         }
     }
 }

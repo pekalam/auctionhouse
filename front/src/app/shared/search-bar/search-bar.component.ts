@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Subject, Observable, of } from 'rxjs';
 import { TopAuctionsQueryResult, TopAuctionQueryItem, TopAuctionsByTagQuery } from 'src/app/core/queries/TopAuctionsByTagQuery';
 import { switchMap, distinctUntilChanged, debounceTime, catchError } from 'rxjs/operators';
+import { TopAuctionsByProductNameQuery, TopAuctionsByProductNameQueryResult } from '../../core/queries/TopAuctionsByProductNameQuery';
+import { MatAutocompleteTrigger } from '@angular/material';
 
 @Component({
   selector: 'app-search-bar',
@@ -10,38 +12,74 @@ import { switchMap, distinctUntilChanged, debounceTime, catchError } from 'rxjs/
 })
 export class SearchBarComponent implements OnInit {
 
+  @ViewChild(MatAutocompleteTrigger, { static: true })
+  searchBar: MatAutocompleteTrigger;
+
   private searchVal = new Subject<string>();
-  autocompleteResults: Observable<TopAuctionsQueryResult>;
-  auctions: TopAuctionQueryItem[] = [];
-  total = 0;
+  private byTagResults: Observable<TopAuctionsQueryResult>;
+  private byProductNameResults: Observable<TopAuctionsByProductNameQueryResult>;
+
+
+  auctionsByTag: TopAuctionQueryItem[] = [];
+  totalInTag = 0;
   tag;
+  byTagLoading = false;
 
-  constructor(private tagsQuery: TopAuctionsByTagQuery) {
+  auctionsByProductName: TopAuctionQueryItem[] = [];
+  totalByProductName = 0;
+  productName;
+  byProcuctLoading = false;
 
+  constructor(private tagsQuery: TopAuctionsByTagQuery, private topAuctionsByProductNameQuery: TopAuctionsByProductNameQuery) {
 
-    this.autocompleteResults = this.searchVal.pipe(
+    this.byTagResults = this.searchVal.pipe(
       debounceTime(500),
-      distinctUntilChanged(),
       switchMap((s) => {
-
-          return this.tagsQuery.execute(s, 0).pipe(catchError(err => of(null)))
+        this.byTagLoading = true;
+        return this.tagsQuery.execute(s, 0);
       })
     );
 
-    this.autocompleteResults.subscribe((v) => {
+    this.byTagResults.subscribe((v) => {
+      this.byTagLoading = false;
       if (!v) {
-        this.auctions = [];
+        this.auctionsByTag = [];
         return;
       }
-      this.auctions = v.auctions;
-      this.total = v.total;
+      this.auctionsByTag = v.auctions;
+      this.totalInTag = v.total;
       this.tag = v.tag;
-    });
+    }, (err) => { this.byTagLoading = false; });
+
+
+    this.byProductNameResults = this.searchVal.pipe(
+      debounceTime(500),
+      switchMap((s) => {
+        this.byProcuctLoading = true;
+        return this.topAuctionsByProductNameQuery.execute(s, 0);
+      })
+    );
+
+    this.byProductNameResults.subscribe((v) => {
+      this.byProcuctLoading = false;
+      if (!v) {
+        this.auctionsByProductName = [];
+        return;
+      }
+      this.auctionsByProductName = v.auctions;
+      this.totalByProductName = v.total;
+      this.productName = v.canonicalName;
+    }, (err) => { this.byProcuctLoading = false; });
+  }
+
+  openAutocomplete(event) {
+    console.log(this.searchBar);
+    event.stopPropagation();
+    this.searchBar.openPanel();
   }
 
   onSearchBarKey(val) {
-    console.log("sear");
-    if(val.length > 0){
+    if (val.length > 0) {
       this.searchVal.next(val);
     }
   }

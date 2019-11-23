@@ -14,6 +14,7 @@ export interface AuctionListModel{
   auctionId: string;
   creator: UserIdentity;
   productName: string;
+  name: string;
   category: Category;
   startDate: Date;
   endDate: Date;

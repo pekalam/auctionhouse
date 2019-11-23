@@ -23,14 +23,14 @@ namespace Core.Command.EndAuction
             _logger = logger;
         }
 
-        protected override Task<CommandResponse> HandleCommand(EndAuctionCommand request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(EndAuctionCommand request, CancellationToken cancellationToken)
         {
             var auction = _auctionRepository.FindAuction(request.AuctionId);
             auction.EndAuction();
             _eventBusService.Publish(auction.PendingEvents, null, request);
             auction.MarkPendingEventsAsHandled();
 
-            var response = new CommandResponse(Status.COMPLETED);
+            var response = new RequestStatus(Status.COMPLETED);
             return Task.FromResult(response);
         }
     }

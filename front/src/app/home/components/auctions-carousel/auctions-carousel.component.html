@@ -1,8 +1,23 @@
 <div class="container" *ngIf="auctions.length > 0">
-  <app-carousel class="carousel" [sources]="imgSources" (imgSelected)="selectedImg = $event"></app-carousel>
-  <div class="auction" [routerLink]="['/auction']" [queryParams]="{auctionId: auctions[selectedImg].auctionId}" >
-    <h3>{{auctions[selectedImg].productName}}</h3>
-    <p class="current-price">{{auctions[selectedImg].actualPrice | currency}}</p>
-    <p class="views">Views: {{auctions[selectedImg].views}}</p>
+  <div id="auction-container">
+    <app-carousel class="carousel" [sources]="imgSources" [imageButtons]="false"></app-carousel>
+    <div class="auction" [routerLink]="['/auction']" [queryParams]="{auctionId: auctions[currentAuction].auctionId}">
+      <h3>{{auctions[currentAuction].name}}</h3>
+      <p class="current-price">{{auctions[currentAuction].actualPrice | currency}}</p>
+      <p class="views">Views: {{auctions[currentAuction].views}}</p>
+    </div>
+  </div>
+  <div class="next-btn-container">
+    <div class="next-btn" (click)="prevAuction()">
+      <i class="fas fa-chevron-left"></i>
+    </div>
+    <div class="next-btn" (click)="nextAuction()">
+      <i class="fas fa-chevron-right"></i>
+    </div>
+  </div>
+  <div class="progress-container">
+    <div class="progress">
+        <div *ngFor="let item of auctions; let i = index" [class]="currentAuction === i ? 'progress-element progress-element-active' : 'progress-element'"></div>
+    </div>
   </div>
 </div>

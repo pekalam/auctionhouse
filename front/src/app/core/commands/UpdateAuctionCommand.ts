@@ -1,14 +1,13 @@
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { ServerMessage, ServerMessageService } from '../services/ServerMessageService';
 
-import { filter } from 'rxjs/operators';
+import { filter, catchError, switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 
 export interface UpdateAuctionCommandArgs {
   auctionId: string;
-  correlationId: string;
   buyNowPrice: number | null;
   endDate: Date | null;
   category: string[];
@@ -21,18 +20,27 @@ export interface UpdateAuctionCommandArgs {
   providedIn: 'root'
 })
 export class UpdateAuctionCommand {
-  private handler: Observable<ServerMessage>;
 
   constructor(private httpClient: HttpClient, private serverMessageService: ServerMessageService) {
-    this.handler = serverMessageService.setupServerMessageHandler('auctionUpdated');
   }
 
   execute(args: UpdateAuctionCommandArgs): Observable<ServerMessage> {
     const url = '/api/userUpdateAuction';
-    this.httpClient.post(url, { ...args }).subscribe((o) => {
-      console.log(o);
-    });
-    return this.handler.pipe(filter((v) => v.correlationId === args.correlationId));
+    return this.httpClient.post(url, { ...args })
+      .pipe(
+        catchError((err) => {
+          console.log(err);
+          return of(err);
+        }),
+        switchMap((response: ServerMessage) => {
+          console.log(response);
+          if (response.status === "COMPLETED") {
+            return of(response);
+          }
+          let handler = this.serverMessageService.setupServerMessageHandler(response.correlationId);
+          return handler.pipe(filter((v) => v.correlationId === response.correlationId));
+        })
+      );
   }
 
 }
