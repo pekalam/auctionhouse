@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
+using Core.Common;
 using Core.Common.ApplicationServices;
 using Core.Common.Domain;
 using Core.Common.EventBus;
@@ -50,6 +53,23 @@ namespace Infrastructure.Services.EventBus
             foreach (var eventConsumer in subscriberFactories)
             {
                 Subscribe(eventConsumer);
+            }
+        }
+
+        internal void InitSubscribers(string assemblyName, IImplProvider implProvider)
+        {
+            SetupErrorQueueSubscribtion();
+
+            var eventConsumerTypes = Assembly.Load(assemblyName)
+                .GetTypes()
+                .Where(type => type.BaseType != null && type.BaseType.IsGenericType && type.BaseType.GetGenericTypeDefinition() == typeof(EventConsumer<>))
+                .ToArray();
+
+            foreach (var consumerType in eventConsumerTypes)
+            {
+                var evType = consumerType.BaseType.GetGenericArguments()[0];
+                var factory = new RabbitMqEventConsumerFactory(() => (IEventConsumer) implProvider.Get(consumerType), evType.Name);
+                Subscribe(factory);
             }
         }
 

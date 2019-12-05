@@ -20,5 +20,13 @@ namespace Infrastructure
                 return scope.ServiceProvider.GetRequiredService<T>();
             }
         }
+
+        public object Get(Type t)
+        {
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                return scope.ServiceProvider.GetRequiredService(t);
+            }
+        }
     }
 }
