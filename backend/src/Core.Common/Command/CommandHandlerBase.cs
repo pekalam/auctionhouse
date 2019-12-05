@@ -21,6 +21,24 @@ namespace Core.Common.Command
         }
     }
 
+    //Instead of MediatR pipeline
+    public abstract class DecoratedCommandHandlerBase<T> where T : ICommand
+    {
+        private readonly ILogger _logger;
+
+        protected DecoratedCommandHandlerBase(ILogger logger)
+        {
+            _logger = logger;
+        }
+
+        public Task<RequestStatus> Handle(T request, CancellationToken cancellationToken)
+        {
+            return HandleCommand(request, cancellationToken);
+        }
+
+        protected abstract Task<RequestStatus> HandleCommand(T request, CancellationToken cancellationToken);
+    }
+
     public abstract class CommandHandlerBase<T> : IRequestHandler<T, RequestStatus> where T : ICommand
     {
         private readonly ILogger _logger;

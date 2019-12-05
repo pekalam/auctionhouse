@@ -19,7 +19,7 @@ namespace IntegrationTests
 {
     public class TestEvent : Event
     {
-        public TestEvent() : base("test")
+        public TestEvent() : base("testEvent")
         {
         }
     }
@@ -64,6 +64,11 @@ namespace IntegrationTests
         public T Get<T>() where T : class
         {
             return Mock.Of<T>();
+        }
+
+        public object Get(Type t)
+        {
+            return Mock.Get(t).Object;
         }
     }
 
@@ -111,14 +116,18 @@ namespace IntegrationTests
                 sem.Release();
             });
 
-            bus.InitSubscribers(new []
-            {
-                new RabbitMqEventConsumerFactory(() => handler, "test"), 
-            });
+
+            var stubImplProvider = new Mock<IImplProvider>();
+                stubImplProvider.Setup(provider => provider.Get(typeof(TestHandler)))
+                .Returns(handler);
+            bus.InitSubscribers("IntegrationTests", stubImplProvider.Object);
 
             bus.Publish(toPublish);
 
-            sem.Wait(TimeSpan.FromSeconds(30));
+            if (!sem.Wait(TimeSpan.FromSeconds(30)))
+            {
+                Assert.Fail();
+            }
         }
 
         private bool CheckRollbackAppEvent(IAppEvent<Event> ev)

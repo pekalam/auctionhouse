@@ -46,7 +46,7 @@ namespace Core.Common.Domain.Auctions
 
 
         private void ApplyEvent(AuctionBuyNowPriceChanged ev) => UpdateBuyNowPrice(ev.BuyNowPrice);
-        private void ApplyEvent(UpdateEventGroup group) => group.UpdateEvents.ForEach(ev => Apply(ev));
+        private void ApplyEvent(AuctionUpdateEventGroup group) => group.UpdateEvents.ForEach(ev => Apply(ev));
         private void ApplyEvent(AuctionEndDateChanged ev) => UpdateEndDate(ev.Date);
         private void ApplyEvent(AuctionTagsChanged ev) => UpdateTags(ev.Tags);
         private void ApplyEvent(AuctionCategoryChanged ev) => UpdateCategory(ev.Category);

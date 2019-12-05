@@ -76,6 +76,7 @@ namespace Web
             services.AddScoped<IRequestStatusService, RequestStatusService>();
             services.AddAutoMapper(typeof(Startup).Assembly);
 
+            DefaultDIBootstraper.Common.Configure(services);
             DefaultDIBootstraper.Command.Configure<UserIdentityService, AuctionCreateSessionService>(
                 services,
                 eventStoreSettings, rabbitMqSettings, timeTaskServiceSettings, imageDbSettings, userAuthDbSettings,
@@ -106,9 +107,7 @@ namespace Web
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
         {
-            //DefaultDIBootstraper.Start(serviceProvider);
-            DefaultDIBootstraper.Command.Start(serviceProvider);
-            DefaultDIBootstraper.Query.Start(serviceProvider);
+            DefaultDIBootstraper.Common.Start(serviceProvider);
 
             app.UseCors();
             if (env.IsDevelopment())

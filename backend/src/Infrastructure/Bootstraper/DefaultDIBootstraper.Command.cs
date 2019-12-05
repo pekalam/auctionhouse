@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using Core.Common;
 using Core.Common.ApplicationServices;
@@ -14,7 +15,7 @@ using Core.Common.Command;
 using Core.Common.DomainServices;
 using Infrastructure.Auth;
 using Infrastructure.Repositories.AuctionImage;
-using Infrastructure.Repositories.EventStore;
+using Infrastructure.Repositories.SQLServer;
 using Infrastructure.Services;
 using Infrastructure.Services.EventBus;
 using Infrastructure.Services.SchedulerService;
@@ -29,13 +30,13 @@ namespace Infrastructure.Bootstraper
         public static class Command
         {
             private static void ConfigureServiceSettings(
-                IServiceCollection serviceCollection, EventStoreConnectionSettings eventStoreConnectionSettings,
+                IServiceCollection serviceCollection, MsSqlConnectionSettings sqlServerConnectionSettings,
                 RabbitMqSettings rabbitMqSettings, TimeTaskServiceSettings timeTaskServiceSettings,
                 ImageDbSettings imageDbSettings,
                 UserAuthDbContextOptions userAuthDbContextOptions,
                 CategoryNameServiceSettings categoryNameServiceSettings)
             {
-                serviceCollection.AddSingleton(eventStoreConnectionSettings);
+                serviceCollection.AddSingleton(sqlServerConnectionSettings);
                 serviceCollection.AddSingleton(rabbitMqSettings);
                 serviceCollection.AddSingleton(categoryNameServiceSettings);
                 serviceCollection.AddSingleton(timeTaskServiceSettings);
@@ -64,30 +65,12 @@ namespace Infrastructure.Bootstraper
                 serviceCollection.AddScoped<IUserAuthenticationDataRepository, UserAuthenticationDataRepository>();
             }
 
-            private static void ConfigureEventBus(IServiceCollection serviceCollection)
-            {
-                serviceCollection.AddSingleton<IAppEventBuilder, AppEventRabbitMQBuilder>();
-                serviceCollection.AddSingleton<IEventBus, RabbitMqEventBus>();
-                serviceCollection.AddScoped<EventBusService>();
-            }
-
-            private static void ConfigureMediatR(IServiceCollection serviceCollection)
-            {
-                serviceCollection.AddMediatR(Assembly.Load("Core.Command"));
-            }
-
             private static void ConfigureImageServices(IServiceCollection serviceCollection)
             {
                 serviceCollection.AddSingleton<ImageDbContext>();
                 serviceCollection.AddScoped<IAuctionImageRepository, AuctionImageRepository>();
                 serviceCollection.AddSingleton<IAuctionImageSizeConverterService, AuctionImageSizeConverterService>();
                 serviceCollection.AddScoped<AuctionImageService>();
-            }
-
-            private static void ConfigureCategoryServices(IServiceCollection serviceCollection)
-            {
-                serviceCollection.AddSingleton<ICategoryTreeService, CategoryTreeService>();
-                serviceCollection.AddSingleton<CategoryBuilder>();
             }
 
             private static void ConfigureAuctionShedulerService(IServiceCollection serviceCollection,
@@ -105,14 +88,28 @@ namespace Infrastructure.Bootstraper
 
             private static void ConfigureDomainRepositories(IServiceCollection serviceCollection)
             {
-                serviceCollection.AddSingleton<ESConnectionContext>();
-                serviceCollection.AddScoped<IAuctionRepository, ESAuctionRepository>();
-                serviceCollection.AddScoped<IUserRepository, ESUserRepository>();
+                serviceCollection.AddScoped<IAuctionRepository, MsSqlAuctionRepository>();
+                serviceCollection.AddScoped<IUserRepository, MsSqlUserRepository>();
+            }
+
+
+            private static void ConfigureDecoratedCommandHandlers(IServiceCollection serviceCollection)
+            {
+                var decoratedHandlerTypes = Assembly.Load("Core.Command")
+                    .GetTypes()
+                    .Where(type =>
+                        type.BaseType != null && type.BaseType.IsGenericType &&
+                        type.BaseType.GetGenericTypeDefinition() == typeof(DecoratedCommandHandlerBase<>));
+
+                foreach (var handlerType in decoratedHandlerTypes)
+                {
+                    serviceCollection.AddScoped(handlerType);
+                }
             }
 
             public static void Configure<UserIdentityServiceImplT, AuctionCreateSessionServiceImplT>(
                 IServiceCollection serviceCollection,
-                EventStoreConnectionSettings eventStoreConnectionSettings,
+                MsSqlConnectionSettings eventStoreConnectionSettings,
                 RabbitMqSettings rabbitMqSettings,
                 TimeTaskServiceSettings timeTaskServiceSettings,
                 ImageDbSettings imageDbSettings,
@@ -127,27 +124,14 @@ namespace Infrastructure.Bootstraper
                 ConfigureAuthDbServices(serviceCollection);
                 ConfigureUserIdentitySessionService<UserIdentityServiceImplT>(serviceCollection);
                 ConfigureAuctionCreateSessionService<AuctionCreateSessionServiceImplT>(serviceCollection);
-                ConfigureCategoryServices(serviceCollection);
                 ConfigureImageServices(serviceCollection);
-                //ConfigureEventBus(serviceCollection);
                 ConfigureDomainRepositories(serviceCollection);
                 ConfigureAuctionShedulerService(serviceCollection, timeTaskServiceSettings);
-                //ConfigureMediatR(serviceCollection);
-
-//                serviceCollection.AddSingleton<IImplProvider, DefaultDIImplProvider>(provider =>
-//                    new DefaultDIImplProvider(provider));
+                ConfigureDecoratedCommandHandlers(serviceCollection);
                 serviceCollection.AddScoped<CreateAuctionCommandHandlerDepedencies>();
-
-                serviceCollection.AddScoped<CommandMediator>();
             }
 
-            public static void Start(IServiceProvider serviceProvider)
-            {
-                var esconnection = serviceProvider.GetRequiredService<ESConnectionContext>();
-                esconnection.Connect();
 
-                ((CategoryTreeService) (serviceProvider.GetRequiredService<ICategoryTreeService>())).Init();
-            }
         }
     }
 }
