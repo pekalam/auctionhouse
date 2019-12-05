@@ -10,16 +10,13 @@ services:
       - "ClientKey=testk"
       - "ManagmentKey=testm"
 
-  eventst:
-    hostname: eventst
-    image: eventstore/eventstore
+  sql_server:
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Qwerty1234
     ports:
-      - "2113:2113"
-      - "1113:1113"
-    deploy:
-      placement:
-        constraints:
-          - node.role == manager
+      - '1433:1433'
+    image: marekbf3/mssql-es
 
   rabbitmq:
     hostname: rabbitmq

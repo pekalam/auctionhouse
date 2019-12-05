@@ -8,7 +8,7 @@ using Core.Common.EventBus;
 using Core.Query.ReadModel;
 using EasyNetQ.Logging;
 using Infrastructure.Repositories.AuctionImage;
-using Infrastructure.Repositories.EventStore;
+using Infrastructure.Repositories.SQLServer;
 using Infrastructure.Services;
 using Infrastructure.Services.EventBus;
 using Infrastructure.Services.SchedulerService;
@@ -65,14 +65,11 @@ namespace FunctionalTests.Utils
 
 		private void SetupAuctionRepository()
 		{
-			var eventStoreIpAddress = TestContextUtils.GetParameterOrDefault("eventstore-ip", "localhost");
-			var esConnectionContext = new ESConnectionContext(new EventStoreConnectionSettings()
+			var mssqlConnectionString = TestContextUtils.GetParameterOrDefault("sqlserver", "Data Source=.;Initial Catalog=es;Integrated Security=True;");
+			AuctionRepository = new MsSqlAuctionRepository(new MsSqlConnectionSettings()
 			{
-				IPAddress = eventStoreIpAddress,
-				Port = 1113
+				ConnectionString = mssqlConnectionString
 			});
-			esConnectionContext.Connect();
-			AuctionRepository = new ESAuctionRepository(esConnectionContext);
 		}
 
 		private void SetupAuctionImageRepository()

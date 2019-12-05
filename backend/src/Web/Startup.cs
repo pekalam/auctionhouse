@@ -1,4 +1,4 @@
-﻿using Infrastructure.Bootstraper;
+using Infrastructure.Bootstraper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,7 +13,7 @@ using Core.Common.RequestStatusService;
 using Core.Query.ReadModel;
 using Infrastructure.Auth;
 using Infrastructure.Repositories.AuctionImage;
-using Infrastructure.Repositories.EventStore;
+using Infrastructure.Repositories.SQLServer;
 using Infrastructure.Services;
 using Infrastructure.Services.EventBus;
 using Infrastructure.Services.SchedulerService;
@@ -46,8 +46,8 @@ namespace Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<JwtSettings>(Configuration.GetSection("JWT"));
-            var eventStoreSettings = Configuration.GetSection("EventStore")
-                .Get<EventStoreConnectionSettings>();
+            var sqlServerSettings = Configuration.GetSection("SQLServer")
+                .Get<MsSqlConnectionSettings>();
             var rabbitMqSettings = Configuration.GetSection("MQ")
                 .Get<RabbitMqSettings>();
             var mongoDbSettings = Configuration.GetSection("Mongo")
@@ -78,7 +78,7 @@ namespace Web
 
             DefaultDIBootstraper.Command.Configure<UserIdentityService, AuctionCreateSessionService>(
                 services,
-                eventStoreSettings, rabbitMqSettings, timeTaskServiceSettings, imageDbSettings, userAuthDbSettings,
+                sqlServerSettings, rabbitMqSettings, timeTaskServiceSettings, imageDbSettings, userAuthDbSettings,
                 new CategoryNameServiceSettings()
                 {
                     CategoriesFilePath = "./_data/categories.xml"

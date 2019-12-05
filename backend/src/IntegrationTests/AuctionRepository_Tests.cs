@@ -5,14 +5,14 @@ using Core.Common.Domain.Categories;
 using Core.Common.Domain.Products;
 using Core.Common.Domain.Users;
 using FluentAssertions;
-using Infrastructure.Repositories.EventStore;
+using Infrastructure.Repositories.SQLServer;
 using NUnit.Framework;
 
 namespace IntegrationTests
 {
     public class AuctionRepository_Tests
     {
-        private ESAuctionRepository auctionRepository;
+        private IAuctionRepository auctionRepository;
 
 
         private Auction CreateFakeAuction()
@@ -34,13 +34,11 @@ namespace IntegrationTests
         [SetUp]
         public void SetUp()
         {
-            var esConnectionContext = new ESConnectionContext(new EventStoreConnectionSettings()
+            var serverOpt = new MsSqlConnectionSettings()
             {
-                IPAddress = TestContextUtils.GetParameterOrDefault("eventstore-connection-string", "localhost"),
-                Port = 1113
-            });
-            esConnectionContext.Connect();
-            auctionRepository = new ESAuctionRepository(esConnectionContext);
+                ConnectionString = "Data Source=.;Initial Catalog=es;Integrated Security=True;"
+            };
+            auctionRepository = new MsSqlAuctionRepository(serverOpt);
         }
 
         [Test]
@@ -54,6 +52,26 @@ namespace IntegrationTests
             auction.MarkPendingEventsAsHandled();
 
             var read = auctionRepository.FindAuction(auction.AggregateId);
+
+            read.Should().BeEquivalentTo(auction);
+        }
+
+        [Test]
+        public void AddAuction_adds_auction_UpdateAuction_updates_and_FindAuction_finds_it_by_version()
+        {
+            var auction = CreateFakeAuction();
+            var bid = new Bid(auction.AggregateId, new UserIdentity(Guid.NewGuid(), "test2"), 10, DateTime.UtcNow);
+            auction.Raise(bid);
+
+            auctionRepository.AddAuction(auction);
+            auction.MarkPendingEventsAsHandled();
+
+            auction.UpdateDescription("New description");
+
+            auctionRepository.UpdateAuction(auction);
+            auction.MarkPendingEventsAsHandled();
+
+            var read = auctionRepository.FindAuction(auction.AggregateId, auction.Version);
 
             read.Should().BeEquivalentTo(auction);
         }

@@ -15,12 +15,13 @@ services:
       context: ../src/Tests
       dockerfile: Dockerfile-mongo-standalone-replicaset
 
-
-  eventst:
-    container_name: eventst
-    image: eventstore/eventstore
+  sql_server:
     environment:
-      - EVENTSTORE_MEM_DB=true
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Qwerty1234
+    ports:
+      - '1433:1433'
+    image: marekbf3/mssql-es
 
   rabbitmq:
     container_name: rabbitmq

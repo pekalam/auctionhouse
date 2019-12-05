@@ -1,28 +1,25 @@
 using Core.Common.Domain.Users;
 using FluentAssertions;
-using Infrastructure.Repositories.EventStore;
+using Infrastructure.Repositories.SQLServer;
 using NUnit.Framework;
 
 namespace IntegrationTests
 {
     public class UserRepository_Tests
     {
-        private ESUserRepository userRepository;
+        private IUserRepository userRepository;
         private User user;
 
         [SetUp]
         public void SetUp()
         {
-            var esConnectionContext = new ESConnectionContext(new EventStoreConnectionSettings()
+            var serverOpt = new MsSqlConnectionSettings()
             {
-                IPAddress = TestContextUtils.GetParameterOrDefault("eventstore-connection-string", "localhost"),
-                Port = 1113
-            });
-            esConnectionContext.Connect();
-            userRepository = new ESUserRepository(esConnectionContext);
+                ConnectionString = "Data Source=.;Initial Catalog=es;Integrated Security=True;"
+            };
+            userRepository = new MsSqlUserRepository(serverOpt);
             user = new User();
             user.Register("test");
-            
         }
 
         [Test]

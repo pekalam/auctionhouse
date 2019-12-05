@@ -10,14 +10,13 @@ services:
     ports:
       - "27017:27017"
 
-  eventst:
-    container_name: eventst
-    image: eventstore/eventstore
+  sql_server:
     environment:
-      - EVENTSTORE_MEM_DB=true
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Qwerty1234
     ports:
-      - "2113:2113"
-      - "1113:1113"
+      - '1433:1433'
+    image: marekbf3/mssql-es
 
   rabbitmq:
     hostname: rabbitmq
