@@ -1,0 +1,7 @@
+FROM marekbf3/mssql-es
+RUN apt-get update
+RUN apt-get -y install netcat
+COPY 'entrypoint-mssql-es.sh' '/bin/'
+RUN chmod +x /bin/entrypoint-mssql-es.sh
+EXPOSE 32112
+ENTRYPOINT [ "entrypoint-mssql-es.sh" ]

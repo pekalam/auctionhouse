@@ -36,7 +36,7 @@ namespace FunctionalTests.Queries
                 StartDate = DateTime.UtcNow.AddMinutes(12),
                 EndDate = DateTime.UtcNow.AddDays(1),
                 Category = testCategory,
-                Product = new Product("name", "desc", Condition.New)
+                Product = new Product("test product name", "example description", Condition.New)
             };
         }
 

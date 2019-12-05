@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RunSettings>
-  <!-- Parameters used by tests at runtime -->
-  <TestRunParameters>
-    <Parameter name="eventstore-ip" value="eventst" />
+	<!-- Parameters used by tests at runtime -->
+	<TestRunParameters>
+		<Parameter name="sqlserver" value="Data Source=sql_server;Initial Catalog=es;Integrated Security=False;User ID=sa;PWD=Qwerty1234;" />
 	<Parameter name="rabbitmq-connection-string" value="host=rabbitmq" />
 	<Parameter name="mongodb-connection-string" value="mongodb://mongodb:27017" />
 	<Parameter name="quartz-web-task-service" value="http://quartz_web_task_service:80"/>
 	<Parameter name="quartz-web-task-target-endpoint" value="http://auctionhouse-functional-tests:9998/test"/>
-  </TestRunParameters>
+	</TestRunParameters>
 </RunSettings>

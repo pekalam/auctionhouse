@@ -11,6 +11,7 @@ services:
       - "27017:27017"
 
   sql_server:
+    container_name: sql_server
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=Qwerty1234
@@ -35,7 +36,7 @@ services:
       context: ../src
       dockerfile: IntegrationTests/Dockerfile
     depends_on:
-      - eventst
+      - sql_server
       - mongodb
       - rabbitmq
 

@@ -11,6 +11,7 @@ services:
       - "ManagmentKey=testm"
 
   sql_server:
+    hostname: sql_server
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=Qwerty1234

@@ -91,7 +91,7 @@ namespace FunctionalTests.CommandRollback
             var user = new User();
             user.Register("testUserName");
             user.MarkPendingEventsAsHandled();
-            var product = new Product("name", "desc", Condition.New);
+            var product = new Product("test product name", "example description", Condition.New);
             var sem = new SemaphoreSlim(0, 1);
             var sem2 = new SemaphoreSlim(0, 1);
             var correlationId = new CorrelationId("test_correlationId");
@@ -106,7 +106,7 @@ namespace FunctionalTests.CommandRollback
 
             var command = new CreateAuctionCommand(20.0m, product, DateTime.UtcNow.AddMinutes(10),
                 DateTime.UtcNow.AddDays(12),
-                categories, Tag.From(new[] {"tag1"}), "test name", false);
+                categories, Tag.From(new[] {"tag1"}), "test auction name", false);
             command.SignedInUser = user.UserIdentity;
 
             IAppEvent<AuctionCreated> publishedEvent = null;

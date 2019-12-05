@@ -69,7 +69,7 @@ namespace FunctionalTests.Queries
                     EndDate = DateTime.UtcNow.AddDays(1),
                     Category = testCategory,
                     BuyNowOnly = false,
-                    Product = new Product("prod 1", "desc", Condition.Used)
+                    Product = new Product("test product name", "example description", Condition.Used)
                 };
             }
 

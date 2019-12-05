@@ -2,10 +2,9 @@
 
 set -e
 
-echo "wait-for eventst"
-wait-for eventst:2113 -t 180
-wait-for eventst:1113 -t 180
-echo "eventst started" 
+echo "wait-for sql_server"
+wait-for sql_server:32112 -t 180
+echo "sql_server started" 
 echo "wait-for quartz_web_task_service"
 wait-for quartz_web_task_service:80 -t 180
 echo "quartz_web_task_service started"

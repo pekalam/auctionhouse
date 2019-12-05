@@ -16,12 +16,15 @@ services:
       dockerfile: Dockerfile-mongo-standalone-replicaset
 
   sql_server:
+    container_name: sql_server
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=Qwerty1234
     ports:
       - '1433:1433'
-    image: marekbf3/mssql-es
+    build:
+      context: ../src/Tests
+      dockerfile: Dockerfile-mssql-es
 
   rabbitmq:
     container_name: rabbitmq
@@ -36,7 +39,7 @@ services:
       context: ../src
       dockerfile: Tests/Dockerfile
     depends_on:
-      - eventst
+      - sql_server
       - rabbitmq
       - mongodb
       - quartz_web_task_service
