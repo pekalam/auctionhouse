@@ -9,6 +9,7 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using ConfigCat.Client;
 using Core.Common.RequestStatusService;
 using Core.Query.ReadModel;
 using Infrastructure.Auth;
@@ -17,10 +18,12 @@ using Infrastructure.Repositories.EventStore;
 using Infrastructure.Services;
 using Infrastructure.Services.EventBus;
 using Infrastructure.Services.SchedulerService;
+using Microsoft.FeatureManagement;
 using Web.Adapters;
 using Web.Adapters.EventSignaling;
 using Web.Auth;
 using Web.Exceptions;
+using Web.FeatureFlags;
 using IUserIdProvider = Microsoft.AspNetCore.SignalR.IUserIdProvider;
 
 namespace Web
@@ -34,13 +37,26 @@ namespace Web
 
         public IConfiguration Configuration { get; }
 
-        private void ConfigureJWT(IServiceCollection services)
+        protected virtual void ConfigureJWT(IServiceCollection services)
         {
             var jwtConfig = Configuration.GetSection("JWT")
                 .Get<JwtSettings>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(jwtConfig.ConfigureJwt);
+        }
+
+        protected virtual void ConfigureFeatureFlagServices(IServiceCollection services)
+        {
+            if (!Configuration.GetValue<bool>("FeatureFlags")) {return;}
+
+            var clientConfiguration = new LazyLoadConfiguration
+            {
+                ApiKey = Configuration.GetSection("ConfigCat")["ApiKey"],
+                CacheTimeToLiveSeconds = Configuration.GetSection("ConfigCat").GetValue<uint>("CacheTimeToLiveSeconds")
+            };
+
+            services.AddFeatureManagement(new ConfigCatConfiguration(new ConfigCatClient(clientConfiguration), null));
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -102,6 +118,7 @@ namespace Web
                 .AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(ApiKeyAuthenticationOptions.Scheme,
                     null);
 
+            ConfigureFeatureFlagServices(services);
             ConfigureJWT(services);
         }
 
