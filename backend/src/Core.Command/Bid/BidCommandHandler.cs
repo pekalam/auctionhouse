@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Command.Bid
 {
-    public class BidCommandHandler : CommandHandlerBase<BidCommand>
+    public class BidCommandHandler : DecoratedCommandHandlerBase<BidCommand>
     {
         private readonly IAuctionRepository _auctionRepository;
         private readonly EventBusService _eventBusService;
@@ -45,20 +45,10 @@ namespace Command.Bid
 
             auction.Raise(bid);
 
-            //weak solution to concurrency problem due to lack of transaction support in eventstore
-            //TODO: external lock mechanism per auction / SQLServer as event database
-            var check = _auctionRepository.FindAuction(request.AuctionId);
             var response = new RequestStatus(Status.PENDING);
-            if (check.Version + 1 == auction.Version)
-            {
-                _auctionRepository.UpdateAuction(auction);
-                _eventBusService.Publish(auction.PendingEvents, response.CorrelationId, request);
-                auction.MarkPendingEventsAsHandled();
-            }
-            else
-            {
-                throw new CommandException("Invalid auction versions");
-            }
+            _auctionRepository.UpdateAuction(auction);
+            _eventBusService.Publish(auction.PendingEvents, response.CorrelationId, request);
+            auction.MarkPendingEventsAsHandled();
 
             return Task.FromResult(response);
         }
