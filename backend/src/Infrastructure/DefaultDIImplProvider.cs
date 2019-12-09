@@ -6,27 +6,25 @@ namespace Infrastructure
 {
     public class DefaultDIImplProvider : IImplProvider
     {
-        private IServiceProvider _serviceProvider;
+        private IServiceScopeFactory _scopeFactory;
 
-        public DefaultDIImplProvider(IServiceProvider serviceProvider)
+        public DefaultDIImplProvider(IServiceScopeFactory scopeFactory)
         {
-            _serviceProvider = serviceProvider;
+            _scopeFactory = scopeFactory;
         }
 
         public T Get<T>() where T : class
         {
-            using (var scope = _serviceProvider.CreateScope())
-            {
+
+            var scope = _scopeFactory.CreateScope();
                 return scope.ServiceProvider.GetRequiredService<T>();
-            }
+            
         }
 
         public object Get(Type t)
         {
-            using (var scope = _serviceProvider.CreateScope())
-            {
+                var scope = _scopeFactory.CreateScope();
                 return scope.ServiceProvider.GetRequiredService(t);
-            }
         }
     }
 }

@@ -21,10 +21,10 @@ namespace Web.Api
     [Route("api")]
     public class AuthenticationCommandController : Controller
     {
-        private readonly CommandMediator _mediator;
+        private readonly ImmediateCommandMediator _mediator;
         private readonly JwtService _jwtService;
 
-        public AuthenticationCommandController(CommandMediator mediator, JwtService jwtService)
+        public AuthenticationCommandController(ImmediateCommandMediator mediator, JwtService jwtService)
         {
             _mediator = mediator;
             _jwtService = jwtService;

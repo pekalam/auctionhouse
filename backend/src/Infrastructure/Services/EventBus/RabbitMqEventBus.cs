@@ -5,11 +5,14 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Core.Common;
 using Core.Common.ApplicationServices;
+using Core.Common.Command;
 using Core.Common.Domain;
 using Core.Common.EventBus;
 using EasyNetQ;
 using EasyNetQ.NonGeneric;
 using EasyNetQ.SystemMessages;
+using EasyNetQ.Topology;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using IEventBus = Core.Common.EventBus.IEventBus;
@@ -36,6 +39,7 @@ namespace Infrastructure.Services.EventBus
         private readonly ILogger<RabbitMqEventBus> _logger;
         private IBus _bus;
         private List<ISubscriptionResult> _subscriptions = new List<ISubscriptionResult>();
+        private List<ISubscriptionResult> _cmdSubscriptions = new List<ISubscriptionResult>();
 
 
         public RabbitMqEventBus(RabbitMqSettings settings, ILogger<RabbitMqEventBus> logger)
@@ -71,6 +75,39 @@ namespace Infrastructure.Services.EventBus
                 var factory = new RabbitMqEventConsumerFactory(() => (IEventConsumer) implProvider.Get(consumerType), evType.Name);
                 Subscribe(factory);
             }
+        }
+
+        internal void InitCommandSubscribers(string assemblyName, IImplProvider implProvider, IMediator mediator)
+        {
+            var commandHandlerTypes = Assembly.Load(assemblyName)
+                .GetTypes()
+                .Where(type =>
+                    type.BaseType != null && type.BaseType.IsGenericType &&
+                    type.BaseType.GetGenericTypeDefinition() == typeof(CommandHandlerBase<>))
+                .ToArray();
+
+            foreach (var handlerType in commandHandlerTypes)
+            {
+                var cmdType = handlerType.BaseType.GetGenericArguments()[0];
+                CommandSubscribe(cmdType, handlerType, implProvider, mediator);
+            }
+        }
+
+        private void CommandSubscribe(Type cmdType, Type handlerType, IImplProvider implProvider, IMediator mediator)
+        {
+            var cmdName = cmdType.Name;
+            var subscription = _bus.Subscribe(typeof(ICommand), cmdName,
+                cmd =>
+                {
+                    var handler = implProvider.Get<QueuedCommandHandler>();
+                    handler.Handle(cmd as ICommand, handlerType);
+                },
+                configuration =>
+                {
+                    configuration.WithTopic(cmdName);
+                    configuration.WithQueueName(cmdName);
+                });
+            _cmdSubscriptions.Add(subscription);
         }
 
         internal void CancelSubscriptions()
@@ -161,6 +198,11 @@ namespace Infrastructure.Services.EventBus
             {
                 Publish(@event);
             }
+        }
+
+        public void Send<T>(T command) where T : ICommand
+        {
+            _bus.Publish(typeof(ICommand), command, command.GetType().Name);
         }
     }
 }

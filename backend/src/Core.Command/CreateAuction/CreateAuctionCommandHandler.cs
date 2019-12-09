@@ -227,7 +227,7 @@ namespace Core.Command.CreateAuction
 
             _deps.auctionCreateSessionService.RemoveSession();
 
-            var response = new RequestStatus(Status.PENDING);
+            var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
             var addAuctionSequence = new AtomicSequence<Auction>()
                 .AddTask(AddToRepository, AddToRepository_Rollback)
                 .AddTask(SheduleAuctionEndTask, ScheduleAuctionEndTask_Rollback)

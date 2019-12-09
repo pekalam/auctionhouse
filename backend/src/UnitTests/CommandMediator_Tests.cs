@@ -56,8 +56,9 @@ namespace UnitTests.CommandMediator_Tests
             mockMediatr
                 .Setup(f => f.Send(It.IsAny<TestCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedResponse);
+            var mediatrHandlerMediator = new MediatRCommandHandlerMediator(mockMediatr.Object);
 
-            var mediator = new CommandMediator(mockMediatr.Object, Mock.Of<IImplProvider>());
+            var mediator = new CommandMediator(mediatrHandlerMediator, Mock.Of<IImplProvider>());
 
             var response = await mediator.Send(new TestCommand());
 
@@ -78,7 +79,8 @@ namespace UnitTests.CommandMediator_Tests
             stubImplProvider.Setup(f => f.Get<IUserIdentityService>())
                 .Returns(stubUserIdentityService.Object);
 
-            var mediator = new CommandMediator(mockMediatr.Object, stubImplProvider.Object);
+            var mediatrHandlerMediator = new MediatRCommandHandlerMediator(mockMediatr.Object);
+            var mediator = new CommandMediator(mediatrHandlerMediator, stubImplProvider.Object);
 
 
             Assert.ThrowsAsync<NotSignedInException>(async () => await mediator.Send(new TestCommandAuth()));
@@ -108,7 +110,8 @@ namespace UnitTests.CommandMediator_Tests
             stubImplProvider.Setup(f => f.Get<IUserIdentityService>())
                 .Returns(stubUserIdentityService.Object);
 
-            var mediator = new CommandMediator(mockMediatr.Object, stubImplProvider.Object);
+            var mediatrHandlerMediator = new MediatRCommandHandlerMediator(mockMediatr.Object);
+            var mediator = new CommandMediator(mediatrHandlerMediator, stubImplProvider.Object);
 
 
             Assert.DoesNotThrowAsync(async () => await mediator.Send(new TestCommandAuthWithSignedUser(12)));

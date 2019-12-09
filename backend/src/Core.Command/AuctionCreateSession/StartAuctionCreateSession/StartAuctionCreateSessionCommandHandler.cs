@@ -13,13 +13,11 @@ namespace Core.Command.AuctionCreateSession.AuctionCreateSession_StartAuctionCre
 {
     public class StartAuctionCreateSessionCommandHandler : CommandHandlerBase<StartAuctionCreateSessionCommand>
     {
-        private readonly IRequestStatusService _requestStatusService;
         private readonly IAuctionCreateSessionService _auctionCreateSessionService;
         private readonly ILogger<StartAuctionCreateSessionCommandHandler> _logger;
 
-        public StartAuctionCreateSessionCommandHandler(IRequestStatusService requestStatusService, IAuctionCreateSessionService auctionCreateSessionService, ILogger<StartAuctionCreateSessionCommandHandler> logger) : base(logger)
+        public StartAuctionCreateSessionCommandHandler(IAuctionCreateSessionService auctionCreateSessionService, ILogger<StartAuctionCreateSessionCommandHandler> logger) : base(logger)
         {
-            _requestStatusService = requestStatusService;
             _auctionCreateSessionService = auctionCreateSessionService;
             _logger = logger;
         }
@@ -38,8 +36,7 @@ namespace Core.Command.AuctionCreateSession.AuctionCreateSession_StartAuctionCre
                 session = _auctionCreateSessionService.StartAndSaveNewSession();
             }
 
-            var response = new RequestStatus(Status.COMPLETED);
-            return Task.FromResult(response);
+            return Task.FromResult(RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED));
         }
     }
 }

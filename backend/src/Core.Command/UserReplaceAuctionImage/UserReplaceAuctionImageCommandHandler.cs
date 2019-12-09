@@ -60,7 +60,7 @@ namespace Core.Command.ReplaceAuctionImage.Core.Command.ReplaceAuctionImage
             CancellationToken cancellationToken)
         {
             AuctionLock.Lock(request.AuctionId);
-            var response = new RequestStatus(Status.PENDING);
+            var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
             try
             {
                 ReplaceAuctionImage(request, cancellationToken, response.CorrelationId);

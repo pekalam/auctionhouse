@@ -9,4 +9,10 @@ namespace Core.Common.EventBus
         Type MessageType { get; }
         void Dispatch(object message);
     }
+
+    internal interface ICommandConsumer
+    {
+        Type CommandType { get; }
+        void Dispatch(object cmd);
+    }
 }

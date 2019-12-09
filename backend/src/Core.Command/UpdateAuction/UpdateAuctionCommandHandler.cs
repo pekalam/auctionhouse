@@ -74,7 +74,7 @@ namespace Core.Command.UpdateAuction
             var newCategory = _categoryBuilder.FromCategoryNamesList(request.Category);
             auction.UpdateCategory(newCategory);
 
-            var response = new RequestStatus(Status.PENDING);
+            var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.PENDING);
             _eventBusService.Publish(auction.PendingEvents, response.CorrelationId, request);
             _auctionRepository.UpdateAuction(auction);
 

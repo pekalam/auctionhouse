@@ -28,7 +28,7 @@ namespace Core.Common.Attributes
             var commandMembers = assemblyNames.Select(s => Assembly.Load((string) s))
                 .Select(assembly =>
                     assembly.GetTypes()
-                        .Where(type => type.GetInterfaces().Contains(typeof(ICommand)) || type.GetInterfaces().Contains(typeof(IQuery)))
+                        .Where(type => type.BaseType == typeof(ICommand) || type.GetInterfaces().Contains(typeof(IQuery)))
                         .Select(type => type.GetProperties())
                         .SelectMany(infos => infos)
                         .Where(info =>
@@ -49,22 +49,20 @@ namespace Core.Common.Attributes
             foreach (var member in commandMembers)
             {
                 var interfaces = member.CmdOrQueryType.GetInterfaces();
-                if (interfaces.Length > 0)
+
+                if (member.CmdOrQueryType.BaseType == typeof(ICommand) && !interfaces.Contains(typeof(IQuery)))
                 {
-                    if (interfaces.Contains(typeof(ICommand)) && !interfaces.Contains(typeof(IQuery)))
-                    {
-                        _signedInUserCommandProperties[member.CmdOrQueryType] = member.PropertyInfo;
-                    }
-                    else if (interfaces.Contains(typeof(IQuery)) && !interfaces.Contains(typeof(ICommand)))
-                    {
-                        _signedInUserQueryProperties[member.CmdOrQueryType] = member.PropertyInfo;
-                    }
-                    else
-                    {
-                        throw new ArgumentException($"Invalid cmd/query of type: {member.CmdOrQueryType.FullName}");
-                    }
+                    _signedInUserCommandProperties[member.CmdOrQueryType] = member.PropertyInfo;
                 }
-                
+                else if (interfaces.Contains(typeof(IQuery)) && member.CmdOrQueryType.BaseType != typeof(ICommand))
+                {
+                    _signedInUserQueryProperties[member.CmdOrQueryType] = member.PropertyInfo;
+                }
+                else
+                {
+                    throw new ArgumentException($"Invalid cmd/query of type: {member.CmdOrQueryType.FullName}");
+                }
+
             }
         }
 

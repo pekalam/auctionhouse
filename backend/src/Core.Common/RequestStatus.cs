@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Core.Common.Command;
 using Core.Common.EventBus;
 
 namespace Core.Common
@@ -27,6 +28,18 @@ namespace Core.Common
             CorrelationId = correlationId;
             Status = status;
             ExtraData = extraData;
+        }
+
+        public static RequestStatus CreateFromCommandContext(CommandContext context, Status newStatus, Dictionary<string, object> extraData = null)
+        {
+            if (context == null)
+            {
+                return new RequestStatus(newStatus, extraData);
+            }
+            else
+            {
+                return new RequestStatus(context.CorrelationId, newStatus, extraData);
+            }
         }
     }
 }
