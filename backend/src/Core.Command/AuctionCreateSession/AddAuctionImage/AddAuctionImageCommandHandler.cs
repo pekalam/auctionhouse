@@ -50,7 +50,7 @@ namespace Core.Command.AuctionCreateSession.AuctionCreateSession_AddAuctionImage
 //                {"imgSz3", added.Size3Id}
 //            });
 
-            var response = new RequestStatus(Status.COMPLETED, new Dictionary<string, object>()
+            var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED, new Dictionary<string, object>()
             {
                 {"imgSz1", added.Size1Id},
                 {"imgSz2", added.Size2Id},

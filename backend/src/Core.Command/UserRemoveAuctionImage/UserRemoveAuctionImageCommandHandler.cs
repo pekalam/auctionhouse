@@ -46,7 +46,7 @@ namespace Core.Command.RemoveAuctionImage.Core.Command.RemoveAuctionImage
             CancellationToken cancellationToken)
         {
             AuctionLock.Lock(request.AuctionId);
-            var response = new RequestStatus(Status.PENDING);
+            var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
             try
             {
                 RemoveAuctionImage(request, cancellationToken, response.CorrelationId);

@@ -35,16 +35,19 @@ namespace Infrastructure.Bootstraper
                 ConfigureCategoryServices(serviceCollection);
                 ConfigureEventBus(serviceCollection);
 
+                
                 serviceCollection.AddMediatR(
                     new Assembly[] {Assembly.Load("Core.Command"), Assembly.Load("Core.Query")},
-                    configuration => { configuration.AsScoped(); });
+                    configuration =>
+                    {
+                        configuration.AsTransient();
+                    });
 
 
                 serviceCollection.AddSingleton<IImplProvider, DefaultDIImplProvider>(provider =>
-                    new DefaultDIImplProvider(provider));
+                    new DefaultDIImplProvider(provider.GetService<IServiceScopeFactory>()));
 
                 serviceCollection.AddScoped<QueryMediator>();
-                serviceCollection.AddScoped<CommandMediator>();
             }
 
             public static void Start(IServiceProvider serviceProvider)
@@ -54,6 +57,7 @@ namespace Infrastructure.Bootstraper
                 RollbackHandlerRegistry.ImplProvider = implProvider;
                 var rabbitmq = (RabbitMqEventBus)implProvider.Get<IEventBus>();
                 rabbitmq.InitSubscribers("Core.Query", implProvider);
+                rabbitmq.InitCommandSubscribers("Core.Command", implProvider, serviceProvider.GetRequiredService<IMediator>());
             }
         }
     }

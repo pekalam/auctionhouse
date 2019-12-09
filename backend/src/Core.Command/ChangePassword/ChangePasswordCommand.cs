@@ -49,7 +49,7 @@ namespace Core.Command.ChangePassword
 
             _authenticationDataRepository.SaveUserAuth(userAuthData);
 
-            var response = new RequestStatus(Status.COMPLETED);
+            var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
             return Task.FromResult(response);
         }
     }

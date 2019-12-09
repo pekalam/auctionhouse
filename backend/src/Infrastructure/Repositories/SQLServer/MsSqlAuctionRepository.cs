@@ -132,7 +132,7 @@ namespace Infrastructure.Repositories.SQLServer
                         AggId = auction.AggregateId,
                         AggName = "Auction",
                         EventName = pendingEvent.EventName,
-                        Date = DateTime.Now.Subtract(TimeSpan.FromMinutes(1)),
+                        Date = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(1)),
                         Data = json,
                         ExpectedVersion = -1,
                         NewVersion = auction.Version
@@ -173,7 +173,7 @@ namespace Infrastructure.Repositories.SQLServer
                         AggId = auction.AggregateId,
                         AggName = "Auction",
                         EventName = pendingEvent.EventName,
-                        Date = DateTime.Now.Subtract(TimeSpan.FromMinutes(1)),
+                        Date = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(1)),
                         Data = json,
                         ExpectedVersion = auction.Version - auction.PendingEvents.Count(),
                         NewVersion = auction.Version
@@ -208,7 +208,7 @@ namespace Infrastructure.Repositories.SQLServer
                         AggId = user.AggregateId,
                         AggName = "User",
                         EventName = pendingEvent.EventName,
-                        Date = DateTime.Now.Subtract(TimeSpan.FromMinutes(1)),
+                        Date = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(1)),
                         Data = json,
                         ExpectedVersion = -1,
                         NewVersion = user.Version

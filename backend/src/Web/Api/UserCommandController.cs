@@ -22,10 +22,10 @@ namespace Web.Api
     [ApiController]
     public class UserCommandController : Controller
     {
-        private readonly CommandMediator _mediator;
+        private readonly QueuedCommandMediator _mediator;
         private readonly IMapper _mapper;
 
-        public UserCommandController(CommandMediator mediator, IMapper mapper)
+        public UserCommandController(QueuedCommandMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
             _mapper = mapper;

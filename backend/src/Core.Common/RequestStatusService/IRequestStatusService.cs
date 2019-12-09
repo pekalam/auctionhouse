@@ -15,7 +15,8 @@ namespace Core.Common.RequestStatusService
         void TrySendRequestFailureToUser<T>(IAppEvent<T> appEvent, UserIdentity user) where T : Event;
         void TrySendRequestCompletionToUser(string signalName, CorrelationId correlationId, UserIdentity user,
             Dictionary<string, object> values = null);
-
+        void TrySendRequestFailureToUser(string signalName, CorrelationId correlationId, UserIdentity user,
+            Dictionary<string, object> values = null);
 
     }
 }

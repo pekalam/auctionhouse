@@ -49,7 +49,7 @@ namespace Infrastructure.Bootstraper
                     IServiceCollection serviceCollection)
                 where AuctionCreateSessionServiceT : class, IAuctionCreateSessionService
             {
-                serviceCollection.AddScoped<IAuctionCreateSessionService, AuctionCreateSessionServiceT>();
+                serviceCollection.AddTransient<IAuctionCreateSessionService, AuctionCreateSessionServiceT>();
             }
 
             private static void
@@ -129,6 +129,13 @@ namespace Infrastructure.Bootstraper
                 ConfigureAuctionShedulerService(serviceCollection, timeTaskServiceSettings);
                 ConfigureDecoratedCommandHandlers(serviceCollection);
                 serviceCollection.AddScoped<CreateAuctionCommandHandlerDepedencies>();
+
+
+                serviceCollection.AddScoped<QueuedCommandHandler>();
+                serviceCollection.AddScoped<MediatRCommandHandlerMediator>();
+                serviceCollection.AddScoped<EventBusCmdHandlerMediator>();
+                serviceCollection.AddScoped<ImmediateCommandMediator>();
+                serviceCollection.AddScoped<QueuedCommandMediator>();
             }
 
 

@@ -80,5 +80,20 @@ namespace Web.Adapters.EventSignaling
                 _logger.LogDebug($"Cannot send event completion to user {user.UserName} {e.ToString()}");
             }
         }
+
+        public void TrySendRequestFailureToUser(string signalName, CorrelationId correlationId, UserIdentity user,
+            Dictionary<string, object> values = null)
+        {
+            try
+            {
+                _logger.LogDebug($"Sending completed signal {signalName} to {user.UserName} with correlationId {correlationId.Value}");
+                _hubContext.Clients.User(user.UserId.ToString())
+                    .SendAsync("failed", (RequestStatusDto)new RequestStatus(correlationId, Status.FAILED, values));
+            }
+            catch (Exception e)
+            {
+                _logger.LogDebug($"Cannot send event completion to user {user.UserName} {e.ToString()}");
+            }
+        }
     }
 }

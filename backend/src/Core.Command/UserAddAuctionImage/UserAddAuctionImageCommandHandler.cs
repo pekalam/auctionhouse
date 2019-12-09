@@ -71,7 +71,7 @@ namespace Core.Command.AddOrReplaceAuctionImage
             CancellationToken cancellationToken)
         {
             AuctionLock.Lock(request.AuctionId);
-            var response = new RequestStatus(Status.COMPLETED);
+            var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
             try
             {
                 AddImage(request, cancellationToken, response.CorrelationId);

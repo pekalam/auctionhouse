@@ -45,7 +45,7 @@ namespace Command.Bid
 
             auction.Raise(bid);
 
-            var response = new RequestStatus(Status.PENDING);
+            var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
             _auctionRepository.UpdateAuction(auction);
             _eventBusService.Publish(auction.PendingEvents, response.CorrelationId, request);
             auction.MarkPendingEventsAsHandled();
