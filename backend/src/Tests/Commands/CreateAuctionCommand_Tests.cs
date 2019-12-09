@@ -109,7 +109,7 @@ namespace FunctionalTests.Commands
             startDate = DateTime.UtcNow;
             endDate = DateTime.UtcNow.AddSeconds(35);
             var command = new CreateAuctionCommand(Decimal.One,
-                new Product("name", "desc", Condition.New),
+                new Product("test product name", "example description", Condition.New),
                 startDate, endDate,
                 categories, Tag.From(new []{"tag1"}), "test name", false);
             command.SignedInUser = user.UserIdentity;
@@ -122,8 +122,11 @@ namespace FunctionalTests.Commands
             var added = testDepedencies.AuctionRepository.FindAuction(testCommandHandler.AddedAuction.AggregateId);
             called.Should()
                 .BeTrue();
-            added.StartDate.Should()
-                .Be(startDate);
+            added.StartDate.Value.Year.Should().Be(startDate.Year);
+            added.StartDate.Value.Month.Should().Be(startDate.Month);
+            added.StartDate.Value.Day.Should().Be(startDate.Day);
+            added.StartDate.Value.Hour.Should().Be(startDate.Hour);
+            added.StartDate.Value.Minute.Should().Be(startDate.Minute);
         }
 
         [Test]
@@ -131,7 +134,7 @@ namespace FunctionalTests.Commands
         {
             testCommandHandler.AuctionRepositoryThrows = true;
             var command = new CreateAuctionCommand(Decimal.One,
-                new Product("name", "desc", Condition.New),
+                new Product("test product name", "example description", Condition.New),
                 startDate, endDate, categories, Tag.From(new []{"tag1"}), "test name", false);
             command.SignedInUser = user.UserIdentity;
 
@@ -153,9 +156,9 @@ namespace FunctionalTests.Commands
         {
             testCommandHandler.EventBusThrows = true;
             var command = new CreateAuctionCommand(Decimal.One,
-                new Product("name", "desc", Condition.New),
+                new Product("test product name", "example description", Condition.New),
                 startDate,
-                endDate, categories, Tag.From(new []{"tag1"}), "test name", false);
+                endDate, categories, Tag.From(new[] { "tag1" }), "test auction name", false);
             command.SignedInUser = user.UserIdentity;
 
 

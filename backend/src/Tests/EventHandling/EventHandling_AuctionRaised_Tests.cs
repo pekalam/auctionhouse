@@ -26,10 +26,11 @@ namespace FunctionalTests.EventHandling
 
 
             var user = new UserIdentity() {UserId = Guid.NewGuid(), UserName = "testUserName"};
-            var product = new Product("test name", "descripton 111", Condition.New);
+            var product = new Product("test name", "test product description", Condition.New);
             var auctionArgs = new AuctionArgs.Builder()
                     .SetBuyNow(20.0m)
                     .SetStartDate(DateTime.UtcNow.AddMinutes(10))
+                    .SetName("test auction name")
                     .SetEndDate(DateTime.UtcNow.AddDays(1))
                     .SetCategory(new Category("test", 0))
                     .SetOwner(new UserIdentity(){UserId = Guid.NewGuid(), UserName = "owner"})

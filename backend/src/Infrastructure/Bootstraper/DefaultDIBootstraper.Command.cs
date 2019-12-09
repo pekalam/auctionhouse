@@ -15,7 +15,7 @@ using Core.Common.Command;
 using Core.Common.DomainServices;
 using Infrastructure.Auth;
 using Infrastructure.Repositories.AuctionImage;
-using Infrastructure.Repositories.SQLServer;
+using Infrastructure.Repositories.EventStore;
 using Infrastructure.Services;
 using Infrastructure.Services.EventBus;
 using Infrastructure.Services.SchedulerService;
@@ -30,13 +30,13 @@ namespace Infrastructure.Bootstraper
         public static class Command
         {
             private static void ConfigureServiceSettings(
-                IServiceCollection serviceCollection, MsSqlConnectionSettings sqlServerConnectionSettings,
+                IServiceCollection serviceCollection, EventStoreConnectionSettings eventStoreConnectionSettings,
                 RabbitMqSettings rabbitMqSettings, TimeTaskServiceSettings timeTaskServiceSettings,
                 ImageDbSettings imageDbSettings,
                 UserAuthDbContextOptions userAuthDbContextOptions,
                 CategoryNameServiceSettings categoryNameServiceSettings)
             {
-                serviceCollection.AddSingleton(sqlServerConnectionSettings);
+                serviceCollection.AddSingleton(eventStoreConnectionSettings);
                 serviceCollection.AddSingleton(rabbitMqSettings);
                 serviceCollection.AddSingleton(categoryNameServiceSettings);
                 serviceCollection.AddSingleton(timeTaskServiceSettings);
@@ -88,8 +88,8 @@ namespace Infrastructure.Bootstraper
 
             private static void ConfigureDomainRepositories(IServiceCollection serviceCollection)
             {
-                serviceCollection.AddScoped<IAuctionRepository, MsSqlAuctionRepository>();
-                serviceCollection.AddScoped<IUserRepository, MsSqlUserRepository>();
+                serviceCollection.AddScoped<IAuctionRepository, ESAuctionRepository>();
+                serviceCollection.AddScoped<IUserRepository, ESUserRepository>();
             }
 
 
@@ -109,7 +109,7 @@ namespace Infrastructure.Bootstraper
 
             public static void Configure<UserIdentityServiceImplT, AuctionCreateSessionServiceImplT>(
                 IServiceCollection serviceCollection,
-                MsSqlConnectionSettings eventStoreConnectionSettings,
+                EventStoreConnectionSettings eventStoreConnectionSettings,
                 RabbitMqSettings rabbitMqSettings,
                 TimeTaskServiceSettings timeTaskServiceSettings,
                 ImageDbSettings imageDbSettings,

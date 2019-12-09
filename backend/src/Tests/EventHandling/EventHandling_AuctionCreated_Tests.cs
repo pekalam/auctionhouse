@@ -43,7 +43,6 @@ namespace FunctionalTests.EventHandling
     {
         private User user;
         private Product product;
-        private CorrelationId correlationId;
         private CreateAuctionCommandHandler commandHandler;
 
         [SetUp]
@@ -53,8 +52,7 @@ namespace FunctionalTests.EventHandling
             user = new User();
             user.Register("testUserName");
             user.MarkPendingEventsAsHandled();
-            product = new Product("name", "desc", Condition.New);
-            correlationId = new CorrelationId("test_correlationId");
+            product = new Product("test product name", "example description", Condition.New);
             services.DbContext.UsersReadModel.InsertOne(new UserRead()
                 {UserIdentity = new UserIdentityRead(user.UserIdentity)});
         }
@@ -174,8 +172,7 @@ namespace FunctionalTests.EventHandling
                 .Metadata.IsAssignedToAuction.Should()
                 .BeTrue();
 
-            correlationId.Value.Should()
-                .BeEquivalentTo(correlationIdFromHandler.Value);
+            correlationIdFromHandler.Value.Should().NotBeEmpty();
         }
     }
 }
