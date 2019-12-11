@@ -5,6 +5,7 @@ using Core.Common.Attributes;
 using Core.Common.Command;
 using Core.Common.Domain.Auctions;
 using Core.Common.EventBus;
+using Core.Common.Exceptions.Command;
 using MediatR;
 
 namespace Core.Command.ReplaceAuctionImage

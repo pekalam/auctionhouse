@@ -6,6 +6,7 @@ using Core.Common.Command;
 using Core.Common.Domain.Auctions;
 using Core.Common.DomainServices;
 using Core.Common.EventBus;
+using Core.Common.Exceptions.Command;
 using MediatR;
 
 namespace Core.Command.RemoveAuctionImage

@@ -8,6 +8,7 @@ using Core.Common.Command;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Users;
 using Core.Common.EventBus;
+using Core.Common.Exceptions.Command;
 using MediatR;
 
 namespace Core.Command.AddOrReplaceAuctionImage

@@ -58,7 +58,17 @@ namespace Core.Common.ApplicationServices
 
         public virtual void Handle(ICommand command, Type handlerType)
         {
-            var requestStatus = _mediator.Send(command, CancellationToken.None).Result;
+            RequestStatus requestStatus;
+            try
+            {
+                requestStatus = _mediator.Send(command, CancellationToken.None).Result;
+
+            }
+            catch (Exception)
+            {
+                _requestStatusService.TrySendRequestFailureToUser(command.GetType().Name, command.CommandContext.CorrelationId, command.CommandContext.User);
+                return;
+            }
 
             if (requestStatus.Status == Status.FAILED)
             {

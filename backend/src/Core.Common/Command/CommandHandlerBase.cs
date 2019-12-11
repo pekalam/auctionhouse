@@ -5,22 +5,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Common.Exceptions.Command;
+using Core.Common.RequestStatusService;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Common.Command
 {
-    public class InvalidCommandException : CommandException
-    {
-        public InvalidCommandException(string message) : base(message)
-        {
-        }
-
-        public InvalidCommandException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-    }
-
     //Instead of MediatR pipeline
     public abstract class DecoratedCommandHandlerBase<T> where T : ICommand
     {
@@ -65,9 +55,8 @@ namespace Core.Common.Command
                         $"validation error membernames: {result.MemberNames.Aggregate((s, s1) => s + s1)} message: {result.ErrorMessage}");
                 }
 
-                throw new InvalidCommandException($"Invalid command {request.ToString()}");
+                throw new InvalidCommandException($"Invalid command {request.ToString()}", request.CommandContext);
             }
-
         }
 
         protected abstract Task<RequestStatus> HandleCommand(T request, CancellationToken cancellationToken);

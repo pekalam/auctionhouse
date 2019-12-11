@@ -1,6 +1,7 @@
 ﻿using System;
 using Core.Common;
 using Core.Common.Command;
+using Core.Common.Exceptions.Command;
 using MediatR;
 
 namespace Core.Command.EndAuction
