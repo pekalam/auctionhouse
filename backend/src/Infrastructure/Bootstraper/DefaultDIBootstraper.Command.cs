@@ -61,7 +61,6 @@ namespace Infrastructure.Bootstraper
 
             private static void ConfigureAuthDbServices(IServiceCollection serviceCollection)
             {
-                serviceCollection.AddSingleton<UsertAuthDbContext>();
                 serviceCollection.AddScoped<IUserAuthenticationDataRepository, UserAuthenticationDataRepository>();
             }
 

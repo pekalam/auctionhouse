@@ -19,20 +19,16 @@ services:
       dockerfile: Dockerfile-mongo-standalone-replicaset-restore
 
 
-  eventst:
-    container_name: eventst
+  sql_server:
+    container_name: sql_server
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Qwerty1234
+    ports:
+      - '1433:1433'
     build:
       context: .
-      dockerfile: Dockerfile-eventstore-backup
-    ports:
-      - "2113:2113"
-      - "1113:1113"
-    volumes:
-      - "./data"
-    deploy:
-      placement:
-        constraints:
-          - node.role == manager
+      dockerfile: Dockerfile-sqlserver-backup
 
 
   rabbitmq:

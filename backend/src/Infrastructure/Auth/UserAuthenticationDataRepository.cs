@@ -1,46 +1,83 @@
 ﻿using System;
-using System.Linq;
+using System.Data.SqlClient;
 using Core.Common.Auth;
-using MongoDB.Driver;
+using Dapper;
+using Infrastructure.Repositories.SQLServer;
 
 namespace Infrastructure.Auth
 {
     public class UserAuthenticationDataRepository : IUserAuthenticationDataRepository
     {
-        private readonly UsertAuthDbContext _dbContext;
+        private readonly UserAuthDbContextOptions _connectionSettings;
 
-        public UserAuthenticationDataRepository(UsertAuthDbContext dbContext)
+        public UserAuthenticationDataRepository(UserAuthDbContextOptions connectionSettings)
         {
-            _dbContext = dbContext;
+            _connectionSettings = connectionSettings;
         }
 
-        public virtual UserAuthenticationData FindUserAuthById(Guid id)
+        public UserAuthenticationData FindUserAuthById(Guid id)
         {
-            var found = _dbContext.UserAuth.Find(u => u.UserId == id).FirstOrDefault();
-            return UserAuthenticationDataAssembler.From(found);
+            var sql = "SELECT UserId, Username, Password FROM dbo.AuthData WHERE UserId = @UserId";
+
+            using (var connection = new SqlConnection(_connectionSettings.ConnectionString))
+            {
+                connection.Open();
+                var authData = connection.QueryFirstOrDefault<UserAuthenticationData>(sql, new {UserId = id});
+                return authData;
+            }
         }
 
-        public virtual UserAuthenticationData FindUserAuth(string userName)
+        public UserAuthenticationData FindUserAuth(string userName)
         {
-            var found = _dbContext.UserAuth.Find(u => u.UserName == userName).FirstOrDefault();
-            return UserAuthenticationDataAssembler.From(found);
+            var sql = "SELECT UserId, Username, Password FROM dbo.AuthData WHERE Username = @Username";
+
+            using (var connection = new SqlConnection(_connectionSettings.ConnectionString))
+            {
+                connection.Open();
+                var authData = connection.QueryFirstOrDefault<UserAuthenticationData>(sql, new { Username = userName});
+                return authData;
+            }
         }
 
-        public virtual UserAuthenticationData AddUserAuth(UserAuthenticationData userAuthenticationData)
+        public UserAuthenticationData AddUserAuth(UserAuthenticationData userAuthenticationData)
         {
-            _dbContext.UserAuth.InsertOne(UserAuthenticationDataAssembler.From(userAuthenticationData));
-            return userAuthenticationData;
+            var sql = "INSERT INTO dbo.AuthData (UserId, Username, Password) VALUES (@UserId, @Username, @Password)";
+
+            using (var connection = new SqlConnection(_connectionSettings.ConnectionString))
+            {
+                connection.Open();
+                var affected = connection.Execute(sql, new
+                {
+                    Username = userAuthenticationData.UserName,
+                    Password = userAuthenticationData.Password,
+                    UserId = userAuthenticationData.UserId
+                });
+                if (affected <= 0)
+                {
+                    throw new Exception();
+                }
+                return userAuthenticationData;
+            }
         }
 
         public void SaveUserAuth(UserAuthenticationData userAuthenticationData)
         {
-            var filter = Builders<UserAuthenticationDataMongo>.Filter.Eq(auth => auth.UserId, userAuthenticationData.UserId);
-            var update =
-                Builders<UserAuthenticationDataMongo>.Update.Set(auth => auth.Password,
-                    userAuthenticationData.Password);
+            var sql = "INSERT INTO dbo.AuthData (UserId, Username, Password) VALUES (@UserId, @Username, @Password)";
 
-
-            _dbContext.UserAuth.UpdateOne(filter, update);
+            using (var connection = new SqlConnection(_connectionSettings.ConnectionString))
+            {
+                connection.Open();
+                var affected = connection.Execute(sql, new
+                {
+                    Username = userAuthenticationData.UserName,
+                    Password = userAuthenticationData.Password,
+                    UserId = userAuthenticationData.UserId
+                });
+                if (affected <= 0)
+                {
+                    throw new Exception();
+                }
+            }
         }
     }
 }

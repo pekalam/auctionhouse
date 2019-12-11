@@ -16,7 +16,7 @@ services:
       - SA_PASSWORD=Qwerty1234
     ports:
       - '1433:1433'
-    image: marekbf3/mssql-es
+    image: marekbf3/auctionhouse-sqlserver
 
   rabbitmq:
     hostname: rabbitmq
