@@ -1,15 +1,20 @@
 ﻿using System;
+using Core.Common.Command;
 
 namespace Core.Common.Exceptions.Command
 {
     public class InvalidCommandException : CommandException
     {
-        public InvalidCommandException(string message) : base(message)
+        public CommandContext CommandContext { get; }
+
+        public InvalidCommandException(string message, CommandContext commandContext = null) : base(message)
         {
+            CommandContext = commandContext;
         }
 
-        public InvalidCommandException(string message, Exception innerException) : base(message, innerException)
+        public InvalidCommandException(string message, CommandContext commandContext, Exception innerException) : base(message, innerException)
         {
+            CommandContext = commandContext;
         }
     }
 }

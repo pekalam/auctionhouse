@@ -3,11 +3,14 @@ using System.Net;
 using System.Threading.Tasks;
 using Core.Command.SignIn;
 using Core.Command.SignUp;
+using Core.Common.Auth;
 using Core.Common.Domain.Users;
 using Core.Common.Exceptions;
 using Core.Common.Exceptions.Command;
 using Core.Common.Exceptions.Query;
+using Core.Common.RequestStatusService;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using UnauthorizedAccessException = Core.Command.UpdateAuction.UnauthorizedAccessException;
 
 namespace Web.Exceptions

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Core.Command;
 using Core.Common;
 using Core.Common.Command;
+using Core.Common.Exceptions.Command;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Moq;

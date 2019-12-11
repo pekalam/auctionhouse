@@ -77,7 +77,7 @@ namespace IntegrationTests
                 .Returns(Task.FromResult(new RequestStatus(cmd.CommandContext.CorrelationId, Status.COMPLETED)));
 
             var testQueuedCommandHandler = new Mock<QueuedCommandHandler>(mockRequestStatusService.Object, mediatrMock.Object);
-            testQueuedCommandHandler.Setup(handler => handler.Handle(It.IsAny<QueuedCommand>()))
+            testQueuedCommandHandler.Setup(handler => handler.Handle(It.IsAny<QueuedCommand>(), typeof(TestQueuedCommandHandler)))
                 .Callback(() => sem.Release())
                 .CallBase();
 
@@ -85,7 +85,7 @@ namespace IntegrationTests
             mockImplProvider.Setup(provider => provider.Get<IUserIdentityService>()).Returns(mockUserIdentityService.Object);
             mockImplProvider.Setup(provider => provider.Get<QueuedCommandHandler>()).Returns(testQueuedCommandHandler.Object);
 
-            bus.InitCommandSubscribers("IntegrationTests", mockImplProvider.Object);
+            bus.InitCommandSubscribers("IntegrationTests", mockImplProvider.Object, mediatrMock.Object);
 
           
             bus.Send(cmd);

@@ -4,6 +4,7 @@ using Core.Common.Attributes;
 using Core.Common.Command;
 using Core.Common.Domain.Users;
 using Core.Common.EventBus;
+using Core.Common.Exceptions.Command;
 
 namespace Core.Command.Bid
 {
