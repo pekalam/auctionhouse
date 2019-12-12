@@ -29,10 +29,4 @@
     </Reference>
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="_data\categories.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

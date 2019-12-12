@@ -1,6 +1,7 @@
-<categories>
+<?xml version="1.0" encoding="UTF-8"?>
+<categories xmlns="categories-ns">
 <category id="0" name="Fashion">
-<sub-category id="0" name="Women&apos;s Clothing">
+<sub-category id="1" name="Women&apos;s Clothing">
 <sub-sub-category id="0" name="Women&apos;s Dresses"/>
 <sub-sub-category id="1" name="Women&apos;s Tops &amp; Shirts"/>
 <sub-sub-category id="2" name="Women&apos;s Coats, Jackets &amp; Waistcoats"/>

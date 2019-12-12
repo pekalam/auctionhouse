@@ -1,4 +1,4 @@
-<categories>
+<categories xmlns="categories-ns">
   <category id="0" name="Fashion">
     <sub-category id="0" name="Women&apos;s Clothing">
       <sub-sub-category id="0" name="Women&apos;s Dresses" />

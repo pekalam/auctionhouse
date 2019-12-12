@@ -1,4 +1,5 @@
-<categories>
+<?xml version="1.0" encoding="UTF-8"?>
+<categories xmlns="categories-ns">
 <category id="0" name="Fashion">
 <sub-category id="0" name="Women&apos;s Clothing">
 <sub-sub-category id="0" name="Women&apos;s Dresses"/>
@@ -103,7 +104,7 @@
 <category id="1" name="Electronics">
 <sub-category id="0" name="Mobile Phones, Smart Watches, Accessories &amp; Communication">
 <sub-sub-category id="0" name="Mobile Phones &amp; Smartphones"/>
-<sub-sub-category id="1" name="Mobile Phone Accessories"/>
+<sub-sub-category id="0" name="Mobile Phone Accessories"/>
 <sub-sub-category id="2" name="Smartwatches"/>
 <sub-sub-category id="3" name="Mobile Phone Parts"/>
 <sub-sub-category id="4" name="Radio Communication Equipment"/>
