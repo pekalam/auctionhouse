@@ -30,4 +30,13 @@
     <ProjectReference Include="..\Core.Query\Core.Query.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="_Categories-xml-data\categories.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="_Categories-xml-data\categories.xsd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

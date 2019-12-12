@@ -98,12 +98,14 @@ namespace Web
                 eventStoreSettings, rabbitMqSettings, timeTaskServiceSettings, imageDbSettings, userAuthDbSettings,
                 new CategoryNameServiceSettings()
                 {
-                    CategoriesFilePath = "./_data/categories.xml"
+                    CategoriesFilePath = "./_Categories-xml-data/categories.xml",
+                    SchemaFilePath = "./_Categories-xml-data/categories.xsd"
                 }
             );
             DefaultDIBootstraper.Query.Configure(services, mongoDbSettings, new CategoryNameServiceSettings()
             {
-                CategoriesFilePath = "./_data/categories.xml"
+                CategoriesFilePath = "./_Categories-xml-data/categories.xml",
+                SchemaFilePath = "./_Categories-xml-data/categories.xsd"
             }, imageDbSettings, rabbitMqSettings);
             services.AddSignalR();
             services.AddSingleton<IUserIdProvider, UserIdProvider>();

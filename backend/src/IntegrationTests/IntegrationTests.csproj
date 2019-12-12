@@ -26,6 +26,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="categoryTreeService_data\invalid_categories_dup_sub_sub_id.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="categoryTreeService_data\invalid_categories_dup_sub_id.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="categoryTreeService_data\invalid_categories_dup_id.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="test_categories.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

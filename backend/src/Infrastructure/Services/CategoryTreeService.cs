@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Xml;
+using System.Xml.Linq;
+using System.Xml.Schema;
 using Core.Common.Domain.Categories;
 
 namespace Infrastructure.Services
@@ -8,6 +10,7 @@ namespace Infrastructure.Services
     public class CategoryNameServiceSettings
     {
         public string CategoriesFilePath { get; set; }
+        public string SchemaFilePath { get; set; }
     }
 
     public class CategoryTreeService : ICategoryTreeService
@@ -45,10 +48,18 @@ namespace Infrastructure.Services
 
         public void Init()
         {
+            XmlSchemaSet sc = new XmlSchemaSet();
+            sc.Add("categories-ns", _categoryNameServiceSettings.SchemaFilePath);
+
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.ValidationType = ValidationType.Schema;
+            settings.Schemas.Add(sc);
+
             using (var file = File.OpenRead(_categoryNameServiceSettings.CategoriesFilePath))
             {
-                var xmlReader = XmlReader.Create(file);
-                xmlReader.Read();
+                var xmlReader = XmlReader.Create(file, settings);
+
+                xmlReader.ReadToFollowing("categories");
                 if (xmlReader.Name != "categories")
                 {
                     throw new Exception("Invalid root node name");

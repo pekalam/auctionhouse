@@ -167,7 +167,10 @@ namespace Tests
             var fixture = new Fixture();
 
             var categoryTreeService = new CategoryTreeService(new CategoryNameServiceSettings()
-                {CategoriesFilePath = "categories.xml"});
+            {
+                CategoriesFilePath = "_Categories-xml-data/categories.xml",
+                SchemaFilePath = "_Categories-xml-data/categories.xsd"
+            });
             categoryTreeService.Init();
             List<string> categories = new List<string>()
             {
