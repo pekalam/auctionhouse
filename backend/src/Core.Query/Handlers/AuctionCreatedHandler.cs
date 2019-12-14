@@ -58,7 +58,8 @@ namespace Core.Query.Handlers
             session.StartTransaction();
             try
             {
-                _dbContext.AuctionsReadModel.WithWriteConcern(WriteConcern.WMajority).InsertOne(session, auction);
+                var w = new WriteConcern(mode: "majority", journal: true);
+                _dbContext.AuctionsReadModel.WithWriteConcern(w).InsertOne(session, auction);
                 _dbContext.UsersReadModel.UpdateOne(session, filter, update);
                 session.CommitTransaction();
             }

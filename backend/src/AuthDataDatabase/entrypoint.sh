@@ -15,4 +15,6 @@ echo "Creating authData db..."
 /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -i /create.sql
 echo "AuthData db created"
 
+sleep 5
+
 wait
