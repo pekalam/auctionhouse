@@ -1,19 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ServerMessageService } from './services/ServerMessageService';
-import { SignUpCommand } from './commands/SignUpCommand';
-import { SignInCommand } from './commands/SignInCommand';
-import { AuctionQuery } from './queries/AuctionQuery';
-import { AuctionsQuery } from './queries/AuctionsQuery';
-import { BidCommand } from './commands/BidCommand';
-import { AuthenticationStateService } from './services/AuthenticationStateService';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 @NgModule({
   declarations: [],
   imports: [
     CommonModule
   ],
-  providers: [SignUpCommand, SignInCommand, AuctionQuery, AuctionsQuery, BidCommand,
-    ServerMessageService, AuthenticationStateService]
+  providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }]
 })
 export class CoreModule { }

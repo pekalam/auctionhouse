@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Category } from '../models/Category';
 import { Observable } from 'rxjs';
 import { AuctionListModel } from '../models/Auctions';
+import { QueryHelper } from './QueryHelper';
 
 export enum ConditionQuery {
   Used, New, All
@@ -28,7 +29,7 @@ export class AuctionFilters {
   providedIn: 'root'
 })
 export class AuctionsQuery {
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient, private queryHelper: QueryHelper) {
   }
 
   private getCondition(c: ConditionQuery): string {
@@ -64,6 +65,6 @@ export class AuctionsQuery {
     if (!filters) { filters = new AuctionFilters(); }
     const url = `/api/auctions?page=${page}&${this.getCategoryList(category)}&${this.getCondition(filters.condition)}`
     + `&${this.getAuctionTypeQuery(filters)}&${this.getAuctionBuyNowPrice(filters)}&${this.getAuctionPrice(filters)}`;
-    return this.httpClient.get<AuctionListModel[]>(url, {});
+    return this.queryHelper.pipeLoading(this.httpClient.get<AuctionListModel[]>(url, {}));
   }
 }

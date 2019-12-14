@@ -23,7 +23,7 @@ export class AuctionsPageComponent implements OnInit {
   selectedFilterCategoryValue: string;
 
   private currentCategory: Category;
-  private tag: string = "";
+  private tag = '';
 
   constructor(private activatedRoute: ActivatedRoute, private auctionsByCategoryQuery: AuctionsQuery,
     private categoriesQuery: CategoriesQuery, private auctionsByTagQuery: AuctionsByTagQuery,
@@ -74,7 +74,7 @@ export class AuctionsPageComponent implements OnInit {
 
   private createFilterCategoryByTag(tag: string) {
     this.commonTagsQuery.execute(tag).subscribe((result) => {
-      if(!result){
+      if (!result) {
         this.router.navigateByUrl('/error');
       }
       this.filterCategories = {
@@ -97,21 +97,18 @@ export class AuctionsPageComponent implements OnInit {
   }
 
   applyFilters(filters: AuctionFilters) {
-    console.log('applied');
-    console.log(filters);
-
     this.fetchAuctions(0, filters);
   }
 
   fetchAuctions(page: number, filters?: AuctionFilters) {
-    if (this.tag.length == 0) {
+    if (this.tag.length === 0) {
       this.auctionsByCategoryQuery
         .execute(page, this.currentCategory, filters)
-        .subscribe(v => this.auctions = v);
+        .subscribe(v => this.auctions = v, () => this.router.navigateByUrl('/error'));
     } else {
       this.auctionsByTagQuery
         .execute(page, this.tag, filters)
-        .subscribe(v => this.auctions = v);
+        .subscribe(v => this.auctions = v, () => this.router.navigateByUrl('/error'));
     }
   }
 

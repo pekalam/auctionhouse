@@ -1,5 +1,15 @@
 <app-navigation></app-navigation>
-<div class="app-container">
+<div class="loading-div" *ngIf="loadingService.isLoading">
+  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="display: none;">
+      <defs>
+          <filter id="blur-filter">
+              <feGaussianBlur stdDeviation="3"></feGaussianBlur>
+          </filter>
+      </defs>
+  </svg>
+  <mat-spinner class="spinner"></mat-spinner>
+</div>
+<div class="app-container" [ngStyle]="loadingService.isLoading ? {filter: 'url(#blur-filter)'} : null">
   <div class="app-content">
     <router-outlet></router-outlet>
   </div>

@@ -4,39 +4,30 @@ import { Observable, of } from 'rxjs';
 import { ServerMessage, ServerMessageService } from '../services/ServerMessageService';
 import { filter, catchError, switchMap } from 'rxjs/operators';
 import { Product } from '../models/Product';
+import { CommandHelper } from './CommandHelper';
 
-export class CreateAuctionCommandArgs {
-  constructor(public buyNowPrice: number | null, public startDate: Date, public endDate: Date, public category: Array<string>
-    , public product: Product, public tags: string[], public name: string, public buyNowOnly: boolean) {
-
-  }
+export interface CreateAuctionCommandArgs {
+  buyNowPrice: number | null;
+  startDate: Date;
+  endDate: Date;
+  category: Array<string>;
+  product: Product;
+  tags: string[];
+  name: string;
+  buyNowOnly: boolean;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class CreateAuctionCommand {
-  constructor(private httpClient: HttpClient, private serverMessageService: ServerMessageService) {
+  constructor(private httpClient: HttpClient, private commandHelper: CommandHelper) {
   }
 
   execute(commandArgs: CreateAuctionCommandArgs): Observable<ServerMessage> {
     const url = '/api/createAuction';
     console.log(commandArgs);
 
-    return this.httpClient.post(url, commandArgs)
-      .pipe(
-        catchError((err) => {
-          console.log(err);
-          return of(err);
-        }),
-        switchMap((response: ServerMessage) => {
-          console.log(response);
-          if (response.status === "COMPLETED") {
-            return of(response);
-          }
-          let handler = this.serverMessageService.setupServerMessageHandler(response.correlationId);
-          return handler.pipe(filter((v) => v.correlationId === response.correlationId));
-        })
-      );
+    return this.commandHelper.getResponseStatusHandler(this.httpClient.post(url, commandArgs), true);
   }
 }

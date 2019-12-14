@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationStateService } from './core/services/AuthenticationStateService';
+import { LoadingService } from './core/services/LoadingService';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +9,7 @@ import { AuthenticationStateService } from './core/services/AuthenticationStateS
 })
 export class AppComponent implements OnInit {
 
-  constructor(private authenticationStateService: AuthenticationStateService) { }
+  constructor(private authenticationStateService: AuthenticationStateService, public loadingService: LoadingService) { }
 
   title = 'front';
 

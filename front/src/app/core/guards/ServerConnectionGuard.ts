@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { ServerMessageService } from '../services/ServerMessageService';
 import { first } from 'rxjs/operators';
+import { LoadingService } from '../services/LoadingService';
 
 
 @Injectable({
   providedIn: 'root',
 })
 export class ServerConnectionGuard implements CanActivate {
-  constructor(private serverMessageService: ServerMessageService, private router: Router) { }
+  constructor(private serverMessageService: ServerMessageService, private router: Router, private loadingService: LoadingService) { }
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
 
@@ -16,12 +17,18 @@ export class ServerConnectionGuard implements CanActivate {
       this.serverMessageService.connectionStarted.pipe(
         first()
       ).subscribe((connected) => {
+        this.loadingService.setLoading(false);
         if (!connected) {
           this.router.navigateByUrl('/error');
           reject(false);
         }
         resolve(true);
-      }, (err) => reject(err));
+      }, (err) => {
+        this.loadingService.setLoading(false);
+        reject(err);
+      });
+
+      this.loadingService.setLoading(true);
       this.serverMessageService.ensureConnected();
     });
   }

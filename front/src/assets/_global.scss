@@ -9,11 +9,24 @@ $footerHeight: 70px;
 
 $maxContentWidth: 1600px;
 
+
 @mixin app-hr {
   background: #ddd;
   display: block;
   height: 1px;
   border: 0;
+}
+
+@mixin mobile {
+  @media only screen and (max-width: 820px) {
+    @content
+  }
+}
+
+@mixin desktop {
+  @media only screen and (min-width: 821px) {
+    @content
+  }
 }
 
 @mixin section-shadow {

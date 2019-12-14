@@ -3,7 +3,11 @@ import { tap, map } from 'rxjs/operators';
 import { UserIdentity } from '../models/UserIdentity';
 import * as jwtDecode from 'jwt-decode';
 import { AuthenticationStateService } from '../services/AuthenticationStateService';
+import { Injectable } from '@angular/core';
 
+@Injectable({
+  providedIn: 'root'
+})
 export class SignInCommand {
   constructor(private httpClient: HttpClient, private authStateService: AuthenticationStateService) {
   }

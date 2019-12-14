@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserDataQuery, UserData } from '../../../../../core/queries/UserDataQuery';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ChangePasswordCommand } from '../../../../../core/commands/ChangePasswordCommand';
+import { LoadingService } from '../../../../../core/services/LoadingService';
 
 
 @Component({
@@ -18,9 +19,8 @@ export class UserDataPageComponent implements OnInit {
   });
   editPassword = false;
   passwordsMatch = true;
-  accountLoading = false;
 
-  constructor(userDataQuery: UserDataQuery, private changePasswordCommand: ChangePasswordCommand) {
+  constructor(userDataQuery: UserDataQuery, private changePasswordCommand: ChangePasswordCommand, private loadingService: LoadingService) {
     userDataQuery.execute().subscribe((data) => {
       this.userData = data;
     });
@@ -38,10 +38,10 @@ export class UserDataPageComponent implements OnInit {
 
   onPasswordChangeFormSubmit() {
     if (this.changePasswordForm.valid && this.passwordsMatch) {
-      this.accountLoading = true;
+      this.loadingService.setLoading(true);
       this.changePasswordCommand.execute(this.changePasswordForm.value.password)
       .subscribe((v) => {
-        this.accountLoading = false;
+        this.loadingService.setLoading(false);
         this.editPassword = false;
       }, (err) => console.log(err));
     }

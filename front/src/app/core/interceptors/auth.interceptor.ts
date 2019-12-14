@@ -8,7 +8,7 @@ import {
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { flatMap, map } from 'rxjs/operators';
-import { AuthenticationStateService } from '../core/services/AuthenticationStateService';
+import { AuthenticationStateService } from '../services/AuthenticationStateService';
 
 
 @Injectable({

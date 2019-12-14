@@ -4,6 +4,7 @@ import { ServerMessage, ServerMessageService } from '../services/ServerMessageSe
 import { filter, catchError, switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { CommandHelper } from './CommandHelper';
 
 
 export interface UpdateAuctionCommandArgs {
@@ -21,26 +22,12 @@ export interface UpdateAuctionCommandArgs {
 })
 export class UpdateAuctionCommand {
 
-  constructor(private httpClient: HttpClient, private serverMessageService: ServerMessageService) {
+  constructor(private httpClient: HttpClient, private commandHelper: CommandHelper) {
   }
 
   execute(args: UpdateAuctionCommandArgs): Observable<ServerMessage> {
     const url = '/api/userUpdateAuction';
-    return this.httpClient.post(url, { ...args })
-      .pipe(
-        catchError((err) => {
-          console.log(err);
-          return of(err);
-        }),
-        switchMap((response: ServerMessage) => {
-          console.log(response);
-          if (response.status === "COMPLETED") {
-            return of(response);
-          }
-          let handler = this.serverMessageService.setupServerMessageHandler(response.correlationId);
-          return handler.pipe(filter((v) => v.correlationId === response.correlationId));
-        })
-      );
+    return this.commandHelper.getResponseStatusHandler(this.httpClient.post(url, { ...args }), true);
   }
 
 }

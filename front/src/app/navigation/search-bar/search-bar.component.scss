@@ -7,52 +7,80 @@ $searchInput_height: 20px;
 $item_height: 48px;
 
 input {
-  width: 90%;
   padding: $searchInput_padding;
   border: $searchInput_border solid #ddd;
   margin: 0;
   height: $searchInput_height;
   font-size: 15px;
+  box-sizing: border-box;
+  height: 38px;
+  width: 100%;
 }
 
 .search-input-container {
   float: left;
   width: 80%;
   text-align: right;
+  margin-right: 12px;
+  margin-left: 12px;
 }
 
 .search-btn-container {
   float: left;
-  width: 20%;
+  width: calc(20% - 24px);
   text-align: left;
+  line-height: 70px;
   #searchbtn {
     height: 2 * $searchInput_border + 2 * $searchInput_padding +
       $searchInput_height;
+    line-height: 2 * $searchInput_border + 2 * $searchInput_padding +
+      $searchInput_height;
     font-weight: bold;
     @include app-btn;
-    margin-left: 12px;
+  }
+}
+
+.search-bar{
+  width: 80%;
+  margin: 0 auto;
+}
+
+@media only screen and (max-width: 982px) {
+  .search-bar{
+    margin: 0;
+    width: 100%;
+  }
+  .search-input-container {
+    width: 70%;
+  }
+  .search-btn-container {
+    width: calc(30% - 24px);
   }
 }
 
 @media only screen and (max-width: 820px) {
+  .search-bar{
+    margin: 0;
+    width: 100%;
+  }
+  .search-input-container{
+    width: 80%;
+    margin: 0;
+  }
   .search-btn-container {
-    #searchbtn {
-      margin: 0;
+    width: 20%;
+    #searchbtn{
       width: 100%;
     }
-  }
-  input {
-    width: 100%;
   }
 }
 
 @media only screen and (max-width: 470px) {
-  .search-input-container{
+  .search-input-container {
     width: 60%;
   }
-  .search-btn-container{
+  .search-btn-container {
     width: 40%;
-
   }
 }
 
