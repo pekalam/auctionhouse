@@ -18,6 +18,7 @@
     "Web": {
       "commandName": "Project",
       "environmentVariables": {
+        "categories_xml_data": "bin\\Debug\\netcoreapp2.2\\_Categories-xml-data",
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "applicationUrl": "http://localhost:5000"

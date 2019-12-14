@@ -92,20 +92,22 @@ namespace Web
             services.AddScoped<IRequestStatusService, RequestStatusService>();
             services.AddAutoMapper(typeof(Startup).Assembly);
 
+            var categoriesXmlDirLocation = Environment.GetEnvironmentVariable("categories_xml_data");
+
             DefaultDIBootstraper.Common.Configure(services);
             DefaultDIBootstraper.Command.Configure<UserIdentityService, AuctionCreateSessionService>(
                 services,
                 eventStoreSettings, rabbitMqSettings, timeTaskServiceSettings, imageDbSettings, userAuthDbSettings,
                 new CategoryNameServiceSettings()
                 {
-                    CategoriesFilePath = "./_Categories-xml-data/categories.xml",
-                    SchemaFilePath = "./_Categories-xml-data/categories.xsd"
+                    CategoriesFilePath = $"{categoriesXmlDirLocation}/categories.xml",
+                    SchemaFilePath = $"{categoriesXmlDirLocation}/categories.xsd"
                 }
             );
             DefaultDIBootstraper.Query.Configure(services, mongoDbSettings, new CategoryNameServiceSettings()
             {
-                CategoriesFilePath = "./_Categories-xml-data/categories.xml",
-                SchemaFilePath = "./_Categories-xml-data/categories.xsd"
+                CategoriesFilePath = $"{categoriesXmlDirLocation}/categories.xml",
+                SchemaFilePath = $"{categoriesXmlDirLocation}/categories.xsd"
             }, imageDbSettings, rabbitMqSettings);
             services.AddSignalR();
             services.AddSingleton<IUserIdProvider, UserIdProvider>();
