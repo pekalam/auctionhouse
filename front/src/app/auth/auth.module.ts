@@ -6,6 +6,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../material.module';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
+import { AuthRoutingModule } from './auth-routing.module';
+import { CoreModule } from '../core/core.module';
 
 
 
@@ -13,10 +15,12 @@ import { SharedModule } from '../shared/shared.module';
   declarations: [SignInPageComponent, SignUpPageComponent],
   imports: [
     CommonModule,
+    CoreModule,
     ReactiveFormsModule,
     RouterModule,
     MaterialModule,
-    SharedModule
+    SharedModule,
+    AuthRoutingModule
   ],
   exports: [SignUpPageComponent, SignInPageComponent]
 })

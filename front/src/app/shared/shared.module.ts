@@ -1,11 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavigationComponent } from './navigation/navigation.component';
 import { RouterModule } from '@angular/router';
 import { CoreModule } from '../core/core.module';
 import { MaterialModule } from '../material.module';
 import { VisibleDirective } from './visible.directive';
-import { SearchBarComponent } from './search-bar/search-bar.component';
 import { CarouselComponent } from './carousel/carousel.component';
 import { ProductStepComponent } from './forms/product-step/product-step.component';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -20,9 +18,7 @@ import { CreateSummaryStepComponent } from './forms/create-summary-step/create-s
 
 @NgModule({
   declarations: [
-    NavigationComponent,
     VisibleDirective,
-    SearchBarComponent,
     CarouselComponent,
     ProductStepComponent,
     CategorySelectStepComponent,
@@ -39,7 +35,6 @@ import { CreateSummaryStepComponent } from './forms/create-summary-step/create-s
     ReactiveFormsModule
   ],
   exports: [
-    NavigationComponent,
     VisibleDirective,
     CarouselComponent,
     ProductStepComponent,

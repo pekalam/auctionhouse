@@ -3,6 +3,7 @@ import { ServerMessage, ServerMessageService } from '../services/ServerMessageSe
 import { Observable, of } from 'rxjs';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { filter, catchError, switchMap } from 'rxjs/operators';
+import { CommandHelper } from './CommandHelper';
 
 
 @Injectable({
@@ -10,7 +11,7 @@ import { filter, catchError, switchMap } from 'rxjs/operators';
 })
 export class UserRemoveAuctionImageCommand {
 
-  constructor(private httpClient: HttpClient, private serverMessageService: ServerMessageService) {
+  constructor(private httpClient: HttpClient, private commandHelper: CommandHelper) {
   }
 
   execute(imgNum: number, auctionId: string): Observable<ServerMessage> {
@@ -22,20 +23,6 @@ export class UserRemoveAuctionImageCommand {
 
     const httpHeaders = new HttpHeaders({ 'enctype': 'application/x-www-form-urlencoded' });
 
-    return this.httpClient.post(url, formData, { headers: httpHeaders })
-      .pipe(
-        catchError((err) => {
-          console.log(err);
-          return of(err);
-        }),
-        switchMap((response: ServerMessage) => {
-          console.log(response);
-          if (response.status === "COMPLETED") {
-            return of(response);
-          }
-          let handler = this.serverMessageService.setupServerMessageHandler(response.correlationId);
-          return handler.pipe(filter((v) => v.correlationId === response.correlationId));
-        })
-      );
+    return this.commandHelper.getResponseStatusHandler(this.httpClient.post(url, formData, { headers: httpHeaders }), true);
   }
 }

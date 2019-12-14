@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuctionListModel } from '../models/Auctions';
 import { AuctionFilters, ConditionQuery } from './AuctionsQuery';
+import { QueryHelper } from './QueryHelper';
 
 
 
@@ -10,7 +11,7 @@ import { AuctionFilters, ConditionQuery } from './AuctionsQuery';
   providedIn: 'root'
 })
 export class AuctionsByTagQuery {
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient, private queryHelper: QueryHelper) {
   }
 
   private getCondition(c: ConditionQuery): string {
@@ -33,6 +34,6 @@ export class AuctionsByTagQuery {
     if (!filters) { filters = new AuctionFilters(); }
     const url = `/api/auctionsByTag?page=${page}&tag=${tag}&${this.getCondition(filters.condition)}`
     + `&${this.getAuctionTypeQuery(filters)}&${this.getAuctionBuyNowPrice(filters)}&${this.getAuctionPrice(filters)}`;
-    return this.httpClient.get<AuctionListModel[]>(url, {});
+    return this.queryHelper.pipeLoading(this.httpClient.get<AuctionListModel[]>(url, {}));
   }
 }

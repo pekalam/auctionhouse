@@ -7,7 +7,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, 
 })
 export class CarouselComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('image', {static: false})
+  @ViewChild('image', { static: false })
   image: ElementRef;
 
   @Input('img-height')
@@ -40,18 +40,17 @@ export class CarouselComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    console.log(this.image.nativeElement);
-    this.h = this.image.nativeElement.height;
-    console.log(this.h);
-
+    if (this.imgs && this.imgs.length > 0) {
+      this.h = this.image.nativeElement.height;
+    }
   }
 
-  onPrev(){
+  onPrev() {
     this.shown = this.shown - 1 < 0 ? this.imgInd.length - 1 : this.shown - 1;
     this.imgSelected.emit(this.shown);
   }
 
-  onNext(){
+  onNext() {
     this.shown = (this.shown + 1) % this.imgInd.length;
     this.imgSelected.emit(this.shown);
   }

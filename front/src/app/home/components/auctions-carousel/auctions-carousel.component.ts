@@ -15,8 +15,11 @@ export class AuctionsCarouselComponent implements OnInit {
 
   @Input('auctions')
   set setAuctions(auctions: MostViewedAuction[]) {
-    if(!auctions || auctions.length <= 0){return;}
-    this.imgSources = [`/api/auctionImage?img=${auctions[0].auctionImages[0].size1Id}`];
+    if (!auctions || auctions.length <= 0) { return; }
+
+    this.imgSources = auctions
+      .map(a => a.auctionImages[0] ? `/api/auctionImage?img=${a.auctionImages[0].size1Id}` : null)
+      .filter(i => i != null);
     this.auctions = auctions;
   }
   currentAuction = 0;
@@ -28,8 +31,6 @@ export class AuctionsCarouselComponent implements OnInit {
       .observe(['(max-width: 820px)'])
       .subscribe((state: BreakpointState) => {
         if (state.matches) {
-          console.log('asd');
-
           this.imgHeight = 133;
         } else {
           this.imgHeight = 200;
@@ -40,8 +41,6 @@ export class AuctionsCarouselComponent implements OnInit {
       .observe(['(max-width: 1100px)'])
       .subscribe((state: BreakpointState) => {
         if (state.matches) {
-          console.log('asd');
-
           this.imgHeight = 150;
         } else {
           this.imgHeight = 200;
@@ -54,7 +53,7 @@ export class AuctionsCarouselComponent implements OnInit {
       this.currentAuction++;
       this.imgSources = [`/api/auctionImage?img=${this.auctions[this.currentAuction].auctionImages[0].size1Id}`];
       document.getElementById('auction-container').style.cssText = '';
-      window.requestAnimationFrame(function (){
+      window.requestAnimationFrame(function () {
         document.getElementById('auction-container').style.cssText = 'animation: fadeIn 0.5s ease 0s 1 normal forwards running;';
       });
     }
@@ -65,7 +64,7 @@ export class AuctionsCarouselComponent implements OnInit {
       this.currentAuction--;
       this.imgSources = [`/api/auctionImage?img=${this.auctions[this.currentAuction].auctionImages[0].size1Id}`];
       document.getElementById('auction-container').style.cssText = '';
-      window.requestAnimationFrame(function (){
+      window.requestAnimationFrame(function () {
         document.getElementById('auction-container').style.cssText = 'animation: fadeIn 0.5s ease 0s 1 normal forwards running;';
       });
     }

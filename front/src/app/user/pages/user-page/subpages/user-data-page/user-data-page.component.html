@@ -1,9 +1,6 @@
 <div *ngIf="userData" class="container">
   <div class="card">
-    <div *ngIf="accountLoading" class="account-loading-div">
-      <mat-spinner></mat-spinner>
-    </div>
-    <div [appVisible]="accountLoading">
+    <div>
       <h2>Account</h2>
       <mat-form-field>
         <input matInput placeholder="Username" [value]="userData.username">

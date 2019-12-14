@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { LayoutModule } from '@angular/cdk/layout';
 import { SharedModule } from '../shared/shared.module';
 import { AuctionsCarouselComponent } from './components/auctions-carousel/auctions-carousel.component';
+import { HomeRoutingModule } from './home-routing.module';
 
 
 
@@ -15,7 +16,8 @@ import { AuctionsCarouselComponent } from './components/auctions-carousel/auctio
     CommonModule,
     RouterModule,
     LayoutModule,
-    SharedModule
+    SharedModule,
+    HomeRoutingModule
   ]
 })
 export class HomeModule { }

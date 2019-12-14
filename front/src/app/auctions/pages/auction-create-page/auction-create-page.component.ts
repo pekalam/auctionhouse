@@ -17,7 +17,7 @@ import { AuctionImageQuery } from '../../../core/queries/AuctionImageQuery';
   templateUrl: './auction-create-page.component.html',
   styleUrls: ['./auction-create-page.component.scss']
 })
-export class AuctionCreatePageComponent implements OnInit{
+export class AuctionCreatePageComponent implements OnInit {
   private totalSteps = 4;
   private categorySelectStep: CategorySelectStep;
   private productStep: ProductFormResult;
@@ -31,7 +31,7 @@ export class AuctionCreatePageComponent implements OnInit{
   imageStepComponent;
   @ViewChild('summaryStep', { static: true })
   summaryStepComponent;
-  @ViewChild('auctionDataStep', {static: true})
+  @ViewChild('auctionDataStep', { static: true })
   auctionDataStepComponent;
 
   createAuctionArgs: CreateAuctionCommandArgs;
@@ -42,12 +42,12 @@ export class AuctionCreatePageComponent implements OnInit{
   stepComponents = [];
 
   constructor(private startAuctionCreateSessionCommand: StartAuctionCreateSessionCommand,
-              private createAuctionCommand: CreateAuctionCommand,
-              private addAuctionImageCommand: AddAuctionImageCommand,
-              private removeAuctionImageCommand: RemoveAuctionImageCommand,
-              private auctionImageQuery: AuctionImageQuery,
-              private router: Router,
-              public location: Location) {
+    private createAuctionCommand: CreateAuctionCommand,
+    private addAuctionImageCommand: AddAuctionImageCommand,
+    private removeAuctionImageCommand: RemoveAuctionImageCommand,
+    private auctionImageQuery: AuctionImageQuery,
+    private router: Router,
+    public location: Location) {
   }
 
   ngOnInit() {
@@ -89,9 +89,16 @@ export class AuctionCreatePageComponent implements OnInit{
     const categories = [this.categorySelectStep.selectedMainCategory.categoryName,
     this.categorySelectStep.selectedSubCategory.categoryName,
     this.categorySelectStep.selectedSubCategory2.categoryName];
-    this.createAuctionArgs = new CreateAuctionCommandArgs(this.auctionDataStep.buyNowPrice, this.auctionDataStep.startDate,
-      this.auctionDataStep.endDate, categories, this.productStep.product, this.productStep.tags, this.auctionDataStep.name,
-      this.auctionDataStep.buyNow && !this.auctionDataStep.auction);
+    this.createAuctionArgs = {
+      buyNowPrice: this.auctionDataStep.buyNowPrice,
+      startDate: this.auctionDataStep.startDate,
+      endDate: this.auctionDataStep.endDate,
+      category: categories,
+      product: this.productStep.product,
+      tags: this.productStep.tags,
+      name: this.auctionDataStep.name,
+      buyNowOnly: this.auctionDataStep.buyNow && !this.auctionDataStep.auction
+    };
   }
 
   onCategorySelectedStep(stepResult: CategorySelectStep) {
@@ -99,7 +106,7 @@ export class AuctionCreatePageComponent implements OnInit{
     this.nextStep();
   }
 
-  onAuctionDataStep(stepResult: AuctionDataStep){
+  onAuctionDataStep(stepResult: AuctionDataStep) {
     this.auctionDataStep = stepResult;
     this.nextStep();
   }
@@ -118,7 +125,7 @@ export class AuctionCreatePageComponent implements OnInit{
     this.nextStep();
   }
 
-  onImgSelect(event: ImgSelectedEvent){
+  onImgSelect(event: ImgSelectedEvent) {
     this.addAuctionImageCommand.execute(event.files, event.imgnum).subscribe((msg) => {
       if (msg.status === 'COMPLETED') {
         console.log('add image completed');
@@ -132,7 +139,7 @@ export class AuctionCreatePageComponent implements OnInit{
     });
   }
 
-  onImgCancel(imgnum: number){
+  onImgCancel(imgnum: number) {
     this.removeAuctionImageCommand.execute(imgnum).subscribe((v) => {
       console.log("img removed " + imgnum);
       this.imageStepComponent.setImgPreview(imgnum, null);

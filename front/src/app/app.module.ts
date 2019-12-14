@@ -8,13 +8,13 @@ import { CoreModule } from './core/core.module';
 import { CategoriesModule } from './categories/categories.module';
 import { AuctionsModule } from './auctions/auctions.module';
 import { SharedModule } from './shared/shared.module';
-import { InterceptorsModule } from './_interceptors/interceptors.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthModule } from './auth/auth.module';
 import { BidModule } from './bid/bid.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material.module';
 import { UserModule } from './user/user.module';
+import { NavigationModule } from './navigation/navigation.module';
 
 @NgModule({
   declarations: [
@@ -33,7 +33,7 @@ import { UserModule } from './user/user.module';
     SharedModule,
     AuthModule,
     BidModule,
-    InterceptorsModule,
+    NavigationModule,
     AppRoutingModule,
     BrowserAnimationsModule
   ],
