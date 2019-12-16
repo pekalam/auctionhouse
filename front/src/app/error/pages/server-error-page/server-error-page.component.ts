@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-server-error-page',
@@ -7,7 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ServerErrorPageComponent implements OnInit {
 
-  constructor() { }
+  msg = null;
+
+  constructor(private router: Router) {
+      if (this.router.getCurrentNavigation().extras.state) {
+        this.msg = this.router.getCurrentNavigation().extras.state.msg;
+      }
+   }
 
   ngOnInit() {
   }

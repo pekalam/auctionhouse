@@ -42,7 +42,7 @@ namespace Core.Common.Command
         {
             var validationContext = new ValidationContext(request);
             var validationResults = new Collection<ValidationResult>();
-            if (Validator.TryValidateObject(request, validationContext, validationResults))
+            if (Validator.TryValidateObject(request, validationContext, validationResults, true))
             {
                 return HandleCommand(request, cancellationToken);
             }

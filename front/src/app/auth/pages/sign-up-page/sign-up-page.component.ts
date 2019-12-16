@@ -5,7 +5,8 @@ import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CheckUsernameQuery, CheckUsernameQueryResult } from '../../../core/queries/CheckUsernameQuery';
 import { Subject, Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { debounceTime, switchMap } from 'rxjs/operators';
+import { PasswordStrength } from 'src/app/core/utils/PasswordStrength';
 
 @Component({
   selector: 'app-sign-up-page',
@@ -19,22 +20,26 @@ export class SignUpPageComponent implements OnInit {
   validPassword = true;
   form = new FormGroup({
     username: new FormControl('', [Validators.required, Validators.minLength(4)]),
-    password: new FormControl('', [Validators.required, Validators.minLength(4)])
+    password: new FormControl('', [Validators.required, Validators.minLength(4)]),
+    confirmPassword: new FormControl('', [Validators.required, Validators.minLength(4)]),
+    email: new FormControl('', [Validators.email]),
   });
 
   showOkUsername = false;
   showInvalidUsername = false;
+  showUsernameAlreadyExists = false;
   showLoading = false;
+
+  passwordMatch = false;
+
+  passwordStrength = null;
 
   constructor(private signUpCommand: SignUpCommand, private checkUsernameQuery: CheckUsernameQuery, private router: Router) {
 
     this.checkUsernameResultObsrv = this.usernameVal.pipe(
       debounceTime(500),
-      distinctUntilChanged(),
       switchMap((v) => {
-        console.log("chck");
-
-          return this.checkUsernameQuery.execute(v);
+        return this.checkUsernameQuery.execute(v);
       })
     );
 
@@ -48,30 +53,66 @@ export class SignUpPageComponent implements OnInit {
   ngOnInit() {
   }
 
+  get validUsername(): boolean{
+    return this.showOkUsername && !this.showLoading && !this.showInvalidUsername;
+  }
+
   onUsernameChange() {
     if (this.form.controls.username.valid) {
       this.showInvalidUsername = false;
       this.showOkUsername = false;
       this.showLoading = true;
       this.usernameVal.next(this.form.value.username);
+    } else {
+      this.showInvalidUsername = false;
+      this.showOkUsername = false;
+      this.showLoading = false;
     }
   }
 
-  onSignUpClick() {
-    if (this.form.valid) {
-      let commandArgs = new SignUpCommandArgs(
-        this.form.value.username,
+  onPasswordChange() {
+    if (this.form.controls.password.valid) {
+      this.passwordStrength = PasswordStrength.measure(
         this.form.value.password
       );
-      this.signUpCommand.execute(commandArgs)
-        .subscribe((v) => {
-          this.router.navigate(['/sign-in']);
-        }, (err: HttpErrorResponse) => {
-          console.log('sign up error');
-          console.log(err);
+    } else {
+      this.passwordStrength = null;
+    }
+  }
 
-        });
+  onConfirmType() {
+    if (this.form.value.confirmPassword !== this.form.value.password) {
+      this.passwordMatch = false;
+      this.form.controls.confirmPassword.setErrors(Object.assign(
+        this.form.controls.confirmPassword.errors || {}, { match: true }));
+    } else {
+      this.passwordMatch = true;
+      this.form.controls.confirmPassword.setErrors(null);
+    }
+  }
 
+  private handleSignUpError(err: HttpErrorResponse) {
+    this.showUsernameAlreadyExists = err.status === 409;
+    if (!this.showUsernameAlreadyExists) {
+      this.router.navigate(['/error'], {
+        state: {
+          msg: err.error
+        }
+      });
+    }
+    console.log(err);
+  }
+
+  onSignUpClick() {
+    if (this.form.valid && this.passwordStrength && this.validUsername) {
+      const commandArgs = {
+        username: this.form.value.username,
+        password: this.form.value.password,
+        email: this.form.value.email
+      };
+      this.signUpCommand
+        .execute(commandArgs)
+        .subscribe((v) => this.router.navigate(['/sign-in']), (err: HttpErrorResponse) => this.handleSignUpError(err));
     }
   }
 

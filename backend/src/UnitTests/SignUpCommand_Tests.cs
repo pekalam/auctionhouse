@@ -11,6 +11,7 @@ using Core.Common.Domain;
 using Core.Common.Domain.Users;
 using Core.Common.Domain.Users.Events;
 using Core.Common.EventBus;
+using Core.Common.Exceptions.Command;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -32,13 +33,45 @@ namespace UnitTests
 
 
         [Test]
+        public void SignUp_when_too_weak_password_throws()
+        {
+            var username = "test";
+            var password = "123";
+            var email = "mail@mail.com";
+            var command = new SignUpCommand(username, password, email);
+            var mockEventBusService = new Mock<EventBusService>(Mock.Of<IEventBus>(), Mock.Of<IAppEventBuilder>());
+            var commandHandler = new SignUpCommandHandler(mockEventBusService.Object,
+                Mock.Of<IUserAuthenticationDataRepository>(),
+                Mock.Of<IUserRepository>(),
+                Mock.Of<ILogger<SignUpCommandHandler>>());
+
+            Assert.Throws<InvalidCommandException>(() => commandHandler.Handle(command, CancellationToken.None));
+        }
+
+        [Test]
+        public void SignUp_when_valid_password_does_not_throw()
+        {
+            var username = "test";
+            var password = "password";
+            var email = "mail@mail.com";
+            var command = new SignUpCommand(username, password, email);
+            var mockEventBusService = new Mock<EventBusService>(Mock.Of<IEventBus>(), Mock.Of<IAppEventBuilder>());
+            var commandHandler = new SignUpCommandHandler(mockEventBusService.Object,
+                Mock.Of<IUserAuthenticationDataRepository>(),
+                Mock.Of<IUserRepository>(),
+                Mock.Of<ILogger<SignUpCommandHandler>>());
+
+            Assert.DoesNotThrow(() => commandHandler.Handle(command, CancellationToken.None));
+        }
+
+        [Test]
         public void SignUp_when_valid_params_returns_valid_user_identity_and_publishes_events()
         {
             var username = "test";
             var password = "pass";
-
+            var email = "mail@mail.com";
+            var command = new SignUpCommand(username, password, email);
             var authRepo = new Mock<IUserAuthenticationDataRepository>();
-            var command = new SignUpCommand(username, password);
 
             UserIdentity userIdentity = null;
             var mockEventBusService = new Mock<EventBusService>(Mock.Of<IEventBus>(), Mock.Of<IAppEventBuilder>());
@@ -73,6 +106,7 @@ namespace UnitTests
         {
             var username = "test";
             var password = "pass";
+            var email = "mail@mail.com";
 
             var stubAuthRepo = new Mock<IUserAuthenticationDataRepository>();
             stubAuthRepo
@@ -84,7 +118,7 @@ namespace UnitTests
                     Password = password
                 });
 
-            var command = new SignUpCommand(username, password);
+            var command = new SignUpCommand(username, password, email);
 
             var mockEventBusService = new Mock<EventBusService>(Mock.Of<IEventBus>(), Mock.Of<IAppEventBuilder>());
             mockEventBusService

@@ -33,7 +33,7 @@ namespace Web.Api
         [HttpPost("signup")]
         public async Task<ActionResult<RequestStatus>> SignUp([FromBody] SignUpCommandDto signUpCommandDto)
         {
-            var signUpCommand = new SignUpCommand(signUpCommandDto.Username, signUpCommandDto.Password);
+            var signUpCommand = new SignUpCommand(signUpCommandDto.Username, signUpCommandDto.Password, signUpCommandDto.Email);
             var response = (RequestStatusDto) await _mediator.Send(signUpCommand);
             return Ok(response);
         }
