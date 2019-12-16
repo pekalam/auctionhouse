@@ -111,9 +111,9 @@ namespace FunctionalTests.Utils
 		{
 			CategoryTreeService = new CategoryTreeService(new CategoryNameServiceSettings()
 			{
-				CategoriesFilePath = "./queries_functional_test_categories.xml"
-
-			});
+				CategoriesFilePath = "./queries_functional_test_categories.xml",
+                SchemaFilePath = "./_Categories-xml-data/categories.xsd"
+            });
 			CategoryTreeService.Init();
 		}
 
