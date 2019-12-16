@@ -42,7 +42,8 @@ namespace Core.Command.SignUp
             {
                 Password = request.Password,
                 UserId = user.UserIdentity.UserId,
-                UserName = user.UserIdentity.UserName
+                UserName = user.UserIdentity.UserName,
+                Email = request.Password
             };
             _userAuthenticationDataRepository.AddUserAuth(userAuth);
             _userRepository.AddUser(user);

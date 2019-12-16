@@ -1,16 +1,16 @@
 @import "global";
-@import 'page-content-block';
+@import "page-content-block";
 
 .container {
   max-width: 700px;
-  .content-block{
+  .content-block {
     padding: 20px;
   }
 }
 
 #sign-in-form {
   .field-container {
-    padding: 15px;
+    padding-top: 19px;
     display: block;
     text-align: center;
   }
@@ -21,7 +21,55 @@
 .submit-button-container {
   display: block;
   text-align: center;
-  #signup-button {
+  #sign-up-button {
     margin-top: 30px;
+  }
+}
+
+mat-error {
+  span {
+    display: block;
+  }
+}
+
+::ng-deep mat-form-field{
+  max-width: 70%;
+  min-width: 206px;
+}
+
+#username-field {
+  ::ng-deep .mat-form-field-infix {
+    width: auto !important;
+  }
+}
+
+#passowrd-field-container{
+  position: relative;
+}
+
+.password-meter {
+  width: 8px;
+  height: 40px;
+  margin-left: 35px;
+  background-color: #f1f1f1;
+  display: inline-flex;
+  position: absolute;
+  transform: translateY(-50%);
+  top: 50%;
+  align-items: flex-end;
+  div {
+    width: 100%;
+  }
+  .weak {
+    background-color: red;
+    height: 33%;
+  }
+  .medium {
+    background-color: orange;
+    height: 66%;
+  }
+  .strong {
+    background-color: green;
+    height: 100%;
   }
 }

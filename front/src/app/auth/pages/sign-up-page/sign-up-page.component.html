@@ -3,24 +3,41 @@
     <form id="sign-in-form" [formGroup]="form" (ngSubmit)="onSignUpClick()">
       <div class="field-container">
 
-          <mat-form-field id="username-field">
-            <input matInput type="text" placeholder="Username" formControlName="username" (keyup)="onUsernameChange()" required />
-            <mat-error>
-              <ng-container *ngIf="form.controls.username.errors">
-                <span *ngIf="form.controls.username.errors.required">Username cannot be empty</span>
-                <span *ngIf="form.controls.username.errors.minlength">Too short username</span>
-              </ng-container>
-            </mat-error>
-            <i class="fas fa-check" style="position: absolute; margin-left: 30px; color: green;" *ngIf="showOkUsername"></i>
-            <i class="fas fa-times" style="position: absolute; margin-left: 30px; color: red;" *ngIf="showInvalidUsername"></i>
-            <mat-spinner *ngIf="showLoading" style="position: absolute; margin-left: 30px; margin-left: 205px; bottom: 6px;" [diameter]="20"></mat-spinner>
-          </mat-form-field>
-
-
+        <mat-form-field id="username-field">
+          <input matInput [size]="form.value.username.length > 20 ? form.value.username.length : 23"
+          type="text" placeholder="Username" formControlName="username"
+          (keyup)="onUsernameChange()" required />
+          <mat-error>
+            <ng-container *ngIf="form.controls.username.errors">
+              <span *ngIf="form.controls.username.errors.required">Username cannot be empty</span>
+              <span *ngIf="form.controls.username.errors.minlength">Too short username</span>
+            </ng-container>
+          </mat-error>
+          <i matTooltip="Chosen username is valid" class="fas fa-check" style="position: absolute; margin-left: 30px; color: green;"
+            *ngIf="showOkUsername"></i>
+          <i matTooltip="Username already exist" class="fas fa-times" style="position: absolute; margin-left: 30px; color: red;"
+            *ngIf="showInvalidUsername"></i>
+          <mat-spinner *ngIf="showLoading"
+            style="position: absolute; margin-left: 30px; display: inline-block; bottom: 6px;" [diameter]="20">
+          </mat-spinner>
+        </mat-form-field>
       </div>
+
       <div class="field-container">
+        <mat-form-field>
+          <input matInput type="email" placeholder="Email" formControlName="email" required />
+          <mat-error>
+            <ng-container *ngIf="form.controls.email.errors">
+              <span *ngIf="form.controls.email.errors.email">Invalid email</span>
+            </ng-container>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="field-container" id="passowrd-field-container">
         <mat-form-field id="password">
-          <input matInput type="password" placeholder="Password" formControlName="password" required />
+          <input matInput type="password" placeholder="Password"
+            formControlName="password" (keyup)="onPasswordChange()" required />
           <mat-error>
             <ng-container *ngIf="form.controls.password.errors">
               <span *ngIf="form.controls.password.errors.required">Password cannot be empty</span>
@@ -28,10 +45,28 @@
             </ng-container>
           </mat-error>
         </mat-form-field>
-
+        <div [matTooltip]="'Password strength: ' + passwordStrength" class="password-meter" *ngIf="passwordStrength">
+          <div class="weak" [style.display]="passwordStrength == 'weak' ? 'block' : 'none'"></div>
+          <div class="medium" [style.display]="passwordStrength == 'medium' ? 'block' : 'none'"></div>
+          <div class="strong" [style.display]="passwordStrength == 'strong' ? 'block' : 'none'"></div>
+        </div>
       </div>
+
+
+      <div class="field-container">
+        <mat-form-field id="confirm-password">
+          <input matInput (keyup)="onConfirmType()" type="password" placeholder="Confirm password" formControlName="confirmPassword" required />
+          <mat-error>
+            <ng-container *ngIf="form.controls.confirmPassword.errors">
+              <span *ngIf="form.controls.confirmPassword.errors.required">Password cannot be empty</span>
+              <span *ngIf="form.controls.confirmPassword.errors.match">Passwords aren't the same!</span>
+            </ng-container>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
       <div class="submit-button-container">
-        <button mat-raised-button color="primary" id="sign-in-button" type="submit">Sign up</button>
+        <button mat-raised-button color="primary" id="sign-up-button" type="submit">Sign up</button>
       </div>
     </form>
   </div>

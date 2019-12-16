@@ -9,11 +9,15 @@
     align-items: center;
     justify-content: center;
     height: 50vh;
+    text-align: center;
   }
 }
 
-.msg{
-  text-align: center;
+.title{
   font-size: 20px;
   font-weight: bold;
+}
+
+.msg{
+  font-size: 14px;
 }

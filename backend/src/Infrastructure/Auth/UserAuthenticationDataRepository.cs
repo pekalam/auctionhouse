@@ -17,7 +17,7 @@ namespace Infrastructure.Auth
 
         public UserAuthenticationData FindUserAuthById(Guid id)
         {
-            var sql = "SELECT UserId, Username, Password FROM dbo.AuthData WHERE UserId = @UserId";
+            var sql = "SELECT UserId, Username, Password, Email FROM dbo.AuthData WHERE UserId = @UserId";
 
             using (var connection = new SqlConnection(_connectionSettings.ConnectionString))
             {
@@ -29,7 +29,7 @@ namespace Infrastructure.Auth
 
         public UserAuthenticationData FindUserAuth(string userName)
         {
-            var sql = "SELECT UserId, Username, Password FROM dbo.AuthData WHERE Username = @Username";
+            var sql = "SELECT UserId, Username, Password, Email FROM dbo.AuthData WHERE Username = @Username";
 
             using (var connection = new SqlConnection(_connectionSettings.ConnectionString))
             {
@@ -41,7 +41,7 @@ namespace Infrastructure.Auth
 
         public UserAuthenticationData AddUserAuth(UserAuthenticationData userAuthenticationData)
         {
-            var sql = "INSERT INTO dbo.AuthData (UserId, Username, Password) VALUES (@UserId, @Username, @Password)";
+            var sql = "INSERT INTO dbo.AuthData (UserId, Username, Password, Email) VALUES (@UserId, @Username, @Password, @Email)";
 
             using (var connection = new SqlConnection(_connectionSettings.ConnectionString))
             {
@@ -50,7 +50,8 @@ namespace Infrastructure.Auth
                 {
                     Username = userAuthenticationData.UserName,
                     Password = userAuthenticationData.Password,
-                    UserId = userAuthenticationData.UserId
+                    UserId = userAuthenticationData.UserId,
+                    Email = userAuthenticationData.Email
                 });
                 if (affected <= 0)
                 {
@@ -62,7 +63,7 @@ namespace Infrastructure.Auth
 
         public void SaveUserAuth(UserAuthenticationData userAuthenticationData)
         {
-            var sql = "INSERT INTO dbo.AuthData (UserId, Username, Password) VALUES (@UserId, @Username, @Password)";
+            var sql = "INSERT INTO dbo.AuthData (UserId, Username, Password, Email) VALUES (@UserId, @Username, @Password, @Email)";
 
             using (var connection = new SqlConnection(_connectionSettings.ConnectionString))
             {
@@ -71,7 +72,8 @@ namespace Infrastructure.Auth
                 {
                     Username = userAuthenticationData.UserName,
                     Password = userAuthenticationData.Password,
-                    UserId = userAuthenticationData.UserId
+                    UserId = userAuthenticationData.UserId,
+                    Email = userAuthenticationData.Email
                 });
                 if (affected <= 0)
                 {

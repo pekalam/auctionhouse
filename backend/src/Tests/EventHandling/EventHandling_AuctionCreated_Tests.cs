@@ -150,7 +150,7 @@ namespace FunctionalTests.EventHandling
 
             //act
             commandHandler.Handle(command, CancellationToken.None);
-            if(!sem.Wait(TimeSpan.FromSeconds(15))){Assert.Fail();};
+            if(!sem.Wait(TimeSpan.FromSeconds(60))){Assert.Fail();};
 
             var auctionReadModel = services.DbContext.AuctionsReadModel.Find(a => a.AuctionId == idFromHandler)
                 .FirstOrDefault();

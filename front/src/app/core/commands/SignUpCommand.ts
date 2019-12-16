@@ -6,10 +6,10 @@ import { map, filter } from 'rxjs/operators';
 import { ServerMessageService, ServerMessage } from '../services/ServerMessageService';
 import { Injectable } from '@angular/core';
 
-export class SignUpCommandArgs {
-  constructor(public username: string, public password: string) {
-
-  }
+export interface SignUpCommandArgs {
+  username: string;
+  password: string;
+  email: string;
 }
 
 @Injectable({

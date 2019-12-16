@@ -16,7 +16,8 @@ namespace IntegrationTests
         {
             UserId = Guid.NewGuid(),
             Password = "1234",
-            UserName = Guid.NewGuid().ToString().Substring(0, 15)
+            UserName = Guid.NewGuid().ToString().Substring(0, 15),
+            Email = "mail@mail.com"
         };
 
         [SetUp]
