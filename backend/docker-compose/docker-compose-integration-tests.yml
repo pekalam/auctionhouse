@@ -18,6 +18,8 @@ services:
     ports:
       - '1433:1433'
     image: marekbf3/auctionhouse-sqlserver
+    healthcheck:
+      test: "sqlcmd -S 127.0.0.1 -U sa -P 'Qwerty1234' -d es -Q 'select distinct 1 from dbo.Events' && sqlcmd -S 127.0.0.1 -U sa -P 'Qwerty1234' -d AuthDataDatabase -Q 'select distinct 1 from dbo.AuthData'"
 
   rabbitmq:
     hostname: rabbitmq

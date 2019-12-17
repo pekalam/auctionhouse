@@ -6,3 +6,4 @@ backend/src/*/obj/
 backend/src/*/bin/
 backend/src/obj/
 backend/tools/
+backend/src/AuthDataDatabase/AuthDataDatabase.dbmdl

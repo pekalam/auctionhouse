@@ -17,4 +17,6 @@ echo "AuthData db created"
 
 sleep 5
 
+nc -l -s 0.0.0.0 -p 32112 &
+
 wait
