@@ -34,7 +34,7 @@ services:
   auctionhouse-functional-tests:
     container_name: auctionhouse-functional-tests
     command: >
-      /bin/bash -c "wait-for-services && dotnet test --no-build -s docker.runsettings"
+      /bin/bash -c "wait-for-services && dotnet test --no-build -s docker.runsettings -v n"
     build:
       context: ../src
       dockerfile: Tests/Dockerfile

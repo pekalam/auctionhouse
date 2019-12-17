@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Core.Common.Domain.Products;
 using Core.Common.Query;
+using Core.Query.Mediator;
 using Core.Query.ReadModel;
 using Core.Query.Views;
 using MongoDB.Driver;

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.Command;
+using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.Attributes;
 using Core.Common.Auth;
@@ -8,6 +10,8 @@ using Core.Common.Command;
 using Core.Common.Domain.Users;
 using Core.Common.Exceptions;
 using Core.Common.Query;
+using Core.Query;
+using Core.Query.Mediator;
 using FluentAssertions;
 using MediatR;
 using Moq;

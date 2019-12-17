@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Core.Common;
 using Core.Common.Domain.Auctions;
 using Core.Common.Query;
+using Core.Query.Mediator;
 using MediatR;
 
 namespace Core.Query.Queries.Auction.AuctionImage

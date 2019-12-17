@@ -1,7 +1,9 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
-using Core.Command.ChangePassword;
-using Core.Command.SignIn;
+using Core.Command;
+using Core.Command.Commands.ChangePassword;
+using Core.Command.Commands.SignIn;
+using Core.Command.Mediator;
 using Core.Command.SignUp;
 using Core.Common;
 using Core.Common.Command;

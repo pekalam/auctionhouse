@@ -217,7 +217,7 @@ describe("Bid create page tests", function() {
     cy.visit(
       "http://localhost:4200/auctions/Fashion/Women's%20Clothing/Women's%20Dresses"
     );
-    cy.get('.auction-title').should("have.text", "My product");
+    cy.get('.auction-title').should("have.text", "Test auction");
     cy.get('.auction-list-item-container').click();
     cy.url().should("contain", "/auction?auctionId=");
     cy.get('.bid-btn').click();

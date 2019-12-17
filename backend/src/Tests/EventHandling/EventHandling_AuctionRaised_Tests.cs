@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
-using Command.Bid;
 using Core.Command.Bid;
+using Core.Command.Commands.Bid;
 using Core.Common.Auth;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Auctions.Events;
@@ -10,7 +10,7 @@ using Core.Common.Domain.Products;
 using Core.Common.Domain.Users;
 using Core.Common.EventBus;
 using Core.Common.RequestStatusService;
-using Core.Query.Handlers;
+using Core.Query.EventHandlers;
 using FunctionalTests.Utils;
 using Microsoft.Extensions.Logging;
 using Moq;

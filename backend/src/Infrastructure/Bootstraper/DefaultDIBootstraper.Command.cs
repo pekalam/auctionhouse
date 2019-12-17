@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using Core.Command;
+using Core.Command.CreateAuction;
+using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.ApplicationServices;
 using Core.Common.Auth;
@@ -10,7 +13,6 @@ using Core.Common.Domain.Categories;
 using Core.Common.Domain.Users;
 using Core.Common.EventBus;
 using Core.Common.SchedulerService;
-using Core.Command.CreateAuction;
 using Core.Common.Command;
 using Core.Common.DomainServices;
 using Infrastructure.Auth;

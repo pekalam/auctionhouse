@@ -31,7 +31,7 @@ services:
   auctionhouse-integration-tests:
     container_name: auctionhouse-integration-tests
     command: > 
-      /bin/sh -c "wait-for-services && dotnet test --no-build -s docker.runsettings"
+      /bin/sh -c "wait-for-services && dotnet test --no-build -s docker.runsettings -v n"
     build:
       context: ../src
       dockerfile: IntegrationTests/Dockerfile

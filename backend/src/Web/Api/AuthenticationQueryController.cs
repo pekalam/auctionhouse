@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Core.Common;
 using Core.Common.Query;
+using Core.Query;
+using Core.Query.Mediator;
 using Core.Query.Queries.Auth.CheckUsername;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

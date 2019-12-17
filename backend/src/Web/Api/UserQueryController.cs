@@ -5,6 +5,8 @@ using System.Net;
 using System.Threading.Tasks;
 using Core.Common;
 using Core.Common.Query;
+using Core.Query;
+using Core.Query.Mediator;
 using Core.Query.Queries.User.UserAuctions;
 using Core.Query.Queries.User.UserData;
 using MediatR;

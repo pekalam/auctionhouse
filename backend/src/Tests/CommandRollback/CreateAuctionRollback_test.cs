@@ -15,7 +15,7 @@ using Core.Common.Domain.Users;
 using Core.Common.EventBus;
 using Core.Common.RequestStatusService;
 using Core.Common.SchedulerService;
-using Core.Query.Handlers;
+using Core.Query.EventHandlers;
 using Core.Query.ReadModel;
 using FluentAssertions;
 using FunctionalTests.EventHandling;

@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
-using Core.Command.SignIn;
+using Core.Command;
+using Core.Command.Commands.SignIn;
+using Core.Command.Exceptions;
 using Core.Command.SignUp;
 using Core.Common.Auth;
 using Core.Common.Domain.Users;
 using Core.Common.Exceptions;
-using Core.Common.Exceptions.Command;
-using Core.Common.Exceptions.Query;
 using Core.Common.RequestStatusService;
+using Core.Query;
+using Core.Query.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using UnauthorizedAccessException = Core.Command.UpdateAuction.UnauthorizedAccessException;
+using UnauthorizedAccessException = Core.Command.Exceptions.UnauthorizedAccessException;
 
 namespace Web.Exceptions
 {
@@ -55,10 +57,12 @@ namespace Web.Exceptions
         private void HandleException(ApiException ex, HttpContext context)
         {
             context.Response.StatusCode = (int) ex.StatusCode;
+            context.Response.WriteAsync(ex.Message);
         }
 
         private void HandleException(CommandException ex, HttpContext context)
         {
+            //TODO: opt
             ApiException apiException;
             switch (ex)
             {
@@ -73,6 +77,9 @@ namespace Web.Exceptions
                     break;
                 case UnauthorizedAccessException e:
                     apiException = new ApiException(HttpStatusCode.Unauthorized, "Unauthorize access", e);
+                    break;
+                case InvalidCommandException e:
+                    apiException = new ApiException(HttpStatusCode.BadRequest, "Invalid command arguments");
                     break;
                 default:
                     apiException = new ApiException(HttpStatusCode.InternalServerError, "error", ex);

@@ -1,7 +1,8 @@
 ﻿using System;
 using AutoMapper;
+using Core.Command.Commands;
+using Core.Command.Commands.UpdateAuction;
 using Core.Command.CreateAuction;
-using Core.Command.UpdateAuction;
 using Core.Common.Domain.Products;
 using Web.Dto.Commands;
 

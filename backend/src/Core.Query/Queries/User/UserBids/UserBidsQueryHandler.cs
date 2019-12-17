@@ -5,6 +5,7 @@ using Core.Common;
 using Core.Common.Auth;
 using Core.Common.Domain.Users;
 using Core.Common.Query;
+using Core.Query.Mediator;
 using Core.Query.ReadModel;
 using MediatR;
 using MongoDB.Driver;

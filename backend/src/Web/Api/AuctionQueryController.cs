@@ -4,6 +4,8 @@ using AutoMapper;
 using Core.Common;
 using Core.Common.Domain.Categories;
 using Core.Common.Query;
+using Core.Query;
+using Core.Query.Mediator;
 using Core.Query.Queries.Auction.AuctionImage;
 using Core.Query.Queries.Auction.Auctions;
 using Core.Query.Queries.Auction.Auctions.ByCategory;

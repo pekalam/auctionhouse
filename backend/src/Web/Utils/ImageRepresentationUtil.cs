@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Core.Command.AuctionCreateSession.AuctionCreateSession_AddAuctionImage;
 using Core.Common.Domain.Auctions;
 using Microsoft.AspNetCore.Http;
 

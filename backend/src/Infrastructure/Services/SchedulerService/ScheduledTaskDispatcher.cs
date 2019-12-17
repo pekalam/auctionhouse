@@ -1,6 +1,6 @@
 ﻿using System;
 using Core.Command;
-using Core.Command.EndAuction;
+using Core.Command.Commands.EndAuction;
 using Core.Common;
 using Core.Common.Command;
 using Core.Common.SchedulerService;

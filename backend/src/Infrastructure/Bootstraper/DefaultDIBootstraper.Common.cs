@@ -6,6 +6,8 @@ using Core.Common.Command;
 using Core.Common.Domain.Categories;
 using Core.Common.EventBus;
 using Core.Common.Query;
+using Core.Query;
+using Core.Query.Mediator;
 using Infrastructure.Services;
 using Infrastructure.Services.EventBus;
 using MediatR;
