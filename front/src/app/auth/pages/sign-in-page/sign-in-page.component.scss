@@ -27,10 +27,18 @@
   }
 }
 
+.forgot-password{
+  font-size: 12px;
+  cursor: pointer;
+}
 
 .invalid-creds{
   color: red;
   font-size: 14px;
+}
+
+#password-field-container{
+  margin-bottom: 15px;
 }
 
 

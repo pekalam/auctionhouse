@@ -8,11 +8,15 @@ import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { AuthRoutingModule } from './auth-routing.module';
 import { CoreModule } from '../core/core.module';
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
+import { CheckResetCodePageComponent } from './pages/check-reset-code-page/check-reset-code-page.component';
+import { PasswordMeterComponent } from './components/password-meter/password-meter.component';
 
 
 
 @NgModule({
-  declarations: [SignInPageComponent, SignUpPageComponent],
+  declarations: [SignInPageComponent, SignUpPageComponent, ForgotPasswordComponent, ResetPasswordComponent, CheckResetCodePageComponent, PasswordMeterComponent],
   imports: [
     CommonModule,
     CoreModule,

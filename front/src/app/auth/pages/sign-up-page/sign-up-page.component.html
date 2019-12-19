@@ -1,5 +1,9 @@
 <div class="container">
   <div class="content-block">
+    <div class="content-block-title">
+      <h2>Sign up</h2>
+    </div>
+
     <form id="sign-in-form" [formGroup]="form" (ngSubmit)="onSignUpClick()">
       <div class="field-container">
 
@@ -37,7 +41,7 @@
       <div class="field-container" id="passowrd-field-container">
         <mat-form-field id="password">
           <input matInput type="password" placeholder="Password"
-            formControlName="password" (keyup)="onPasswordChange()" required />
+            formControlName="password" required />
           <mat-error>
             <ng-container *ngIf="form.controls.password.errors">
               <span *ngIf="form.controls.password.errors.required">Password cannot be empty</span>
@@ -45,11 +49,7 @@
             </ng-container>
           </mat-error>
         </mat-form-field>
-        <div [matTooltip]="'Password strength: ' + passwordStrength" class="password-meter" *ngIf="passwordStrength">
-          <div class="weak" [style.display]="passwordStrength == 'weak' ? 'block' : 'none'"></div>
-          <div class="medium" [style.display]="passwordStrength == 'medium' ? 'block' : 'none'"></div>
-          <div class="strong" [style.display]="passwordStrength == 'strong' ? 'block' : 'none'"></div>
-        </div>
+        <app-password-meter [password]="form.value.password" (strengthChange)="strongPassword = $event === 'weak'"></app-password-meter>
       </div>
 
 

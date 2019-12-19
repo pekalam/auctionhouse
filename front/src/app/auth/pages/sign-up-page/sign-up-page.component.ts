@@ -4,8 +4,8 @@ import { SignUpCommand, SignUpCommandArgs } from '../../../core/commands/SignUpC
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CheckUsernameQuery, CheckUsernameQueryResult } from '../../../core/queries/CheckUsernameQuery';
-import { Subject, Observable } from 'rxjs';
-import { debounceTime, switchMap } from 'rxjs/operators';
+import { Subject, Observable, empty, EMPTY } from 'rxjs';
+import { debounceTime, switchMap, catchError, tap } from 'rxjs/operators';
 import { PasswordStrength } from 'src/app/core/utils/PasswordStrength';
 
 @Component({
@@ -31,15 +31,18 @@ export class SignUpPageComponent implements OnInit {
   showLoading = false;
 
   passwordMatch = false;
-
-  passwordStrength = null;
+  strongPassword = false;
 
   constructor(private signUpCommand: SignUpCommand, private checkUsernameQuery: CheckUsernameQuery, private router: Router) {
 
     this.checkUsernameResultObsrv = this.usernameVal.pipe(
       debounceTime(500),
       switchMap((v) => {
-        return this.checkUsernameQuery.execute(v);
+        this.showLoading = true;
+        return this.checkUsernameQuery.execute(v).pipe(catchError((err) => {
+          this.showLoading = false;
+          return EMPTY;
+        }));
       })
     );
 
@@ -47,7 +50,7 @@ export class SignUpPageComponent implements OnInit {
       this.showOkUsername = !v.exist;
       this.showInvalidUsername = v.exist;
       this.showLoading = false;
-    }, (err: HttpErrorResponse) => { });
+    });
   }
 
   ngOnInit() {
@@ -61,22 +64,11 @@ export class SignUpPageComponent implements OnInit {
     if (this.form.controls.username.valid) {
       this.showInvalidUsername = false;
       this.showOkUsername = false;
-      this.showLoading = true;
       this.usernameVal.next(this.form.value.username);
     } else {
       this.showInvalidUsername = false;
       this.showOkUsername = false;
       this.showLoading = false;
-    }
-  }
-
-  onPasswordChange() {
-    if (this.form.controls.password.valid) {
-      this.passwordStrength = PasswordStrength.measure(
-        this.form.value.password
-      );
-    } else {
-      this.passwordStrength = null;
     }
   }
 
@@ -104,7 +96,7 @@ export class SignUpPageComponent implements OnInit {
   }
 
   onSignUpClick() {
-    if (this.form.valid && this.passwordStrength && this.validUsername) {
+    if (this.form.valid && this.strongPassword && this.validUsername) {
       const commandArgs = {
         username: this.form.value.username,
         password: this.form.value.password,

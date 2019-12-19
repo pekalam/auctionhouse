@@ -45,7 +45,7 @@ namespace Core.Command.Commands.ChangePassword
 
             userAuthData.Password = request.NewPassword;
 
-            _authenticationDataRepository.SaveUserAuth(userAuthData);
+            _authenticationDataRepository.UpdateUserAuth(userAuthData);
 
             var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
             return Task.FromResult(response);

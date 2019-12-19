@@ -61,9 +61,21 @@ namespace Infrastructure.Auth
             }
         }
 
-        public void SaveUserAuth(UserAuthenticationData userAuthenticationData)
+        public UserAuthenticationData FindUserAuthByEmail(string email)
         {
-            var sql = "INSERT INTO dbo.AuthData (UserId, Username, Password, Email) VALUES (@UserId, @Username, @Password, @Email)";
+            var sql = "SELECT UserId, Username, Password, Email FROM dbo.AuthData WHERE Email = @Email";
+
+            using (var connection = new SqlConnection(_connectionSettings.ConnectionString))
+            {
+                connection.Open();
+                var authData = connection.QueryFirstOrDefault<UserAuthenticationData>(sql, new { Email = email });
+                return authData;
+            }
+        }
+
+        public void UpdateUserAuth(UserAuthenticationData userAuthenticationData)
+        {
+            var sql = "UPDATE dbo.AuthData SET UserId = @UserId, Username = @Username, Password = @Password, Email = @Email WHERE UserId = @UserId";
 
             using (var connection = new SqlConnection(_connectionSettings.ConnectionString))
             {

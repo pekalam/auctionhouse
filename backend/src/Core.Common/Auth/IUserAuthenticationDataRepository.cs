@@ -7,6 +7,7 @@ namespace Core.Common.Auth
         UserAuthenticationData FindUserAuthById(Guid id);
         UserAuthenticationData FindUserAuth(string userName);
         UserAuthenticationData AddUserAuth(UserAuthenticationData userAuthenticationData);
-        void SaveUserAuth(UserAuthenticationData userAuthenticationData);
+        UserAuthenticationData FindUserAuthByEmail(string email);
+        void UpdateUserAuth(UserAuthenticationData userAuthenticationData);
     }
 }

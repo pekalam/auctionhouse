@@ -1,0 +1,41 @@
+<div class="container">
+  <div class="content-block">
+    <div class="content-block-title">
+      <h2>Reset code has been sent</h2>
+      <p *ngIf="email">Reset code has been sent to {{email}}. Please check your inbox and type code below.</p>
+      <p *ngIf="!email">Please check your inbox and type your email and reset code below.</p>
+    </div>
+    <form id="check-resetcode-form" [formGroup]="form" (ngSubmit)="onFormSubmit()">
+
+      <div class="field-container" *ngIf="!form.value.email">
+        <mat-form-field id="email-field">
+          <input matInput type="email" placeholder="Email" formControlName="email" />
+          <mat-error>
+            <ng-container *ngIf="form.controls.email.errors">
+              <span *ngIf="form.controls.email.errors.required">Email field cannot be empty</span>
+              <span *ngIf="form.controls.email.errors.email">Invalid email address</span>
+            </ng-container>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="field-container">
+        <mat-form-field id="password">
+          <input matInput type="text" placeholder="Reset code" formControlName="resetCode" required />
+          <mat-error>
+            <ng-container *ngIf="form.controls.resetCode.errors">
+              <span *ngIf="form.controls.resetCode.errors.required">Reset code cannot be empty</span>
+              <span *ngIf="form.controls.resetCode.errors.minlength">Reset code should contain 6 numbers</span>
+              <span *ngIf="form.controls.resetCode.errors.maxlength">Reset code should contain 6 numbers</span>
+            </ng-container>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+
+      <div>
+        <button mat-raised-button color="primary" type="submit">Reset password</button>
+      </div>
+    </form>
+  </div>
+</div>

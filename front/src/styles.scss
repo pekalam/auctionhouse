@@ -32,3 +32,20 @@ footer {
 .mat-form-field-appearance-legacy .mat-form-field-underline {
   background-color: #dcdcdc;
 }
+
+mat-error {
+  span {
+    display: block;
+  }
+}
+
+.content-block-title{
+  h2{
+    color: #585858;
+  }
+  p{
+    font-size: 14px;
+  }
+  text-align: center;
+  margin-bottom: 40px;
+}

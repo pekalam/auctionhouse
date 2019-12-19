@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using Core.Command;
 using Core.Command.Commands.ChangePassword;
+using Core.Command.Commands.CheckResetCode;
+using Core.Command.Commands.ResetPassword;
 using Core.Command.Commands.SignIn;
 using Core.Command.Mediator;
 using Core.Command.SignUp;
@@ -67,6 +69,34 @@ namespace Web.Api
             };
             var result = await _mediator.Send(cmd);
             return result;
+        }
+
+        [HttpPost("resetPassword")]
+        public async Task<ActionResult<RequestStatusDto>> ResetPassword([FromBody] ResetPasswordCommandDto commandDto)
+        {
+            var cmd = new ResetPasswordCommand(commandDto.NewPassword, commandDto.ResetCode, commandDto.Email);
+            var result = (RequestStatusDto) await _mediator.Send(cmd);
+
+            return Ok(result);
+        }
+
+        [HttpPost("requestResetPassword")]
+        public async Task<ActionResult<RequestStatusDto>> RequestResetPassword(
+            [FromBody] RequestResetPasswordCommandDto commandDto)
+        {
+            var cmd = new RequestResetPasswordCommand(commandDto.Email);
+            var result = (RequestStatusDto)await _mediator.Send(cmd);
+
+            return Ok(result);
+        }
+
+        [HttpPost("checkResetCode")]
+        public async Task<ActionResult<RequestStatusDto>> CheckResetCode([FromBody] CheckResetCodeCommandDto commandDto)
+        {
+            var cmd = new CheckResetCodeCommand(commandDto.ResetCode, commandDto.Email);
+            var result = (RequestStatusDto)await _mediator.Send(cmd);
+
+            return Ok(result);
         }
     }
 }

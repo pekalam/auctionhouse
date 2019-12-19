@@ -11,7 +11,10 @@ export class LoadingService {
 
   setLoading(loading: boolean) {
     if (!loading) {
-      setTimeout(() => this.isLoading = !(--this.loadingCount === 0));
+      setTimeout(() => {
+        this.isLoading = !(--this.loadingCount <= 0);
+        if (this.loadingCount < 0) { this.loadingCount = 0; }
+      });
     } else {
       setTimeout(() => this.isLoading = ++this.loadingCount > 0);
     }

@@ -43,7 +43,7 @@ namespace Core.Command.SignUp
                 Password = request.Password,
                 UserId = user.UserIdentity.UserId,
                 UserName = user.UserIdentity.UserName,
-                Email = request.Password
+                Email = request.Email
             };
             _userAuthenticationDataRepository.AddUserAuth(userAuth);
             _userRepository.AddUser(user);

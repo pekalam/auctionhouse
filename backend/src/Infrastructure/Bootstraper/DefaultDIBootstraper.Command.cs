@@ -16,6 +16,7 @@ using Core.Common.SchedulerService;
 using Core.Common.Command;
 using Core.Common.DomainServices;
 using Infrastructure.Auth;
+using Infrastructure.Repositories;
 using Infrastructure.Repositories.AuctionImage;
 using Infrastructure.Repositories.SQLServer;
 using Infrastructure.Services;
@@ -64,6 +65,7 @@ namespace Infrastructure.Bootstraper
             private static void ConfigureAuthDbServices(IServiceCollection serviceCollection)
             {
                 serviceCollection.AddScoped<IUserAuthenticationDataRepository, UserAuthenticationDataRepository>();
+                serviceCollection.AddScoped<IResetPasswordCodeRepository, ResetPasswordCodeRepository>();
             }
 
             private static void ConfigureImageServices(IServiceCollection serviceCollection)
@@ -108,7 +110,12 @@ namespace Infrastructure.Bootstraper
                 }
             }
 
-            public static void Configure<UserIdentityServiceImplT, AuctionCreateSessionServiceImplT>(
+            private static void ConfigureResetLinkSenderService<T>(IServiceCollection serviceCollection) where T : class, IResetLinkSenderService
+            {
+                serviceCollection.AddSingleton<IResetLinkSenderService, T>();
+            }
+
+            public static void Configure<UserIdentityServiceImplT, AuctionCreateSessionServiceImplT, ResetLinkSenderServiceImplT>(
                 IServiceCollection serviceCollection,
                 MsSqlConnectionSettings eventStoreConnectionSettings,
                 RabbitMqSettings rabbitMqSettings,
@@ -119,6 +126,7 @@ namespace Infrastructure.Bootstraper
             )
                 where UserIdentityServiceImplT : class, IUserIdentityService
                 where AuctionCreateSessionServiceImplT : class, IAuctionCreateSessionService
+                where ResetLinkSenderServiceImplT : class, IResetLinkSenderService
             {
                 ConfigureServiceSettings(serviceCollection, eventStoreConnectionSettings, rabbitMqSettings,
                     timeTaskServiceSettings, imageDbSettings, userAuthDbContextOptions, categoryNameServiceSettings);
@@ -129,6 +137,7 @@ namespace Infrastructure.Bootstraper
                 ConfigureDomainRepositories(serviceCollection);
                 ConfigureAuctionShedulerService(serviceCollection, timeTaskServiceSettings);
                 ConfigureDecoratedCommandHandlers(serviceCollection);
+                ConfigureResetLinkSenderService<ResetLinkSenderServiceImplT>(serviceCollection);
                 serviceCollection.AddScoped<CreateAuctionCommandHandlerDepedencies>();
 
 

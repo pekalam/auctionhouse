@@ -43,6 +43,13 @@ namespace Web
                 .AddJwtBearer(jwtConfig.ConfigureJwt);
         }
 
+        private void AddOptions<T>(IServiceCollection serviceCollection, string sectionName) where T : class
+        {
+            var settings = Configuration.GetSection(sectionName)
+                .Get<T>();
+            serviceCollection.AddSingleton(settings);
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<JwtSettings>(Configuration.GetSection("JWT"));
@@ -58,6 +65,7 @@ namespace Web
                 .Get<TimeTaskServiceSettings>();
             var userAuthDbSettings = Configuration.GetSection("UserAuthDb")
                 .Get<UserAuthDbContextOptions>();
+            AddOptions<ResetLinkSenderServiceSettings>(services, "ResetLinkService");
 
             services.AddCors(options =>
             {
@@ -79,7 +87,7 @@ namespace Web
             var categoriesXmlDirLocation = Environment.GetEnvironmentVariable("categories_xml_data");
 
             DefaultDIBootstraper.Common.Configure(services);
-            DefaultDIBootstraper.Command.Configure<UserIdentityService, AuctionCreateSessionService>(
+            DefaultDIBootstraper.Command.Configure<UserIdentityService, AuctionCreateSessionService, ResetLinkSenderService>(
                 services,
                 sqlServerSettings, rabbitMqSettings, timeTaskServiceSettings, imageDbSettings, userAuthDbSettings,
                 new CategoryNameServiceSettings()

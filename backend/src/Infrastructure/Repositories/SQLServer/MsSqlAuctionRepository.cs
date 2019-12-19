@@ -42,11 +42,22 @@ namespace Infrastructure.Repositories.SQLServer
             }
         }
 
+        protected List<Event> DeserializeEvents(IEnumerable<string> events)
+        {
+            List<Event> aggEvents = new List<Event>();
+            foreach (var evStr in events)
+            {
+                Event ev = DeserializeEvent(evStr);
+                aggEvents.Add(ev);
+            }
+
+            return aggEvents;
+        }
+
         protected List<Event> ReadEvents(Guid aggId)
         {
             var sql = "SELECT e.Data FROM dbo.Events e WHERE e.AggId = @AggId";
             IEnumerable<string> events;
-            List<Event> aggEvents = new List<Event>();
             using (var connection = new SqlConnection(_connectionSettings.ConnectionString))
             {
                 connection.Open();
@@ -58,12 +69,7 @@ namespace Infrastructure.Repositories.SQLServer
                 }
             }
 
-            foreach (var evStr in events)
-            {
-                Event ev = DeserializeEvent(evStr);
-                aggEvents.Add(ev);
-            }
-
+            var aggEvents = DeserializeEvents(events);
             return aggEvents;
         }
 
@@ -72,7 +78,6 @@ namespace Infrastructure.Repositories.SQLServer
         {
             var sql = "SELECT e.Data FROM dbo.Events e WHERE e.AggId = @AggId AND e.Version <= @Version";
             IEnumerable<string> events;
-            List<Event> aggEvents = new List<Event>();
             using (var connection = new SqlConnection(_connectionSettings.ConnectionString))
             {
                 connection.Open();
@@ -84,12 +89,7 @@ namespace Infrastructure.Repositories.SQLServer
                 }
             }
 
-            foreach (var evStr in events)
-            {
-                Event ev = DeserializeEvent(evStr);
-                aggEvents.Add(ev);
-            }
-
+            var aggEvents = DeserializeEvents(events);
             return aggEvents;
         }
     }
