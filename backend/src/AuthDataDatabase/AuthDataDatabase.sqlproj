@@ -57,9 +57,21 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
+    <Folder Include="dbo" />
+    <Folder Include="dbo\Tables" />
+    <Folder Include="dbo\Sequences" />
+    <Folder Include="dbo\Scripts" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="AuthData.sql" />
+    <Build Include="dbo\Tables\AuthData.sql" />
+    <Build Include="dbo\Tables\ResetPasswordCode.sql" />
+    <Build Include="dbo\Sequences\ResetCodeSeq.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="dbo\Scripts\Script.PostDeployment.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dbo\Scripts\Job_ResetPasswordCode.sql" />
   </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>

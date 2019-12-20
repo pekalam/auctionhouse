@@ -20,6 +20,7 @@ services:
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=Qwerty1234
+      - MSSQL_AGENT_ENABLED=True
     ports:
       - '1433:1433'
     image: marekbf3/auctionhouse-sqlserver
