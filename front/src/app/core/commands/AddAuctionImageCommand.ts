@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { ServerMessage, ServerMessageService } from '../services/ServerMessageService';
+import { RequestStatus, WSCommandStatusService } from '../services/WSCommandStatusService';
 import { Observable, of } from 'rxjs';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { filter, switchMap, map, catchError } from 'rxjs/operators';
-import { CommandHelper } from './CommandHelper';
+import { CommandHelper, ResponseOptions } from './ComandHelper';
 
 
 @Injectable({
@@ -13,7 +13,7 @@ export class AddAuctionImageCommand {
   constructor(private httpClient: HttpClient, private commandHelper: CommandHelper) {
   }
 
-  execute(event: FileList, imgNum: number): Observable<ServerMessage> {
+  execute(event: FileList, imgNum: number): Observable<RequestStatus> {
     const url = '/api/addAuctionImage';
     const file: File = event && event.item(0);
     const formData = new FormData();
@@ -21,7 +21,9 @@ export class AddAuctionImageCommand {
     formData.append('img-num', imgNum.toString());
     const httpHeaders = new HttpHeaders({ 'enctype': 'multipart/form-data' });
 
-
-    return this.commandHelper.getResponseStatusHandler(this.httpClient.post(url, formData, { headers: httpHeaders }), true);
+    const req = this.httpClient.post(url, formData, { headers: httpHeaders });
+    return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.HTTPQueuedCommand, {
+      intervalSec: 2000, maxRetry: 5
+    });
   }
 }

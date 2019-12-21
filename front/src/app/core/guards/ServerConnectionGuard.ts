@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { ServerMessageService } from '../services/ServerMessageService';
+import { WSCommandStatusService } from '../services/WSCommandStatusService';
 import { first } from 'rxjs/operators';
 import { LoadingService } from '../services/LoadingService';
 
@@ -9,7 +9,7 @@ import { LoadingService } from '../services/LoadingService';
   providedIn: 'root',
 })
 export class ServerConnectionGuard implements CanActivate {
-  constructor(private serverMessageService: ServerMessageService, private router: Router, private loadingService: LoadingService) { }
+  constructor(private serverMessageService: WSCommandStatusService, private router: Router, private loadingService: LoadingService) { }
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
 

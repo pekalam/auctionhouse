@@ -1,0 +1,36 @@
+<nav id="categories-container" (mouseleave)="hideSubcategories()">
+  <div id="main-categories-container" (mouseenter)="hideSubcategories()">
+    <div class="main-category" *ngFor="let category of mainCategories">
+      <div (mouseenter)="!mobile && showSubcategories(category)" (click)="mobile && toggleSubcategories(category)">
+        <a href="javascript:;" (focus)="!mobile && showSubcategories(category)" (click)="!mobile && router.navigate(['/category', category.categoryName])"
+        (dblclick)="mobile && router.navigate(['/category', category.categoryName])">{{category.categoryName}}</a>
+        <hr />
+        <div *ngIf="mobile && subcategoriesShown && selectedCategory == category">
+          <div class="mobile-subcategory-container" *ngFor="let subCategory of subCategories">
+            <a class="subcategory-link">{{subCategory.categoryName}}</a>
+            <div class="mobile-subcategory2" *ngFor="let subcategory2 of subCategory.subCategories">
+              <a class="mobile-subcategory2-link"
+                [routerLink]="['/auctions', selectedCategory.categoryName, subCategory.categoryName, subcategory2.categoryName]">{{subcategory2.categoryName}}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div *ngIf="!mobile" id="subcategories-container" (mouseleave)="hideSubcategories()">
+    <div class="subcategory-list" *ngIf="subcategoriesShown">
+      <div class="subcategory" *ngFor="let subCategory of subCategories">
+        <a class="subcategory-link">{{subCategory.categoryName}}</a>
+        <div class="subcategories2-container">
+          <div class="subcategory2" *ngFor="let subcategory2 of subCategory.subCategories">
+            <a class="subcategory2-link"
+              [routerLink]="['/auctions', selectedCategory.categoryName, subCategory.categoryName, subcategory2.categoryName]">{{subcategory2.categoryName}}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

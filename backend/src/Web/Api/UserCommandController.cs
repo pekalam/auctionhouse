@@ -25,10 +25,10 @@ namespace Web.Api
     [ApiController]
     public class UserCommandController : Controller
     {
-        private readonly QueuedCommandMediator _mediator;
+        private readonly WSQueuedCommandMediator _mediator;
         private readonly IMapper _mapper;
 
-        public UserCommandController(QueuedCommandMediator mediator, IMapper mapper)
+        public UserCommandController(WSQueuedCommandMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
             _mapper = mapper;

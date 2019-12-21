@@ -8,6 +8,8 @@ using Core.Common.Auth;
 using Core.Common.Domain.AuctionCreateSession;
 using Core.Common.Domain.Users;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Session;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -36,12 +38,14 @@ namespace Web.Adapters
 
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserIdentityService _userIdentityService;
+        private readonly IDistributedCache _distributedCache;
         private readonly ILogger<AuctionCreateSessionService> _logger;
 
-        public AuctionCreateSessionService(IHttpContextAccessor httpContextAccessor, IUserIdentityService userIdentityService, ILogger<AuctionCreateSessionService> logger)
+        public AuctionCreateSessionService(IHttpContextAccessor httpContextAccessor, IUserIdentityService userIdentityService, IDistributedCache distributedCache, ILogger<AuctionCreateSessionService> logger)
         {
             _httpContextAccessor = httpContextAccessor;
             _userIdentityService = userIdentityService;
+            _distributedCache = distributedCache;
             _logger = logger;
         }
 
@@ -49,7 +53,6 @@ namespace Web.Adapters
         {
             var json = JsonConvert.SerializeObject(session, new JsonSerializerSettings()
             {
-                ContractResolver = new MyContractResolver()
             });
             return Encoding.UTF8.GetBytes(json);
         }
@@ -59,9 +62,7 @@ namespace Web.Adapters
             var json = Encoding.UTF8.GetString(session);
             var deserialized = JsonConvert.DeserializeObject<AuctionCreateSession>(json, new JsonSerializerSettings()
             {
-                ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
-                ContractResolver = new MyContractResolver(),
-                NullValueHandling = NullValueHandling.Ignore,
+                NullValueHandling = NullValueHandling.Include,
                 DateTimeZoneHandling = DateTimeZoneHandling.Utc
             });
             return deserialized;

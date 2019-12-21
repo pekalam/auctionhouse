@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using Core.Common.Attributes;
 using Core.Common.Command;
 using Core.Common.Common;
+using Core.Common.Domain.AuctionCreateSession;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Products;
 using Core.Common.Domain.Users;
@@ -10,6 +11,7 @@ using Core.Common.Domain.Users;
 namespace Core.Command.CreateAuction
 {
     [AuthorizationRequired]
+    [InAuctionCreateSessionRemove]
     public class CreateAuctionCommand : ICommand
     {
         public BuyNowPrice BuyNowPrice { get; set; }
@@ -36,6 +38,8 @@ namespace Core.Command.CreateAuction
 
         [SignedInUser]
         public UserIdentity SignedInUser { get; set; }
+
+        public AuctionCreateSession AuctionCreateSession { get; set; }
 
         public CreateAuctionCommand(BuyNowPrice buyNowPrice, Product product, 
             AuctionDate startDate, AuctionDate endDate, List<string> category, 

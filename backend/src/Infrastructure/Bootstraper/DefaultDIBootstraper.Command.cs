@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Core.Command;
 using Core.Command.CreateAuction;
+using Core.Command.Handler;
 using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.ApplicationServices;
@@ -141,11 +142,17 @@ namespace Infrastructure.Bootstraper
                 serviceCollection.AddScoped<CreateAuctionCommandHandlerDepedencies>();
 
 
-                serviceCollection.AddScoped<QueuedCommandHandler>();
+                serviceCollection.AddSingleton<IHTTPQueuedCommandStatusStorage, HTTPMemQueuedCommandStatusStorage>();
+                serviceCollection.AddScoped<WSQueuedCommandHandler>();
+                serviceCollection.AddScoped<HTTPQueuedCommandHandler>();
                 serviceCollection.AddScoped<MediatRCommandHandlerMediator>();
-                serviceCollection.AddScoped<EventBusCmdHandlerMediator>();
+                serviceCollection.AddScoped<EventBusCommandHandlerMediator>();
+                serviceCollection.AddScoped<HTTPQueuedCommandHandlerMediator>();
                 serviceCollection.AddScoped<ImmediateCommandMediator>();
-                serviceCollection.AddScoped<QueuedCommandMediator>();
+                serviceCollection.AddScoped<WSQueuedCommandMediator>();
+                serviceCollection.AddScoped<HTTPQueuedCommandMediator>();
+
+                serviceCollection.AddScoped<HTTPQueuedCommandStatusService>();
             }
 
 

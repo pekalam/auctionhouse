@@ -8,10 +8,6 @@
   flex-direction: row;
   padding: 0 20px 20px 20px;
   box-sizing: border-box;
-  home-categories {
-    display: block;
-    min-width: 325px;
-  }
   .promo-container {
     background-color: $primaryColor;
     height: 370px;
@@ -39,9 +35,6 @@
 @media only screen and (max-width: 820px) {
   #home-container {
     flex-wrap: wrap;
-    home-categories {
-      min-width: 100%;
-    }
     .promo-container {
       flex-grow: 0;
       margin-left: 0;

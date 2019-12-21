@@ -1,10 +1,8 @@
 import { Observable, of } from 'rxjs';
-import { ServerMessage, ServerMessageService } from '../services/ServerMessageService';
-
-import { filter, catchError, switchMap } from 'rxjs/operators';
+import { RequestStatus, WSCommandStatusService } from '../services/WSCommandStatusService';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CommandHelper } from './CommandHelper';
+import { CommandHelper, ResponseOptions } from './ComandHelper';
 
 
 export interface UpdateAuctionCommandArgs {
@@ -25,9 +23,10 @@ export class UpdateAuctionCommand {
   constructor(private httpClient: HttpClient, private commandHelper: CommandHelper) {
   }
 
-  execute(args: UpdateAuctionCommandArgs): Observable<ServerMessage> {
+  execute(args: UpdateAuctionCommandArgs): Observable<RequestStatus> {
     const url = '/api/userUpdateAuction';
-    return this.commandHelper.getResponseStatusHandler(this.httpClient.post(url, { ...args }), true);
+    const req = this.httpClient.post(url, { ...args });
+    return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.WSQueuedCommand);
   }
 
 }

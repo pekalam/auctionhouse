@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Core.Command;
+using Core.Command.Handler;
 using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.ApplicationServices;
@@ -79,7 +80,7 @@ namespace Infrastructure.Services.EventBus
             }
         }
 
-        internal void InitCommandSubscribers(string assemblyName, IImplProvider implProvider, IMediator mediator)
+        internal void InitCommandSubscribers(string assemblyName, IImplProvider implProvider)
         {
             var commandHandlerTypes = Assembly.Load(assemblyName)
                 .GetTypes()
@@ -91,18 +92,28 @@ namespace Infrastructure.Services.EventBus
             foreach (var handlerType in commandHandlerTypes)
             {
                 var cmdType = handlerType.BaseType.GetGenericArguments()[0];
-                CommandSubscribe(cmdType, handlerType, implProvider, mediator);
+                CommandSubscribe(cmdType, implProvider);
             }
         }
 
-        private void CommandSubscribe(Type cmdType, Type handlerType, IImplProvider implProvider, IMediator mediator)
+        private void CommandSubscribe(Type cmdType, IImplProvider implProvider)
         {
             var cmdName = cmdType.Name;
             var subscription = _bus.Subscribe(typeof(ICommand), cmdName,
-                cmd =>
+                obj =>
                 {
-                    var handler = implProvider.Get<QueuedCommandHandler>();
-                    handler.Handle(cmd as ICommand, handlerType);
+                    var cmd = obj as ICommand;
+                    if (cmd.WSQueued)
+                    {
+                        var handler = implProvider.Get<WSQueuedCommandHandler>();
+                        handler.Handle(cmd);
+                    }
+                    else if (cmd.HttpQueued)
+                    {
+                        var handler = implProvider.Get<HTTPQueuedCommandHandler>();
+                        handler.Handle(cmd);
+                    }
+
                 },
                 configuration =>
                 {

@@ -51,8 +51,8 @@ export const MY_FORMATS = {
     { provide: MatDialogRef, useValue: {} },
     { provide: MAT_DIALOG_DATA, useValue: [] },
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
-    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
-    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true }}
+/*     { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
+    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true }} */
   ]
 })
 export class MaterialModule { }

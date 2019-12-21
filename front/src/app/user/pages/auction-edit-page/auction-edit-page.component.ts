@@ -13,7 +13,7 @@ import { UserAddAuctionImageCommand } from '../../../core/commands/UserAddAuctio
 import { UpdateAuctionCommand, UpdateAuctionCommandArgs } from '../../../core/commands/UpdateAuctionCommand';
 import { UserRemoveAuctionImageCommand } from '../../../core/commands/UserRemoveAuctionImageCommand';
 import { UserReplaceAuctionImageCommand } from '../../../core/commands/UserReplaceAuctionImageCommand';
-import { ServerMessageService } from '../../../core/services/ServerMessageService';
+import { WSCommandStatusService } from '../../../core/services/WSCommandStatusService';
 import { first } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { CategorySelectStep } from '../../../shared/forms/category-select-step/categorySelectStep';
@@ -48,7 +48,7 @@ export class AuctionEditPageComponent implements OnInit, OnDestroy {
               private userRemoveAuctionImageCommand: UserRemoveAuctionImageCommand,
               private userReplaceAuctionImageCommand: UserReplaceAuctionImageCommand,
               private updateAuctionCommand: UpdateAuctionCommand,
-              private serverMessageService: ServerMessageService) {
+              private serverMessageService: WSCommandStatusService) {
     if (this.router.getCurrentNavigation().extras.state) {
       this.auction = this.router.getCurrentNavigation().extras.state.auction;
       this.createDefaultProductFormValues();

@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
 using Core.Command.Commands.Bid;
+using Core.Command.Handler;
 using Core.Command.Mediator;
 using Core.Common;
 using Microsoft.Extensions.Logging;

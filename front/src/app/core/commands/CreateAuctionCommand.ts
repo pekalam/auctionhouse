@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { ServerMessage, ServerMessageService } from '../services/ServerMessageService';
+import { RequestStatus, WSCommandStatusService } from '../services/WSCommandStatusService';
 import { filter, catchError, switchMap } from 'rxjs/operators';
 import { Product } from '../models/Product';
-import { CommandHelper } from './CommandHelper';
+import { WSCommandHelper } from './WSCommandHelper';
+import { CommandHelper, ResponseOptions } from './ComandHelper';
 
 export interface CreateAuctionCommandArgs {
   buyNowPrice: number | null;
@@ -24,10 +25,11 @@ export class CreateAuctionCommand {
   constructor(private httpClient: HttpClient, private commandHelper: CommandHelper) {
   }
 
-  execute(commandArgs: CreateAuctionCommandArgs): Observable<ServerMessage> {
+  execute(commandArgs: CreateAuctionCommandArgs): Observable<RequestStatus> {
     const url = '/api/createAuction';
     console.log(commandArgs);
 
-    return this.commandHelper.getResponseStatusHandler(this.httpClient.post(url, commandArgs), true);
+    const req = this.httpClient.post(url, commandArgs);
+    return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.HTTPQueuedCommand);
   }
 }

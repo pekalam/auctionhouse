@@ -59,7 +59,7 @@ namespace Infrastructure.Bootstraper
                 RollbackHandlerRegistry.ImplProvider = implProvider;
                 var rabbitmq = (RabbitMqEventBus)implProvider.Get<IEventBus>();
                 rabbitmq.InitSubscribers("Core.Query", implProvider);
-                rabbitmq.InitCommandSubscribers("Core.Command", implProvider, serviceProvider.GetRequiredService<IMediator>());
+                rabbitmq.InitCommandSubscribers("Core.Command", implProvider);
             }
         }
     }

@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Command;
+using Core.Command.Handler;
 using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.ApplicationServices;
@@ -49,7 +50,8 @@ namespace IntegrationTests
             var cmd = new QueuedCommand()
             {
                 X = 1,
-                CommandContext = new CommandContext(new CorrelationId(Guid.NewGuid().ToString()), signedInUser)
+                CommandContext = new CommandContext(){CorrelationId = new CorrelationId(Guid.NewGuid().ToString()),User = signedInUser},
+                WSQueued = true
             };
             var sem = new SemaphoreSlim(0, 2);
             var bus = new RabbitMqEventBus(new RabbitMqSettings()
@@ -78,16 +80,16 @@ namespace IntegrationTests
                     mediator.Send(It.IsAny<IRequest<RequestStatus>>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(new RequestStatus(cmd.CommandContext.CorrelationId, Status.COMPLETED)));
 
-            var testQueuedCommandHandler = new Mock<QueuedCommandHandler>(mockRequestStatusService.Object, mediatrMock.Object);
-            testQueuedCommandHandler.Setup(handler => handler.Handle(It.IsAny<QueuedCommand>(), typeof(TestQueuedCommandHandler)))
+            var testQueuedCommandHandler = new Mock<WSQueuedCommandHandler>(mockRequestStatusService.Object, mediatrMock.Object);
+            testQueuedCommandHandler.Setup(handler => handler.Handle(It.IsAny<QueuedCommand>()))
                 .Callback(() => sem.Release())
                 .CallBase();
 
             var mockImplProvider = new Mock<IImplProvider>();
             mockImplProvider.Setup(provider => provider.Get<IUserIdentityService>()).Returns(mockUserIdentityService.Object);
-            mockImplProvider.Setup(provider => provider.Get<QueuedCommandHandler>()).Returns(testQueuedCommandHandler.Object);
+            mockImplProvider.Setup(provider => provider.Get<WSQueuedCommandHandler>()).Returns(testQueuedCommandHandler.Object);
 
-            bus.InitCommandSubscribers("IntegrationTests", mockImplProvider.Object, mediatrMock.Object);
+            bus.InitCommandSubscribers("IntegrationTests", mockImplProvider.Object);
 
           
             bus.Send(cmd);

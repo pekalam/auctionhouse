@@ -3,8 +3,10 @@ import { UserIdentity } from '../models/UserIdentity';
 import { Observable } from 'rxjs';
 import * as jwtDecode from 'jwt-decode';
 import { map, filter } from 'rxjs/operators';
-import { ServerMessageService, ServerMessage } from '../services/ServerMessageService';
+import { WSCommandStatusService, RequestStatus } from '../services/WSCommandStatusService';
 import { Injectable } from '@angular/core';
+import { HTTPCommandHelper } from './HTTPCommandHelper';
+import { CommandHelper, ResponseOptions } from './ComandHelper';
 
 export interface SignUpCommandArgs {
   username: string;
@@ -17,13 +19,11 @@ export interface SignUpCommandArgs {
 })
 export class SignUpCommand {
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient, private commandHelper: CommandHelper) {
   }
 
-  execute(commandArgs: SignUpCommandArgs): Observable<any> {
-    return this.httpClient.post(
-      '/api/signup',
-      commandArgs
-    );
+  execute(commandArgs: SignUpCommandArgs): Observable<RequestStatus> {
+    const req = this.httpClient.post<RequestStatus>('/api/signup', commandArgs);
+    return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.HTTPQueuedCommand);
   }
 }

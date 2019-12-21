@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Command.Exceptions;
+using Core.Command.Handler;
 using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.ApplicationServices;
@@ -187,11 +188,7 @@ namespace Core.Command.CreateAuction
         protected override Task<RequestStatus> HandleCommand(CreateAuctionCommand request, CancellationToken cancellationToken)
         {
             var user = GetSignedInUser(request);
-            var auctionCreateSession = _deps.auctionCreateSessionService.GetExistingSession();
-
-            var auction = auctionCreateSession.CreateAuction(GetAuctionArgs(request, user.UserIdentity));
-
-            _deps.auctionCreateSessionService.RemoveSession();
+            var auction = request.AuctionCreateSession.CreateAuction(GetAuctionArgs(request, user.UserIdentity));
 
             var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
             var addAuctionSequence = new AtomicSequence<Auction>()

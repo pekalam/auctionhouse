@@ -1,9 +1,10 @@
 import { Observable, of } from 'rxjs';
-import { ServerMessage, ServerMessageService } from '../services/ServerMessageService';
+import { RequestStatus, WSCommandStatusService } from '../services/WSCommandStatusService';
 import { filter, catchError, switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CommandHelper } from './CommandHelper';
+import { WSCommandHelper } from './WSCommandHelper';
+import { ResponseOptions, CommandHelper } from './ComandHelper';
 
 
 @Injectable({
@@ -15,9 +16,8 @@ export class StartAuctionCreateSessionCommand {
   }
 
   execute() {
-    console.log("start session command");
-
     const url = '/api/startCreateSession';
-    return this.commandHelper.getResponseStatusHandler(this.httpClient.post(url, {}), true);
+    const req = this.httpClient.post(url, {});
+    return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.WSQueuedCommand);
   }
 }

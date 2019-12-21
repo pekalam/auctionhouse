@@ -3,7 +3,7 @@ import { Auction } from '../../../core/models/Auctions';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { BidCommand } from '../../../core/commands/BidCommand';
-import { ServerMessage, ServerMessageService } from 'src/app/core/services/ServerMessageService';
+import { RequestStatus, WSCommandStatusService } from 'src/app/core/services/WSCommandStatusService';
 import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 
@@ -32,7 +32,7 @@ export class BidCreatePageComponent implements OnInit{
 
       this.bidCommand
         .execute(this.auction.auctionId, this.form.value.price)
-        .subscribe((msg: ServerMessage) => {
+        .subscribe((msg: RequestStatus) => {
           if (msg.status === 'COMPLETED') {
             this.router.navigate(['/auction'], { queryParams: { auctionId: this.auction.auctionId } });
           } else {

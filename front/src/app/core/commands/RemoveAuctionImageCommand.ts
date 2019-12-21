@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ServerMessageService, ServerMessage } from '../services/ServerMessageService';
+import { WSCommandStatusService, RequestStatus } from '../services/WSCommandStatusService';
 import { Observable, of } from 'rxjs';
-import { catchError, switchMap, filter } from 'rxjs/operators';
-import { CommandHelper } from './CommandHelper';
+import { CommandHelper, ResponseOptions } from './ComandHelper';
 
 
 @Injectable({
@@ -14,8 +13,9 @@ export class RemoveAuctionImageCommand {
 
   }
 
-  execute(imgNum: number): Observable<ServerMessage> {
+  execute(imgNum: number): Observable<RequestStatus> {
     const url = `/api/removeAuctionImage?num=${imgNum}`;
-    return this.commandHelper.getResponseStatusHandler(this.httpClient.post(url, null), true);
+    const req = this.httpClient.post(url, null);
+    return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.HTTPQueuedCommand);
   }
 }

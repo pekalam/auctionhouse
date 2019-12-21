@@ -14,27 +14,38 @@ namespace Core.Common.Domain.AuctionCreateSession
         public const int DEFAULT_SESSION_MAX_TIME = 1000 * 60 * 10;
         public static int SESSION_MAX_TIME { get; internal set; } = DEFAULT_SESSION_MAX_TIME;
 
-        private AuctionImage[] _auctionImages = new AuctionImage[Auction.MAX_IMAGES];
-        private DateTime _dateCreated;
+        public AuctionImage[] SessionAuctionImages { get; }
+        public DateTime DateCreated { get; private set; }
 
         public UserIdentity Creator { get; }
 
-        //TODO: internal + serialization
-        public AuctionCreateSession(UserIdentity creator)
+        public AuctionCreateSession(AuctionImage[] sessionAuctionImages, DateTime dateCreated, UserIdentity creator)
+        {
+            if (sessionAuctionImages.Length < Auction.MAX_IMAGES)
+            {
+                throw new DomainException("");
+            }
+            SessionAuctionImages = sessionAuctionImages;
+            DateCreated = dateCreated;
+            Creator = creator;
+        }
+
+        internal AuctionCreateSession(UserIdentity creator)
         {
             Creator = creator;
-            _dateCreated = DateTime.UtcNow;
+            DateCreated = DateTime.UtcNow;
+            SessionAuctionImages = new AuctionImage[Auction.MAX_IMAGES];
         }
 
         private void CheckIsSessionValid()
         {
-            if (!ValidateSessionTime(_dateCreated))
+            if (!ValidateSessionTime(DateCreated))
             {
                 throw new DomainException($"Sesion time expired");
             }
         }
 
-        public IReadOnlyList<AuctionImage> AuctionImages => _auctionImages.ToList();
+        public IReadOnlyList<AuctionImage> AuctionImages => SessionAuctionImages.ToList();
 
         public static bool ValidateSessionTime(DateTime dateCreated)
         {
@@ -49,22 +60,22 @@ namespace Core.Common.Domain.AuctionCreateSession
         public void ResetSession()
         {
             CheckIsSessionValid();
-            _dateCreated = DateTime.UtcNow;
-            for (int i = 0; i < _auctionImages.Length; i++)
+            DateCreated = DateTime.UtcNow;
+            for (int i = 0; i < SessionAuctionImages.Length; i++)
             {
-                _auctionImages[i] = null;
+                SessionAuctionImages[i] = null;
             }
         }
 
         public void AddOrReplaceImage(AuctionImage img, int imgNum)
         {
             CheckIsSessionValid();   
-            if (imgNum > _auctionImages.Length)
+            if (imgNum > SessionAuctionImages.Length)
             {
-                throw new DomainException($"Cannot add more than {_auctionImages.Length} images");
+                throw new DomainException($"Cannot add more than {SessionAuctionImages.Length} images");
             }
 
-            _auctionImages[imgNum] = img;
+            SessionAuctionImages[imgNum] = img;
         }
 
         public Auction CreateAuction(AuctionArgs auctionArgs)
@@ -76,7 +87,7 @@ namespace Core.Common.Domain.AuctionCreateSession
             }
             var args = new AuctionArgs.Builder()
                 .From(auctionArgs)
-                .SetImages(_auctionImages)
+                .SetImages(SessionAuctionImages)
                 .SetOwner(Creator)
                 .Build();
             var auction = new Auction(args);

@@ -66,7 +66,8 @@ namespace Core.Common.Attributes
             }
         }
 
-        public Action<IImplProvider, ICommand> AttributeStrategy { get; } = new Action<IImplProvider, ICommand>(CheckCmdIsAuthorized);
+        public Action<IImplProvider, ICommand> PreHandleAttributeStrategy { get; } = new Action<IImplProvider, ICommand>(CheckCmdIsAuthorized);
+        public Action<IImplProvider, ICommand> PostHandleAttributeStrategy { get; }
         Action<IImplProvider, IQuery> IQueryAttribute.AttributeStrategy { get; } = new Action<IImplProvider, IQuery>(CheckQueryIsAuthorized);
 
         public int Order => 0;

@@ -3,9 +3,10 @@ import { UserIdentity } from '../models/UserIdentity';
 import { Observable } from 'rxjs';
 import * as jwtDecode from 'jwt-decode';
 import { map, filter } from 'rxjs/operators';
-import { ServerMessageService, ServerMessage } from '../services/ServerMessageService';
+import { WSCommandStatusService, RequestStatus } from '../services/WSCommandStatusService';
 import { Injectable } from '@angular/core';
-import { CommandHelper } from './CommandHelper';
+import { WSCommandHelper } from './WSCommandHelper';
+import { CommandHelper, ResponseOptions } from './ComandHelper';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +17,9 @@ export class ChangePasswordCommand {
   }
 
   execute(password: string): Observable<any> {
-    return this.commandHelper.getResponseStatusHandler(this.httpClient.post(
+    const req = this.httpClient.post(
       '/api/changePassword', { newPassword: password }
-    ), true);
+    );
+    return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.HTTPQueuedCommand);
   }
 }

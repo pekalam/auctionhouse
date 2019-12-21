@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Core.Command.Exceptions;
+using Core.Command.Handler;
 using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.Auth;

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ServerMessage } from '../services/ServerMessageService';
-import { CommandHelper } from './CommandHelper';
+import { RequestStatus } from '../services/WSCommandStatusService';
+import { CommandHelper, ResponseOptions } from './ComandHelper';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +11,9 @@ export class CheckResetCodeCommand {
   constructor(private httpClient: HttpClient, private commandHelper: CommandHelper) {
   }
 
-  execute(resetCode: string, email: string): Observable<ServerMessage> {
+  execute(resetCode: string, email: string): Observable<RequestStatus> {
     const url = '/api/checkResetCode';
-    return this.commandHelper.getResponseStatusHandler(this.httpClient.post(url, { resetCode, email }), true);
+    const req = this.httpClient.post(url, { resetCode, email });
+    return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.HTTPQueuedCommand);
   }
 }

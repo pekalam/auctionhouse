@@ -17,7 +17,8 @@ namespace Core.Command.Mediator
 
         private ICommandHandlerMediator _mediator;
         private IImplProvider _implProvider;
-        internal static Dictionary<Type, IEnumerable<Action<IImplProvider, ICommand>>> _commandAttributeStrategies;
+        internal static Dictionary<Type, IEnumerable<Action<IImplProvider, ICommand>>> PreHandleCommandAttributeStrategies;
+        internal static Dictionary<Type, IEnumerable<Action<IImplProvider, ICommand>>> PostHandleCommandAttributeStrategies;
 
         static CommandMediator()
         {
@@ -26,7 +27,8 @@ namespace Core.Command.Mediator
 
         internal static void LoadCommandAttributeStrategies(string commandsAssemblyName)
         {
-            _commandAttributeStrategies = new Dictionary<Type, IEnumerable<Action<IImplProvider, ICommand>>>();
+            PreHandleCommandAttributeStrategies = new Dictionary<Type, IEnumerable<Action<IImplProvider, ICommand>>>();
+            PostHandleCommandAttributeStrategies = new Dictionary<Type, IEnumerable<Action<IImplProvider, ICommand>>>();
             var commandAttributes = Assembly.Load(commandsAssemblyName)
                 .GetTypes()
                 .Where(type => type.BaseType == typeof(ICommand))
@@ -40,10 +42,25 @@ namespace Core.Command.Mediator
 
             foreach (var commandAttribute in commandAttributes)
             {
-                _commandAttributeStrategies[commandAttribute.CommandType] =
+                PreHandleCommandAttributeStrategies[commandAttribute.CommandType] =
                     commandAttribute.CommandAttributes.OrderBy(attribute => attribute.Order)
-                        .Select(attribute => attribute.AttributeStrategy)
+                        .Select(attribute => attribute.PreHandleAttributeStrategy)
                         .AsEnumerable();
+                PostHandleCommandAttributeStrategies[commandAttribute.CommandType] =
+                    commandAttribute.CommandAttributes.OrderBy(attribute => attribute.Order)
+                        .Select(attribute => attribute.PostHandleAttributeStrategy)
+                        .AsEnumerable();
+            }
+        }
+
+        internal static void InvokePostCommandAttributeStrategies(IImplProvider implProvider, ICommand command)
+        {
+            if (PostHandleCommandAttributeStrategies.ContainsKey(command.GetType()))
+            {
+                foreach (var strategy in PostHandleCommandAttributeStrategies[command.GetType()])
+                {
+                    strategy?.Invoke(implProvider, command);
+                }
             }
         }
 
@@ -55,15 +72,22 @@ namespace Core.Command.Mediator
 
         public virtual async Task<RequestStatus> Send(ICommand command)
         {
-            if (_commandAttributeStrategies.ContainsKey(command.GetType()))
+            if (PreHandleCommandAttributeStrategies.ContainsKey(command.GetType()))
             {
-                foreach (var strategy in _commandAttributeStrategies[command.GetType()])
+                foreach (var strategy in PreHandleCommandAttributeStrategies[command.GetType()])
                 {
-                    strategy.Invoke(_implProvider, command);
+                    strategy?.Invoke(_implProvider, command);
                 }
             }
 
-            return await _mediator.Send(command);
+            var requestStatus = await _mediator.Send(command);
+
+            if (!command.HttpQueued && !command.WSQueued)
+            {
+                InvokePostCommandAttributeStrategies(_implProvider, command);
+            }
+
+            return requestStatus;
         }
     }
 }

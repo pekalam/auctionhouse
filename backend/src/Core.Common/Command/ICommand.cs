@@ -7,18 +7,14 @@ namespace Core.Common.Command
 {
     public class CommandContext
     {
-        public CorrelationId CorrelationId { get; }
-        public UserIdentity User { get; }
-
-        public CommandContext(CorrelationId correlationId, UserIdentity user)
-        {
-            CorrelationId = correlationId;
-            User = user;
-        }
+        public CorrelationId CorrelationId { get; set; }
+        public UserIdentity User { get; set; }
     }
 
     public class ICommand : IRequest<RequestStatus>
     {
         public CommandContext CommandContext { get; set; }
+        public bool HttpQueued { get; set; }
+        public bool WSQueued { get; set; }
     }
 }
