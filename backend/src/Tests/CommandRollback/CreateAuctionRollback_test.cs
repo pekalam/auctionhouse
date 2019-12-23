@@ -158,12 +158,12 @@ namespace FunctionalTests.CommandRollback
             var commandHandler = new TestCreateAuctionCommandHandler(handlerDepedencies, testRollbackHandler.Object);
 
             commandHandler.Handle(command, CancellationToken.None);
-            sem.Wait(TimeSpan.FromSeconds(5));
+            if(!sem.Wait(TimeSpan.FromSeconds(60))){Assert.Fail();};
 
 
             var createdAuciton = services.AuctionRepository.FindAuction(publishedEvent.Event.AuctionId);
 
-            sem2.Wait(TimeSpan.FromSeconds(5));
+            if(!sem2.Wait(TimeSpan.FromSeconds(60))){Assert.Fail();};
             var auctionAfterRollback = services.AuctionRepository.FindAuction(publishedEvent.Event.AuctionId);
 
             testRollbackHandler.Verify(f => f.Rollback(It.IsAny<IAppEvent<Event>>()), Times.Once());

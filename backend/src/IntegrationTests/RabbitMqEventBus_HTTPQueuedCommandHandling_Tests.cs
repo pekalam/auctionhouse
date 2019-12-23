@@ -73,12 +73,12 @@ namespace IntegrationTests
 
             bus.Send(cmd);
 
-            if (!sem.Wait(TimeSpan.FromSeconds(10)))
+            if (!sem.Wait(TimeSpan.FromSeconds(60)))
             {
                 Assert.Fail();
             }
 
-            if (!sem.Wait(TimeSpan.FromSeconds(10)))
+            if (!sem.Wait(TimeSpan.FromSeconds(60)))
             {
                 Assert.Fail();
             }

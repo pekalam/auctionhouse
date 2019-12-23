@@ -94,9 +94,9 @@ namespace IntegrationTests
           
             bus.Send(cmd);
 
-            if (!sem.Wait(TimeSpan.FromSeconds(10))) { Assert.Fail(); };
+            if (!sem.Wait(TimeSpan.FromSeconds(60))) { Assert.Fail(); };
 
-            if (!sem.Wait(TimeSpan.FromSeconds(10))){Assert.Fail();};
+            if (!sem.Wait(TimeSpan.FromSeconds(60))){Assert.Fail();};
             
 
             mockRequestStatusService.Verify(service => service.TrySendRequestFailureToUser(

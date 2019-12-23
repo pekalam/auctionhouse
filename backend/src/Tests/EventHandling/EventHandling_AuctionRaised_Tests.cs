@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using Core.Command.Bid;
 using Core.Command.Commands.Bid;
@@ -49,10 +50,14 @@ namespace FunctionalTests.EventHandling
                 .Callback(() => sem.Release());
 
 
+            var requestStatusService = new Mock<IRequestStatusService>();
+            requestStatusService.Setup(service =>
+                service.TrySendNotificationToAll("AuctionPriceChanged", It.IsAny<Dictionary<string, object>>()));
+
             services.SetupEventBus(eventHandler.Object);
 
             var stubHandler = new BidCommandHandler(services.AuctionRepository,
-                services.EventBus, Mock.Of<ILogger<BidCommandHandler>>());
+                services.EventBus, Mock.Of<ILogger<BidCommandHandler>>(), requestStatusService.Object);
 
             services.AuctionRepository.AddAuction(auction);
             var cmd = new BidCommand(auction.AggregateId, 21.0m);
@@ -60,9 +65,10 @@ namespace FunctionalTests.EventHandling
             stubHandler.Handle(cmd, CancellationToken.None);
 
 
-            sem.Wait(TimeSpan.FromSeconds(5));
+            if(!sem.Wait(TimeSpan.FromSeconds(60))){Assert.Fail();};
 
             eventHandler.Verify(f => f.Consume(It.IsAny<IAppEvent<AuctionRaised>>()), Times.Once);
+            requestStatusService.Verify(f => f.TrySendNotificationToAll("AuctionPriceChanged", It.IsAny<Dictionary<string, object>>()), Times.Once());
         }
     }
 }

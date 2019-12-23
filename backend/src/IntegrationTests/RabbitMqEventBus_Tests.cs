@@ -124,7 +124,7 @@ namespace IntegrationTests
 
             bus.Publish(toPublish);
 
-            if (!sem.Wait(TimeSpan.FromSeconds(30)))
+            if (!sem.Wait(TimeSpan.FromSeconds(60)))
             {
                 Assert.Fail();
             }
@@ -169,7 +169,7 @@ namespace IntegrationTests
 
             bus.Publish(toPublish);
 
-            sem.Wait(TimeSpan.FromSeconds(30));
+            if(!sem.Wait(TimeSpan.FromSeconds(60))){Assert.Fail();};
             Thread.Sleep(10);
 
             called.Should()
