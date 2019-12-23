@@ -95,5 +95,18 @@ namespace Web.Adapters.EventSignaling
                 _logger.LogDebug($"Cannot send event completion to user {user.UserName} {e.ToString()}");
             }
         }
+
+        public void TrySendNotificationToAll(string notificationName, Dictionary<string, object> values)
+        {
+            try
+            {
+                _logger.LogDebug($"Sending notification {notificationName} to all listening users");
+                _hubContext.Clients.All.SendAsync(notificationName, values);
+            }
+            catch (Exception e)
+            {
+                _logger.LogDebug($"Cannot send notification {notificationName} to all listening users {e.ToString()}");
+            }
+        }
     }
 }

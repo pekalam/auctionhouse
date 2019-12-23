@@ -9,10 +9,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Bogus;
 using Bogus.DataSets;
+using Core.Command.Commands.AuctionCreateSession.StartAuctionCreateSession;
 using Core.Common.Domain.Categories;
 using Core.Common.Domain.Products;
-using Core.Common.Domain.Users;
-using Core.Query.ReadModel;
 using Infrastructure.Services;
 using RestEase;
 using RestEase.Implementation;
@@ -23,29 +22,33 @@ namespace CreateAuction
     public interface Req
     {
         [Post("/api/startCreateSession")]
-        Task StartSession([Header("Authorization")] string jwt, [Body] StartAuctionCreateSessionCommandDto dto);
+        Task StartSession([Header("Authorization")] string jwt);
 
         [Post("/api/createAuction")]
         Task CreateAuction([Header("Authorization")] string jwt, [Body] CreateAuctionCommandDto dto);
+
+        [Get("/api/command/{correlationId}")]
+        Task<RequestStatusDto> GetCommandStatus([Header("Authorization")] string jwt, [Path] string correlationId);
 
         IRequester Requester { get; }
     }
 
     class Program
     {
-        static CreateAuctionCommandDto CreateCommand()
+        static CreateAuctionCommandDto CreateCommand(List<(int, int, int)> testCategories)
         {
             Func<List<string>> fakeCategory = () =>
             {
                 var categoryTreeService = new CategoryTreeService(new CategoryNameServiceSettings()
-                    {CategoriesFilePath = "./categories.xml"});
+                    {CategoriesFilePath = "./categories.xml", SchemaFilePath = "./categories.xsd"});
                 categoryTreeService.Init();
 
                 var categoryBuilder = new CategoryBuilder(categoryTreeService);
                 var rnd = new Random(new Random().Next());
-                var catId = 0; //rnd.Next(0, 8);
-                var subId = 0; //rnd.Next(0, 2);
-                var sub2Id = 0; //rnd.Next(0, 2);
+                var cat = testCategories[rnd.Next(0, testCategories.Count)];
+                var catId = cat.Item1;
+                var subId = cat.Item2; //rnd.Next(0, 2);
+                var sub2Id = cat.Item3; //rnd.Next(0, 2);
                 var tree = categoryTreeService.GetCategoriesTree();
                 var node = tree.SubCategories[catId];
 
@@ -62,7 +65,6 @@ namespace CreateAuction
             };
 
             var cmd = new Faker<CreateAuctionCommandDto>()
-                .RuleFor(dto => dto.CorrelationId, "123")
                 .RuleFor(dto => dto.StartDate, faker => DateTime.UtcNow.AddMinutes(20))
                 .RuleFor(dto => dto.EndDate, faker => DateTime.UtcNow.AddDays(faker.Random.Int(5, 10)))
                 .RuleFor(dto => dto.Product, faker => new ProductDto()
@@ -71,6 +73,7 @@ namespace CreateAuction
                     Description = faker.Lorem.Lines(20),
                     Condition = faker.Random.Bool() ? Condition.New : Condition.Used
                 })
+                .RuleFor(dto => dto.BuyNowOnly, true)
                 .RuleFor(dto => dto.Name, faker => faker.Commerce.ProductName() + " " + faker.Commerce.Color())
                 .RuleFor(dto => dto.Tags, faker => faker.Random.Bool() ? new []{"tag1", "tag2", "tag3"} : new[] { "tag4", "tag5", "tag6" })
                 .RuleSet("buyNowAndAuction", set =>
@@ -83,20 +86,36 @@ namespace CreateAuction
             return cmd.Generate("default,buyNowAndAuction");
         }
 
+        static List<(int, int, int)> GetTestCategoriesList(string arg)
+        {
+            var strings = arg.Split('/');
+            var ret = new List<(int, int, int)>();
+            foreach (var s in strings)
+            {
+                int cat0 = s[0] - 48;
+                int cat1 = s[1] - 48;
+                int cat2 = s[2] - 48;
+                ret.Add((cat0, cat1, cat2));
+            }
+
+            return ret;
+        }
+
         static void Main(string[] args)
         {
             var url = args[0];
             var jwt = $"Bearer " + args[1];
 
-            var img = args.Length == 3 ? args[2] : "";
+            var img = args.Length >= 3 ? args[2] : "";
 
+            var categories =
+                args.Length >= 4 ? GetTestCategoriesList(args[3]) : new List<(int, int, int)>() {(0, 0, 0)};
 
             var api = RestClient.For<Req>(url);
 
-            var cmd = CreateCommand();
+            var cmd = CreateCommand(categories);
 
-            var dto = new StartAuctionCreateSessionCommandDto() {CorrelationId = "123"};
-            api.StartSession(jwt, dto)
+            api.StartSession(jwt)
                 .Wait();
 
 
@@ -120,8 +139,13 @@ namespace CreateAuction
                 reqInfo.AddHeaderParameter("Authorization", jwt);
                 reqInfo.SetBodyParameterInfo(BodySerializationMethod.Default, content);
 
-                api.Requester.RequestVoidAsync(reqInfo)
-                    .Wait();
+                var status = api.Requester.RequestAsync<RequestStatusDto>(reqInfo).Result;
+                for (int i = 0; i < 5; i++)
+                {
+                    var newStatus = api.GetCommandStatus(jwt, status.CorrelationId).Result;
+                    if(newStatus.Status != "PENDING") { break;}
+                    Thread.Sleep(2000);
+                }
             }
 
 

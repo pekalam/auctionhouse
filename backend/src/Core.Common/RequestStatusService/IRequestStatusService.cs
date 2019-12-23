@@ -18,5 +18,7 @@ namespace Core.Common.RequestStatusService
         void TrySendRequestFailureToUser(string signalName, CorrelationId correlationId, UserIdentity user,
             Dictionary<string, object> values = null);
 
+
+        void TrySendNotificationToAll(string notificationName, Dictionary<string, object> values);
     }
 }

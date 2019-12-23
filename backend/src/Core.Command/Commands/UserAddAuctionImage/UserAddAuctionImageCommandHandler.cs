@@ -20,18 +20,16 @@ namespace Core.Command.Commands.UserAddAuctionImage
         private readonly IAuctionRepository _auctionRepository;
         private readonly EventBusService _eventBusService;
         private readonly ILogger<UserAddAuctionImageCommandHandler> _logger;
-        private readonly IUserIdentityService _userIdentityService;
 
         public UserAddAuctionImageCommandHandler(AuctionImageService auctionImageService,
             IAuctionRepository auctionRepository, EventBusService eventBusService,
-            ILogger<UserAddAuctionImageCommandHandler> logger, IUserIdentityService userIdentityService)
+            ILogger<UserAddAuctionImageCommandHandler> logger)
             : base(logger)
         {
             _auctionImageService = auctionImageService;
             _auctionRepository = auctionRepository;
             _eventBusService = eventBusService;
             _logger = logger;
-            _userIdentityService = userIdentityService;
         }
 
         private void AddImage(UserAddAuctionImageCommand request, CancellationToken cancellationToken, CorrelationId correlationId)

@@ -6,9 +6,15 @@
     <div class="right">
       <form [formGroup]="form" (ngSubmit)="onBidSubmit()">
         <h3>Your offer</h3>
-        <p>Current price: {{auction.winningBid ? auction.winningBid.price : "none"}}</p>
+        <div>
+          <p style="display: inline;">Current price:&nbsp;&nbsp;</p>
+          <div id="auction-price-box">
+            <i id="icon" class="fas fa-bolt" style="color: #ead800;"></i>
+            <span>{{auction.winningBid ? auction.winningBid.price : "none"}}</span>
+          </div>
+        </div>
         <mat-form-field id="offer-field">
-          <input matInput type="number" placeholder="Your offer" formControlName="price" />
+          <input matInput type="number" placeholder="Your offer" formControlName="price"/>
         </mat-form-field>
         <br>
         <button id="submit-btn" type="submit">Submit bid</button>

@@ -11,7 +11,7 @@ namespace Core.Common.Domain
         public const string AuctionRemoved = "auctionRemoved";
         public const string UserRegistered = "userRegistered";
         public const string BidCanceled = "bidCanceled";
-        public const string AuctionImageAddedEventName = "auctionImageAddedByUser";
+        public const string AuctionImageAddedEventName = "auctionImageAdded";
         public const string AuctionCanceled = "auctionCanceled";
         public const string BidRemoved = "bidRemoved";
         public const string AuctionImageRemoved = "auctionImageRemoved";

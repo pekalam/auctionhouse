@@ -24,3 +24,15 @@
 #offer-field{
   margin: 5px 0 5px 0;
 }
+
+#auction-price-box{
+  display: inline-block; padding: 10px; box-shadow: 0px 0px 1px 0px rgba(0,0,0,0.75); position: relative;
+  #icon{
+    position: absolute; top: -20%; left: 6%;
+  }
+}
+
+@keyframes auction-price-change-box{
+  from { box-shadow: 0px 0px 50px 0px rgba(250,240,40,1); }
+  to {box-shadow: 0px 0px 1px 0px rgba(0,0,0,0.75);}
+}
