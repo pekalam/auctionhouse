@@ -1,5 +1,5 @@
 FROM marekbf3/auctionhouse-sqlserver
-COPY AuthDataDatabase.mdf AuthDataDatabase_log.ldf es.mdf es_log.ldf restore-es.sql restore-AuthDataDatabase.sql ./
+COPY AuctionhouseDatabase.mdf AuctionhouseDatabase_log.ldf restore-AuctionhouseDatabase.sql ./
 COPY sqlserver-entrypoint.sh /bin/sqlserver-entrypoint.sh
 RUN chmod +x /bin/sqlserver-entrypoint.sh
 ENTRYPOINT [ "sqlserver-entrypoint.sh" ]
