@@ -15,16 +15,14 @@ namespace Infrastructure
 
         public T Get<T>() where T : class
         {
-
             var scope = _scopeFactory.CreateScope();
-                return scope.ServiceProvider.GetRequiredService<T>();
-            
+            return scope.ServiceProvider.GetRequiredService<T>();
         }
 
         public object Get(Type t)
         {
-                var scope = _scopeFactory.CreateScope();
-                return scope.ServiceProvider.GetRequiredService(t);
+            var scope = _scopeFactory.CreateScope();
+            return scope.ServiceProvider.GetRequiredService(t);
         }
     }
 }

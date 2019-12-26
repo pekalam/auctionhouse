@@ -54,6 +54,7 @@ namespace Core.Command.Commands.Bid
                 {"winningBid", bid}
             });
             auction.MarkPendingEventsAsHandled();
+            _logger.LogDebug("Bid {@bid} submited for an auction {@auction} by {@user}", bid, auction, request.SignedInUser);
 
             return Task.FromResult(response);
         }

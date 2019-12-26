@@ -30,7 +30,6 @@ namespace Core.Command.Commands.CheckResetCode
             var resetCode = _resetPasswordCodeRepository.FindResetPasswordCode(request.ResetCode, request.Email);
             if (resetCode == null)
             {
-                _logger.LogDebug($"Cannot find resetCode {request.ResetCode}");
                 throw new InvalidCommandException($"Cannot find resetCode {request.ResetCode}");
             }
 
@@ -42,7 +41,6 @@ namespace Core.Command.Commands.CheckResetCode
             var user = _userAuthenticationDataRepository.FindUserAuthByEmail(resetCode.Email);
             if (user == null)
             {
-                _logger.LogWarning($"Cannot find user with email: {resetCode.Email} and with reset code {resetCode.ResetCode.Value}");
                 throw new InvalidCommandException(
                     $"Cannot find user with email: {resetCode.Email} and with reset code {resetCode.ResetCode.Value}");
             }
@@ -65,7 +63,7 @@ namespace Core.Command.Commands.CheckResetCode
                 {
                     {"expired", resetCode.IsExpired}
                 });
-
+            _logger.LogDebug("Reset code: {@resetCode} checked", resetCode);
 
             return Task.FromResult(result);
         }

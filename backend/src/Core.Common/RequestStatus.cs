@@ -15,6 +15,7 @@ namespace Core.Common
         public CorrelationId CorrelationId { get; }
         public Status Status { get; }
         public Dictionary<string, object> ExtraData { get; }
+        //TODO
         public Exception Exception { get; }
 
         public RequestStatus(Status status, Dictionary<string, object> extraData = null, Exception exception = null)

@@ -13,6 +13,7 @@ using Core.Query;
 using Core.Query.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using UnauthorizedAccessException = Core.Command.Exceptions.UnauthorizedAccessException;
 
 namespace Web.Exceptions
@@ -20,10 +21,12 @@ namespace Web.Exceptions
     public class ExceptionHandlingMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 
-        public ExceptionHandlingMiddleware(RequestDelegate next)
+        public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -48,14 +51,16 @@ namespace Web.Exceptions
             {
                 HandleException(ex, context);
             }
-//            catch (Exception ex)
-//            {
-//                HandleException(ex, context);
-//            }
+            catch (Exception ex)
+            {
+                HandleException(ex, context);
+            }
         }
 
         private void HandleException(ApiException ex, HttpContext context)
         {
+            _logger.LogDebug(ex.InnerException, "Exception catched, status code: {code}, message: {msg}", ex.StatusCode, ex.Message);
+
             context.Response.StatusCode = (int) ex.StatusCode;
             context.Response.WriteAsync(ex.Message);
         }

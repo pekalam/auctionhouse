@@ -12,26 +12,10 @@ using Microsoft.AspNetCore.Session;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using Web.Exceptions;
 
 namespace Web.Adapters
 {
-    public class MyContractResolver : Newtonsoft.Json.Serialization.DefaultContractResolver
-    {
-        protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
-        {
-            var props = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic| BindingFlags.Instance)
-                .Where(p => p.CanWrite)
-                .Select(p => base.CreateProperty(p, memberSerialization))
-                .Union(type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-                    .Select(f => base.CreateProperty(f, memberSerialization)))
-                .ToList();
-            props.ForEach(p => { p.Writable = true; p.Readable = true; });
-            return props;
-        }
-    }
-
     public class AuctionCreateSessionService : IAuctionCreateSessionService
     {
         private string GetSessionKey(UserIdentity userIdentity) => $"user-{userIdentity.UserId}";
@@ -98,6 +82,7 @@ namespace Web.Adapters
         public AuctionCreateSession StartAndSaveNewSession()
         {
             var user = GetSignedInUserIdentity();
+            _logger.LogDebug("Creating new AuctionCreateSession for {@user}", user);
             var newSession = user.GetAuctionCreateSession();
             SaveSession(newSession);
             return newSession;
@@ -106,14 +91,18 @@ namespace Web.Adapters
         public void SaveSession(AuctionCreateSession session)
         {
             var user = GetSignedInUserIdentity();
+            var key = GetSessionKey(user);
             var httpContext = _httpContextAccessor.HttpContext;
-            httpContext.Session.Set(GetSessionKey(user), SerializeSession(session));
+            _logger.LogDebug("Saving modified AuctionCreateSession {@session} for {@user} with key: {key}", session, user, key);
+            httpContext.Session.Set(key, SerializeSession(session));
         }
 
         public void RemoveSession()
         {
             var user = GetSignedInUserIdentity();
-            _httpContextAccessor.HttpContext.Session.Remove(GetSessionKey(user));
+            var key = GetSessionKey(user);
+            _logger.LogDebug("Removing AuctionCreateSession for {@user} with key {key}", user, key);
+            _httpContextAccessor.HttpContext.Session.Remove(key);
         }
 
         public bool SessionExists()

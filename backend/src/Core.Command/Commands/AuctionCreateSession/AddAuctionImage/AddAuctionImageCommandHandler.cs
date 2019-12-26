@@ -31,19 +31,14 @@ namespace Core.Command.Commands.AuctionCreateSession.AddAuctionImage
 
             request.AuctionCreateSession.AddOrReplaceImage(added, request.ImgNum);
 
-//            _requestStatusService.TrySendRequestCompletionToUser("auctionImageAdded", request.CorrelationId, auctionCreateSession.Creator, new Dictionary<string, object>()
-//            {
-//                {"imgSz1", added.Size1Id},
-//                {"imgSz2", added.Size2Id},
-//                {"imgSz3", added.Size3Id}
-//            });
-
             var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED, new Dictionary<string, object>()
             {
                 {"imgSz1", added.Size1Id},
                 {"imgSz2", added.Size2Id},
                 {"imgSz3", added.Size3Id}
             });
+            _logger.LogDebug("Image added: {@img}", added);
+
             return Task.FromResult(response);
         }
     }

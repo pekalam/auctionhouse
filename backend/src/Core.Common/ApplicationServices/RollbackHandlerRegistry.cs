@@ -20,7 +20,7 @@ namespace Core.Common.ApplicationServices
 
         public void Rollback(IAppEvent<Event> commandEvent)
         {
-            _logger.LogError($"Unhandled command error command: {commandEvent.Command.GetType().Name}");
+            _logger.LogDebug("Default command rollback handler for commandEvent: {commandEvent}", commandEvent);
         }
     }
 

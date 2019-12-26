@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.SystemConsole.Themes;
 
 namespace Web
 {
@@ -12,6 +15,17 @@ namespace Web
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+                .UseStartup<Startup>()
+                .UseSerilog((context, configuration) =>
+                {
+                    configuration
+                        .MinimumLevel.Verbose()
+                        .ReadFrom.Configuration(context.Configuration);
+                    if (context.HostingEnvironment.IsDevelopment())
+                    {
+                        configuration.WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Verbose,
+                            theme: AnsiConsoleTheme.Literate);
+                    }
+                });
     }
 }

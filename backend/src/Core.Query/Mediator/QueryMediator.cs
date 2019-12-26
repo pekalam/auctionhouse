@@ -8,6 +8,7 @@ using Core.Common;
 using Core.Common.Attributes;
 using Core.Common.Query;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 [assembly: InternalsVisibleTo("UnitTests")]
 namespace Core.Query.Mediator
@@ -18,6 +19,7 @@ namespace Core.Query.Mediator
 
         private IMediator _mediator;
         private IImplProvider _implProvider;
+        private readonly ILogger<QueryMediator> _logger;
         private static Dictionary<Type, IEnumerable<Action<IImplProvider, IQuery>>> _queryAttributeStrategies;
 
         static QueryMediator()
@@ -48,10 +50,11 @@ namespace Core.Query.Mediator
             }
         }
 
-        public QueryMediator(IMediator mediator, IImplProvider implProvider)
+        public QueryMediator(IMediator mediator, IImplProvider implProvider, ILogger<QueryMediator> logger)
         {
             _mediator = mediator;
             _implProvider = implProvider;
+            _logger = logger;
         }
 
         public async Task<T> Send<T>(IQuery<T> query)
@@ -64,7 +67,16 @@ namespace Core.Query.Mediator
                 }
             }
 
-            return await _mediator.Send(query);
+            _logger.LogTrace("Handling query {name}", query.GetType().Name);
+            try
+            {
+                return await _mediator.Send(query);
+            }
+            catch (Exception e)
+            {
+                _logger.LogDebug(e, "Query {name} exception", query.GetType().Name);
+                throw e;
+            }
         }
     }
 }

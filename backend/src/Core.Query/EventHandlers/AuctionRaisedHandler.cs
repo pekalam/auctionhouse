@@ -49,7 +49,7 @@ namespace Core.Query.EventHandlers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Cannot update AuctionsReadModel {e.Message}");
+                _logger.LogWarning(e, "Cannot update AuctionsReadModel");
                 throw;
             }
         }
@@ -70,7 +70,7 @@ namespace Core.Query.EventHandlers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Cannot update UserReadModel {e.Message}");
+                _logger.LogWarning(e, "Cannot update UserReadModel");
                 throw;
             }
         }

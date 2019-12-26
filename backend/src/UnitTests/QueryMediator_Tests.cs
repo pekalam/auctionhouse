@@ -10,6 +10,7 @@ using Core.Common.Query;
 using Core.Query.Mediator;
 using FluentAssertions;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 
@@ -50,7 +51,7 @@ namespace UnitTests.CommandMediator_Tests
             mockMediatr
                 .Setup(f => f.Send(It.IsAny<TestQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedResponse);
-            var queryMediator = new QueryMediator(mockMediatr.Object, Mock.Of<IImplProvider>());
+            var queryMediator = new QueryMediator(mockMediatr.Object, Mock.Of<IImplProvider>(), Mock.Of<ILogger<QueryMediator>>());
 
             var response = await queryMediator.Send(new TestQuery());
 
@@ -68,7 +69,7 @@ namespace UnitTests.CommandMediator_Tests
             stubImplProvider.Setup(f => f.Get<IUserIdentityService>())
                 .Returns(stubUserIdentityService.Object);
 
-            var queryMediator = new QueryMediator(mockMediatr.Object, stubImplProvider.Object);
+            var queryMediator = new QueryMediator(mockMediatr.Object, stubImplProvider.Object, Mock.Of<ILogger<QueryMediator>>());
 
             Assert.ThrowsAsync<NotSignedInException>(async () => await queryMediator.Send(new TestQueryAuth(5)));
         }
@@ -99,7 +100,7 @@ namespace UnitTests.CommandMediator_Tests
             stubImplProvider.Setup(f => f.Get<IUserIdentityService>())
                 .Returns(stubUserIdentityService.Object);
 
-            var queryMediator = new QueryMediator(mockMediatr.Object, stubImplProvider.Object);
+            var queryMediator = new QueryMediator(mockMediatr.Object, stubImplProvider.Object, Mock.Of<ILogger<QueryMediator>>());
 
             var response = await queryMediator.Send(new TestQueryAuth(100));
 

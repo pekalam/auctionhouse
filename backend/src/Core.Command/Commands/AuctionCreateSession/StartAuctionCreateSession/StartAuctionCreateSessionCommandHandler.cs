@@ -24,6 +24,7 @@ namespace Core.Command.Commands.AuctionCreateSession.StartAuctionCreateSession
             Common.Domain.AuctionCreateSession.AuctionCreateSession session;
             if (_auctionCreateSessionService.SessionExists())
             {
+                _logger.LogDebug("Starting new AuctionCreateSession");
                 session = _auctionCreateSessionService.GetExistingSession();
                 session.ResetSession();
                 _auctionCreateSessionService.SaveSession(session);

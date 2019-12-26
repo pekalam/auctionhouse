@@ -38,7 +38,6 @@ namespace Core.Command.CreateAuction
             }
             catch (Exception e)
             {
-                _deps.logger.LogWarning($"Cannot add auction to repository {e.Message}");
                 throw new CommandException("Cannot add auction to repository", e);
             }
         }
@@ -51,7 +50,6 @@ namespace Core.Command.CreateAuction
             }
             catch (Exception e)
             {
-                _deps.logger.LogCritical($"Cannot rollback add auction to repository {e.Message}");
                 throw new CommandException("Cannot rollback add auction to repository", e);
             }
         }
@@ -66,7 +64,6 @@ namespace Core.Command.CreateAuction
             }
             catch (Exception e)
             {
-                _deps.logger.LogWarning($"Cannot schedule auction end {e.Message}");
                 throw new CommandException("Cannot schedule auction end", e);
             }
         }
@@ -80,7 +77,6 @@ namespace Core.Command.CreateAuction
             }
             catch (Exception e)
             {
-                _deps.logger.LogCritical($"Cannot schedule auction end {e.Message}");
                 throw new CommandException("Cannot schedule auction end", e);
             }
         }
@@ -104,7 +100,7 @@ namespace Core.Command.CreateAuction
             }
             catch (Exception)
             {
-                _deps.logger.LogError("Cannot set auction images metadata");
+                _deps.logger.LogError("Cannot set auction images metadata for an auction: {@auction}", auction);
                 throw;
             }
         }
@@ -128,7 +124,7 @@ namespace Core.Command.CreateAuction
             }
             catch (Exception)
             {
-                _deps.logger.LogCritical("Cannot rollback set auction images metadata");
+                _deps.logger.LogError("Cannot rollback set auction images metadata");
                 throw;
             }
         }
@@ -143,7 +139,7 @@ namespace Core.Command.CreateAuction
             }
             catch (Exception e)
             {
-                _deps.logger.LogCritical($"Cannot publish aution's pending events");
+                _deps.logger.LogError($"Cannot publish aution's pending events");
                 throw new CommandException("Cannot publish aution's pending events", e);
             }
         }

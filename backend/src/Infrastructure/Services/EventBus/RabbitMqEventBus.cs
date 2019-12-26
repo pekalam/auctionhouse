@@ -22,6 +22,7 @@ using IEventBus = Core.Common.EventBus.IEventBus;
 
 [assembly: InternalsVisibleTo("FunctionalTests")]
 [assembly: InternalsVisibleTo("IntegrationTests")]
+
 namespace Infrastructure.Services.EventBus
 {
     internal class RabbitMqEventConsumerFactory
@@ -54,7 +55,6 @@ namespace Infrastructure.Services.EventBus
 
         internal void InitSubscribers(params RabbitMqEventConsumerFactory[] subscriberFactories)
         {
-
             SetupErrorQueueSubscribtion();
 
             foreach (var eventConsumer in subscriberFactories)
@@ -69,13 +69,17 @@ namespace Infrastructure.Services.EventBus
 
             var eventConsumerTypes = Assembly.Load(assemblyName)
                 .GetTypes()
-                .Where(type => type.BaseType != null && type.BaseType.IsGenericType && type.BaseType.GetGenericTypeDefinition() == typeof(EventConsumer<>))
+                .Where(type =>
+                    type.BaseType != null && type.BaseType.IsGenericType &&
+                    type.BaseType.GetGenericTypeDefinition() == typeof(EventConsumer<>))
                 .ToArray();
+            _logger.LogDebug("Found EventConsumers {list} in assembly: {assemblyName}", eventConsumerTypes.Select(f => f.Name).ToArray(), assemblyName);
 
             foreach (var consumerType in eventConsumerTypes)
             {
                 var evType = consumerType.BaseType.GetGenericArguments()[0];
-                var factory = new RabbitMqEventConsumerFactory(() => (IEventConsumer) implProvider.Get(consumerType), evType.Name);
+                var factory = new RabbitMqEventConsumerFactory(() => (IEventConsumer) implProvider.Get(consumerType),
+                    evType.Name);
                 Subscribe(factory);
             }
         }
@@ -88,6 +92,7 @@ namespace Infrastructure.Services.EventBus
                     type.BaseType != null && type.BaseType.IsGenericType &&
                     type.BaseType.GetGenericTypeDefinition() == typeof(CommandHandlerBase<>))
                 .ToArray();
+            _logger.LogDebug("Found commandHandlers {list} in assembly: {assemblyName}", commandHandlerTypes.Select(f => f.Name).ToArray(), assemblyName);
 
             foreach (var handlerType in commandHandlerTypes)
             {
@@ -103,6 +108,7 @@ namespace Infrastructure.Services.EventBus
                 obj =>
                 {
                     var cmd = obj as ICommand;
+                    _logger.LogDebug("Reveived command message from MQ: {@command}", cmd);
                     if (cmd.WSQueued)
                     {
                         var handler = implProvider.Get<WSQueuedCommandHandler>();
@@ -113,7 +119,6 @@ namespace Infrastructure.Services.EventBus
                         var handler = implProvider.Get<HTTPQueuedCommandHandler>();
                         handler.Handle(cmd);
                     }
-
                 },
                 configuration =>
                 {
@@ -146,8 +151,20 @@ namespace Infrastructure.Services.EventBus
             }
             catch (Exception e)
             {
-                _logger.LogCritical($"Cannot parse event from error message {e.ToString()}");
+                _logger.LogError(e, "Cannot parse event from error message: {message}", message);
                 return null;
+            }
+        }
+
+        private void TryExecuteCommandRollback(ICommandRollbackHandler handler, IAppEvent<Event> commandEvent)
+        {
+            try
+            {
+                handler.Rollback(commandEvent);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Catched exception in command rollback handler. Command: {@command}", commandEvent);
             }
         }
 
@@ -155,21 +172,24 @@ namespace Infrastructure.Services.EventBus
         {
             try
             {
-                _logger.LogError($"Error message {info.RoutingKey}");
+                _logger.LogWarning("Handling error message: {@message} with routingKey: {routingKey}", message, info.RoutingKey);
                 IAppEvent<Event> commandEvent = ParseEventFromMessage(message);
                 if (commandEvent != null)
                 {
                     var commandName = commandEvent.Command?.GetType()
                         .Name;
                     var handler = RollbackHandlerRegistry.GetCommandRollbackHandler(commandName);
-                    handler.Rollback(commandEvent);
+                    TryExecuteCommandRollback(handler, commandEvent);
+                }
+                else
+                {
+                    _logger.LogError("Parsed command event is null! RoutingKey: {routingKey}", info.RoutingKey);
                 }
             }
             catch (Exception)
             {
                 _logger.LogError("Cannot handle error message");
             }
-
         }
 
         private void SetupErrorQueueSubscribtion()
@@ -186,10 +206,16 @@ namespace Infrastructure.Services.EventBus
             string messageName = toCamel(eventConsumerFactory.MessageName);
             Func<IEventConsumer> factory = eventConsumerFactory.FactoryFunc;
 
+            _logger.LogDebug("Initializing subscriber: {s}", messageName);
+
             var subscription = _bus.Subscribe(typeof(IAppEvent<Event>), messageName,
-                o => factory
+                o =>
+                {
+                    _logger.LogDebug("Received message from MQ: {name}", messageName);
+                    factory
                         .Invoke()
-                        .Dispatch(o),
+                        .Dispatch(o);
+                },
                 configuration =>
                 {
                     configuration.WithTopic(messageName);
@@ -200,9 +226,8 @@ namespace Infrastructure.Services.EventBus
 
         public void Publish<T>(IAppEvent<T> @event) where T : Event
         {
+            _logger.LogDebug("Publishing event {@event}", @event);
             _bus.Publish(@event, @event.Event.EventName);
-
-            //_bus.Advanced.Publish(new Exchange("Core.Interfaces.EventBus.IAppEvent`1[[Core.DomainModel.Event, Core]], Core"), @event.Event.EventName, true, new Message<IAppEvent<T>>(@event));
         }
 
         public void Publish<T>(IEnumerable<IAppEvent<T>> events) where T : Event
@@ -215,6 +240,7 @@ namespace Infrastructure.Services.EventBus
 
         public void Send<T>(T command) where T : ICommand
         {
+            _logger.LogDebug("Publishing command {@command}", command);
             _bus.Publish(typeof(ICommand), command, command.GetType().Name);
         }
     }

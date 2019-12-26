@@ -27,7 +27,7 @@ namespace Web.Adapters
             var id = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid);
             if (id == null)
             {
-                _logger.LogDebug($"User not signed in (url: {_httpContextAccessor.HttpContext.Request.GetDisplayUrl()})");
+                _logger.LogDebug("User not signed in (url: {url})", _httpContextAccessor.HttpContext.Request.GetDisplayUrl());
                 throw new ApiException(HttpStatusCode.Unauthorized, "Not signed in");
             }
             Guid userId;
@@ -37,8 +37,8 @@ namespace Web.Adapters
             }
             else
             {
-                _logger.LogError($"Cannot parse GUID of user: {userName}");
-                throw new ApiException(HttpStatusCode.InternalServerError, "Cannot parse guid");
+                _logger.LogWarning("Cannot parse GUID of user: {userName}", userName);
+                throw new ApiException(HttpStatusCode.BadRequest, "Cannot parse guid");
             }
         }
     }

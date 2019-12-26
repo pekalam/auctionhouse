@@ -31,7 +31,6 @@ namespace Core.Command.Commands.UserRemoveAuctionImage
             var auction = _auctionRepository.FindAuction(request.AuctionId);
             if (auction == null)
             {
-                _logger.LogDebug($"Cannot find auction {request.AuctionId}");
                 throw new CommandException($"Cannot find auction {request.AuctionId}");
             }
 

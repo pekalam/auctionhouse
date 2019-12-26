@@ -31,7 +31,6 @@ namespace Core.Command.SignUp
             var existing = _userAuthenticationDataRepository.FindUserAuth(request.UserName);
             if (existing != null)
             {
-                _logger.LogDebug($"Username conflict {request.UserName}");
                 throw new UsernameConflictException($"User {request.UserName} already exists");
             }
 

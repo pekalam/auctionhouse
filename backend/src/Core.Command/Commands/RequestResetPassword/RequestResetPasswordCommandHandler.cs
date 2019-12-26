@@ -34,7 +34,6 @@ namespace Core.Command.Commands.ResetPassword
             var userAuthData = _userAuthenticationDataRepository.FindUserAuthByEmail(request.Email);
             if (userAuthData == null)
             {
-                _logger.LogDebug($"Cannot find user with email: {request.Email}");
                 throw new InvalidCommandException($"Cannot find user with email: {request.Email}");
             }
 
@@ -49,6 +48,7 @@ namespace Core.Command.Commands.ResetPassword
             var existingResetCode = _resetPasswordCodeRepository.CountResetCodesForEmail(userAuthData.Email);
             if (existingResetCode > 0)
             {
+                _logger.LogDebug("Removing {ex} existing codes for email {email}", existingResetCode, userAuthData.Email);
                 _resetPasswordCodeRepository.RemoveResetCodesByEmail(userAuthData.Email);
             }
 

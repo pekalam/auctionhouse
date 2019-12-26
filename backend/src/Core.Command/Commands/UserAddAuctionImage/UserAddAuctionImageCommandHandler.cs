@@ -37,7 +37,6 @@ namespace Core.Command.Commands.UserAddAuctionImage
             var auction = _auctionRepository.FindAuction(request.AuctionId);
             if (auction == null)
             {
-                _logger.LogDebug($"Cannot find auction {request.AuctionId}");
                 throw new CommandException($"Cannot find auction {request.AuctionId}");
             }
 
@@ -59,7 +58,7 @@ namespace Core.Command.Commands.UserAddAuctionImage
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error while trying to publish events {e.Message}");
+                _logger.LogWarning(e, "Error while trying to publish events");
                 _auctionImageService.RemoveAuctionImage(newImg);
                 throw;
             }

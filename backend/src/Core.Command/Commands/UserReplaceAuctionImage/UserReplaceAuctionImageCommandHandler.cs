@@ -35,7 +35,6 @@ namespace Core.Command.Commands.UserReplaceAuctionImage
             var auction = _auctionRepository.FindAuction(request.AuctionId);
             if (auction == null)
             {
-                _logger.LogDebug($"Cannot find auction {request.AuctionId}");
                 throw new CommandException($"Cannot find auction {request.AuctionId}");
             }
 
@@ -50,7 +49,6 @@ namespace Core.Command.Commands.UserReplaceAuctionImage
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error while trying to publish events {e.Message}");
                 _auctionImageService.RemoveAuctionImage(newImg);
                 throw;
             }

@@ -51,11 +51,12 @@ namespace Web.Adapters
 
             try
             {
+                _logger.LogDebug("Sending reset link to user: {username} with email: {email}", username, email);
                 client.Send(msg);
             }
             catch (Exception e)
             {
-                _logger.LogWarning($"Cannot send reset link to {email} \n{e.ToString()}");
+                _logger.LogWarning(e, "Cannot send reset link to {username} with email: {email}", username, email);
                 throw;
             }
         }

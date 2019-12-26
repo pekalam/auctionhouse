@@ -28,10 +28,9 @@ namespace Core.Command.Handler
             {
                 _commandStatusStorage.UpdateCommandStatus(status, command);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                _logger.LogError(
-                    $"Cannot save http queued command {command.CommandContext.CorrelationId.Value} status to status storage");
+                _logger.LogError(e, "Cannot save http queued command {@command} status to status storage", command);
             }
         }
 
@@ -44,7 +43,7 @@ namespace Core.Command.Handler
             }
             catch (Exception e)
             {
-                _logger.LogDebug($"Command with correlationId: {command.CommandContext.CorrelationId.Value} has failed {e.ToString()}");
+                _logger.LogDebug(e, "Command error {@command}", command);
                 var failedStatus = RequestStatus.CreateFromCommandContext(command.CommandContext, Status.FAILED, exception: e);
                 TryUpdateCommandStatus(command, failedStatus);
                 return;
