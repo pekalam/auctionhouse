@@ -2,7 +2,7 @@
 <RunSettings>
 	<!-- Parameters used by tests at runtime -->
 	<TestRunParameters>
-		<Parameter name="sqlserver" value="Data Source=sql_server;Initial Catalog=AuthDataDatabase;Integrated Security=False;User ID=sa;PWD=Qwerty1234;" />
+		<Parameter name="sqlserver" value="Data Source=sql_server;Initial Catalog=AuctionhouseDatabase;Integrated Security=False;User ID=sa;PWD=Qwerty1234;" />
 	<Parameter name="rabbitmq-connection-string" value="host=rabbitmq" />
 	<Parameter name="mongodb-connection-string" value="mongodb://mongodb:27017" />
 	<Parameter name="quartz-web-task-service" value="http://quartz_web_task_service:80"/>

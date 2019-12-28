@@ -36,9 +36,10 @@ namespace Core.Command.SignUp
 
             var user = new User();
             user.Register(request.UserName);
-            //TODO: DEMO
-            user.AddCredits(1000);
 
+#if DEMO
+            user.AddCredits(1000); 
+#endif
             var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
             var userAuth = new UserAuthenticationData()
             {
