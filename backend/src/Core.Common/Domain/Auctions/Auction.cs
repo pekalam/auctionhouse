@@ -146,9 +146,7 @@ namespace Core.Common.Domain.Auctions
         }
 
 
-
-
-        public void Raise(Bid bid)
+        private void Raise(Bid bid)
         {
             ThrowIfBuyNowOnly();
             ThrowIfCompletedOrCanceled();
@@ -170,7 +168,19 @@ namespace Core.Common.Domain.Auctions
             AddEvent(new AuctionRaised(bid));
         }
 
-        public void CancelBid(Bid bid)
+        public void Raise(User user, decimal newPrice)
+        {
+            if (!user.IsRegistered)
+            {
+                throw new DomainException("User is not registered");
+            }
+            var bid = new Bid(AggregateId, user.UserIdentity, newPrice, DateTime.UtcNow);
+            Raise(bid);
+
+            user.WithdrawCredits(newPrice);
+        }
+
+        private void CancelBid(Bid bid, bool fromEvents)
         {
             ThrowIfBuyNowOnly();
             ThrowIfCompletedOrCanceled();
@@ -181,20 +191,41 @@ namespace Core.Common.Domain.Auctions
                 throw new DomainException($"Cannot find bid with BidId: {bid.BidId}");
             }
 
-            if (DateTime.Now.Subtract(existingBid.DateCreated)
+            if (!fromEvents && DateTime.UtcNow.Subtract(existingBid.DateCreated)
                     .Minutes > 10)
             {
                 throw new DomainException($"Bid ({bid.BidId}) was created more than 10 minutes ago");
             }
 
             _bids.Remove(existingBid);
-            AddEvent(new BidCanceled(existingBid));
+            Bid newWinningBid = null;
             if (existingBid.Price.Equals(ActualPrice))
             {
-                var topBid = Bids.First(b => b.Price == Bids.Max(mbid => mbid.Price));
-                ActualPrice = topBid.Price;
-                AddEvent(new AuctionRaised(topBid));
+                var topBid = Bids.FirstOrDefault(b => b.Price == Bids.Max(mbid => mbid.Price));
+                if (topBid != null)
+                {
+                    ActualPrice = topBid.Price;
+                    newWinningBid = topBid;
+                }
+                else
+                {
+                    ActualPrice = 0;
+                    newWinningBid = existingBid;
+                }
             }
+            AddEvent(new BidCanceled(existingBid, newWinningBid));
+        }
+
+        public void CancelBid(User user, Bid bid)
+        {
+            if (!bid.UserIdentity.Equals(user.UserIdentity))
+            {
+                throw new DomainException($"Bid cannot be canceled by user {user.UserIdentity.UserId}");
+            }
+
+            CancelBid(bid, false);
+
+            user.ReturnCredits(bid.Price);
         }
 
         public void CancelAuction()

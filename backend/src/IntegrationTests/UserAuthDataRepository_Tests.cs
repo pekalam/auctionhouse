@@ -26,7 +26,7 @@ namespace IntegrationTests
             var serverOpt = new UserAuthDbContextOptions()
             {
                 ConnectionString = TestContextUtils.GetParameterOrDefault("sqlserver-authdb",
-                    "Data Source=.;Initial Catalog=AuthDataDatabase;User ID=sa;PWD=Qwerty1234;")
+                    "Data Source=.;Initial Catalog=AuctionhouseDatabase;Integrated Security=True;")
             };
             _userAuthenticationDataRepository = new UserAuthenticationDataRepository(serverOpt);
         }

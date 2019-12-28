@@ -24,5 +24,9 @@ namespace Core.Common.Domain.Users
         {
             return new AuctionCreateSession.AuctionCreateSession(this);
         }
+
+        public override bool Equals(object obj) => obj is UserIdentity && ((UserIdentity) obj).UserId.Equals(UserId);
+        public override int GetHashCode() => UserId.GetHashCode();
+        public override string ToString() => $"Username: {UserName}, UserId: {UserId}";
     }
 }

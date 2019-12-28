@@ -6,6 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../material.module';
 import { RouterModule } from '@angular/router';
 import { BidRoutingModule } from './bid-routing.module';
+import { SharedModule } from '../shared/shared.module';
 
 
 
@@ -16,7 +17,8 @@ import { BidRoutingModule } from './bid-routing.module';
     CommonModule,
     MaterialModule,
     RouterModule,
-    BidRoutingModule
+    BidRoutingModule,
+    SharedModule
   ],
   exports: [BidCreatePageComponent]
 })

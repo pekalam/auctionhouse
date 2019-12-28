@@ -1,0 +1,23 @@
+<div class="container" *ngIf="userData">
+  <div class="balance">
+    <h3>Account balance:</h3>
+    <p><i class="fas fa-money-bill-alt"></i>&nbsp;&nbsp;{{userData.credits}} credits</p>
+  </div>
+  <div class="balance-form">
+    <h3>Buy credits</h3>
+    <form id="balance-form" (ngSubmit)="onBalanceFormSubmit()" [formGroup]="balanceForm">
+      <div class="offer-container">
+        <button class="buy-btn"  mat-raised-button color="primary">Buy</button>
+        <mat-card class="credits-offer" >15 Credits</mat-card>
+      </div>
+      <div class="offer-container">
+        <button class="buy-btn"  mat-raised-button color="primary">Buy</button>
+        <mat-card class="credits-offer" >40 Credits</mat-card>
+      </div>
+      <div class="offer-container">
+        <button class="buy-btn" mat-raised-button color="primary">Buy</button>
+        <mat-card class="credits-offer">100 Credits</mat-card>
+      </div>
+    </form>
+  </div>
+</div>

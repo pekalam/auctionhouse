@@ -8,6 +8,7 @@ using Core.Common.Query;
 using Core.Query;
 using Core.Query.Mediator;
 using Core.Query.Queries.User.UserAuctions;
+using Core.Query.Queries.User.UserBids;
 using Core.Query.Queries.User.UserData;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -41,6 +42,14 @@ namespace Web.Api
         {
             var userData = await _mediator.Send(new UserDataQuery());
             return Ok(userData);
+        }
+
+        [HttpGet("userBids")]
+        public async Task<ActionResult<UserBidsQueryResult>> UserBids()
+        {
+            var cmd = new UserBidsQuery();
+            var userBids = await _mediator.Send(cmd);
+            return Ok(userBids);
         }
     }
 }

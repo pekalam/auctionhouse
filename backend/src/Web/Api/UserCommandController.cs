@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Core.Command;
 using Core.Command.Commands;
+using Core.Command.Commands.AuctionCreateSession.RemoveImage;
+using Core.Command.Commands.CancelBid;
 using Core.Command.Commands.UpdateAuction;
 using Core.Command.Commands.UserAddAuctionImage;
 using Core.Command.Commands.UserRemoveAuctionImage;
@@ -16,6 +18,7 @@ using Core.Common.EventBus;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Web.Dto;
 using Web.Dto.Commands;
 using Web.Utils;
 
@@ -73,6 +76,15 @@ namespace Web.Api
         {
             var cmd = _mapper.Map<UpdateAuctionCommand>(commandDto);
             var response = (RequestStatusDto)await _mediator.Send(cmd);
+
+            return Ok(response);
+        }
+
+        [Authorize(Roles = "User"), HttpPost("cancelBid")]
+        public async Task<ActionResult<RequestStatusDto>> CancelBid([FromBody] CancelBidCommandDto commandDto)
+        {
+            var command = _mapper.Map<CancelBidCommand>(commandDto);
+            var response = (RequestStatusDto)await _mediator.Send(command);
 
             return Ok(response);
         }

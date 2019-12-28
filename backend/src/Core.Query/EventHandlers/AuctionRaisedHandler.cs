@@ -43,7 +43,7 @@ namespace Core.Query.EventHandlers
                     Builders<AuctionRead>.Update.Combine(new[] {bidUpdate, totalBidsUpd, priceUpd, versionUpd}));
                 if (result.MatchedCount == 0)
                 {
-                    throw new Exception($"No auctions with id: {ev.Bid.AuctionId} and" +
+                    throw new Exception($"Cannot find auction with id: {ev.Bid.AuctionId} and" +
                                         $"Version: {ev.AggVersion}");
                 }
             }
@@ -61,12 +61,17 @@ namespace Core.Query.EventHandlers
                 AuctionId = ev.Bid.AuctionId.ToString(),
                 DateCreated = ev.Bid.DateCreated,
                 Price = ev.Bid.Price,
+                BidId = ev.Bid.BidId.ToString()
             };
             var userFilter = Builders<UserRead>.Filter.Eq(f => f.UserIdentity.UserId, ev.Bid.UserIdentity.UserId.ToString());
             var userUpdate = Builders<UserRead>.Update.Push(f => f.UserBids, userBid);
             try
             {
-                _dbContext.UsersReadModel.UpdateMany(session, userFilter, userUpdate);
+                var result = _dbContext.UsersReadModel.UpdateMany(session, userFilter, userUpdate);
+                if (result.MatchedCount == 0)
+                {
+                    throw new Exception($"Cannot find user with id: {ev.Bid.UserIdentity.UserId.ToString()}");
+                }
             }
             catch (Exception e)
             {

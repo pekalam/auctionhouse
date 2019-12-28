@@ -11,6 +11,8 @@ import { StartAuctionCreateSessionCommand } from '../../../core/commands/StartAu
 import { AuctionsByTagQuery } from '../../../core/queries/AuctionsByTagQuery';
 import { CommonTagsQuery } from '../../../core/queries/CommonTagsQuery';
 import { filter } from 'rxjs/operators';
+import { PageEvent } from '@angular/material';
+import { UserBid } from 'src/app/core/models/UserBid';
 
 @Component({
   selector: 'app-auctions-page',
@@ -21,7 +23,10 @@ export class AuctionsPageComponent implements OnInit {
   auctions: AuctionListModel[];
   filterCategories: FilterCategory;
   selectedFilterCategoryValue: string;
+  total: number = 0;
 
+  currentPage = 0;
+  private currentFilters: AuctionFilters;
   private currentCategory: Category;
   private tag = '';
 
@@ -69,7 +74,7 @@ export class AuctionsPageComponent implements OnInit {
       .subscribe((v) => this.createFilterCategoriesByCategory(mainCategoryName, v));
 
     this.selectedFilterCategoryValue = subCategory2Name;
-    this.fetchAuctions(0);
+    this.fetchAuctions();
   }
 
   private createFilterCategoryByTag(tag: string) {
@@ -92,23 +97,30 @@ export class AuctionsPageComponent implements OnInit {
         })
       }
       this.tag = `${result.withTags[0].tag}`;
-      this.fetchAuctions(0);
+      this.fetchAuctions();
     });
   }
 
   applyFilters(filters: AuctionFilters) {
-    this.fetchAuctions(0, filters);
+    this.currentFilters = filters;
+    this.fetchAuctions();
   }
 
-  fetchAuctions(page: number, filters?: AuctionFilters) {
+  fetchAuctions() {
     if (this.tag.length === 0) {
       this.auctionsByCategoryQuery
-        .execute(page, this.currentCategory, filters)
-        .subscribe(v => this.auctions = v, () => this.router.navigateByUrl('/error'));
+        .execute(this.currentPage, this.currentCategory, this.currentFilters)
+        .subscribe(v => {
+          this.auctions = v.auctions;
+          this.total = v.total;
+        }, () => this.router.navigateByUrl('/error'));
     } else {
       this.auctionsByTagQuery
-        .execute(page, this.tag, filters)
-        .subscribe(v => this.auctions = v, () => this.router.navigateByUrl('/error'));
+        .execute(this.currentPage, this.tag, this.currentFilters)
+        .subscribe(v => {
+          this.auctions = v.auctions;
+          this.total = v.total;
+        }, () => this.router.navigateByUrl('/error'));
     }
   }
 
@@ -122,6 +134,17 @@ export class AuctionsPageComponent implements OnInit {
       }
     });
 
+  }
+
+  onGotoClick(e){
+    this.currentPage = e.target.value - 1;
+    e.target.value = '';
+    this.fetchAuctions();
+  }
+
+  onPageChange(ev: PageEvent) {
+    this.currentPage = ev.pageIndex;
+    this.fetchAuctions();
   }
 
 }

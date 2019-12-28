@@ -17,23 +17,6 @@ namespace Core.DomainModelTests
     {
         private Auction auction;
 
-
-        private Auction CreateBuyNowOnlyAuction()
-        {
-            var args = new AuctionArgs.Builder()
-                .SetBuyNowOnly(true)
-                .SetOwner(new UserIdentity())
-                .SetCategory(new Category("", 1))
-                .SetBuyNow(123)
-                .SetStartDate(DateTime.UtcNow.AddDays(1))
-                .SetEndDate(DateTime.UtcNow.AddDays(2))
-                .SetProduct(new Product("test name", "desccription 1111", Condition.New))
-                .SetTags(new[] {"tag1"})
-                .SetName("Test name")
-                .Build();
-            return new Auction(args);
-        }
-
         [SetUp]
         public void SetUp()
         {
@@ -223,10 +206,8 @@ namespace Core.DomainModelTests
         [Test]
         public void Auction_FromEvents_builds_auction_from_pending_events()
         {
-            auction.Raise(new Bid(auction.AggregateId, new UserIdentity()
-            {
-                UserId = Guid.NewGuid()
-            }, 21, DateTime.UtcNow));
+            var user = AuctionTestUtils.CreateUser();
+            auction.Raise(user, 21);
             auction.EndAuction();
 
             var built = Auction.FromEvents(auction.PendingEvents);
@@ -234,46 +215,6 @@ namespace Core.DomainModelTests
 
             built.Should()
                 .BeEquivalentTo(auction);
-        }
-
-        [Test]
-        public void Raise_generates_valid_pending_events_and_state()
-        {
-            var bid = new Bid(auction.AggregateId, new UserIdentity() {UserId = Guid.NewGuid()}, 21, DateTime.UtcNow);
-
-            auction.Raise(bid);
-
-            auction.PendingEvents.Count.Should()
-                .Be(2);
-            var raisedEvent = auction.PendingEvents.Last() as AuctionRaised;
-            raisedEvent.Should()
-                .BeOfType(typeof(AuctionRaised));
-            raisedEvent.Bid.Should()
-                .Be(bid);
-            auction.ActualPrice.Should()
-                .Be(bid.Price);
-        }
-
-        [TestCase(1)]
-        [TestCase(10)]
-        public void Raise_when_invalid_parameters_throws(decimal price)
-        {
-            auction.Raise(new Bid(auction.AggregateId, new UserIdentity() {UserId = Guid.NewGuid()}, 91,
-                DateTime.UtcNow));
-
-            var bid1 = new Bid(auction.AggregateId, new UserIdentity() {UserId = Guid.NewGuid()}, price,
-                DateTime.UtcNow);
-
-            Assert.Throws<DomainException>(() => auction.Raise(bid1));
-        }
-
-        [Test]
-        public void Raise_when_buynowonly_throws()
-        {
-            var auction = CreateBuyNowOnlyAuction();
-
-            var bid = new Bid(auction.AggregateId, new UserIdentity() {UserId = Guid.NewGuid()}, 12, DateTime.UtcNow);
-            Assert.Throws<DomainException>(() => auction.Raise(bid));
         }
 
         [Test]
@@ -319,12 +260,8 @@ namespace Core.DomainModelTests
         [Test]
         public void EndAuction_when_has_bids_generates_valid_event_and_state()
         {
-            var userIdnetity = new UserIdentity()
-            {
-                UserId = Guid.NewGuid()
-            };
-            var bid = new Bid(auction.AggregateId, userIdnetity, 91, DateTime.UtcNow);
-            auction.Raise(bid);
+            var user = AuctionTestUtils.CreateUser();
+            auction.Raise(user, 91);
             auction.MarkPendingEventsAsHandled();
 
             auction.EndAuction();
@@ -332,7 +269,7 @@ namespace Core.DomainModelTests
             auction.PendingEvents.Count.Should()
                 .Be(1);
             auction.Buyer.Should()
-                .Be(userIdnetity);
+                .Be(user.UserIdentity);
             auction.Completed.Should()
                 .BeTrue();
 
@@ -342,7 +279,7 @@ namespace Core.DomainModelTests
             ev.AuctionId.Should()
                 .Be(auction.AggregateId);
             ev.WinningBid.Should()
-                .Be(bid);
+                .Be(auction.Bids.Last());
         }
 
         [Test]
@@ -366,41 +303,6 @@ namespace Core.DomainModelTests
             auction.MarkPendingEventsAsHandled();
 
             Assert.Throws<DomainException>(() => auction.CancelAuction());
-        }
-
-        [Test]
-        public void CancelBid_when_buynowOnly_throws()
-        {
-            var auction = CreateBuyNowOnlyAuction();
-            Assert.Throws<DomainException>(() => auction.CancelBid(new Bid(auction.AggregateId,
-                new UserIdentity() {UserId = Guid.NewGuid()}, 12, DateTime.UtcNow)));
-        }
-
-        [Test]
-        public void CancelBid_when_bid_exists_changes_currentPrice()
-        {
-            var firstBid = new Bid(auction.AggregateId, new UserIdentity() {UserId = Guid.NewGuid(), UserName = "test"},
-                10, DateTime.UtcNow);
-            var secondBid = new Bid(auction.AggregateId,
-                new UserIdentity() {UserId = Guid.NewGuid(), UserName = "test2"}, 20, DateTime.UtcNow);
-
-            auction.Raise(firstBid);
-            auction.Raise(secondBid);
-            auction.MarkPendingEventsAsHandled();
-
-            auction.CancelBid(secondBid);
-
-            auction.ActualPrice.Should()
-                .Be(10);
-            auction.Bids.First().Should().BeEquivalentTo(firstBid);
-            auction.PendingEvents.Count.Should()
-                .Be(2);
-            auction.PendingEvents.First()
-                .Should()
-                .BeOfType<BidCanceled>();
-            auction.PendingEvents.ElementAt(1)
-                .Should()
-                .BeOfType<AuctionRaised>();
         }
 
         [Test]
@@ -460,30 +362,6 @@ namespace Core.DomainModelTests
 
             Assert.Throws<DomainException>(() => auction.AddImage(image));
         }
-
-        [Test]
-        public void RemoveBid_when_bid_exists_removes()
-        {
-            var firstBid = new Bid(auction.AggregateId, new UserIdentity() { UserId = Guid.NewGuid(), UserName = "test" },
-                10, DateTime.UtcNow);
-            var secondBid = new Bid(auction.AggregateId,
-                new UserIdentity() { UserId = Guid.NewGuid(), UserName = "test2" }, 20, DateTime.UtcNow);
-
-            auction.Raise(firstBid);
-            auction.Raise(secondBid);
-            auction.MarkPendingEventsAsHandled();
-
-            auction.RemoveBid(firstBid);
-
-            auction.ActualPrice.Should()
-                .Be(20);
-            auction.PendingEvents.Count.Should()
-                .Be(1);
-            auction.PendingEvents.First()
-                .Should()
-                .BeOfType<BidRemoved>();
-        }
-
 
         [Test]
         public void When_built_from_events_containing_update_event_group_builds_valid_object()

@@ -11,6 +11,7 @@ export interface UserAddress{
 export interface UserData{
   username: string;
   address: UserAddress;
+  credits: number;
 }
 
 @Injectable({

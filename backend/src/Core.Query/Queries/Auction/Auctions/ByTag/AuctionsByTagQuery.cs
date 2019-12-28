@@ -5,7 +5,7 @@ using Core.Common.Query;
 
 namespace Core.Query.Queries.Auction.Auctions.ByTag
 {
-    public class AuctionsByTagQuery : AuctionsQueryBase, IQuery<IEnumerable<AuctionsQueryResult>>
+    public class AuctionsByTagQuery : AuctionsQueryBase, IQuery<AuctionsQueryResult>
     {
         public int Page { get; set; } = 0;
         [Required]

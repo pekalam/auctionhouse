@@ -1,0 +1,48 @@
+table{
+  width: 100%;
+  box-shadow: none;
+}
+
+.bid-row{
+  height: 45px;
+}
+
+.bid-action{
+  i{
+    margin-right: 6px;
+    color: red;
+  }
+  span{
+    cursor: pointer;
+    &:hover{
+      color: rgb(107, 159, 255);
+    }
+  }
+}
+
+.completed-div{
+  max-width: 100%;
+  text-overflow: ellipsis;
+}
+
+.canceled-div{
+  max-width: 100%;
+  text-overflow: ellipsis;
+  color: red;
+}
+
+tr.completed *{
+  color: #66666682;
+}
+
+tr.canceled *{
+  color: #66666682;
+}
+
+tr.bidcanceled *{
+  color: #66666682;
+}
+
+tr.canceled .canceled-div *{
+  color: red;
+}

@@ -4,7 +4,7 @@ using Core.Common.EventBus;
 using Core.Query.ReadModel;
 using Microsoft.Extensions.Logging;
 
-namespace Core.Query.EventHandlers
+namespace Core.Query.EventHandlers.User
 {
     public class UserRegisteredHandler : EventConsumer<UserRegistered>
     {

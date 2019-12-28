@@ -22,7 +22,7 @@ export class BidCreatePageComponent implements OnInit, OnDestroy {
   constructor(private activatedRoute: ActivatedRoute, private bidCommand: BidCommand, private router: Router, private wsCommandStatusService: WSCommandStatusService) {
     this.activatedRoute.data.subscribe((data) => {
       this.auction = data.auction;
-      this.form.controls.price.setValue(this.auction.winningBid ? this.auction.winningBid.price + 1 : 0);
+      this.form.controls.price.setValue(this.auction.winningBid ? this.auction.winningBid.price + 1 : '');
     });
     this.wsCommandStatusService
       .setupServerNotificationHandler<AuctionPriceChangedNotification>(AuctionPriceChangedNotification_Name)

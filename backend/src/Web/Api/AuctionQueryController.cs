@@ -59,7 +59,7 @@ namespace Web.Api
             return Ok(categoriesTree);
         }
 
-        [HttpGet("auctionImage")]
+        [HttpGet("auctionImage"), ResponseCache(Duration = 60 * 60 * 24, Location = ResponseCacheLocation.Any)]
         public async Task<ActionResult<AuctionImageQueryResult>> AuctionImage([FromQuery] AuctionImageQueryDto queryDto)
         {
             var query = new AuctionImageQuery()
@@ -101,7 +101,7 @@ namespace Web.Api
             return Ok(result);
         }
 
-        [HttpGet("mostViewedAuctions")]
+        [HttpGet("mostViewedAuctions"), ResponseCache(Duration = 60 * 5, Location = ResponseCacheLocation.Any)]
         public async Task<ActionResult<IEnumerable<MostViewedAuctionsResult>>> MostViewedAuctions()
         {
             var query = new MostViewedAuctionsQuery();

@@ -13,7 +13,7 @@ namespace IntegrationTests
     public class AuctionRepository_Tests
     {
         private IAuctionRepository auctionRepository;
-
+        private User user;
 
         private Auction CreateFakeAuction()
         {
@@ -37,17 +37,21 @@ namespace IntegrationTests
             var serverOpt = new MsSqlConnectionSettings()
             {
                 ConnectionString = TestContextUtils.GetParameterOrDefault("sqlserver", 
-                    "Data Source=.;Initial Catalog=es;Integrated Security=True;")
+                    "Data Source=.;Initial Catalog=AuctionhouseDatabase;Integrated Security=True;")
             };
             auctionRepository = new MsSqlAuctionRepository(serverOpt);
+            user = new User();
+            user.Register("Test username");
+            user.AddCredits(1000);
+            user.MarkPendingEventsAsHandled();
         }
 
         [Test]
         public void AddAuction_adds_auction_and_FindAuction_reads_it()
         {
             var auction = CreateFakeAuction();
-            var bid = new Bid(auction.AggregateId, new UserIdentity(Guid.NewGuid(), "test2"), 10, DateTime.UtcNow);
-            auction.Raise(bid);
+
+            auction.Raise(user, 10);
 
             auctionRepository.AddAuction(auction);
             auction.MarkPendingEventsAsHandled();
@@ -61,8 +65,7 @@ namespace IntegrationTests
         public void AddAuction_adds_auction_UpdateAuction_updates_and_FindAuction_finds_it_by_version()
         {
             var auction = CreateFakeAuction();
-            var bid = new Bid(auction.AggregateId, new UserIdentity(Guid.NewGuid(), "test2"), 10, DateTime.UtcNow);
-            auction.Raise(bid);
+            auction.Raise(user, 10);
 
             auctionRepository.AddAuction(auction);
             auction.MarkPendingEventsAsHandled();
@@ -98,6 +101,36 @@ namespace IntegrationTests
 
             read.Should()
                 .BeNull();
+        }
+
+        [Test]
+        public void UpdateAuction_updates_auction_with_1_event_and_find_finds_it()
+        {
+            var auction = CreateFakeAuction();
+            auctionRepository.AddAuction(auction);
+            auction.MarkPendingEventsAsHandled();
+            auction.UpdateDescription("new description");
+
+            auctionRepository.UpdateAuction(auction);
+            auction.MarkPendingEventsAsHandled();
+
+            var read = auctionRepository.FindAuction(auction.AggregateId);
+
+            read.Should().BeEquivalentTo(auction);
+        }
+
+        [Test]
+        public void UpdateAuction_updates_auction_with_more_than_1_event_and_find_finds_it()
+        {
+            var auction = CreateFakeAuction();
+            auction.UpdateDescription("new description");
+
+            auctionRepository.UpdateAuction(auction);
+            auction.MarkPendingEventsAsHandled();
+
+            var read = auctionRepository.FindAuction(auction.AggregateId);
+
+            read.Should().BeEquivalentTo(auction);
         }
     }
 }

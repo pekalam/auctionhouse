@@ -76,17 +76,17 @@ namespace FunctionalTests.Queries
             return auctions;
         }
 
-        private void CompareResults(List<AuctionsQueryResult> results, AuctionRead[] stubAuctions)
+        private void CompareResults(AuctionsQueryResult results, AuctionRead[] stubAuctions)
         {
             var mapper = MapperConfigHolder.Configuration.CreateMapper();
-            for (int i = 0; i < results.Count; i++)
+            for (int i = 0; i < results.Auctions.Count(); i++)
             {
                 var queryResultFromStub = mapper.Map<AuctionsQueryResult>(stubAuctions.First(model =>
-                    model.Id == results[i]
+                    model.Id == results.Auctions.ElementAt(i)
                         .Id));
-                results[i]
+                results.Auctions.ElementAt(i)
                     .Should()
-                    .BeEquivalentTo(queryResultFromStub, config: options =>
+                    .BeEquivalentTo(queryResultFromStub.Auctions.ElementAt(i), config: options =>
                     {
                         options.Excluding(info => info.StartDate);
                         options.Excluding(info => info.EndDate);
@@ -114,24 +114,24 @@ namespace FunctionalTests.Queries
             };
             //act
             var results = _byCategoryQueryHandler.Handle(query, CancellationToken.None)
-                .Result.ToList();
+                .Result;
 
             //assert
 
             if (emptyResultset)
             {
-                results.Count.Should()
+                results.Auctions.Count().Should()
                     .Be(0);
                 return;
             }
 
-            results.Count.Should()
+            results.Auctions.Count().Should()
                 .Be(AuctionsByCategoryQueryHandler.PageSize);
 
             CompareResults(results, stubAuctions);
 
             stubAuctions.Select(f => f.AuctionId)
-                .Except(results.Select(a => a.AuctionId))
+                .Except(results.Auctions.Select(a => a.AuctionId))
                 .Count()
                 .Should()
                 .Be(AuctionsByCategoryQueryHandler.PageSize);
@@ -186,18 +186,18 @@ namespace FunctionalTests.Queries
 
             //act
             var results1 = queryHandler.Handle(query1, CancellationToken.None)
-                .Result.ToList();
+                .Result;
             var results2 = queryHandler.Handle(query2, CancellationToken.None)
-                .Result.ToList();
+                .Result;
             var results3 = queryHandler.Handle(query3, CancellationToken.None)
-                .Result.ToList();
+                .Result;
 
             //assert
-            results1.Count.Should()
+            results1.Auctions.Count().Should()
                 .Be(1);
-            results2.Count.Should()
+            results2.Auctions.Count().Should()
                 .Be(1);
-            results3.Count.Should()
+            results3.Auctions.Count().Should()
                 .Be(AuctionsByCategoryQueryHandler.PageSize - 2);
         }
 
@@ -236,14 +236,14 @@ namespace FunctionalTests.Queries
 
             //act
             var results1 = queryHandler.Handle(query1, CancellationToken.None)
-                .Result.ToList();
+                .Result;
             var results2 = queryHandler.Handle(query2, CancellationToken.None)
-                .Result.ToList();
+                .Result;
 
             //assert
-            results1.Count.Should()
+            results1.Auctions.Count().Should()
                 .Be(1);
-            results2.Count.Should()
+            results2.Auctions.Count().Should()
                 .Be(AuctionsByCategoryQueryHandler.PageSize - 1);
         }
 
@@ -281,14 +281,14 @@ namespace FunctionalTests.Queries
 
             //act
             var results1 = queryHandler.Handle(query1, CancellationToken.None)
-                .Result.ToList();
+                .Result;
             var results2 = queryHandler.Handle(query2, CancellationToken.None)
-                .Result.ToList();
+                .Result;
 
             //assert
-            results1.Count.Should()
+            results1.Auctions.Count().Should()
                 .Be(AuctionsByCategoryQueryHandler.PageSize - 1);
-            results2.Count.Should()
+            results2.Auctions.Count().Should()
                 .Be(1);
         }
 
@@ -333,14 +333,14 @@ namespace FunctionalTests.Queries
 
             //act
             var results1 = queryHandler.Handle(query1, CancellationToken.None)
-                .Result.ToList();
+                .Result;
             var results2 = queryHandler.Handle(query2, CancellationToken.None)
-                .Result.ToList();
+                .Result;
 
             //assert
-            results1.Count.Should()
+            results1.Auctions.Count().Should()
                 .Be(AuctionsByCategoryQueryHandler.PageSize - 1);
-            results2.Count.Should()
+            results2.Auctions.Count().Should()
                 .Be(1);
         }
 
@@ -393,16 +393,16 @@ namespace FunctionalTests.Queries
 
             //act
             var results1 = queryHandler.Handle(query1, CancellationToken.None)
-                .Result.ToList();
+                .Result;
             var results2 = queryHandler.Handle(query2, CancellationToken.None)
-                .Result.ToList();
+                .Result;
 
             //assert
-            results1.Count.Should()
+            results1.Auctions.Count().Should()
                 .Be(1);
-            results2.Count.Should()
+            results2.Auctions.Count().Should()
                 .Be(AuctionsByCategoryQueryHandler.PageSize);
-            results2[0].AuctionId
+            results2.Auctions.ElementAt(0).AuctionId
                 .Should()
                 .Be(stubAuctions[0].AuctionId);
         }

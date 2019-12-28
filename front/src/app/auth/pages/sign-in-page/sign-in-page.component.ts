@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthenticationStateService } from '../../../core/services/AuthenticationStateService';
 import { SignInCommand } from '../../../core/commands/SignInCommand';
@@ -14,7 +14,7 @@ import { SignInCommand } from '../../../core/commands/SignInCommand';
 })
 export class SignInPageComponent implements OnInit {
 
-  @ViewChild('signInForm', {static: true})
+  @ViewChild('signInForm', { static: true })
   signInForm;
 
   validPassword = true;
@@ -46,11 +46,13 @@ export class SignInPageComponent implements OnInit {
           } else {
             this.router.navigate(['home']);
           }
-        }, (err) => {
-          this.validPassword = false;
-          let lastUsername = this.form.value.username;
-          this.signInForm.resetForm();
-          this.form.reset({username: lastUsername, password: ''});
+        }, (err: HttpErrorResponse) => {
+          if (err.status === 401) {
+            this.validPassword = false;
+            let lastUsername = this.form.value.username;
+            this.signInForm.resetForm();
+            this.form.reset({ username: lastUsername, password: '' });
+          }
         });
     }
   }

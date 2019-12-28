@@ -16,7 +16,7 @@ namespace IntegrationTests
             var serverOpt = new MsSqlConnectionSettings()
             {
                 ConnectionString = TestContextUtils.GetParameterOrDefault("sqlserver",
-                    "Data Source=.;Initial Catalog=es;Integrated Security=True;")
+                    "Data Source=.;Initial Catalog=AuctionhouseDatabase;Integrated Security=True;")
             };
             userRepository = new MsSqlUserRepository(serverOpt);
             user = new User();
@@ -34,7 +34,6 @@ namespace IntegrationTests
             read.Should().BeEquivalentTo(user);
         }
 
-
         [Test]
         public void FindUser_when_not_found_returns_null()
         {
@@ -42,6 +41,32 @@ namespace IntegrationTests
 
             read.Should()
                 .BeNull();
+        }
+
+        [Test]
+        public void UpdateUser_updates_user_with_1_event_and_FindUser_reads_it()
+        {
+            userRepository.AddUser(user);
+            user.MarkPendingEventsAsHandled();
+            user.AddCredits(10);
+
+            userRepository.UpdateUser(user);
+            user.MarkPendingEventsAsHandled();
+
+            var read = userRepository.FindUser(user.UserIdentity);
+            read.Should().BeEquivalentTo(user);
+        }
+
+        [Test]
+        public void UpdateUser_updates_user_with_more_than_1_event_and_FindUser_reads_it()
+        {
+            user.AddCredits(19);
+            user.AddCredits(10);
+            userRepository.UpdateUser(user);
+            user.MarkPendingEventsAsHandled();
+
+            var read = userRepository.FindUser(user.UserIdentity);
+            read.Should().BeEquivalentTo(user);
         }
     }
 }

@@ -1,0 +1,41 @@
+.container {
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.balance,
+.balance-form {
+  flex-basis: 50%;
+}
+
+.balance-form{
+  min-width: 340px;
+}
+
+.offer-container{
+  width: 100%;
+  margin-bottom: 35px;
+  display: inline-block;
+}
+
+#balance-form{
+  margin-top: 50px;
+}
+
+.buy-btn {
+  display: inline-block;
+  box-sizing: border-box;
+  height: 50px;
+  position: relative;
+  width: 80px;
+  bottom: 1px;
+  left: 0;
+}
+
+.credits-offer {
+  width: 250px;
+  box-sizing: border-box;
+  height: 50px;
+  display: inline-block;
+}

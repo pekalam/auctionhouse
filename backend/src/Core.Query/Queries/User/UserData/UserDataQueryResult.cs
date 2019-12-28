@@ -9,5 +9,6 @@ namespace Core.Query.Queries.User.UserData
     {
         public string Username { get; set; }
         public UserAddress Address { get; set; }
+        public decimal Credits { get; set; }
     }
 }

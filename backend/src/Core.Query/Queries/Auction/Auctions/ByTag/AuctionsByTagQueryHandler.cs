@@ -16,7 +16,7 @@ namespace Core.Query.Queries.Auction.Auctions.ByTag
             _dbContext = dbContext;
         }
 
-        protected async override Task<IEnumerable<AuctionsQueryResult>> HandleQuery(AuctionsByTagQuery request, CancellationToken cancellationToken)
+        protected async override Task<AuctionsQueryResult> HandleQuery(AuctionsByTagQuery request, CancellationToken cancellationToken)
         {
             var mapper = MapperConfigHolder.Configuration.CreateMapper();
             var tagFilter = Builders<AuctionRead>.Filter
@@ -28,10 +28,17 @@ namespace Core.Query.Queries.Auction.Auctions.ByTag
             var auctions = await _dbContext.AuctionsReadModel
                 .Find(Builders<AuctionRead>.Filter.And(filtersArr))
                 .Skip(request.Page * PageSize)
-                .Project(model => mapper.Map<AuctionsQueryResult>(model))
+                .Project(model => mapper.Map<AuctionListItem>(model))
                 .Limit(PageSize)
                 .ToListAsync();
-            return auctions;
+
+            long total = await _dbContext.AuctionsReadModel.CountDocumentsAsync(Builders<AuctionRead>.Filter.And(filtersArr));
+
+            return new AuctionsQueryResult()
+            {
+                Auctions = auctions,
+                Total = total
+            };
         }
     }
 }

@@ -23,7 +23,10 @@ export class AuctionFilters {
   }
 }
 
-
+export interface AuctionsQueryResult{
+  auctions: AuctionListModel[];
+  total: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -61,10 +64,10 @@ export class AuctionsQuery {
     return `minapr=${filter.minAuction}&maxapr=${filter.maxAuction}`;
   }
 
-  execute(page: number, category: Category, filters?: AuctionFilters): Observable<AuctionListModel[]> {
+  execute(page: number, category: Category, filters?: AuctionFilters): Observable<AuctionsQueryResult> {
     if (!filters) { filters = new AuctionFilters(); }
     const url = `/api/auctions?page=${page}&${this.getCategoryList(category)}&${this.getCondition(filters.condition)}`
     + `&${this.getAuctionTypeQuery(filters)}&${this.getAuctionBuyNowPrice(filters)}&${this.getAuctionPrice(filters)}`;
-    return this.queryHelper.pipeLoading(this.httpClient.get<AuctionListModel[]>(url, {}));
+    return this.queryHelper.pipeLoading(this.httpClient.get<AuctionsQueryResult>(url, {}));
   }
 }

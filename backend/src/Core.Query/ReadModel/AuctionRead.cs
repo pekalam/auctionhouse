@@ -16,7 +16,7 @@ namespace Core.Query.ReadModel
         public UserIdentityRead UserIdentity { get; set; }
         public decimal Price { get; set; }
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
-        public DateTime DateCreated { get; }
+        public DateTime DateCreated { get; set; }
 
         public BidRead(Bid bid)
         {

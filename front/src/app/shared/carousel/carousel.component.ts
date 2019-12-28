@@ -15,11 +15,10 @@ export class CarouselComponent implements OnInit, AfterViewInit {
   imgs = [];
   imgInd = [];
   shown = 0;
+  loading = false;
 
   @Input()
   imageButtons = true;
-
-  h = 0;
 
   @Input('sources')
   set sources(srcs: Array<string>) {
@@ -27,6 +26,7 @@ export class CarouselComponent implements OnInit, AfterViewInit {
 
     this.imgs = srcs;
     this.imgInd = this.imgs.map((v, i) => i);
+    this.loading = true;
   }
 
   @Output('imgSelected')
@@ -40,9 +40,7 @@ export class CarouselComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    if (this.imgs && this.imgs.length > 0) {
-      this.h = this.image.nativeElement.height;
-    }
+
   }
 
   onPrev() {

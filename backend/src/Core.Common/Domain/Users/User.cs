@@ -26,13 +26,15 @@ namespace Core.Common.Domain.Users
 
 
         public UserIdentity UserIdentity { get; private set; }
+        public decimal Credits { get; private set; } = 0;
 
         public User()
         {
-            
         }
 
-        private object CheckIsRegistered() => UserIdentity ?? throw new DomainException($"User not registered");
+        private object ThrowIfNotRegistered() => UserIdentity ?? throw new DomainException("User is not registered"); 
+
+        public bool IsRegistered => UserIdentity != null;
 
         public void Register(string username)
         {
@@ -52,5 +54,36 @@ namespace Core.Common.Domain.Users
             AddEvent(new UserRegistered(UserIdentity));
         }
 
+        public void AddCredits(decimal toAdd)
+        {
+            ThrowIfNotRegistered();
+            Credits += toAdd;
+            AddEvent(new CreditsAdded(toAdd, UserIdentity));
+        }
+
+        public void WithdrawCredits(decimal toWithdraw)
+        {
+            ThrowIfNotRegistered();
+            if (Credits < toWithdraw)
+            {
+                throw new DomainException("Not enough credits");
+            }
+
+            Credits -= toWithdraw;
+
+            AddEvent(new CreditsWithdrawn(toWithdraw, UserIdentity));
+        }
+
+        public void ReturnCredits(decimal toReturn)
+        {
+            ThrowIfNotRegistered();
+            if (toReturn == 0)
+            {
+                throw new DomainException("Cannot return 0 credits");
+            }
+            Credits += toReturn;
+
+            AddEvent(new CreditsReturned(toReturn, UserIdentity));
+        }
     }
 }

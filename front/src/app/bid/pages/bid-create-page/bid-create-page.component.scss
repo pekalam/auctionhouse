@@ -5,15 +5,18 @@
   width: 90%;
   .content-block{
     display: flex;
+    flex-wrap: wrap;
     padding: 20px;
   }
 }
 
 .left{
   flex-grow: 2;
+  padding-left: 20px;
 }
 .right{
   flex-grow: 1;
+  padding-left: 20px;
 }
 
 #submit-btn{

@@ -37,7 +37,7 @@ namespace Core.Common.Domain.Auctions
         }
 
         private void ApplyEvent(BidRemoved @event) => RemoveBid(@event.Bid);
-        private void ApplyEvent(BidCanceled @event) => CancelBid(@event.CanceledBid);
+        private void ApplyEvent(BidCanceled @event) => CancelBid(@event.CanceledBid, true);
         private void ApplyEvent(AuctionRaised @event) => Raise(@event.Bid);
         private void ApplyEvent(AuctionCompleted @event) => EndAuction();
         private void ApplyEvent(AuctionImageAdded @event) => AddImage(@event.AddedImage);

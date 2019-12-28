@@ -19,7 +19,7 @@ namespace Core.Query.Queries.Auction.Auctions.ByCategory
             _categoryBuilder = categoryBuilder;
         }
 
-        protected async override Task<IEnumerable<AuctionsQueryResult>> HandleQuery(AuctionsByCategoryQuery request, CancellationToken cancellationToken)
+        protected async override Task<AuctionsQueryResult> HandleQuery(AuctionsByCategoryQuery request, CancellationToken cancellationToken)
         {
             var mapper = MapperConfigHolder.Configuration.CreateMapper();
             var category = _categoryBuilder.FromCategoryNamesList(request.CategoryNames);
@@ -35,10 +35,17 @@ namespace Core.Query.Queries.Auction.Auctions.ByCategory
             var auctions = await _dbContext.AuctionsReadModel
                 .Find(Builders<AuctionRead>.Filter.And(filtersArr))
                 .Skip(request.Page * PageSize)
-                .Project(model => mapper.Map<AuctionsQueryResult>(model))
+                .Project(model => mapper.Map<AuctionListItem>(model))
                 .Limit(PageSize)
                 .ToListAsync();
-            return auctions;
+
+            long total = await _dbContext.AuctionsReadModel.CountDocumentsAsync(Builders<AuctionRead>.Filter.And(filtersArr));
+
+            return new AuctionsQueryResult()
+            {
+                Auctions = auctions,
+                Total = total
+            };
         }
     }
 }

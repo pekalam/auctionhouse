@@ -27,7 +27,7 @@ namespace Infrastructure.Bootstraper
 
             private static void ConfigureEventBus(IServiceCollection serviceCollection)
             {
-                serviceCollection.AddSingleton<IAppEventBuilder, AppEventRabbitMQBuilder>();
+                serviceCollection.AddTransient<IAppEventBuilder, AppEventRabbitMQBuilder>();
                 serviceCollection.AddSingleton<IEventBus, RabbitMqEventBus>();
                 serviceCollection.AddScoped<EventBusService>();
             }

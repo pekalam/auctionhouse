@@ -1,7 +1,7 @@
 <div class="container" >
   <div class="container-center">
     <div class="img-container">
-      <img #image *ngFor="let imgInd of imgInd" class="img" [src]="imgs[imgInd]" [hidden]="imgInd != shown" style="max-width: 100%;"/>
+      <img #image (load)="loading = false" *ngFor="let imgInd of imgInd" class="img" [src]="imgs[imgInd]" [hidden]="imgInd != shown || loading" style="max-width: 100%;"/>
 
     </div>
 

@@ -57,7 +57,7 @@ namespace FunctionalTests.EventHandling
             services.SetupEventBus(eventHandler.Object);
 
             var stubHandler = new BidCommandHandler(services.AuctionRepository,
-                services.EventBus, Mock.Of<ILogger<BidCommandHandler>>(), requestStatusService.Object);
+                services.EventBus, Mock.Of<ILogger<BidCommandHandler>>(), requestStatusService.Object, services.UserRepository);
 
             services.AuctionRepository.AddAuction(auction);
             var cmd = new BidCommand(auction.AggregateId, 21.0m);

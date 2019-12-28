@@ -53,7 +53,7 @@ export class AuctionsCarouselComponent implements OnInit {
       this.currentAuction++;
       this.imgSources = [`/api/auctionImage?img=${this.auctions[this.currentAuction].auctionImages[0].size1Id}`];
       document.getElementById('auction-container').style.cssText = '';
-      window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(() => {
         document.getElementById('auction-container').style.cssText = 'animation: fadeIn 0.5s ease 0s 1 normal forwards running;';
       });
     }
@@ -64,7 +64,7 @@ export class AuctionsCarouselComponent implements OnInit {
       this.currentAuction--;
       this.imgSources = [`/api/auctionImage?img=${this.auctions[this.currentAuction].auctionImages[0].size1Id}`];
       document.getElementById('auction-container').style.cssText = '';
-      window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(() => {
         document.getElementById('auction-container').style.cssText = 'animation: fadeIn 0.5s ease 0s 1 normal forwards running;';
       });
     }

@@ -42,6 +42,19 @@
   }
 }
 
+.goto-field{
+  height: 50px;
+    width: 50px;
+    margin-left: 14px;
+    font-size: 15px;
+}
+
+.goto-div{
+  position: absolute;
+    left: 14px;
+    top: 0;
+}
+
 @media only screen and (max-width: 960px) {
   .content-block {
     flex-direction: column;

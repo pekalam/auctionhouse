@@ -42,7 +42,7 @@ namespace Core.Query.Queries.User.UserData
             var userReadModelFilter = Builders<UserRead>.Filter.Eq(field => field.UserIdentity.UserId, user.UserId.ToString());
             var result = await _dbContext.UsersReadModel
                 .Find(userReadModelFilter)
-                .Project(model => new UserDataQueryResult() { Address = model.Address, Username = model.UserIdentity.UserName })
+                .Project(model => new UserDataQueryResult() { Address = model.Address, Username = model.UserIdentity.UserName, Credits = model.Credits})
                 .FirstOrDefaultAsync();
 
             return result;

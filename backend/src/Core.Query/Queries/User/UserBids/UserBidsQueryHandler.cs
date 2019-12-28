@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Common;
@@ -22,15 +23,47 @@ namespace Core.Query.Queries.User.UserBids
             _dbContext = dbContext;
         }
 
-        protected async override Task<UserBidsQueryResult> HandleQuery(UserBidsQuery request, CancellationToken cancellationToken)
+        protected async override Task<UserBidsQueryResult> HandleQuery(UserBidsQuery request,
+            CancellationToken cancellationToken)
         {
-            var userReadModelFilter = Builders<UserRead>.Filter.Eq(field => field.UserIdentity.UserId, request.SignedInUser.UserId.ToString());
+            var userReadModelFilter = Builders<UserRead>.Filter.Eq(field => field.UserIdentity.UserId,
+                request.SignedInUser.UserId.ToString());
             var result = await _dbContext.UsersReadModel
                 .Find(userReadModelFilter)
-                .Project(model => new UserBidsQueryResult() { UserBids = model.UserBids })
+                .Limit(PageSize)
+                .Skip(request.Page * PageSize)
+                .Project(model => new UserBidsQueryResult()
+                {
+                    UserBids = model.UserBids
+                })
                 .FirstOrDefaultAsync();
+
+            if (result != null)
+            {
+                var auctionFilter = Builders<AuctionRead>.Filter.In(f => f.AuctionId,
+                    result.UserBids.Select(b => b.AuctionId).ToArray());
+                var names = await _dbContext.AuctionsReadModel
+                    .Find(auctionFilter)
+                    .Project(read => new {AuctionId = read.AuctionId, Name = read.Name})
+                    .Limit(PageSize)
+                    .Skip(request.Page * PageSize)
+                    .ToListAsync();
+
+                foreach (var name in names)
+                {
+                    foreach (var bid in result.UserBids)
+                    {
+                        if (name.AuctionId == bid.AuctionId)
+                        {
+                            bid.AuctionName = name.Name;
+                        }
+                    }
+                }
+            }
+
+
 
             return result;
         }
-    }
+    };
 }

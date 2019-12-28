@@ -1,14 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule, MatExpansionModule, MatRadioModule, MatMenuModule, MatProgressSpinnerModule, MatTabsModule, MatPaginatorModule,
-  MatDialogModule, MatInputModule, MatFormFieldModule, MatButtonModule, MatListModule, MatSelectModule, ErrorStateMatcher, MAT_DATE_LOCALE, MatDatepickerModule, MatCheckboxModule,
-  MAT_DATE_FORMATS } from '@angular/material';
+import {  MatExpansionModule, MatRadioModule, MatMenuModule, MatProgressSpinnerModule, MatTabsModule, MatPaginatorModule,
+  MatDialogModule, MatInputModule, MatFormFieldModule, MatTableModule, MatButtonModule, MatListModule, MatSelectModule, ErrorStateMatcher, MAT_DATE_LOCALE, MatDatepickerModule, MatCheckboxModule,
+  MAT_DATE_FORMATS,
+  MatSortModule} from '@angular/material';
 import { MatCardModule } from '@angular/material/card';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule} from '@angular/material-moment-adapter';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {ScrollingModule} from '@angular/cdk/scrolling';
 
 export const MY_FORMATS = {
   parse: {
@@ -26,6 +28,7 @@ export const MY_FORMATS = {
   declarations: [],
   exports: [
     MatTableModule,
+    MatSortModule,
     MatProgressSpinnerModule,
     MatTabsModule,
     MatPaginatorModule,
@@ -46,6 +49,7 @@ export const MY_FORMATS = {
     MatExpansionModule,
     MatTooltipModule,
     MatCheckboxModule,
+    ScrollingModule,
   ],
   providers: [
     { provide: MatDialogRef, useValue: {} },

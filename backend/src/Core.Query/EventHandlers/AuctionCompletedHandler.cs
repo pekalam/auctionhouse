@@ -10,12 +10,10 @@ namespace Core.Query.EventHandlers
     public class AuctionCompletedHandler : EventConsumer<AuctionCompleted>
     {
         private ReadModelDbContext _dbContext;
-        private readonly IRequestStatusService _requestStatusService;
 
-        public AuctionCompletedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext, IRequestStatusService requestStatusService) : base(appEventBuilder)
+        public AuctionCompletedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext) : base(appEventBuilder)
         {
             _dbContext = dbContext;
-            _requestStatusService = requestStatusService;
         }
 
         private void UserBidsUpdate(IClientSessionHandle session, AuctionCompleted ev)
@@ -26,7 +24,7 @@ namespace Core.Query.EventHandlers
 
             try
             {
-                _dbContext.UsersReadModel.UpdateMany(filter, update);
+                _dbContext.UsersReadModel.UpdateMany(session, filter, update);
             }
             catch (Exception)
             {

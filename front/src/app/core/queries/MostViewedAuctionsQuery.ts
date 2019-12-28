@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 
 export interface MostViewedAuction{
   auctionId: string ;
-  productName: string ;
+  auctionName: string ;
   startDate: Date ;
   endDate: Date  ;
   buyNowOnly: boolean ;

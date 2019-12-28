@@ -4,5 +4,6 @@
     {
         User AddUser(User user);
         User FindUser(UserIdentity userIdentity);
+        void UpdateUser(User user);
     }
 }

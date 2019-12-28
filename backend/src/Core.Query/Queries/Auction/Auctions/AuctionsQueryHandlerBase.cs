@@ -8,7 +8,7 @@ using MongoDB.Driver;
 
 namespace Core.Query.Queries.Auction.Auctions
 {
-    public abstract class AuctionsQueryHandlerBase<T> : QueryHandlerBase<T, IEnumerable<AuctionsQueryResult>> where T : IQuery<IEnumerable<AuctionsQueryResult>>
+    public abstract class AuctionsQueryHandlerBase<T> : QueryHandlerBase<T, AuctionsQueryResult> where T : IQuery<AuctionsQueryResult>
     {
         public const int PageSize = 10;
 

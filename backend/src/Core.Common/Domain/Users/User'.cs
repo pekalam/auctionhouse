@@ -1,5 +1,7 @@
-﻿using Core.Common.Domain.Users.Events;
+﻿using System;
+using Core.Common.Domain.Users.Events;
 using Core.Common.Exceptions;
+using ReflectionMagic;
 
 namespace Core.Common.Domain.Users
 {
@@ -12,11 +14,13 @@ namespace Core.Common.Domain.Users
 
         protected override void Apply(Event @event)
         {
-            if (@event is UserRegistered)
-                Apply(@event as UserRegistered);
-            else
+            try
             {
-                throw new DomainException("Event not recognized");
+                this.AsDynamic().ApplyEvent(@event);
+            }
+            catch (Exception)
+            {
+                throw new DomainException($"Unrecognized event: {@event.EventName}");
             }
         }
 
@@ -25,11 +29,16 @@ namespace Core.Common.Domain.Users
             return new UserUpdateEventGroup();
         }
 
-        private void Apply(UserRegistered @event)
+        private void ApplyEvent(UserRegistered @event)
         {
             AggregateId = @event.UserIdentity.UserId;
             Register(@event.UserIdentity.UserName);
         }
+
+        private void ApplyEvent(CreditsAdded ev) => AddCredits(ev.CreditsCount);
+        private void ApplyEvent(CreditsReturned ev) => ReturnCredits(ev.CreditsCount);
+        private void ApplyEvent(CreditsWithdrawn ev) => WithdrawCredits(ev.CreditsCount);
+
 
     }
 }

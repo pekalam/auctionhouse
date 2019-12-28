@@ -2,13 +2,15 @@
 
 namespace Core.Common.Domain.Auctions.Events
 {
-    class BidCanceled : Event
+    public class BidCanceled : Event
     {
         public Bid CanceledBid { get; }
+        public Bid NewWinner { get; }
 
-        public BidCanceled(Bid canceledBid) : base(EventNames.BidCanceled)
+        public BidCanceled(Bid canceledBid, Bid newWinner) : base(EventNames.BidCanceled)
         {
             CanceledBid = canceledBid;
+            NewWinner = newWinner;
         }
     }
 }

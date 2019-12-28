@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuctionListModel } from '../models/Auctions';
-import { AuctionFilters, ConditionQuery } from './AuctionsQuery';
+import { AuctionFilters, ConditionQuery, AuctionsQueryResult } from './AuctionsQuery';
 import { QueryHelper } from './QueryHelper';
 
 
@@ -30,10 +30,10 @@ export class AuctionsByTagQuery {
     return `minapr=${filter.minAuction}&maxapr=${filter.maxAuction}`;
   }
 
-  execute(page: number, tag: string, filters?: AuctionFilters): Observable<AuctionListModel[]> {
+  execute(page: number, tag: string, filters?: AuctionFilters): Observable<AuctionsQueryResult> {
     if (!filters) { filters = new AuctionFilters(); }
     const url = `/api/auctionsByTag?page=${page}&tag=${tag}&${this.getCondition(filters.condition)}`
     + `&${this.getAuctionTypeQuery(filters)}&${this.getAuctionBuyNowPrice(filters)}&${this.getAuctionPrice(filters)}`;
-    return this.queryHelper.pipeLoading(this.httpClient.get<AuctionListModel[]>(url, {}));
+    return this.queryHelper.pipeLoading(this.httpClient.get<AuctionsQueryResult>(url, {}));
   }
 }

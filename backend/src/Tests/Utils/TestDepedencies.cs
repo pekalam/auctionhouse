@@ -4,6 +4,7 @@ using Core.Common.ApplicationServices;
 using Core.Common.Domain.AuctionCreateSession;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Categories;
+using Core.Common.Domain.Users;
 using Core.Common.EventBus;
 using Core.Query.ReadModel;
 using EasyNetQ.Logging;
@@ -39,6 +40,7 @@ namespace FunctionalTests.Utils
 		public AuctionSchedulerService SchedulerService { get; private set; }
 		public TimeTaskServiceSettings TimetaskServiceSettings { get; private set; }
 		public IAuctionImageRepository AuctionImageRepository { get; private set; }
+		public IUserRepository UserRepository { get; private set; }
 
 		public static Lazy<TestDepedencies> Instance = new Lazy<TestDepedencies>(() => new TestDepedencies());
 
@@ -63,9 +65,19 @@ namespace FunctionalTests.Utils
 			SetupAuctionImageRepository();
 		}
 
+
+		private void SetupUserRepository()
+		{
+			var mssqlConnectionString = TestContextUtils.GetParameterOrDefault("sqlserver", "Data Source=.;Initial Catalog=AuctionhouseDatabase;Integrated Security=True;");
+			UserRepository = new MsSqlUserRepository(new MsSqlConnectionSettings()
+			{
+				ConnectionString = mssqlConnectionString
+			});
+		}
+
 		private void SetupAuctionRepository()
 		{
-			var mssqlConnectionString = TestContextUtils.GetParameterOrDefault("sqlserver", "Data Source=.;Initial Catalog=es;Integrated Security=True;");
+			var mssqlConnectionString = TestContextUtils.GetParameterOrDefault("sqlserver", "Data Source=.;Initial Catalog=AuctionhouseDatabase;Integrated Security=True;");
 			AuctionRepository = new MsSqlAuctionRepository(new MsSqlConnectionSettings()
 			{
 				ConnectionString = mssqlConnectionString

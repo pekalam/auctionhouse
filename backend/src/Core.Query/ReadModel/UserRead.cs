@@ -9,11 +9,13 @@ namespace Core.Query.ReadModel
     public class UserBid
     {
         public string AuctionId { get; set; }
+        public string AuctionName { get; set; }
         public decimal Price { get; set; }
         public DateTime DateCreated { get; set; }
         public bool AuctionCanceled { get; set; }
         public bool AuctionCompleted { get; set; }
-
+        public string BidId { get; set; }
+        public bool BidCanceled { get; set; }
     }
 
     public class UserAddress
@@ -47,5 +49,6 @@ namespace Core.Query.ReadModel
         public ICollection<string> CreatedAuctions { get; set; } = new HashSet<string>();
         public List<UserBid> UserBids { get; set; } = new List<UserBid>();
         public UserAddress Address { get; set; }
+        public decimal Credits { get; set; }
     }
 }

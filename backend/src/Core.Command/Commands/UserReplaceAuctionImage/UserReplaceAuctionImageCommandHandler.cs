@@ -47,7 +47,7 @@ namespace Core.Command.Commands.UserReplaceAuctionImage
             {
                 _eventBusService.Publish(auction.PendingEvents, correlationId, request);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 _auctionImageService.RemoveAuctionImage(newImg);
                 throw;

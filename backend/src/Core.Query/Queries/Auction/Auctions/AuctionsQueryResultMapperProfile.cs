@@ -7,7 +7,7 @@ namespace Core.Query.Queries.Auction.Auctions
     {
         public AuctionsQueryResultMapperProfile()
         {
-            CreateMap<AuctionRead, AuctionsQueryResult>()
+            CreateMap<AuctionRead, AuctionListItem>()
                 .ForMember(d => d.ProductName, opt => opt.MapFrom(s => s.Product.Name))
                 .ForMember(d => d.Condition, opt => opt.MapFrom(s => s.Product.Condition));
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { WSCommandStatusService } from '../services/WSCommandStatusService';
-import { first } from 'rxjs/operators';
+import { first, tap } from 'rxjs/operators';
 import { LoadingService } from '../services/LoadingService';
 
 
@@ -15,7 +15,8 @@ export class ServerConnectionGuard implements CanActivate {
 
     return new Promise<boolean>((resolve, reject ) => {
       this.serverMessageService.connectionStarted.pipe(
-        first()
+        first(),
+        tap(() => this.loadingService.setLoading(true))
       ).subscribe((connected) => {
         this.loadingService.setLoading(false);
         if (!connected) {
@@ -28,7 +29,6 @@ export class ServerConnectionGuard implements CanActivate {
         reject(err);
       });
 
-      this.loadingService.setLoading(true);
       this.serverMessageService.ensureConnected();
     });
   }
