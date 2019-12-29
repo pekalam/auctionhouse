@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Auction } from '../models/Auctions';
 import { Observable } from 'rxjs';
+import { QueryHelper } from './QueryHelper';
 
 export interface UserAddress{
   street: string;
@@ -18,12 +19,13 @@ export interface UserData{
   providedIn: 'root'
 })
 export class UserDataQuery {
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient, private queryHelper: QueryHelper) {
 
   }
 
   execute(): Observable<UserData>{
     const url = '/api/userData';
-    return this.httpClient.get<UserData>(url);
+    let req = this.httpClient.get<UserData>(url);
+    return this.queryHelper.pipeLoading(req);
   }
 }

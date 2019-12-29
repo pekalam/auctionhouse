@@ -195,10 +195,16 @@ namespace FunctionalTests.Queries
             //assert
             results1.Auctions.Count().Should()
                 .Be(1);
+            results1.Total.Should().Be(1);
             results2.Auctions.Count().Should()
                 .Be(1);
+            results2.Total.Should().Be(1);
             results3.Auctions.Count().Should()
                 .Be(AuctionsByCategoryQueryHandler.PageSize - 2);
+
+            results3.Total.Should()
+                .Be(AuctionsByCategoryQueryHandler.PageSize - 2);
+
         }
 
 
@@ -243,8 +249,13 @@ namespace FunctionalTests.Queries
             //assert
             results1.Auctions.Count().Should()
                 .Be(1);
+            results1.Total.Should().Be(1);
             results2.Auctions.Count().Should()
                 .Be(AuctionsByCategoryQueryHandler.PageSize - 1);
+
+            results2.Total.Should()
+                .Be(AuctionsByCategoryQueryHandler.PageSize - 1);
+
         }
 
 
@@ -288,8 +299,11 @@ namespace FunctionalTests.Queries
             //assert
             results1.Auctions.Count().Should()
                 .Be(AuctionsByCategoryQueryHandler.PageSize - 1);
+            results1.Total.Should()
+                .Be(AuctionsByCategoryQueryHandler.PageSize - 1);
             results2.Auctions.Count().Should()
                 .Be(1);
+            results2.Total.Should().Be(1);
         }
 
         [Test]
@@ -340,8 +354,10 @@ namespace FunctionalTests.Queries
             //assert
             results1.Auctions.Count().Should()
                 .Be(AuctionsByCategoryQueryHandler.PageSize - 1);
+            results1.Total.Should().Be(AuctionsByCategoryQueryHandler.PageSize - 1);
             results2.Auctions.Count().Should()
                 .Be(1);
+            results2.Total.Should().Be(1);
         }
 
 
@@ -400,8 +416,10 @@ namespace FunctionalTests.Queries
             //assert
             results1.Auctions.Count().Should()
                 .Be(1);
+            results1.Total.Should().Be(1);
             results2.Auctions.Count().Should()
                 .Be(AuctionsByCategoryQueryHandler.PageSize);
+            results2.Total.Should().Be(AuctionsByCategoryQueryHandler.PageSize);
             results2.Auctions.ElementAt(0).AuctionId
                 .Should()
                 .Be(stubAuctions[0].AuctionId);

@@ -1,3 +1,5 @@
+@import 'global-vars';
+
 .container {
   padding: 20px;
   display: flex;
@@ -31,10 +33,15 @@
   width: 80px;
   bottom: 1px;
   left: 0;
+  box-shadow: none;
+  &:hover{
+    background-color: $secondaryLightColor;
+    color: black;
+  }
 }
 
 .credits-offer {
-  width: 250px;
+  width: 50%;
   box-sizing: border-box;
   height: 50px;
   display: inline-block;

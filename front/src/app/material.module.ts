@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import {  MatExpansionModule, MatRadioModule, MatMenuModule, MatProgressSpinnerModule, MatTabsModule, MatPaginatorModule,
   MatDialogModule, MatInputModule, MatFormFieldModule, MatTableModule, MatButtonModule, MatListModule, MatSelectModule, ErrorStateMatcher, MAT_DATE_LOCALE, MatDatepickerModule, MatCheckboxModule,
   MAT_DATE_FORMATS,
-  MatSortModule} from '@angular/material';
+  MatSortModule, MatProgressBarModule} from '@angular/material';
 import { MatCardModule } from '@angular/material/card';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSliderModule } from '@angular/material/slider';
@@ -50,6 +50,7 @@ export const MY_FORMATS = {
     MatTooltipModule,
     MatCheckboxModule,
     ScrollingModule,
+    MatProgressBarModule
   ],
   providers: [
     { provide: MatDialogRef, useValue: {} },

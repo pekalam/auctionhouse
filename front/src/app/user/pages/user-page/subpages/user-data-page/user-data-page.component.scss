@@ -2,6 +2,7 @@
 
 .container {
   padding: 30px;
+  font-size: 1em;
 }
 
 .account-loading-div {
@@ -43,7 +44,7 @@ mat-form-field {
 #match-error {
   display: block;
   color: red;
-  font-size: 12px;
+  font-size: 0.8em;
   position: relative;
   bottom: 10px;
   margin-bottom: 20px;

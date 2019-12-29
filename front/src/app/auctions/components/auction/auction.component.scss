@@ -1,8 +1,10 @@
 @import "global";
+@import 'breakpoints';
 
 .auction-container {
   padding: 20px;
   box-sizing: border-box;
+  font-size: 16px;
   .left {
     width: 45%;
     height: 400px;
@@ -13,18 +15,22 @@
     width: 55%;
     height: 100%;
   }
-  @media screen and (max-width: 820px) {
+  @include mobile {
     .left,
     .right {
       float: none;
       width: 100%;
     }
   }
+  @include small{
+    font-size: 12px;
+  }
 }
 
 .description-text {
   padding-left: 20px;
   text-align: justify;
+  overflow-wrap: break-word;
 }
 
 .tags-container{
@@ -56,29 +62,18 @@
 
   .prop-title {
     color: #767676;
-    font-size: 16px;
+    margin-right: 3px;
   }
 
-  .date-container {
-    margin-top: 20px;
-    margin-bottom: 15px;
-    .date {
-      margin-bottom: 10px;
+  .info-container{
+    margin-top: 14px;
+    margin-bottom: 6px;
+    span{
       display: block;
-    }
-  }
-
-  .current-price-container {
-    margin-top: 10px;
-    .price {
-      font-weight: bold;
-    }
-  }
-
-  .buynow-price-container {
-    margin-top: 20px;
-    .price {
-      font-weight: bold;
+      margin-bottom: 10px;
+      span{
+        display: inline;
+      }
     }
   }
 
@@ -89,7 +84,7 @@
       color: chocolate;
     }
     .winner {
-      font-weight: bold;
+      color: #b5b55e;
     }
   }
 
@@ -111,4 +106,11 @@
       }
     }
   }
+}
+
+.params-block{
+  .product-info{
+    padding-left: 20px;
+  }
+  overflow-wrap: break-word;
 }

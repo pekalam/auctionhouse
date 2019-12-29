@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserBid } from '../models/UserBid';
+import { QueryHelper } from './QueryHelper';
 
 export interface UserBidsQueryResult{
   userBids: UserBid[];
@@ -12,11 +13,13 @@ export interface UserBidsQueryResult{
   providedIn: 'root'
 })
 export class UserBidsQuery{
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient, private queryHelper: QueryHelper) {
   }
 
   execute(page: number = 0): Observable<UserBidsQueryResult>{
     const url = `/api/userBids?page=${page}`;
-    return this.httpClient.get<UserBidsQueryResult>(url);
+
+    let req = this.httpClient.get<UserBidsQueryResult>(url);
+    return this.queryHelper.pipeLoading(req);
   }
 }

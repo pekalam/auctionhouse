@@ -1,5 +1,5 @@
 <mat-expansion-panel #panel [hideToggle]="!mobile" [disabled]="!mobile" [expanded]="!mobile">
-  <mat-expansion-panel-header [ngStyle]="panel.hideToggle ? {display: 'none'} : ''">
+  <mat-expansion-panel-header [style.display]="panel.hideToggle ? 'none' : 'flex'">
     Filters
   </mat-expansion-panel-header>
   <div class="container">

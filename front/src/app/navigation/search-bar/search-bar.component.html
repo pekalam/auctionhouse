@@ -1,70 +1,68 @@
-<div class="container">
-  <div class="search-bar">
-    <div class="search-input-container">
-      <input #searchBar type="text" placeholder="Search for anything" aria-label="Number" [matAutocomplete]="auto"
-        (input)="onSearchBarKey(searchBar.value)" (keyup.enter)="onSearchBarKey(searchBar.value)">
-      <mat-autocomplete #auto="matAutocomplete">
+<div class="search-bar">
+  <div class="search-input-container">
+    <input #searchBar type="text" placeholder="Search for anything" aria-label="Number" [matAutocomplete]="auto"
+      (input)="onSearchBarKey(searchBar.value)" (keyup.enter)="onSearchBarKey(searchBar.value)">
+    <mat-autocomplete #auto="matAutocomplete">
 
 
-        <div class="search-type-title">
-          <i class="fas fa-tag" style="margin-right: 10px;"></i>
-          <p style="display: inline-block; margin-bottom: 3px;">In tags</p>
-        </div>
-        <hr style="margin-bottom: 0;">
+      <div class="search-type-title">
+        <i class="fas fa-tag" style="margin-right: 10px;"></i>
+        <p style="display: inline-block; margin-bottom: 3px;">In tags</p>
+      </div>
+      <hr style="margin-bottom: 0;">
 
-        <ng-container *ngIf="!byTagLoading">
-          <mat-option class="auction-link" [routerLink]="['auction']" [queryParams]="{auctionId: item.auctionId}"
-            *ngFor="let item of auctionsByTag">
-            <div class="auction-img-container">
-              <img class="auction-img" [src]="'/api/auctionImage?img=' + item.auctionImage.size3Id" />
-            </div>
-            {{item.auctionName}}
-          </mat-option>
-          <mat-option id="show-more-option" *ngIf="auctionsByTag.length" [routerLink]="['auctions']"
-            [queryParams]="{'tag': tag}">
-            {{totalInTag}} more like {{tag}}
-          </mat-option>
-        </ng-container>
-
-        <mat-option *ngIf="auctionsByTag.length == 0 && !byTagLoading">
-          Not found
+      <ng-container *ngIf="!byTagLoading">
+        <mat-option class="auction-link" [routerLink]="['auction']" [queryParams]="{auctionId: item.auctionId}"
+          *ngFor="let item of auctionsByTag">
+          <div class="auction-img-container">
+            <img class="auction-img" [src]="'/api/auctionImage?img=' + item.auctionImage.size3Id" />
+          </div>
+          {{item.auctionName}}
         </mat-option>
-        <mat-option class="loading-container" *ngIf="byTagLoading">
-          <mat-spinner style="display: inline-block; top: 3px; left: 0;" [diameter]="18"></mat-spinner>
+        <mat-option id="show-more-option" *ngIf="auctionsByTag.length" [routerLink]="['auctions']"
+          [queryParams]="{'tag': tag}">
+          {{totalInTag}} more like {{tag}}
         </mat-option>
+      </ng-container>
+
+      <mat-option *ngIf="auctionsByTag.length == 0 && !byTagLoading">
+        Not found
+      </mat-option>
+      <mat-option class="loading-container" *ngIf="byTagLoading">
+        <mat-spinner style="display: inline-block; top: 3px; left: 0;" [diameter]="18"></mat-spinner>
+      </mat-option>
 
 
-        <div class="search-type-title">
-          <i class="fas fa-search" style="margin-right: 10px;"></i>
-          <p style="display: inline-block; margin-bottom: 3px;">In auctions</p>
-        </div>
-        <hr style="margin-bottom: 0;">
+      <div class="search-type-title">
+        <i class="fas fa-search" style="margin-right: 10px;"></i>
+        <p style="display: inline-block; margin-bottom: 3px;">In auctions</p>
+      </div>
+      <hr style="margin-bottom: 0;">
 
-        <ng-container *ngIf="!byProcuctLoading">
-          <mat-option class="auction-link" [routerLink]="['auction']" [queryParams]="{auctionId: item.auctionId}"
-            *ngFor="let item of auctionsByProductName">
-            <div class="auction-img-container">
-              <img class="auction-img" [src]="'/api/auctionImage?img=' + item.auctionImage.size3Id" />
-            </div>
-            {{item.auctionName}}
-          </mat-option>
-        </ng-container>
-
-        <mat-option *ngIf="auctionsByProductName.length == 0 && !byProcuctLoading">
-          Not found
+      <ng-container *ngIf="!byProcuctLoading">
+        <mat-option class="auction-link" [routerLink]="['auction']" [queryParams]="{auctionId: item.auctionId}"
+          *ngFor="let item of auctionsByProductName">
+          <div class="auction-img-container">
+            <img class="auction-img" [src]="'/api/auctionImage?img=' + item.auctionImage.size3Id" />
+          </div>
+          {{item.auctionName}}
         </mat-option>
-        <mat-option class="loading-container" *ngIf="byProcuctLoading">
-          <mat-spinner style="display: inline-block; top: 3px; left: 0;" [diameter]="18"></mat-spinner>
-        </mat-option>
+      </ng-container>
+
+      <mat-option *ngIf="auctionsByProductName.length == 0 && !byProcuctLoading">
+        Not found
+      </mat-option>
+      <mat-option class="loading-container" *ngIf="byProcuctLoading">
+        <mat-spinner style="display: inline-block; top: 3px; left: 0;" [diameter]="18"></mat-spinner>
+      </mat-option>
 
 
 
-      </mat-autocomplete>
-    </div>
-    <div class="search-btn-container">
-      <button id="searchbtn" (click)="openAutocomplete($event); onSearchBarKey(searchBar.value)">
-        SEARCH
-      </button>
-    </div>
+    </mat-autocomplete>
+  </div>
+  <div class="search-btn-container">
+    <button id="searchbtn" (click)="openAutocomplete($event); onSearchBarKey(searchBar.value)">
+      Search
+    </button>
   </div>
 </div>

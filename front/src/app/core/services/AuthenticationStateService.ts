@@ -3,6 +3,7 @@ import { ReplaySubject } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { UserIdentity } from '../models/UserIdentity';
 import * as jwtDecode from 'jwt-decode';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class AuthenticationStateService {
   protected currentUserSubject = new ReplaySubject<UserIdentity>(0);
   public currentUser = this.currentUserSubject.asObservable().pipe(distinctUntilChanged());
 
-  constructor() {
+  constructor(private router: Router) {
     this.isAuthenticatedSubject.next(false);
     this.currentUserSubject.next(null);
   }
@@ -66,5 +67,6 @@ export class AuthenticationStateService {
   logout() {
     localStorage.removeItem('user');
     this.notifyObservers(false, null);
+    this.router.navigateByUrl('home');
   }
 }

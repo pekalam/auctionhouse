@@ -7,12 +7,13 @@ $listItemHeight: 200px;
   width: 90%;
 }
 
-.auction-list-item-container {
+.container {
   width: 100%;
   display: flex;
   flex-direction: row;
   padding: 0 0 0 14px;
   box-sizing: border-box;
+  font-size: 16px;
   .left {
     min-width: 210px;
     height: $listItemHeight;
@@ -50,16 +51,22 @@ $listItemHeight: 200px;
     margin-bottom: 4px;
   }
   .condition-text {
-    font-size: 12px;
+    display: block;
+    margin-top: 8px;
+    font-size: 0.7em;
   }
   margin-bottom: 7px;
 }
 
 .current-price-div {
-  .currentprice {
-  }
   .current-price-title {
     margin-bottom: 5px;
+  }
+  .currentprice {
+    display: block;
+    margin-top: 4px;
+    font-weight: bold;
+    font-size: 1.2em;
   }
 }
 
@@ -68,7 +75,7 @@ $listItemHeight: 200px;
   float: left;
   text-align: right;
   margin-top: 40px;
-  font-size: 10px;
+  font-size: 0.7em;
   span {
     padding-right: 10%;
   }
@@ -79,91 +86,49 @@ $listItemHeight: 200px;
   float: left;
   margin-top: 10px;
   .buynowtext {
-    font-size: 10px;
+    font-size: 0.7em;
   }
   .buynowprice {
-    font-size: 12px;
+    font-size: 0.8em;
+    font-weight: bold;
   }
-}
-.currentprice {
-  font-weight: bold;
-  font-size: 20px;
 }
 
 @media screen and(max-width: 1255px) {
-  .auction-title {
-    font-size: 20px;
-  }
-  .currentprice {
-    font-size: 18px;
-  }
-  .current-price-title {
-    font-size: 14px;
+  .container {
+    font-size: 15px;
   }
 }
 
 @media screen and(max-width: 1050px) {
-  .auction-title {
-    font-size: 18px;
-  }
-  .currentprice {
-    font-size: 16px;
-  }
-  .current-price-title {
-    font-size: 13px;
-  }
-  .totalbids-div {
-    font-size: 9px;
+  .container {
+    font-size: 14px;
   }
 }
 
 @media screen and(max-width: 700px) {
-  .auction-title {
-    font-size: 16px;
+  .container {
+    font-size: 13.5px;
   }
-  .currentprice {
-    font-size: 14px;
+  .title-div {
+    .auction-title {
+      font-size: 1.1em;
+    }
   }
-  .current-price-title {
-    font-size: 11px;
+  .auction-img {
+    max-width: 150px;
+    max-height: 150px;
   }
-  .condition-text {
-    font-size: 12px;
-  }
-}
-
-@media screen and(max-width: 540px) {
-  .auction-title {
-    font-size: 15px;
-  }
-  .currentprice {
-    font-size: 13px;
-  }
-  .current-price-title {
-    font-size: 10px;
-  }
-  .condition-text {
-    font-size: 11px;
-  }
-  .buynowprice {
-    font-size: 12px;
-  }
-}
-
-@media screen and(max-width: 400px) {
-}
-
-@media screen and(max-width: 605px) {
-  .auction-list-item-container {
+  .container {
     .left {
-      min-width: 160px;
+      min-width: 150px;
       .auction-img {
         max-width: 150px;
         max-height: 150px;
       }
     }
     .right {
-      width: calc(100% - 160px);
+      width: calc(100% - 150px);
     }
   }
 }
@@ -182,8 +147,8 @@ $listItemHeight: 200px;
   }
   .totalbids-div {
     clear: both;
-    margin-top: 10px;
+    margin-top: 15px;
     width: 100%;
-    text-align: center;
+    text-align: left;
   }
 }

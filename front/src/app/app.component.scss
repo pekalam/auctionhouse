@@ -1,4 +1,5 @@
-@import 'global';
+@import 'global-vars';
+@import 'breakpoints';
 
 .app-container {
   @include desktop{

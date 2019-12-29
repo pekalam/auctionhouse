@@ -5,35 +5,37 @@
   <div class="right">
     <div class="right-content">
       <h3>{{auction.name}}</h3>
-      <span><span class="prop-title">From:</span> {{auction.creator.userName}}</span>
+      <div><span class="prop-title">From:</span> {{auction.creator.userName}}</div>
       <p *ngIf="showTimer" class="timer">TIME LEFT: {{timer.m}}:{{timer.s}}</p>
       <hr>
-      <div class="date-container">
-        <span class="date" id="start"><span class="prop-title">Starts:</span>
+      <div class="info-container">
+        <span id="start"><span class="prop-title">Starts:</span>
           {{auction.startDate | date : "yyyy MMMM dd"}}</span>
-        <span class="date" id="end"><span class="prop-title">Ends:</span>
+        <span id="end"><span class="prop-title">Ends:</span>
           {{auction.endDate | date : "yyyy MMMM dd"}}</span>
-        <span class="date" id="days-left" *ngIf="!showTimer"><span class="prop-title">Days left:</span>
+        <span id="days-left" *ngIf="!showTimer"><span class="prop-title">Days left:</span>
           {{daysLeft}}</span>
-
       </div>
       <hr>
 
-      <div class="current-price-container">
-        <span class="prop-title">Current price:</span>
-        <span class="price"> {{auction.actualPrice | currency}}</span>
-      </div>
-      <div class="buynow-price-container">
-        <span class="prop-title">Buy now price:</span>
-        <span class="price"> {{auction.buyNowPrice | currency}}</span>
+      <div class="info-container">
+        <span>
+          <span class="prop-title">Current price:</span>
+          <b> {{auction.actualPrice | currency}}</b>
+        </span>
+        <span>
+          <span class="prop-title">Buy now price:</span>
+          <b> {{auction.buyNowPrice | currency}}</b>
+        </span>
       </div>
       <hr>
+
       <div class="bid-info-container">
-        <span class="winner" *ngIf="auction.winningBid"><span style="color: #b5b55e">Winner:</span>
-          {{auction.winningBid.userIdentity.userName}}</span>
+        <span  *ngIf="auction.winningBid"><span class="winner">Winner:</span>
+          <b>{{auction.winningBid.userIdentity.userName}}</b></span>
         <span class="nobids" *ngIf="!auction.winningBid">Nobody is taking part in auction</span>
       </div>
-      <div class="views-container">
+      <div class="info-container">
         <span><span class="prop-title">Views:</span> {{auction.views}}</span>
       </div>
       <div class="buttons-container" *ngIf="showAuctionButtons">
@@ -47,17 +49,17 @@
   <div class="params-container">
     <div class="params-block">
       <h2>Information</h2>
-      <div style="padding-left: 20px;">
+      <div class="product-info">
         <p><b>Product name:</b>&nbsp;&nbsp;<span>{{auction.product.name}}</span></p>
         <p><b>Condition:</b>&nbsp;&nbsp;<span>{{auction.product.condition == 0 ? 'Used' : 'New'}}</span></p>
         <p><b>Tags:</b>&nbsp;&nbsp;</p>
-          <div class="tags-container">
-              <div class="tag-div" *ngFor="let tag of auction.tags">
-                <div>
-                    <i class="fas fa-tag" style="margin-right: 3px;"></i>{{tag}}
-                </div>
-              </div>
+        <div class="tags-container">
+          <div class="tag-div" *ngFor="let tag of auction.tags">
+            <div>
+              <i class="fas fa-tag" style="margin-right: 3px;"></i>{{tag}}
             </div>
+          </div>
+        </div>
 
       </div>
     </div>

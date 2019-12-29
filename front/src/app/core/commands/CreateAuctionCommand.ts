@@ -30,6 +30,6 @@ export class CreateAuctionCommand {
     console.log(commandArgs);
 
     const req = this.httpClient.post(url, commandArgs);
-    return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.HTTPQueuedCommand);
+    return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.HTTPQueuedCommand, {intervalSec: 1500, maxRetry: 4});
   }
 }

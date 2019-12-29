@@ -1,4 +1,6 @@
-@import "global";
+@import "global-vars";
+@import 'breakpoints';
+
 
 $containerHeight: 560px;
 
@@ -30,7 +32,7 @@ $containerHeight: 560px;
   }
   #subcategories-container {
     overflow-y: auto;
-    max-height: 81vh;
+    max-height: 80vh;
     position: relative;
     bottom: $containerHeight;
     left: 325px;
@@ -50,11 +52,11 @@ $containerHeight: 560px;
     .subcategory {
       flex: 1 50%;
       max-width: 50%;
-      font-size: 12px;
+      font-size: 0.80em;
       padding: 20px;
       .subcategories2-container {
         .subcategory2 {
-          font-size: 12px;
+          font-size: .86em;
           margin-bottom: 16px;
           text-align: left;
         }
@@ -66,7 +68,6 @@ $containerHeight: 560px;
 .subcategory-link {
   cursor: text;
   font-weight: 700;
-  font-size: 14px;
   margin-bottom: 16px;
   display: block;
   text-align: left;
@@ -92,7 +93,11 @@ $containerHeight: 560px;
       width: 100%;
       text-decoration: none;
       color: black;
-      font-size: 14px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 0.85em;
+      wor
       &:hover {
         color: $secondaryColor;
       }

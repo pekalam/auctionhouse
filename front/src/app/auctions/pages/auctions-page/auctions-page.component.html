@@ -10,7 +10,7 @@
         <div class="goto-div">
           <span>Go to</span>
           <mat-form-field class="goto-field">
-            <input (keyup.enter)="onGotoClick($event)" matInput type="number" [min]="1" formControlName="name" />
+            <input (keyup.enter)="onGotoClick($event)" matInput type="number" [min]="1" />
           </mat-form-field>
         </div>
         <mat-paginator [length]="total" [pageSize]="10" [pageIndex]="currentPage" (page)="onPageChange($event)">
