@@ -1,0 +1,12 @@
+FROM centos:latest
+COPY mongodb-org-4.2.repo /etc/yum.repos.d/mongodb-org-4.2.repo
+RUN yum install -y mongodb-org-shell
+RUN yum install -y cronie
+RUN yum install -y nmap-ncat
+COPY scripts /root/scripts
+COPY entrypoint.sh /usr/local/bin
+RUN chmod +x /usr/local/bin/entrypoint.sh
+COPY update-cronjob /root
+COPY wait-for /usr/local/bin
+RUN chmod +x /usr/local/bin/wait-for
+ENTRYPOINT ["entrypoint.sh"]

@@ -4,6 +4,7 @@ services:
   quartz_web_task_service:
     container_name: quartz_web_task_service
     image: marekbf3/quartz-web-task-service
+    hostname: quartz_web_task_service
     ports:
       - "5001:80"
     environment: 
@@ -12,6 +13,7 @@ services:
 
   mongodb:
     container_name: mongodb
+    hostname: mongodb
     ports:
       - "27017:27017"
     build:
@@ -21,6 +23,7 @@ services:
 
   sql_server:
     container_name: sql_server
+    hostname: sql_server
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=Qwerty1234
@@ -34,11 +37,21 @@ services:
 
   rabbitmq:
     container_name: rabbitmq
+    hostname: rabbitmq
     image: rabbitmq:3-management
     tmpfs: /var/lib/rabbitmq
     ports:
       - '5672:5672'
       - '15672:15672'
+
+  update-server:
+    hostname: update-server
+    container_name: update-server
+    build:
+      context: ./update-server
+      dockerfile: Dockerfile-update-server
+    tty: true
+    command: ["--wait-for", "mongodb:32112"]
 
 
 
