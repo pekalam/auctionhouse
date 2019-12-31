@@ -25,6 +25,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.IntegrationTests", "Web
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "AuctionhouseDatabase", "AuctionhouseDatabase\AuctionhouseDatabase.sqlproj", "{31D723E0-FB8D-4C1A-8200-68570D4ED3A8}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Test.AuctionhouseDatabase", "Test.AuctionhouseDatabase\Test.AuctionhouseDatabase.sqlproj", "{4DD3B832-93FD-4D4B-9CE7-D4AF44D182E3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{31D723E0-FB8D-4C1A-8200-68570D4ED3A8} = {31D723E0-FB8D-4C1A-8200-68570D4ED3A8}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +82,12 @@ Global
 		{31D723E0-FB8D-4C1A-8200-68570D4ED3A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31D723E0-FB8D-4C1A-8200-68570D4ED3A8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{31D723E0-FB8D-4C1A-8200-68570D4ED3A8}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{4DD3B832-93FD-4D4B-9CE7-D4AF44D182E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DD3B832-93FD-4D4B-9CE7-D4AF44D182E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DD3B832-93FD-4D4B-9CE7-D4AF44D182E3}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{4DD3B832-93FD-4D4B-9CE7-D4AF44D182E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DD3B832-93FD-4D4B-9CE7-D4AF44D182E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DD3B832-93FD-4D4B-9CE7-D4AF44D182E3}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
