@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Core.DomainModelTests")]
+[assembly: InternalsVisibleTo("Test.DomainModelTests")]
 [assembly: InternalsVisibleTo("Core.Query")]
 namespace Core.Common.Domain.Categories
 {

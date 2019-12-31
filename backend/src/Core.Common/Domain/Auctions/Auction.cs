@@ -11,8 +11,8 @@ using Core.Common.Domain.Products;
 using Core.Common.Domain.Users;
 using Core.Common.Exceptions;
 
-[assembly: InternalsVisibleTo("IntegrationTests")]
-[assembly: InternalsVisibleTo("Core.DomainModelTests")]
+[assembly: InternalsVisibleTo("Test.IntegrationTests")]
+[assembly: InternalsVisibleTo("Test.DomainModelTests")]
 namespace Core.Common.Domain.Auctions
 {
     internal static class AuctionConstantsFactory

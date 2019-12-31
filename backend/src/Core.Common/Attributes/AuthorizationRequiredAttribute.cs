@@ -9,7 +9,7 @@ using Core.Common.Domain.Users;
 using Core.Common.Exceptions;
 using Core.Common.Query;
 
-[assembly: InternalsVisibleTo("UnitTests")]
+[assembly: InternalsVisibleTo("Test.UnitTests")]
 namespace Core.Common.Attributes
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]

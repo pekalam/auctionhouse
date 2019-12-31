@@ -21,8 +21,8 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using IEventBus = Core.Common.EventBus.IEventBus;
 
-[assembly: InternalsVisibleTo("FunctionalTests")]
-[assembly: InternalsVisibleTo("IntegrationTests")]
+[assembly: InternalsVisibleTo("Test.FunctionalTests")]
+[assembly: InternalsVisibleTo("Test.IntegrationTests")]
 
 namespace Infrastructure.Services.EventBus
 {

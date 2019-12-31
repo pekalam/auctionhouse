@@ -8,7 +8,7 @@ using Core.Common.ApplicationServices;
 using Core.Common.Command;
 using Core.Common.EventBus;
 
-[assembly: InternalsVisibleTo("UnitTests")]
+[assembly: InternalsVisibleTo("Test.UnitTests")]
 namespace Core.Command.Mediator
 {
     public class HTTPQueuedCommandHandlerMediator : ICommandHandlerMediator

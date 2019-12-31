@@ -5,21 +5,21 @@ VisualStudioVersion = 16.0.29201.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Common", "Core.Common\Core.Common.csproj", "{0CFE4794-CC9E-47CE-B732-3DDEF8C5573B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.DomainModelTests", "Core.DomainModelTests\Core.DomainModelTests.csproj", "{DFC0B2D4-CFF2-4A00-B9B4-1C719B0F8E01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.DomainModelTests", "Core.DomainModelTests\Test.DomainModelTests.csproj", "{DFC0B2D4-CFF2-4A00-B9B4-1C719B0F8E01}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "Web\Web.csproj", "{0222D94D-5DC1-4307-AD60-1A0BAFCFD8C0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{EBA8F839-9106-4195-A47B-C6EF22137452}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionalTests", "Tests\FunctionalTests.csproj", "{7F73DDC5-6EF1-4D23-8485-5B851D36D39E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.FunctionalTests", "Tests\Test.FunctionalTests.csproj", "{7F73DDC5-6EF1-4D23-8485-5B851D36D39E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{45F19B6A-F840-4FCA-8E87-3DB7CD1F3CE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.UnitTests", "UnitTests\Test.UnitTests.csproj", "{45F19B6A-F840-4FCA-8E87-3DB7CD1F3CE8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Command", "Core.Command\Core.Command.csproj", "{79F9C673-A957-4787-910A-2617CD328221}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Query", "Core.Query\Core.Query.csproj", "{3BF1DC2B-829E-4C5A-B34E-D1C9A456089F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{42ADE0DC-8C58-4749-B091-504955B0F581}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.IntegrationTests", "IntegrationTests\Test.IntegrationTests.csproj", "{42ADE0DC-8C58-4749-B091-504955B0F581}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.IntegrationTests", "Web.IntegrationTests\Web.IntegrationTests.csproj", "{60180E04-51A1-45AA-86F3-F9117775D071}"
 EndProject

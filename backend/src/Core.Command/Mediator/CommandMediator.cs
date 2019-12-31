@@ -8,7 +8,7 @@ using Core.Common;
 using Core.Common.Attributes;
 using Core.Common.Command;
 
-[assembly: InternalsVisibleTo("UnitTests")]
+[assembly: InternalsVisibleTo("Test.UnitTests")]
 namespace Core.Command.Mediator
 {
     public class CommandMediator

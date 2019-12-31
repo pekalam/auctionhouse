@@ -10,7 +10,7 @@ using Core.Common.Query;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-[assembly: InternalsVisibleTo("UnitTests")]
+[assembly: InternalsVisibleTo("Test.UnitTests")]
 namespace Core.Query.Mediator
 {
     public class QueryMediator
