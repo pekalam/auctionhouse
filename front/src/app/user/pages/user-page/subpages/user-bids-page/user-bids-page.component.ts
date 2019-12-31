@@ -3,7 +3,7 @@ import { UserBidsQueryResult, UserBidsQuery } from '../../../../../core/queries/
 import { UserBid } from '../../../../../core/models/UserBid';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { CancelBidCommand } from '../../../../../core/commands/CancelBidCommand';
+import { CancelBidCommand } from '../../../../../core/commands/auction/CancelBidCommand';
 
 interface UserBidVM extends UserBid {
   canBeCanceled: boolean;
@@ -23,6 +23,7 @@ export class UserBidsPageComponent implements OnInit {
 
   constructor(private userBidsQuery: UserBidsQuery, private cancelBidCommand: CancelBidCommand) {
     userBidsQuery.execute(0).subscribe((v) => {
+      if(!v || !v.userBids){return;}
       this.userBids = v.userBids.map(v => v as UserBidVM);
       for (const bid of this.userBids) {
         bid.canBeCanceled = this.canBeCanceled(bid);

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormGroup, FormControl } from '@angular/forms';
-import { RequestResetPasswordCommand } from '../../../core/commands/RequestResetPasswordCommand';
+import { RequestResetPasswordCommand } from '../../../core/commands/auth/RequestResetPasswordCommand';
 import { Router } from '@angular/router';
 
 @Component({

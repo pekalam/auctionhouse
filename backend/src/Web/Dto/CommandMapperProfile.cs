@@ -1,6 +1,7 @@
 ﻿using System;
 using AutoMapper;
 using Core.Command.Commands;
+using Core.Command.Commands.BuyNow;
 using Core.Command.Commands.CancelBid;
 using Core.Command.Commands.UpdateAuction;
 using Core.Command.CreateAuction;
@@ -15,6 +16,8 @@ namespace Web.Dto
         {
             CreateMap<ProductDto, Product>();
             CreateMap<CreateAuctionCommandDto, CreateAuctionCommand>();
+            CreateMap<BuyNowCommandDto, BuyNowCommand>()
+                .ForMember(cmd => cmd.AuctionId, opt => opt.MapFrom(dto => Guid.Parse(dto.AuctionId)));
             CreateMap<UpdateAuctionCommandDto, UpdateAuctionCommand>()
                 .ForMember(cmd => cmd.AuctionId, opt => opt.MapFrom(dto => Guid.Parse(dto.AuctionId)));
             CreateMap<CancelBidCommandDto, CancelBidCommand>()

@@ -1,0 +1,81 @@
+@import 'breakpoints';
+@import 'global';
+
+
+::ng-deep mat-dialog-container{
+  padding: 0 !important;
+}
+
+
+.content-container{
+  .left{
+    width: 50%;
+    float: left;
+  }
+  .right{
+    width: 50%;
+    float: left;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.container{
+  display: flex;
+  flex-direction: column;
+  width: 50vw;
+  max-width: 600px;
+  height: 60vh;
+  padding: 15px;
+  box-sizing: border-box;
+  @include mobile{
+    width: 80vw;
+  }
+}
+
+.auction-info{
+  padding-left: 10px;
+}
+
+.img-container{
+  display: flex;
+  padding: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+img{
+  width: 90%;
+  max-width: 90%;
+}
+
+button{
+  font-weight: bold;
+}
+
+.summary-container{
+  text-align: center;
+  .summary-info{
+    text-align: left;
+    margin-bottom: 40px;
+  }
+}
+
+.btn-container{
+  display: flex;
+  justify-content: space-around;
+  margin-top: auto;
+  width: 100%;
+}
+
+.pay-btn{
+  @include app-btn;
+  height: 40px;
+}
+
+.cancel-btn{
+  @include app-btn;
+  height: 40px;
+  background-color: $secondaryLightColor;
+  color: black;
+}

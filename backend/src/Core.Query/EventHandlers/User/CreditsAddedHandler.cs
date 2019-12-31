@@ -6,6 +6,7 @@ using Core.Common.Domain.Users.Events;
 using Core.Common.EventBus;
 using Core.Query.Exceptions;
 using Core.Query.ReadModel;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 
 namespace Core.Query.EventHandlers.User
@@ -22,7 +23,7 @@ namespace Core.Query.EventHandlers.User
             var userRead = dbContext.UsersReadModel.FindOneAndUpdate(filter, update);
             if (userRead == null)
             {
-                //TODO
+                throw new QueryException("Null userReadModel");
             }
 
             return userRead;
@@ -33,7 +34,7 @@ namespace Core.Query.EventHandlers.User
     {
         private readonly ReadModelDbContext _dbContext;
 
-        public CreditsAddedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext) : base(appEventBuilder)
+        public CreditsAddedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext, ILogger<CreditsAddedHandler> logger) : base(appEventBuilder, logger)
         {
             _dbContext = dbContext;
         }
@@ -48,7 +49,7 @@ namespace Core.Query.EventHandlers.User
     {
         private readonly ReadModelDbContext _dbContext;
 
-        public CreditsReturnedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext) : base(appEventBuilder)
+        public CreditsReturnedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext, ILogger<CreditsReturnedHandler> logger) : base(appEventBuilder, logger)
         {
             _dbContext = dbContext;
         }
@@ -63,7 +64,7 @@ namespace Core.Query.EventHandlers.User
     {
         private readonly ReadModelDbContext _dbContext;
 
-        public CreditsWithdrawnHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext) : base(appEventBuilder)
+        public CreditsWithdrawnHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext, ILogger<CreditsWithdrawnHandler> logger) : base(appEventBuilder, logger)
         {
             _dbContext = dbContext;
         }

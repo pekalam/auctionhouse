@@ -3,6 +3,7 @@ using Core.Common.Domain.Auctions.Events;
 using Core.Common.EventBus;
 using Core.Common.RequestStatusService;
 using Core.Query.ReadModel;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 
 namespace Core.Query.EventHandlers
@@ -11,7 +12,7 @@ namespace Core.Query.EventHandlers
     {
         private ReadModelDbContext _dbContext;
 
-        public AuctionCompletedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext) : base(appEventBuilder)
+        public AuctionCompletedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext, ILogger<AuctionCompletedHandler> logger) : base(appEventBuilder, logger)
         {
             _dbContext = dbContext;
         }

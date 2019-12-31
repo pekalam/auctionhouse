@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { SignUpCommand, SignUpCommandArgs } from '../../../core/commands/SignUpCommand';
+import { SignUpCommand, SignUpCommandArgs } from '../../../core/commands/auth/SignUpCommand';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CheckUsernameQuery, CheckUsernameQueryResult } from '../../../core/queries/CheckUsernameQuery';

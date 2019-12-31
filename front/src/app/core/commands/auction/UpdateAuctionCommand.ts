@@ -1,8 +1,8 @@
 import { Observable, of } from 'rxjs';
-import { RequestStatus, WSCommandStatusService } from '../services/WSCommandStatusService';
+import { RequestStatus, WSCommandStatusService } from '../../services/WSCommandStatusService';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CommandHelper, ResponseOptions } from './ComandHelper';
+import { CommandHelper, ResponseOptions } from '../ComandHelper';
 
 
 export interface UpdateAuctionCommandArgs {

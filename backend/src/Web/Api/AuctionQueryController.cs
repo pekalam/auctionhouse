@@ -48,7 +48,8 @@ namespace Web.Api
         [HttpGet("auction")]
         public async Task<ActionResult<AuctionRead>> Auction([FromQuery] AuctionQueryDto queryDto)
         {
-            var auction = await _mediator.Send(new AuctionQuery(queryDto.AuctionId));
+            var query = _mapper.Map<AuctionQuery>(queryDto);
+            var auction = await _mediator.Send(query);
             return Ok(auction);
         }
 
@@ -82,14 +83,16 @@ namespace Web.Api
         public async Task<ActionResult<TopAuctionsByProductName>> TopAuctionsByProductName(
             [FromQuery] TopAuctionsByProductNameDto queryDto)
         {
-            var result = await _mediator.Send(new TopAuctionsByProductNameQuery() { ProductName = queryDto.ProductName, Page = queryDto.Page });
+            var query = _mapper.Map<TopAuctionsByProductNameQuery>(queryDto);
+            var result = await _mediator.Send(query);
             return Ok(result);
         }
 
         [HttpGet("commonTags")]
         public async Task<ActionResult<CommonTags>> CommonTags([FromQuery] CommonTagsQueryDto queryDto)
         {
-            var result = await _mediator.Send(new CommonTagsQuery() { Tag = queryDto.Tag });
+            var query = _mapper.Map<CommonTagsQuery>(queryDto);
+            var result = await _mediator.Send(query);
             return Ok(result);
         }
 

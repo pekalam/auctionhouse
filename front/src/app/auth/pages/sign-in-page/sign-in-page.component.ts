@@ -3,7 +3,7 @@ import { FormGroup, FormControl, Validators, ValidatorFn, AbstractControl } from
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthenticationStateService } from '../../../core/services/AuthenticationStateService';
-import { SignInCommand } from '../../../core/commands/SignInCommand';
+import { SignInCommand } from '../../../core/commands/auth/SignInCommand';
 
 
 

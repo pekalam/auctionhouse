@@ -6,6 +6,7 @@ namespace Core.Common.Domain.Auctions
     public class Tag
     {
         public const int MAX_LENGTH = 30;
+        public const int MIN_LENGTH = 1;
 
         public string Value { get;  }
 

@@ -9,6 +9,7 @@ using Core.Common.Domain.Bids;
 using Core.Common.Domain.Categories;
 using Core.Common.Domain.Products;
 using Core.Common.Domain.Users;
+using Core.Common.Domain.Users.Events;
 using Core.Common.Exceptions;
 
 namespace Core.DomainModelTests
@@ -308,15 +309,15 @@ namespace Core.DomainModelTests
         [Test]
         public void BuyNow_generates_valid_events_and_state()
         {
-            var userIdnetity = new UserIdentity();
+            var user = AuctionTestUtils.CreateUser();
             auction.MarkPendingEventsAsHandled();
 
-            auction.BuyNow(userIdnetity);
+            auction.BuyNow(user);
 
             auction.PendingEvents.Count.Should()
                 .Be(1);
             auction.Buyer.Should()
-                .Be(userIdnetity);
+                .Be(user.UserIdentity);
             auction.Completed.Should()
                 .BeTrue();
             var ev = auction.PendingEvents.First() as AuctionBought;
@@ -324,7 +325,11 @@ namespace Core.DomainModelTests
             ev.AuctionId.Should()
                 .Be(auction.AggregateId);
             ev.UserIdentity.Should()
-                .Be(userIdnetity);
+                .Be(user.UserIdentity);
+
+            user.Credits.Should().Be(1000 - auction.BuyNowPrice);
+            user.PendingEvents.Count.Should().Be(1);
+            user.PendingEvents.First().Should().BeOfType<CreditsWithdrawn>();
         }
 
         [Test]

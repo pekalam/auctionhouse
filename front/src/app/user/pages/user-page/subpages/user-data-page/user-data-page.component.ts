@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserDataQuery, UserData } from '../../../../../core/queries/UserDataQuery';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ChangePasswordCommand } from '../../../../../core/commands/ChangePasswordCommand';
+import { ChangePasswordCommand } from '../../../../../core/commands/auth/ChangePasswordCommand';
 import { LoadingService } from '../../../../../core/services/LoadingService';
 
 

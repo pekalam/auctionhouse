@@ -8,6 +8,7 @@ using Core.Common.Domain.Users;
 using Core.Common.EventBus;
 using Core.Common.RequestStatusService;
 using Core.Query.ReadModel;
+using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -26,6 +27,7 @@ namespace Core.Query.EventHandlers
                 .ForMember(read => read.AuctionId, opt => opt.MapFrom(created => created.AuctionId.ToString()))
                 .ForMember(read => read.Id, opt => opt.AllowNull())
                 .ForMember(read => read.Version, opt => opt.MapFrom(created => created.AggVersion))
+                .ForMember(read => read.DateCreated, opt => opt.Ignore())
                 .ForAllOtherMembers(opt => opt.Ignore());
         }
     }
@@ -36,7 +38,8 @@ namespace Core.Query.EventHandlers
         private readonly ReadModelDbContext _dbContext;
         private readonly IRequestStatusService _requestStatusService;
 
-        public AuctionCreatedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext, IRequestStatusService requestStatusService) : base(appEventBuilder)
+        public AuctionCreatedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext, IRequestStatusService requestStatusService, 
+            ILogger<AuctionCreatedHandler> logger) : base(appEventBuilder, logger)
         {
             _dbContext = dbContext;
             _requestStatusService = requestStatusService;
@@ -48,6 +51,7 @@ namespace Core.Query.EventHandlers
             var mapper = MapperConfigHolder.Configuration.CreateMapper();
             var auction = mapper.Map<AuctionCreated, AuctionRead>(ev, opt => opt.AfterMap((created, read) => mapper.Map(created.AuctionArgs, read)));
             
+            auction.DateCreated = DateTime.UtcNow;
 
             var filter = Builders<UserRead>.Filter.Eq(f => f.UserIdentity.UserId, ev.AuctionArgs.Creator.UserId.ToString());
             var update = Builders<UserRead>.Update.Push(f => f.CreatedAuctions, ev.AuctionId.ToString());

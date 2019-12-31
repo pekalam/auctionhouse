@@ -1,14 +1,14 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
-import { CreateAuctionCommandArgs, CreateAuctionCommand } from '../../../core/commands/CreateAuctionCommand';
+import { CreateAuctionCommandArgs, CreateAuctionCommand } from '../../../core/commands/auction/CreateAuctionCommand';
 import { CategorySelectStep } from '../../../shared/forms/category-select-step/categorySelectStep';
 import { ProductFormResult } from '../../../shared/forms/product-step/productStep';
 import { Router } from '@angular/router';
-import { StartAuctionCreateSessionCommand } from '../../../core/commands/StartAuctionCreateSessionCommand';
+import { StartAuctionCreateSessionCommand } from '../../../core/commands/auction/StartAuctionCreateSessionCommand';
 import { AuctionDataStep } from '../../../shared/forms/auction-data-step/auctionDataStep';
 import { AddImageFormResult } from '../../../shared/forms/add-image-step/add-image-step.component';
-import { AddAuctionImageCommand } from 'src/app/core/commands/AddAuctionImageCommand';
-import { RemoveAuctionImageCommand } from 'src/app/core/commands/RemoveAuctionImageCommand';
+import { AddAuctionImageCommand } from 'src/app/core/commands/auction/AddAuctionImageCommand';
+import { RemoveAuctionImageCommand } from 'src/app/core/commands/auction/RemoveAuctionImageCommand';
 import { ImgSelectedEvent } from 'src/app/shared/forms/img-upload-input/img-upload-input.component';
 import { AuctionImageQuery } from '../../../core/queries/AuctionImageQuery';
 

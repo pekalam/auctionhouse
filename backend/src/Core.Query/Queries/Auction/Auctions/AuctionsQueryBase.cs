@@ -1,4 +1,5 @@
-﻿using Core.Common;
+﻿using System.ComponentModel.DataAnnotations;
+using Core.Common;
 
 namespace Core.Query.Queries.Auction.Auctions
 {

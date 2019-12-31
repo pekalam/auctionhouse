@@ -38,10 +38,10 @@
       <div class="info-container">
         <span><span class="prop-title">Views:</span> {{auction.views}}</span>
       </div>
-      <div class="buttons-container" *ngIf="showAuctionButtons">
+      <div class="buttons-container" *ngIf="showAuctionButtons && !readOnly">
         <button class="buynow-btn" (click)="onBuyNow()"
-          [disabled]="!showAuctionButtons || auction.buyNowPrice == null">Buy now</button>
-        <button class="bid-btn" (click)="onBid()" [disabled]="!showAuctionButtons">Bid</button>
+          [disabled]="auction.buyNowPrice == 0.0">Buy now</button>
+        <button class="bid-btn" (click)="onBid()" [disabled]="auction.buyNowOnly">Bid</button>
       </div>
 
     </div>

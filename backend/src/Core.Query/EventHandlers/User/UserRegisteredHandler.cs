@@ -3,6 +3,7 @@ using Core.Common.Domain.Users.Events;
 using Core.Common.EventBus;
 using Core.Query.ReadModel;
 using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
 
 namespace Core.Query.EventHandlers.User
 {
@@ -12,7 +13,7 @@ namespace Core.Query.EventHandlers.User
         private readonly ILogger<UserRegisteredHandler> _logger;
 
         public UserRegisteredHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext,
-            ILogger<UserRegisteredHandler> logger) : base(appEventBuilder)
+            ILogger<UserRegisteredHandler> logger) : base(appEventBuilder, logger)
         {
             _dbContext = dbContext;
             _logger = logger;

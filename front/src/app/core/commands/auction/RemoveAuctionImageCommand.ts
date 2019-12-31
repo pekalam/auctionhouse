@@ -1,19 +1,21 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { WSCommandStatusService, RequestStatus } from '../../services/WSCommandStatusService';
 import { Observable, of } from 'rxjs';
-import { RequestStatus, WSCommandStatusService } from '../services/WSCommandStatusService';
-import { ResponseOptions, CommandHelper } from './ComandHelper';
+import { CommandHelper, ResponseOptions } from '../ComandHelper';
+
 
 @Injectable({
   providedIn: 'root'
 })
-export class RequestResetPasswordCommand {
+export class RemoveAuctionImageCommand {
   constructor(private httpClient: HttpClient, private commandHelper: CommandHelper) {
+
   }
 
-  execute(email: string): Observable<RequestStatus>{
-    const url = '/api/requestResetPassword';
-    const req = this.httpClient.post(url, {email});
+  execute(imgNum: number): Observable<RequestStatus> {
+    const url = `/api/removeAuctionImage?num=${imgNum}`;
+    const req = this.httpClient.post(url, null);
     return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.HTTPQueuedCommand);
   }
 }

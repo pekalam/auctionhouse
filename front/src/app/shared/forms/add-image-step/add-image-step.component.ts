@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ImgSelectedEvent } from '../img-upload-input/img-upload-input.component';
 import { AuctionCreateStep } from '../auctionCreateStep';
-import { AddAuctionImageCommand } from 'src/app/core/commands/AddAuctionImageCommand';
+import { AddAuctionImageCommand } from 'src/app/core/commands/auction/AddAuctionImageCommand';
 import { AuctionImageQuery } from 'src/app/core/queries/AuctionImageQuery';
-import { RemoveAuctionImageCommand } from 'src/app/core/commands/RemoveAuctionImageCommand';
+import { RemoveAuctionImageCommand } from 'src/app/core/commands/auction/RemoveAuctionImageCommand';
 import { AuctionImage } from '../../../core/models/Auctions';
 import { ValidatorFn } from '@angular/forms';
 

@@ -1,0 +1,32 @@
+<div class="container">
+  <div class="content-container">
+    <div class="left">
+      <div class="img-container">
+        <img [src]="imgsrc" alt="auction image">
+      </div>
+      <div class="auction-info">
+        <h3>{{auction.name}}</h3>
+        <br>
+        <p><b>From:</b> {{auction.creator.userName}}</p>
+        <p><b>Condition:</b> {{auction.product.condition == 0 ? 'Used' : 'New'}}</p>
+      </div>
+    </div>
+    <div class="right">
+      <div class="summary-container">
+        <div class="summary-info">
+          <p><b>Buy now price: </b>{{auction.buyNowPrice}}</p>
+          <p><b>Additional costs: </b>0</p>
+        </div>
+        <h2>Total:</h2>
+        <p>{{auction.buyNowPrice}}</p>
+      </div>
+
+
+    </div>
+  </div>
+
+  <div class="btn-container">
+    <button class="cancel-btn" (click)="onCancelClick()">Cancel</button>
+    <button class="pay-btn" (click)="onPayClick()">Pay</button>
+  </div>
+</div>

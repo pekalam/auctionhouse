@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ResetPasswordCommand } from '../../../core/commands/ResetPasswordCommand';
+import { ResetPasswordCommand } from '../../../core/commands/auth/ResetPasswordCommand';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({

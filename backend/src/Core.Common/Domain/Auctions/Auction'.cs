@@ -44,6 +44,7 @@ namespace Core.Common.Domain.Auctions
         private void ApplyEvent(AuctionCanceled @event) => CancelAuction();
         private void ApplyEvent(AuctionImageRemoved @event) => RemoveImage(@event.ImgNum);
         private void ApplyEvent(AuctionImageReplaced @event) => ReplaceImage(@event.NewImage, @event.ImgNum);
+        private void ApplyEvent(AuctionBought @event) => BuyNow(@event.UserIdentity);
 
 
         private void ApplyEvent(AuctionBuyNowPriceChanged ev) => UpdateBuyNowPrice(ev.BuyNowPrice);

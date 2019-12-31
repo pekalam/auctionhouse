@@ -12,7 +12,6 @@ export interface UserAuctions {
 })
 export class UserAuctionsQuery {
   constructor(private httpClient: HttpClient) {
-
   }
 
   execute(pageNum: number): Observable<UserAuctions> {

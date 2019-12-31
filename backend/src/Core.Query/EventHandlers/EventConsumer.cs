@@ -1,15 +1,19 @@
 ﻿using System;
 using Core.Common.Domain;
+using Core.Common.EventBus;
+using Microsoft.Extensions.Logging;
 
-namespace Core.Common.EventBus
+namespace Core.Query.EventHandlers
 {
     public abstract class EventConsumer<T> : IEventConsumer where T : Event
     {
         private readonly IAppEventBuilder _appEventBuilder;
+        private readonly ILogger _logger;
 
-        protected EventConsumer(IAppEventBuilder appEventBuilder)
+        protected EventConsumer(IAppEventBuilder appEventBuilder, ILogger logger)
         {
             _appEventBuilder = appEventBuilder;
+            _logger = logger;
         }
 
         Type IEventConsumer.MessageType => typeof(T);

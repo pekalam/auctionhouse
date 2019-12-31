@@ -7,7 +7,7 @@ import { CategoriesQuery } from '../../../core/queries/CategoriesQuery';
 import { CategoryTreeNode } from '../../../core/models/CategoryTreeNode';
 import { Condition } from 'src/app/core/models/Product';
 import { FilterCategory } from '../../components/auction-filters/auction-filters.component';
-import { StartAuctionCreateSessionCommand } from '../../../core/commands/StartAuctionCreateSessionCommand';
+import { StartAuctionCreateSessionCommand } from '../../../core/commands/auction/StartAuctionCreateSessionCommand';
 import { AuctionsByTagQuery } from '../../../core/queries/AuctionsByTagQuery';
 import { CommonTagsQuery } from '../../../core/queries/CommonTagsQuery';
 import { filter } from 'rxjs/operators';

@@ -1,10 +1,10 @@
 import { Observable, of } from 'rxjs';
-import { RequestStatus, WSCommandStatusService } from '../services/WSCommandStatusService';
+import { RequestStatus, WSCommandStatusService } from '../../services/WSCommandStatusService';
 import { filter, catchError, switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { WSCommandHelper } from './WSCommandHelper';
-import { ResponseOptions, CommandHelper } from './ComandHelper';
+import { WSCommandHelper } from '../WSCommandHelper';
+import { ResponseOptions, CommandHelper } from '../ComandHelper';
 
 
 @Injectable({

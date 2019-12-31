@@ -112,7 +112,16 @@ namespace Web.Exceptions
         {
             ApiException apiException;
 
-            apiException = new ApiException(HttpStatusCode.InternalServerError, "Server error");
+            switch (ex)
+            {
+                case InvalidQueryException e:
+                    apiException = new ApiException(HttpStatusCode.BadRequest, e.Message, e);
+                    break;
+                default:
+                    apiException = new ApiException(HttpStatusCode.InternalServerError, "Server error");
+                    break;
+            }
+
             HandleException(apiException, context);
         }
 

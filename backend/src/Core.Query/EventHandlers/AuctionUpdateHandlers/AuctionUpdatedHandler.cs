@@ -20,7 +20,7 @@ namespace Core.Query.EventHandlers.AuctionUpdateHandlers
         private readonly ILogger<AuctionUpdatedHandler> _logger;
 
         public AuctionUpdatedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext,
-            IRequestStatusService requestStatusService, ILogger<AuctionUpdatedHandler> logger) : base(appEventBuilder)
+            IRequestStatusService requestStatusService, ILogger<AuctionUpdatedHandler> logger) : base(appEventBuilder, logger)
         {
             _dbContext = dbContext;
             _requestStatusService = requestStatusService;

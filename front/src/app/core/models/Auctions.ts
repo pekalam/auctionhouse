@@ -46,4 +46,6 @@ export interface Auction {
   views: number;
   tags: string[];
   name: string;
+  dateCreated: Date;
+  archived: boolean;
 }

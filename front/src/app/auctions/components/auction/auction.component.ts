@@ -18,16 +18,15 @@ export class AuctionComponent implements OnInit, OnDestroy {
     if (auction) {
       this.auction = auction;
       this.imgs = auction.auctionImages.filter(img => img != null).map(img => this.auctionImageQuery.execute(img.size1Id));
+      this.checkCanShowButtons();
       this.setDaysLeft();
       this.calculateAuctionTime();
       this.clearAuctionTimeCalcInterval();
       this.timeoutHandle = setInterval(() => { this.calculateAuctionTime(); });
     }
-    console.log("set");
-
   }
   @Input()
-  showAuctionButtons: boolean = false;
+  readOnly: boolean = false;
   @Output() buyNow = new EventEmitter<Auction>();
   @Output() bid = new EventEmitter<Auction>();
   @Output() auctionTimeout = new EventEmitter<Auction>();
@@ -37,17 +36,15 @@ export class AuctionComponent implements OnInit, OnDestroy {
   auction: Auction;
   daysLeft = 0;
   imgs = [];
-  currentUser: UserIdentity = null;
+  showAuctionButtons = true;
 
-  private setDaysLeft(){
+  private setDaysLeft() {
     let d1 = new Date(this.auction.endDate);
     let d2 = new Date(this.auction.startDate);
     this.daysLeft = Math.round((d1.getTime() - d2.getTime()) / (1000 * 60 * 60 * 24));
   }
 
-  constructor(private auctionImageQuery: AuctionImageQuery, public authenticationStateService: AuthenticationStateService) {
-    authenticationStateService.currentUser.subscribe((u) => this.currentUser = u);
-    authenticationStateService.checkIsAuthenticated();
+  constructor(private auctionImageQuery: AuctionImageQuery, private authenticationStateService: AuthenticationStateService) {
   }
 
   ngOnInit() {
@@ -58,6 +55,17 @@ export class AuctionComponent implements OnInit, OnDestroy {
     this.clearAuctionTimeCalcInterval();
   }
 
+
+  private checkCanShowButtons() {
+    this.authenticationStateService.currentUser.subscribe((user) => {
+      if (!user || user.userId !== this.auction.creator.userId) {
+        this.showAuctionButtons = true;
+      } else {
+        this.showAuctionButtons = false;
+      }
+    });
+    this.authenticationStateService.checkIsAuthenticated();
+  }
 
   private clearAuctionTimeCalcInterval() {
     if (this.timeoutHandle) {

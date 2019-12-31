@@ -12,6 +12,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { UserCreditsComponent } from './pages/user-page/subpages/user-credits/user-credits.component';
 import { UserBidsPageComponent } from './pages/user-page/subpages/user-bids-page/user-bids-page.component';
+import { UserBoughtAuctionsPageComponent } from './pages/user-page/subpages/user-bought-auctions-page/user-bought-auctions-page.component';
 
 
 
@@ -23,7 +24,8 @@ import { UserBidsPageComponent } from './pages/user-page/subpages/user-bids-page
     UserAuctionsListItemComponent,
     AuctionEditPageComponent,
     UserCreditsComponent,
-    UserBidsPageComponent
+    UserBidsPageComponent,
+    UserBoughtAuctionsPageComponent
   ],
   imports: [
     CommonModule,

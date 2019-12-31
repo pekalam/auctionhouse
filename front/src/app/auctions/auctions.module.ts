@@ -13,6 +13,7 @@ import { SharedModule } from '../shared/shared.module';
 import { AuctionFiltersComponent } from './components/auction-filters/auction-filters.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { ErrorModule } from '../error/error.module';
+import { AuctionBuynowDialogComponent } from './pages/auction-page/auction-buynow-dialog/auction-buynow-dialog.component';
 
 
 @NgModule({
@@ -22,6 +23,7 @@ import { ErrorModule } from '../error/error.module';
     AuctionPageComponent,
     AuctionCreatePageComponent,
     AuctionFiltersComponent,
+    AuctionBuynowDialogComponent,
   ],
   imports: [
     AuctionsRoutingModule,
@@ -32,6 +34,7 @@ import { ErrorModule } from '../error/error.module';
     SharedModule,
     LayoutModule,
     ErrorModule
-  ]
+  ],
+  entryComponents: [AuctionBuynowDialogComponent]
 })
 export class AuctionsModule { }

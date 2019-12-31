@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { RequestStatus, WSCommandStatusService } from '../services/WSCommandStatusService';
+import { RequestStatus, WSCommandStatusService } from '../../services/WSCommandStatusService';
 import { filter, catchError, switchMap } from 'rxjs/operators';
-import { Product } from '../models/Product';
-import { WSCommandHelper } from './WSCommandHelper';
-import { CommandHelper, ResponseOptions } from './ComandHelper';
+import { Product } from '../../models/Product';
+import { WSCommandHelper } from '../WSCommandHelper';
+import { CommandHelper, ResponseOptions } from '../ComandHelper';
 
 export interface CreateAuctionCommandArgs {
   buyNowPrice: number | null;

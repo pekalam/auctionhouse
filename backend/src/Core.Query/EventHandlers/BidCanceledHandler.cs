@@ -14,7 +14,7 @@ namespace Core.Query.EventHandlers
         private readonly ILogger<BidCanceledHandler> _logger;
 
         public BidCanceledHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext,
-            ILogger<BidCanceledHandler> logger) : base(appEventBuilder)
+            ILogger<BidCanceledHandler> logger) : base(appEventBuilder, logger)
         {
             _dbContext = dbContext;
             _logger = logger;

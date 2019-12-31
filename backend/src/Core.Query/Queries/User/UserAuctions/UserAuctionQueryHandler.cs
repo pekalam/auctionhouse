@@ -4,8 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Core.Common;
 using Core.Common.Auth;
-using Core.Common.Domain.Users;
-using Core.Common.Query;
 using Core.Query.Mediator;
 using Core.Query.ReadModel;
 using MongoDB.Driver;
@@ -22,13 +20,22 @@ namespace Core.Query.Queries.User.UserAuctions
             _dbContext = dbContext;
         }
 
-        protected async override Task<UserAuctionsQueryResult> HandleQuery(UserAuctionsQuery request, CancellationToken cancellationToken)
+        protected async override Task<UserAuctionsQueryResult> HandleQuery(UserAuctionsQuery request,
+            CancellationToken cancellationToken)
         {
-            var userReadModelFilter = Builders<UserRead>.Filter.Eq(field => field.UserIdentity.UserId, request.SignedInUser.UserId.ToString());
+            var userReadModelFilter = Builders<UserRead>.Filter.Eq(field => field.UserIdentity.UserId,
+                request.SignedInUser.UserId.ToString());
             var idsToJoin = await _dbContext.UsersReadModel
                 .Find(userReadModelFilter)
-                .Project(model => new { AuctionsIds = model.CreatedAuctions.Select(s => s).ToArray() })
+                .Project(model => new {AuctionsIds = model.CreatedAuctions.Select(s => s).ToArray()})
+                .Skip(request.Page * PageSize)
+                .Limit(PageSize)
                 .FirstOrDefaultAsync();
+
+            var count = _dbContext.UsersReadModel.AsQueryable()
+                .Where(read => read.UserIdentity.UserId == request.SignedInUser.UserId.ToString())
+                .Select(read => read.CreatedAuctions)
+                .Count();
 
             if (idsToJoin != null)
             {
@@ -36,11 +43,9 @@ namespace Core.Query.Queries.User.UserAuctions
                     .In(field => field.AuctionId, idsToJoin.AuctionsIds);
                 var userAuctions = await _dbContext.AuctionsReadModel
                     .Find(userAuctionsFilter)
-                    .Skip(request.Page * PageSize)
-                    .Limit(PageSize)
                     .ToListAsync();
 
-                return new UserAuctionsQueryResult() { Auctions = userAuctions };
+                return new UserAuctionsQueryResult() {Auctions = userAuctions, Total = count };
             }
 
             return new UserAuctionsQueryResult();

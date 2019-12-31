@@ -56,6 +56,9 @@ namespace Core.Query.Queries.Auction.Auctions
         protected List<FilterDefinition<AuctionRead>> CreateFilterDefs(AuctionsQueryBase request)
         {
             var filtersArr = new List<FilterDefinition<AuctionRead>>();
+
+            filtersArr.Add(Builders<AuctionRead>.Filter.Eq(read => read.Archived, false));
+
             if (request.AuctionTypeQuery == AuctionTypeQuery.Auction)
             {
                 var f1 = Builders<AuctionRead>.Filter.Eq(f => f.BuyNowOnly, false);
@@ -86,6 +89,14 @@ namespace Core.Query.Queries.Auction.Auctions
             CreateAuctionPriceFilter(filtersArr, request);
 
             return filtersArr;
+        }
+
+        protected SortDefinition<AuctionRead> GetDefaultSorting()
+        {
+            var sort1 = Builders<AuctionRead>.Sort.Descending(read => read.StartDate);
+            var sort2 = Builders<AuctionRead>.Sort.Descending(read => read.Views);
+
+            return Builders<AuctionRead>.Sort.Combine(sort1, sort2);
         }
     }
 }

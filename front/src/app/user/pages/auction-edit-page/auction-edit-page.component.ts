@@ -9,14 +9,14 @@ import { AuctionDataStep } from '../../../shared/forms/auction-data-step/auction
 import { AuctionImagesFormValues, AddImageFormResult } from '../../../shared/forms/add-image-step/add-image-step.component';
 import { ImgSelectedEvent } from 'src/app/shared/forms/img-upload-input/img-upload-input.component';
 import { DomSanitizer } from '@angular/platform-browser';
-import { UserAddAuctionImageCommand } from '../../../core/commands/UserAddAuctionImageCommand';
-import { UpdateAuctionCommand, UpdateAuctionCommandArgs } from '../../../core/commands/UpdateAuctionCommand';
-import { UserRemoveAuctionImageCommand } from '../../../core/commands/UserRemoveAuctionImageCommand';
-import { UserReplaceAuctionImageCommand } from '../../../core/commands/UserReplaceAuctionImageCommand';
+import { UserAddAuctionImageCommand } from '../../../core/commands/auction/UserAddAuctionImageCommand';
+import { UpdateAuctionCommand, UpdateAuctionCommandArgs } from '../../../core/commands/auction/UpdateAuctionCommand';
+import { UserRemoveAuctionImageCommand } from '../../../core/commands/auction/UserRemoveAuctionImageCommand';
 import { WSCommandStatusService } from '../../../core/services/WSCommandStatusService';
 import { first } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { CategorySelectStep } from '../../../shared/forms/category-select-step/categorySelectStep';
+import { UserReplaceAuctionImageCommand } from 'src/app/core/commands/auction/UserReplaceAuctionImageCommand';
 
 @Component({
   selector: 'app-auction-edit-page',

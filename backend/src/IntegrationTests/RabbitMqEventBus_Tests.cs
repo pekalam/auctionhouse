@@ -8,6 +8,7 @@ using Core.Common.ApplicationServices;
 using Core.Common.Command;
 using Core.Common.Domain;
 using Core.Common.EventBus;
+using Core.Query.EventHandlers;
 using FluentAssertions;
 using Infrastructure;
 using Infrastructure.Services.EventBus;
@@ -44,7 +45,7 @@ namespace IntegrationTests
         private Action<IAppEvent<TestEvent>> OnConsume;
         public bool Throws { get; set; }
 
-        public TestHandler(IAppEventBuilder appEventBuilder, Action<IAppEvent<TestEvent>> onConsume) : base(appEventBuilder)
+        public TestHandler(IAppEventBuilder appEventBuilder, Action<IAppEvent<TestEvent>> onConsume) : base(appEventBuilder, Mock.Of<ILogger<TestHandler>>())
         {
             OnConsume = onConsume;
         }

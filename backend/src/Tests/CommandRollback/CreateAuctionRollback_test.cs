@@ -66,7 +66,7 @@ namespace FunctionalTests.CommandRollback
         public class TestAuctionCreatedHandler : AuctionCreatedHandler
         {
             public TestAuctionCreatedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext,
-                IRequestStatusService requestStatusService) : base(appEventBuilder, dbContext, requestStatusService)
+                IRequestStatusService requestStatusService) : base(appEventBuilder, dbContext, requestStatusService, Mock.Of<ILogger<TestAuctionCreatedHandler>>())
             {
             }
 

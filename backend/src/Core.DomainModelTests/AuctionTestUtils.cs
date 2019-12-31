@@ -10,6 +10,22 @@ namespace Core.DomainModelTests
     {
         private static int UserNum = 0;
 
+        public static Auction CreateAuction()
+        {
+            var args = new AuctionArgs.Builder()
+                .SetBuyNowOnly(false)
+                .SetOwner(new UserIdentity())
+                .SetCategory(new Category("", 1))
+                .SetBuyNow(123)
+                .SetStartDate(DateTime.UtcNow.AddDays(1))
+                .SetEndDate(DateTime.UtcNow.AddDays(2))
+                .SetProduct(new Product("test name", "desccription 1111", Condition.New))
+                .SetTags(new[] { "tag1" })
+                .SetName("Test name")
+                .Build();
+            return new Auction(args);
+        }
+
         public static Auction CreateBuyNowOnlyAuction()
         {
             var args = new AuctionArgs.Builder()

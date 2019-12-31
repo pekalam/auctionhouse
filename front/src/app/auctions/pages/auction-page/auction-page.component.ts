@@ -4,6 +4,8 @@ import { Auction } from '../../../core/models/Auctions';
 import { Category } from '../../../core/models/Category';
 import { AuctionQuery } from '../../../core/queries/AuctionQuery';
 import { AuthenticationStateService } from '../../../core/services/AuthenticationStateService';
+import { MatDialogRef, MatDialog } from '@angular/material';
+import { AuctionBuynowDialogComponent } from './auction-buynow-dialog/auction-buynow-dialog.component';
 
 @Component({
   selector: 'app-auction-page',
@@ -13,33 +15,16 @@ import { AuthenticationStateService } from '../../../core/services/Authenticatio
 export class AuctionPageComponent implements OnInit {
 
   auction: Auction;
-  showAuctionButtons = false;
 
   constructor(private activatedRoute: ActivatedRoute,
-    private auctionQuery: AuctionQuery,
-    private router: Router,
-    private authenticationStateService: AuthenticationStateService) {
+              private auctionQuery: AuctionQuery,
+              private router: Router,
+              private dialog: MatDialog) {
     this.activatedRoute.queryParams.subscribe((p) => {
       this.auctionQuery
         .execute(p.auctionId)
-        .subscribe((v) => { this.setAuction(v); });
+        .subscribe((v) => this.auction = v);
     });
-  }
-
-  private setAuction(auction: Auction) {
-    this.authenticationStateService.currentUser.subscribe((user) => {
-      console.log("current user: " + user);
-      console.log(user);
-      console.log(auction);
-
-
-      this.auction = auction;
-      if (!user || user.userId !== auction.creator.userId) {
-        console.log("shows");
-
-        this.showAuctionButtons = true;
-      }
-    })
   }
 
   ngOnInit() {
@@ -50,7 +35,9 @@ export class AuctionPageComponent implements OnInit {
   }
 
   onBuyNowClick() {
-
+    this.dialog.open(AuctionBuynowDialogComponent, {
+      data: { auction: this.auction }
+    });
   }
 
   onAuctionTimeout() {

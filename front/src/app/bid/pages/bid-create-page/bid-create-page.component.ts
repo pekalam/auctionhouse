@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Auction } from '../../../core/models/Auctions';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { BidCommand } from '../../../core/commands/BidCommand';
+import { BidCommand } from '../../../core/commands/auction/BidCommand';
 import { RequestStatus, WSCommandStatusService } from 'src/app/core/services/WSCommandStatusService';
 import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';

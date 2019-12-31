@@ -30,6 +30,7 @@ namespace Core.Query.Queries.Auction.Auctions.ByTag
                 .Skip(request.Page * PageSize)
                 .Project(model => mapper.Map<AuctionListItem>(model))
                 .Limit(PageSize)
+                .Sort(GetDefaultSorting())
                 .ToListAsync();
 
             long total = await _dbContext.AuctionsReadModel.CountDocumentsAsync(Builders<AuctionRead>.Filter.And(filtersArr));

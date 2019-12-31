@@ -2,6 +2,7 @@
 using Core.Common.Domain.Auctions.Events;
 using Core.Common.EventBus;
 using Core.Common.RequestStatusService;
+using Core.Query.Exceptions;
 using Core.Query.ReadModel;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
@@ -15,7 +16,7 @@ namespace Core.Query.EventHandlers
         private readonly ILogger<AuctionRaisedHandler> _logger;
 
         public AuctionRaisedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext,
-            IRequestStatusService requestStatusService, ILogger<AuctionRaisedHandler> logger) : base(appEventBuilder)
+            IRequestStatusService requestStatusService, ILogger<AuctionRaisedHandler> logger) : base(appEventBuilder, logger)
         {
             _dbContext = dbContext;
             _requestStatusService = requestStatusService;
@@ -36,21 +37,13 @@ namespace Core.Query.EventHandlers
             var totalBidsUpd = Builders<AuctionRead>.Update.Inc(f => f.TotalBids, 1);
             var versionUpd = Builders<AuctionRead>.Update.Set(f => f.Version, ev.AggVersion);
 
-            try
+            var result = _dbContext.AuctionsReadModel.UpdateMany(session,
+                Builders<AuctionRead>.Filter.And(new[] { auctionIdFilter, byBidFilter }),
+                Builders<AuctionRead>.Update.Combine(new[] { bidUpdate, totalBidsUpd, priceUpd, versionUpd }));
+            if (result.MatchedCount == 0)
             {
-                var result = _dbContext.AuctionsReadModel.UpdateMany(session,
-                    Builders<AuctionRead>.Filter.And(new[] {auctionIdFilter, byBidFilter}),
-                    Builders<AuctionRead>.Update.Combine(new[] {bidUpdate, totalBidsUpd, priceUpd, versionUpd}));
-                if (result.MatchedCount == 0)
-                {
-                    throw new Exception($"Cannot find auction with id: {ev.Bid.AuctionId} and" +
-                                        $"Version: {ev.AggVersion}");
-                }
-            }
-            catch (Exception e)
-            {
-                _logger.LogWarning(e, "Cannot update AuctionsReadModel");
-                throw;
+                throw new QueryException($"Cannot find auction with id: {ev.Bid.AuctionId} and" +
+                                    $"Version: {ev.AggVersion}");
             }
         }
 
@@ -65,18 +58,11 @@ namespace Core.Query.EventHandlers
             };
             var userFilter = Builders<UserRead>.Filter.Eq(f => f.UserIdentity.UserId, ev.Bid.UserIdentity.UserId.ToString());
             var userUpdate = Builders<UserRead>.Update.Push(f => f.UserBids, userBid);
-            try
+
+            var result = _dbContext.UsersReadModel.UpdateOne(session, userFilter, userUpdate);
+            if (result.MatchedCount == 0)
             {
-                var result = _dbContext.UsersReadModel.UpdateMany(session, userFilter, userUpdate);
-                if (result.MatchedCount == 0)
-                {
-                    throw new Exception($"Cannot find user with id: {ev.Bid.UserIdentity.UserId.ToString()}");
-                }
-            }
-            catch (Exception e)
-            {
-                _logger.LogWarning(e, "Cannot update UserReadModel");
-                throw;
+                throw new QueryException($"Cannot find user with id: {ev.Bid.UserIdentity.UserId.ToString()}");
             }
         }
 
@@ -92,9 +78,10 @@ namespace Core.Query.EventHandlers
                 UpdateUser(ev, session);
                 session.CommitTransaction();
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 session.AbortTransaction();
+                _logger.LogError(e, "Cannot update read collections, appEvent: {@appEvent}", message);
                 _requestStatusService.TrySendRequestFailureToUser(message, ev.Bid.UserIdentity);
                 throw;
             }

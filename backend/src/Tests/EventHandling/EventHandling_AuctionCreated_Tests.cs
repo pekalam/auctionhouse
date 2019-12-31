@@ -28,7 +28,7 @@ namespace FunctionalTests.EventHandling
         public Action<IAppEvent<AuctionCreated>> OnConsumeCalled { get; set; }
 
         public TestAuctionCreatedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext,
-            IRequestStatusService requestStatusService) : base(appEventBuilder, dbContext, requestStatusService)
+            IRequestStatusService requestStatusService) : base(appEventBuilder, dbContext, requestStatusService, Mock.Of<ILogger<TestAuctionCreatedHandler>>())
         {
         }
 

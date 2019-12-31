@@ -6,6 +6,7 @@ using AutoMapper;
 using Core.Command;
 using Core.Command.Commands;
 using Core.Command.Commands.AuctionCreateSession.RemoveImage;
+using Core.Command.Commands.BuyCredits;
 using Core.Command.Commands.CancelBid;
 using Core.Command.Commands.UpdateAuction;
 using Core.Command.Commands.UserAddAuctionImage;
@@ -85,6 +86,15 @@ namespace Web.Api
         {
             var command = _mapper.Map<CancelBidCommand>(commandDto);
             var response = (RequestStatusDto)await _mediator.Send(command);
+
+            return Ok(response);
+        }
+
+        [Authorize(Roles = "User"), HttpPost("buyCredits")]
+        public async Task<ActionResult<RequestStatusDto>> BuyCredits([FromBody] BuyCreditsCommandDto commandDto)
+        {
+            var cmd = new BuyCreditsCommand();
+            var response = (RequestStatusDto)await _mediator.Send(cmd);
 
             return Ok(response);
         }

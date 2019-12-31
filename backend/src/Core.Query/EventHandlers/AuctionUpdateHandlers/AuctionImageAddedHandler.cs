@@ -14,7 +14,8 @@ namespace Core.Query.EventHandlers.AuctionUpdateHandlers
         private readonly IRequestStatusService _requestStatusService;
         private readonly ILogger<AuctionImageAddedHandler> _logger;
 
-        public AuctionImageAddedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext, IRequestStatusService requestStatusService, ILogger<AuctionImageAddedHandler> logger) : base(appEventBuilder)
+        public AuctionImageAddedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext, IRequestStatusService requestStatusService, 
+            ILogger<AuctionImageAddedHandler> logger) : base(appEventBuilder, logger)
         {
             _dbContext = dbContext;
             _requestStatusService = requestStatusService;

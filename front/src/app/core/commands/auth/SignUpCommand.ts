@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { UserIdentity } from '../models/UserIdentity';
+import { UserIdentity } from '../../models/UserIdentity';
 import { Observable } from 'rxjs';
 import * as jwtDecode from 'jwt-decode';
 import { map, filter } from 'rxjs/operators';
-import { WSCommandStatusService, RequestStatus } from '../services/WSCommandStatusService';
+import { WSCommandStatusService, RequestStatus } from '../../services/WSCommandStatusService';
 import { Injectable } from '@angular/core';
-import { HTTPCommandHelper } from './HTTPCommandHelper';
-import { CommandHelper, ResponseOptions } from './ComandHelper';
+import { HTTPCommandHelper } from '../HTTPCommandHelper';
+import { CommandHelper, ResponseOptions } from '../ComandHelper';
 
 export interface SignUpCommandArgs {
   username: string;

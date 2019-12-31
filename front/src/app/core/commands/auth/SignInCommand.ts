@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { tap, map } from 'rxjs/operators';
-import { UserIdentity } from '../models/UserIdentity';
+import { UserIdentity } from '../../models/UserIdentity';
 import * as jwtDecode from 'jwt-decode';
-import { AuthenticationStateService } from '../services/AuthenticationStateService';
+import { AuthenticationStateService } from '../../services/AuthenticationStateService';
 import { Injectable } from '@angular/core';
 
 @Injectable({

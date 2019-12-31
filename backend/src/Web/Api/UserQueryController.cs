@@ -51,5 +51,13 @@ namespace Web.Api
             var userBids = await _mediator.Send(cmd);
             return Ok(userBids);
         }
+
+        [HttpGet("userBoughtAuctions")]
+        public async Task<ActionResult<UserBoughtAuctionQueryResult>> UserWonAuctions([FromQuery] UserWonAuctionsQueryDto dto)
+        {
+            var cmd = new UserBoughtAuctionsQuery(dto.Page);
+            var userWonAuctions = await _mediator.Send(cmd);
+            return Ok(userWonAuctions);
+        }
     }
 }

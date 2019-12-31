@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Core.Common;
 using Core.Common.Query;
+using Core.Query.Exceptions;
 using Core.Query.Mediator;
 using Core.Query.ReadModel;
 using MediatR;
@@ -30,7 +31,7 @@ namespace Core.Query.Queries.Auction.SingleAuction
                 .FirstOrDefaultAsync();
             if (auction == null)
             {
-                throw new Exception("Not found");
+                throw new InvalidQueryException($"Cannot find auction with id: {request.AuctionId}");
             }
 
             await _readModelDbContext.AuctionsReadModel.UpdateManyAsync(filter, upd);

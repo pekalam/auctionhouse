@@ -32,7 +32,9 @@ namespace Core.Common.Domain.Users
         {
         }
 
-        private object ThrowIfNotRegistered() => UserIdentity ?? throw new DomainException("User is not registered"); 
+        private object ThrowIfNotRegistered() => UserIdentity ?? throw new DomainException("User is not registered");
+
+        public void CheckIsRegistered() => ThrowIfNotRegistered();
 
         public bool IsRegistered => UserIdentity != null;
 

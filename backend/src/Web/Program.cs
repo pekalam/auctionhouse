@@ -20,6 +20,7 @@ namespace Web
                 {
                     configuration
                         .MinimumLevel.Verbose()
+                        .Enrich.FromLogContext()
                         .ReadFrom.Configuration(context.Configuration);
                     if (context.HostingEnvironment.IsDevelopment())
                     {

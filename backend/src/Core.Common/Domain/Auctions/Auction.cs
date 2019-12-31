@@ -244,7 +244,14 @@ namespace Core.Common.Domain.Auctions
             AddEvent(new AuctionCompleted(AggregateId, winningBid));
         }
 
-        public void BuyNow(UserIdentity userIdentity)
+        private void BuyNow(UserIdentity buyer)
+        {
+            Buyer = buyer;
+            Completed = true;
+            AddEvent(new AuctionBought(AggregateId, buyer));
+        }
+
+        public void BuyNow(User user)
         {
             if (BuyNowPrice == 0)
             {
@@ -253,9 +260,9 @@ namespace Core.Common.Domain.Auctions
 
             ThrowIfCompletedOrCanceled();
 
-            Buyer = userIdentity ?? throw new DomainException($"Null user identity");
-            Completed = true;
-            AddEvent(new AuctionBought(AggregateId, Buyer));
+            user.CheckIsRegistered();
+            user.WithdrawCredits(BuyNowPrice);
+            BuyNow(user.UserIdentity);
         }
 
         public void AddImage(AuctionImage img)

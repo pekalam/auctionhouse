@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { CreateAuctionCommandArgs } from '../../../core/commands/CreateAuctionCommand';
+import { CreateAuctionCommandArgs } from '../../../core/commands/auction/CreateAuctionCommand';
 import { AuctionCreateStep } from '../auctionCreateStep';
 
 @Component({

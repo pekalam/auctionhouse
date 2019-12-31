@@ -17,6 +17,7 @@ using Infrastructure.Repositories.SQLServer;
 using Infrastructure.Services;
 using Infrastructure.Services.EventBus;
 using Infrastructure.Services.SchedulerService;
+using Swashbuckle.AspNetCore.Swagger;
 using Web.Adapters;
 using Web.Adapters.EventSignaling;
 using Web.Auth;
@@ -115,6 +116,12 @@ namespace Web
                     null);
 
             ConfigureJWT(services);
+
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info(){ Title = "Auctionhouse API", Version = "v1" });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
@@ -122,6 +129,13 @@ namespace Web
             DefaultDIBootstraper.Common.Start(serviceProvider);
 
             app.UseCors();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Auctionhouse API V1");
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

@@ -58,6 +58,11 @@ namespace Core.Query.ReadModel
         public UserIdentityRead Buyer { get; set; }
         public BidRead WinningBid { get; set; }
 
+        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+        public DateTime DateCreated { get; set; }
+        [BsonDefaultValue(false)]
+        public bool Archived { get; set; }
+
         [BsonDefaultValue(0)] public long Version { get; set; }
     }
 }

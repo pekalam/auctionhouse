@@ -8,6 +8,7 @@ using Core.Command.Bid;
 using Core.Command.Commands.AuctionCreateSession.AddAuctionImage;
 using Core.Command.Commands.AuctionCreateSession.RemoveImage;
 using Core.Command.Commands.AuctionCreateSession.StartAuctionCreateSession;
+using Core.Command.Commands.BuyNow;
 using Core.Command.Commands.EndAuction;
 using Core.Command.CreateAuction;
 using Core.Command.Mediator;
@@ -92,6 +93,16 @@ namespace Web.Api
             var imgRepresentation = ImageRepresentationUtil.GetImageRepresentationFromFormFile(commandDto.Img);
             var command = new AddAuctionImageCommand(imgRepresentation, commandDto.ImgNum);
             var response = (RequestStatusDto) await _httpQueuedCommandMediator.Send(command);
+
+            return Ok(response);
+        }
+
+
+        [Authorize(Roles = "User"), HttpPost("buyNow")]
+        public async Task<ActionResult<RequestStatusDto>> BuyNow([FromBody] BuyNowCommandDto commandDto)
+        {
+            var cmd = _mapper.Map<BuyNowCommand>(commandDto);
+            var response = (RequestStatusDto) await _httpQueuedCommandMediator.Send(cmd);
 
             return Ok(response);
         }

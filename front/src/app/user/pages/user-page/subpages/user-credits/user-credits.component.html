@@ -7,15 +7,15 @@
     <h3>Buy credits</h3>
     <form id="balance-form" (ngSubmit)="onBalanceFormSubmit()" [formGroup]="balanceForm">
       <div class="offer-container">
-        <button class="buy-btn"  mat-raised-button color="primary">Buy</button>
-        <mat-card class="credits-offer" >15 Credits</mat-card>
+        <button class="buy-btn" mat-raised-button color="primary" (click)="onBuyCreditsClick()">Buy</button>
+        <mat-card class="credits-offer">15 Credits</mat-card>
       </div>
       <div class="offer-container">
-        <button class="buy-btn"  mat-raised-button color="primary">Buy</button>
+        <button class="buy-btn" mat-raised-button color="primary" (click)="onBuyCreditsClick()">Buy</button>
         <mat-card class="credits-offer" >40 Credits</mat-card>
       </div>
       <div class="offer-container">
-        <button class="buy-btn" mat-raised-button color="primary">Buy</button>
+        <button class="buy-btn" mat-raised-button color="primary" (click)="onBuyCreditsClick()">Buy</button>
         <mat-card class="credits-offer">100 Credits</mat-card>
       </div>
     </form>

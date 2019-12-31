@@ -14,7 +14,8 @@ namespace Core.Query.EventHandlers.AuctionUpdateHandlers
         private readonly IRequestStatusService _requestStatusService;
         private readonly ILogger<AuctionImageAddedHandler> _logger;
 
-        public AuctionImageReplacedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext, IRequestStatusService requestStatusService, ILogger<AuctionImageAddedHandler> logger) : base(appEventBuilder)
+        public AuctionImageReplacedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext, IRequestStatusService requestStatusService, 
+            ILogger<AuctionImageAddedHandler> logger) : base(appEventBuilder, logger)
         {
             _dbContext = dbContext;
             _requestStatusService = requestStatusService;
@@ -40,43 +41,6 @@ namespace Core.Query.EventHandlers.AuctionUpdateHandlers
         public override void Consume(IAppEvent<AuctionImageReplaced> appEvent)
         {
             ReplaceImg(appEvent.Event);
-            _requestStatusService.TrySendReqestCompletionToUser(appEvent, appEvent.Event.AuctionOwner);
-        }
-    }
-
-
-    public class AuctionImageRemovedHandler : EventConsumer<AuctionImageRemoved>
-    {
-        private ReadModelDbContext _dbContext;
-        private readonly IRequestStatusService _requestStatusService;
-        private readonly ILogger<AuctionImageAddedHandler> _logger;
-
-        public AuctionImageRemovedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext, IRequestStatusService requestStatusService, ILogger<AuctionImageAddedHandler> logger) : base(appEventBuilder)
-        {
-            _dbContext = dbContext;
-            _requestStatusService = requestStatusService;
-            _logger = logger;
-        }
-
-        private void RemoveImg(AuctionImageRemoved auctionEvent)
-        {
-            var filter = Builders<AuctionRead>.Filter.Eq(f => f.AuctionId, auctionEvent.AuctionId.ToString());
-            var update = Builders<AuctionRead>.Update.Set(read => read.AuctionImages[auctionEvent.ImgNum],
-                null);
-            try
-            {
-                _dbContext.AuctionsReadModel.UpdateMany(filter, update);
-            }
-            catch (Exception)
-            {
-                _logger.LogError("Cannot remove image in read model");
-                throw;
-            }
-        }
-
-        public override void Consume(IAppEvent<AuctionImageRemoved> appEvent)
-        {
-            RemoveImg(appEvent.Event);
             _requestStatusService.TrySendReqestCompletionToUser(appEvent, appEvent.Event.AuctionOwner);
         }
     }
