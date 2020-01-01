@@ -9,21 +9,19 @@ $listItemHeight: 200px;
 
 .container {
   width: 100%;
-  display: flex;
-  flex-direction: row;
   padding: 0 0 0 14px;
   box-sizing: border-box;
   font-size: 16px;
   .left {
-    min-width: 210px;
     height: $listItemHeight;
-    box-sizing: border-box;
+    width: 200px;
     padding: 5px;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    float: left;
   }
   .right {
     width: calc(100% - 210px);
@@ -32,6 +30,7 @@ $listItemHeight: 200px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    float: left;
     .right-content {
       padding-left: 10px;
     }
@@ -42,13 +41,14 @@ $listItemHeight: 200px;
 }
 
 .auction-img {
-  max-width: 200px;
-  max-height: 200px;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .title-div {
   .auction-title {
     margin-bottom: 4px;
+    font-size: 1.5em;
   }
   .condition-text {
     display: block;
@@ -107,42 +107,29 @@ $listItemHeight: 200px;
 }
 
 @media screen and(max-width: 700px) {
-  .container {
-    font-size: 13.5px;
-  }
   .title-div {
     .auction-title {
       font-size: 1.1em;
     }
   }
-  .auction-img {
-    max-width: 150px;
-    max-height: 150px;
-  }
   .container {
+    font-size: 13.5px;
     .left {
-      min-width: 150px;
-      .auction-img {
-        max-width: 150px;
-        max-height: 150px;
-      }
+      width: 150px;
     }
     .right {
-      width: calc(100% - 150px);
+      width: calc(100% - 160px);
     }
   }
 }
 
 @media screen and(max-width: 490px) {
-  .auction-list-item-container {
-    flex-direction: column;
+  .container {
     .left {
-      flex-basis: 100%;
-      min-width: 100%;
+      width: 140px;
     }
     .right {
-      flex-basis: 100%;
-      width: 100%;
+      width: calc(100% - 150px);
     }
   }
   .totalbids-div {
@@ -150,5 +137,28 @@ $listItemHeight: 200px;
     margin-top: 15px;
     width: 100%;
     text-align: left;
+  }
+  .title-div {
+    .auction-title {
+      font-size: 1em;
+    }
+  }
+}
+
+@media screen and(max-width: 390px) {
+  .container {
+    .left {
+      width: 140px;
+      margin: 0 auto;
+      float: none;
+    }
+    .right {
+      width: 100%;
+    }
+  }
+  .title-div {
+    .auction-title {
+      font-size: 1.3em;
+    }
   }
 }

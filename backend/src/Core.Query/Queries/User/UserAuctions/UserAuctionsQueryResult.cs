@@ -5,7 +5,9 @@ namespace Core.Query.Queries.User.UserAuctions
 {
     public class UserAuctionsQueryResult
     {
-        public IEnumerable<AuctionRead> Auctions { get; set; }
-        public long Total { get; set; }
+        private static AuctionRead[] _default = new AuctionRead[0];
+
+        public IEnumerable<AuctionRead> Auctions { get; set; } = _default;
+        public long Total { get; set; } = 0;
     }
 }

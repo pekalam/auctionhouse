@@ -142,8 +142,8 @@ export class AuctionsPageComponent implements OnInit {
     this.fetchAuctions();
   }
 
-  onPageChange(ev: PageEvent) {
-    this.currentPage = ev.pageIndex;
+  onPageChange(newPage: number) {
+    this.currentPage = newPage;
     this.fetchAuctions();
   }
 

@@ -80,7 +80,7 @@ namespace IntegrationTests
                     mediator.Send(It.IsAny<IRequest<RequestStatus>>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(new RequestStatus(cmd.CommandContext.CorrelationId, Status.COMPLETED)));
 
-            var testQueuedCommandHandler = new Mock<WSQueuedCommandHandler>(mockRequestStatusService.Object, mediatrMock.Object);
+            var testQueuedCommandHandler = new Mock<WSQueuedCommandHandler>(mockRequestStatusService.Object, mediatrMock.Object, Mock.Of<ILogger<WSQueuedCommandHandler>>());
             testQueuedCommandHandler.Setup(handler => handler.Handle(It.IsAny<QueuedCommand>()))
                 .Callback(() => sem.Release())
                 .CallBase();

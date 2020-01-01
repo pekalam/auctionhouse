@@ -81,12 +81,12 @@ namespace FunctionalTests.Queries
             var mapper = MapperConfigHolder.Configuration.CreateMapper();
             for (int i = 0; i < results.Auctions.Count(); i++)
             {
-                var queryResultFromStub = mapper.Map<AuctionsQueryResult>(stubAuctions.First(model =>
+                var queryResultFromStub = mapper.Map<AuctionListItem>(stubAuctions.First(model =>
                     model.Id == results.Auctions.ElementAt(i)
                         .Id));
                 results.Auctions.ElementAt(i)
                     .Should()
-                    .BeEquivalentTo(queryResultFromStub.Auctions.ElementAt(i), config: options =>
+                    .BeEquivalentTo(queryResultFromStub, config: options =>
                     {
                         options.Excluding(info => info.StartDate);
                         options.Excluding(info => info.EndDate);

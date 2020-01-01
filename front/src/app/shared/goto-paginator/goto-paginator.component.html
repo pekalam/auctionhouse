@@ -1,0 +1,10 @@
+<div class="pagination-up-container">
+  <div class="goto-div">
+    <span>Go to</span>
+    <mat-form-field class="goto-field">
+      <input (keyup.enter)="pageChange.emit($event.target.value - 1)" matInput type="number" [min]="1" />
+    </mat-form-field>
+  </div>
+  <mat-paginator class="paginator-up" [length]="length" [pageSize]="10" [pageIndex]="page" (page)="pageChange.emit($event.pageIndex)">
+  </mat-paginator>
+</div>

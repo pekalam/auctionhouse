@@ -10,19 +10,30 @@ import { Auction } from 'src/app/core/models/Auctions';
 })
 export class UserAuctionsPageComponent implements OnInit {
 
-  userAuctions: UserAuctions;
+  auctions: Auction[];
+  currentPage = 0;
+  total = 0;
 
   constructor(private userAuctionsQuery: UserAuctionsQuery, private router: Router) {
-    userAuctionsQuery.execute(0).subscribe((auctions) => {
-      this.userAuctions = auctions;
-    })
-   }
+    this.fetchAuctions();
+  }
 
   ngOnInit() {
   }
 
+  private fetchAuctions() {
+    this.userAuctionsQuery.execute(this.currentPage).subscribe((v) => {
+      this.auctions = v.auctions;
+      this.total = v.total;
+    });
+  }
 
-  onAuctionClick(clickedAuction: Auction){
-    this.router.navigate(['/editAuction'] , {state: {auction: clickedAuction}})
+  onAuctionClick(clickedAuction: Auction) {
+    this.router.navigate(['/editAuction'], { state: { auction: clickedAuction } })
+  }
+
+  onPageChange(newPage: number) {
+    this.currentPage = newPage;
+    this.fetchAuctions();
   }
 }

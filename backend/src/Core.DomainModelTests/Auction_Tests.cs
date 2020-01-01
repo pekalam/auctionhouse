@@ -372,7 +372,7 @@ namespace Core.DomainModelTests
         public void When_built_from_events_containing_update_event_group_builds_valid_object()
         {
             auction.UpdateBuyNowPrice(300m);
-            auction.UpdateTags(new Tag[]{new Tag("update test1"), new Tag("update test2")});
+            auction.UpdateTags(new Tag[] {new Tag("update test1"), new Tag("update test2")});
             auction.UpdateCategory(new Category("update test category", 1));
 
             var recreated = Auction.FromEvents(auction.PendingEvents);
@@ -382,6 +382,23 @@ namespace Core.DomainModelTests
             recreated.Tags[0].Value.Should().Be("update test1");
             recreated.Tags[1].Value.Should().Be("update test2");
             recreated.Category.Name.Should().Be("update test category");
+        }
+
+        [Test]
+        public void AuctionConstructor_when_tags_array_contains_repeating_tags_throws()
+        {
+            var auctionArgs = new AuctionArgs.Builder()
+                .SetBuyNow(90.00m)
+                .SetStartDate(DateTime.UtcNow)
+                .SetEndDate(DateTime.UtcNow.AddDays(1))
+                .SetOwner(new UserIdentity())
+                .SetProduct(new Product("test name", "desccription 1111", Condition.New))
+                .SetCategory(new Category("test", 0))
+                .SetTags(new[] {"t1", "t1"})
+                .SetName("test name")
+                .Build();
+
+            Assert.Throws<DomainException>(() => new Auction(auctionArgs));
         }
     }
 }

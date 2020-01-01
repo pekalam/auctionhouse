@@ -40,6 +40,9 @@ namespace Core.Query.Queries.User.UserBids
 
             if (result != null)
             {
+                long total = await _dbContext.UsersReadModel.CountDocumentsAsync(userReadModelFilter);
+                result.Total = total;
+
                 var auctionFilter = Builders<AuctionRead>.Filter.In(f => f.AuctionId,
                     result.UserBids.Select(b => b.AuctionId).ToArray());
                 var names = await _dbContext.AuctionsReadModel

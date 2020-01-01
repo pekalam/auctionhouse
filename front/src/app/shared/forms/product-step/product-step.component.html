@@ -36,6 +36,7 @@
           <ng-container *ngIf="form.controls.tags.errors">
             <span *ngIf="form.controls.tags.errors.required">This field is required</span>
             <span *ngIf="form.controls.tags.errors.tagsMaxLength">Tag name is too long</span>
+            <span *ngIf="form.controls.tags.errors.nonUnique">Tags are not unique</span>
           </ng-container>
         </mat-error>
       </mat-form-field>

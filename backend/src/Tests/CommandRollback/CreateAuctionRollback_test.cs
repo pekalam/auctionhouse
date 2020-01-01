@@ -143,6 +143,7 @@ namespace FunctionalTests.CommandRollback
 
 
             var session = user.UserIdentity.GetAuctionCreateSession();
+            command.AuctionCreateSession = session;
 
             var handlerDepedencies = new CreateAuctionCommandHandlerDepedencies()
             {

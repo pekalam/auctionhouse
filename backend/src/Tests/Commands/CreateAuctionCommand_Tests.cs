@@ -113,7 +113,7 @@ namespace FunctionalTests.Commands
                 startDate, endDate,
                 categories, Tag.From(new []{"tag1"}), "test name", false);
             command.SignedInUser = user.UserIdentity;
-
+            command.AuctionCreateSession = user.UserIdentity.GetAuctionCreateSession();
             testCommandHandler.Handle(command, CancellationToken.None)
                 .Wait();
 
@@ -137,6 +137,7 @@ namespace FunctionalTests.Commands
                 new Product("test product name", "example description", Condition.New),
                 startDate, endDate, categories, Tag.From(new []{"tag1"}), "test name", false);
             command.SignedInUser = user.UserIdentity;
+            command.AuctionCreateSession = user.UserIdentity.GetAuctionCreateSession();
 
 
             Assert.Throws<Exception>(() =>
@@ -160,6 +161,7 @@ namespace FunctionalTests.Commands
                 startDate,
                 endDate, categories, Tag.From(new []{"tag1"}), "test auction name", false);
             command.SignedInUser = user.UserIdentity;
+            command.AuctionCreateSession = user.UserIdentity.GetAuctionCreateSession();
 
 
             Assert.Throws<Exception>(() =>

@@ -51,7 +51,7 @@ namespace UnitTests.AuthorizationRequiredAttribute_Tests
         [Test]
         public void LoadSignedInUserCmdMembers_Loads_commands_and_queries_to_signed_in_property_map()
         {
-            AuthorizationRequiredAttribute.LoadSignedInUserCmdAndQueryMembers("UnitTests");
+            AuthorizationRequiredAttribute.LoadSignedInUserCmdAndQueryMembers("Test.UnitTests");
 
             foreach (var cmdToProp in AuthorizationRequiredAttribute._signedInUserCommandProperties)
             {

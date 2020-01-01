@@ -21,7 +21,7 @@ namespace Core.Common.Domain
         public const string AuctionEndDateChanged = "auctionEndDateChanged";
         public const string AuctionCategoryChanged = "auctionCategoryChanged";
         public const string AuctionNameChanged = "auctionNameChanged";
-        public const string AuctionUpdated = "auctionUpdated";
+        public const string AuctionUpdated = "auctionUpdateEventGroup";
         public const string AuctionDescriptionChanged = "auctionDescriptionChanged";
 
 

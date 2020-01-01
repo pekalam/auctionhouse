@@ -4,10 +4,11 @@ import { UserBid } from '../../../../../core/models/UserBid';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { CancelBidCommand } from '../../../../../core/commands/auction/CancelBidCommand';
+import { PageEvent } from '@angular/material';
 
 interface UserBidVM extends UserBid {
   canBeCanceled: boolean;
-};
+}
 
 @Component({
   selector: 'app-user-bids-page',
@@ -21,17 +22,24 @@ export class UserBidsPageComponent implements OnInit {
   @ViewChild(MatSort, { static: false }) sort: MatSort;
   dataSource;
 
+  total = 0;
+  currentPage = 0;
+
   constructor(private userBidsQuery: UserBidsQuery, private cancelBidCommand: CancelBidCommand) {
-    userBidsQuery.execute(0).subscribe((v) => {
-      if(!v || !v.userBids){return;}
+    this.fetchBids();
+  }
+
+  private fetchBids() {
+    this.userBidsQuery.execute(this.currentPage).subscribe((v) => {
+      if (!v || !v.userBids) { return; }
       this.userBids = v.userBids.map(v => v as UserBidVM);
+      this.total = v.total;
       for (const bid of this.userBids) {
         bid.canBeCanceled = this.canBeCanceled(bid);
       }
       this.dataSource = new MatTableDataSource(this.userBids);
       this.dataSource.sort = this.sort;
-    })
-
+    });
   }
 
   //TODO: domain model
@@ -50,12 +58,16 @@ export class UserBidsPageComponent implements OnInit {
         bid.bidCanceled = true;
       } else {
         console.log('cancel bid error');
-
       }
     });
   }
 
   ngOnInit() {
+  }
+
+  onPageChange(pageEvent: PageEvent) {
+    this.currentPage = pageEvent.pageIndex;
+    this.fetchBids();
   }
 
 }

@@ -103,14 +103,6 @@ export class AuctionDataStepComponent extends AuctionCreateStep<AuctionDataStep>
 
   onOkClick() {
     if (this.form.valid) {
-/*       console.log(this.form.value.endDate);
-      console.log(this.form.value.endDate.toObject());
-      console.log(this.form.value.endDate.toString());
-      console.log(JSON.stringify(this.form.value.endDate));
-      console.log(typeof this.form.value.endDate); */
-
-
-
       let step: AuctionDataStep = {
         name: this.form.value.name,
         buyNow: this.form.value.buyNow,

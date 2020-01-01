@@ -40,7 +40,7 @@ namespace UnitTests.CommandMediator_Tests
         [SetUp]
         public void SetUp()
         {
-            QueryMediator.LoadQueryAttributeStrategies("UnitTests");
+            QueryMediator.LoadQueryAttributeStrategies("Test.UnitTests");
         }
 
         [Test]

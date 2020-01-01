@@ -28,7 +28,7 @@ namespace Core.Common.Domain.Categories
             var cat = obj as Category;
             while (cat.SubCategory != null && this.SubCategory != null)
             {
-                return cat.SubCategory.Equals(this.SubCategory);
+                return this.CategoryId == cat.CategoryId && cat.SubCategory.Equals(this.SubCategory);
             }
 
             if (!(cat.SubCategory == null && this.SubCategory == null))

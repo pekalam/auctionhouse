@@ -43,4 +43,7 @@
       [class.bidcanceled]="row.bidCanceled">
     </tr>
   </table>
+
+  <mat-paginator *ngIf="userBids && userBids.length > 0" [length]="total" [pageSize]="10" [pageIndex]="currentPage" (page)="onPageChange($event)">
+  </mat-paginator>
 </div>

@@ -3,41 +3,49 @@
     <mat-tab-group [selectedIndex]="0">
       <mat-tab label="Categories">
         <div class="tab-content">
-          <app-category-select-step #categoryForm [defaults]="auction.category"
-            (outputOnStepComplete)="onCategoriesFormSubmit($event)" style="margin: 0 auto;">
+          <app-category-select-step #categoryForm [defaults]="categoryFormValues"
+            (outputOnStepComplete)="onCategoriesFormSubmit($event)" style="width: 100%; margin: 0 auto;">
           </app-category-select-step>
-          <div style="text-align: center;">
-            <hr>
+          <hr>
+          <div class="save-btn-container">
+            <i (click)="location.back()" class="fas fa-arrow-left back"></i>
             <button class="save-btn" (click)="categoryForm.onOkClick()" [disabled]="!categoryForm.ready">Save</button>
           </div>
         </div>
       </mat-tab>
       <mat-tab label="Auction data">
         <div class="tab-content">
-          <app-auction-data-step #auctionDataForm [defaults]="auctionDataFormValues" (outputOnStepComplete)="onAuctionDataFormSubmit($event)"
-           [disable]="{startDate: true}" style="margin: 0 auto;"></app-auction-data-step>
-          <div style="text-align: center;">
-            <hr>
-            <button class="save-btn" (click)="auctionDataForm.onOkClick()" [disabled]="!auctionDataForm.ready">Save</button>
+          <app-auction-data-step #auctionDataForm [defaults]="auctionDataFormValues"
+            (outputOnStepComplete)="onAuctionDataFormSubmit($event)" [disable]="{startDate: true}"
+            style="width: 100%; margin: 0 auto;"></app-auction-data-step>
+          <hr>
+          <div class="save-btn-container">
+            <i (click)="location.back()" class="fas fa-arrow-left back"></i>
+            <button class="save-btn" (click)="auctionDataForm.onOkClick()"
+              [disabled]="!auctionDataForm.ready">Save</button>
           </div>
         </div>
       </mat-tab>
       <mat-tab label="Item data">
         <div class="tab-content">
           <app-product-step #productForm [defaults]="productFormDefaultValues"
-            (outputOnStepComplete)="onProductFormSubmit($event)" [disable]="{productName: true}" style="margin: 0 auto;"></app-product-step>
-          <div style="text-align: center;">
-            <hr>
+            (outputOnStepComplete)="onProductFormSubmit($event)" [disable]="{productName: true}"
+            style="width: 100%; margin: 0 auto;"></app-product-step>
+          <hr>
+          <div class="save-btn-container">
+            <i (click)="location.back()" class="fas fa-arrow-left back"></i>
             <button class="save-btn" (click)="productForm.onOkClick()" [disabled]="!productForm.ready">Save</button>
           </div>
         </div>
       </mat-tab>
       <mat-tab label="Images">
         <div class="tab-content">
-          <app-add-image-step #imageStep [defaults]="auctionImagesFormValues" (imgSelected)="onImageSelected($event)" (outputOnStepComplete)="onImagesFormSubmit($event)" style="margin: 0 auto;"></app-add-image-step>
-
-          <div style="text-align: center;">
-            <hr>
+          <app-add-image-step #imageStep [defaults]="auctionImagesFormValues" (imgSelected)="onImageSelected($event)"
+            (outputOnStepComplete)="onImagesFormSubmit($event)" style="width: 100%; margin: 0 auto;">
+          </app-add-image-step>
+          <hr>
+          <div class="save-btn-container">
+            <i (click)="location.back()" class="fas fa-arrow-left back"></i>
             <button class="save-btn" (click)="imageStep.onOkClick()">Save</button>
           </div>
         </div>

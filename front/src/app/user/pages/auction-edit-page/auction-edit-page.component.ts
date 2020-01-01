@@ -17,6 +17,8 @@ import { first } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { CategorySelectStep } from '../../../shared/forms/category-select-step/categorySelectStep';
 import { UserReplaceAuctionImageCommand } from 'src/app/core/commands/auction/UserReplaceAuctionImageCommand';
+import { Category } from '../../../core/models/Category';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-auction-edit-page',
@@ -32,7 +34,7 @@ export class AuctionEditPageComponent implements OnInit, OnDestroy {
   imageStepComponent;
   @ViewChild('summaryStep', { static: true })
   summaryStepComponent;
-  @ViewChild('auctionDataStep', { static: true })
+  @ViewChild('auctionDataForm', { static: true })
   auctionDataStepComponent;
 
   auction: Auction;
@@ -40,6 +42,7 @@ export class AuctionEditPageComponent implements OnInit, OnDestroy {
   productFormDefaultValues: ProductFormValues;
   auctionDataFormValues: AuctionDataFormValues;
   auctionImagesFormValues: AuctionImagesFormValues;
+  categoryFormValues: Category;
 
   private subscription: Subscription;
 
@@ -48,12 +51,14 @@ export class AuctionEditPageComponent implements OnInit, OnDestroy {
               private userRemoveAuctionImageCommand: UserRemoveAuctionImageCommand,
               private userReplaceAuctionImageCommand: UserReplaceAuctionImageCommand,
               private updateAuctionCommand: UpdateAuctionCommand,
-              private serverMessageService: WSCommandStatusService) {
+              private serverMessageService: WSCommandStatusService,
+              public location: Location) {
     if (this.router.getCurrentNavigation().extras.state) {
       this.auction = this.router.getCurrentNavigation().extras.state.auction;
       this.createDefaultProductFormValues();
       this.createDefaultAuctionDataFormValues();
       this.createDefaultAuctionImagesFormValues();
+      this.createDefaultCategoryFormValues();
     } else {
       this.router.navigate(['/user']);
     }
@@ -84,6 +89,10 @@ export class AuctionEditPageComponent implements OnInit, OnDestroy {
     this.auctionImagesFormValues = {
       existingImages: this.auction.auctionImages
     }
+  }
+
+  private createDefaultCategoryFormValues(){
+    this.categoryFormValues = this.auction.category;
   }
 
   private createUpdateCommandArgsFromAuction(): UpdateAuctionCommandArgs {

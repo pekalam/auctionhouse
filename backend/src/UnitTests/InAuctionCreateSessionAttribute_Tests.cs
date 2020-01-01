@@ -26,7 +26,7 @@ namespace UnitTests.AuctionCreateSessionAttributeTests
         [Test]
         public void LoadAuctionCreateSessionCommandMembers_loads_commands_and_their_members_to_internal_map()
         {
-            InAuctionCreateSessionAttribute.LoadAuctionCreateSessionCommandMembers("UnitTests");
+            InAuctionCreateSessionAttribute.LoadAuctionCreateSessionCommandMembers("Test.UnitTests");
 
             var internalMap = InAuctionCreateSessionAttribute._auctionCreateSessionCommandProperties;
 
@@ -39,7 +39,7 @@ namespace UnitTests.AuctionCreateSessionAttributeTests
         [Test]
         public void AttributeStrategy_should_set_create_session_parameter()
         {
-            InAuctionCreateSessionAttribute.LoadAuctionCreateSessionCommandMembers("UnitTests");
+            InAuctionCreateSessionAttribute.LoadAuctionCreateSessionCommandMembers("Test.UnitTests");
             var attr = new InAuctionCreateSessionAttribute();
 
             var testSession = new AuctionCreateSession(new UserIdentity(Guid.NewGuid(), "test"));

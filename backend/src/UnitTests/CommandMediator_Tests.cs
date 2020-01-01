@@ -47,8 +47,8 @@ namespace UnitTests.CommandMediator_Tests
         [SetUp]
         public void SetUp()
         {
-            AuthorizationRequiredAttribute.LoadSignedInUserCmdAndQueryMembers("UnitTests");
-            CommandMediator.LoadCommandAttributeStrategies("UnitTests");
+            AuthorizationRequiredAttribute.LoadSignedInUserCmdAndQueryMembers("Test.UnitTests");
+            CommandMediator.LoadCommandAttributeStrategies("Test.UnitTests");
         }
 
         [Test]

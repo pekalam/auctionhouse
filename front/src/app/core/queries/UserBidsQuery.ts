@@ -7,6 +7,7 @@ import { QueryHelper } from './QueryHelper';
 
 export interface UserBidsQueryResult{
   userBids: UserBid[];
+  total: number;
 }
 
 @Injectable({

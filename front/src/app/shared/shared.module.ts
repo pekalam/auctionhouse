@@ -12,6 +12,7 @@ import { AuctionDataStepComponent } from './forms/auction-data-step/auction-data
 import { AddImageStepComponent } from './forms/add-image-step/add-image-step.component';
 import { ImgUploadInputComponent } from './forms/img-upload-input/img-upload-input.component';
 import { CreateSummaryStepComponent } from './forms/create-summary-step/create-summary-step.component';
+import { GotoPaginatorComponent } from './goto-paginator/goto-paginator.component';
 
 
 
@@ -25,7 +26,8 @@ import { CreateSummaryStepComponent } from './forms/create-summary-step/create-s
     AuctionDataStepComponent,
     AddImageStepComponent,
     ImgUploadInputComponent,
-    CreateSummaryStepComponent
+    CreateSummaryStepComponent,
+    GotoPaginatorComponent
   ],
   imports: [
     CoreModule,
@@ -42,7 +44,8 @@ import { CreateSummaryStepComponent } from './forms/create-summary-step/create-s
     AuctionDataStepComponent,
     AddImageStepComponent,
     ImgUploadInputComponent,
-    CreateSummaryStepComponent
+    CreateSummaryStepComponent,
+    GotoPaginatorComponent
   ]
 })
 export class SharedModule { }

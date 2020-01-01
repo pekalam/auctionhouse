@@ -32,13 +32,13 @@ namespace Core.Query.Queries.User.UserAuctions
                 .Limit(PageSize)
                 .FirstOrDefaultAsync();
 
-            var count = _dbContext.UsersReadModel.AsQueryable()
-                .Where(read => read.UserIdentity.UserId == request.SignedInUser.UserId.ToString())
-                .Select(read => read.CreatedAuctions)
-                .Count();
-
             if (idsToJoin != null)
             {
+                var count = _dbContext.UsersReadModel.AsQueryable()
+                    .Where(read => read.UserIdentity.UserId == request.SignedInUser.UserId.ToString())
+                    .Select(read => read.CreatedAuctions)
+                    .Count();
+
                 var userAuctionsFilter = Builders<AuctionRead>.Filter
                     .In(field => field.AuctionId, idsToJoin.AuctionsIds);
                 var userAuctions = await _dbContext.AuctionsReadModel

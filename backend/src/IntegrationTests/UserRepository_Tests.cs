@@ -16,7 +16,7 @@ namespace IntegrationTests
             var serverOpt = new MsSqlConnectionSettings()
             {
                 ConnectionString = TestContextUtils.GetParameterOrDefault("sqlserver",
-                    "Data Source=.;Initial Catalog=AuctionhouseDatabase;Integrated Security=True;")
+                    "Data Source=.;Initial Catalog=AuctionhouseDatabase;Integrated Security=False;User ID=sa;PWD=Qwerty1234;")
             };
             userRepository = new MsSqlUserRepository(serverOpt);
             user = new User();

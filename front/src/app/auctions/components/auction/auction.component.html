@@ -4,6 +4,7 @@
   </div>
   <div class="right">
     <div class="right-content">
+      <h3 *ngIf="auction.archived">(Archived)</h3>
       <h3>{{auction.name}}</h3>
       <div><span class="prop-title">From:</span> {{auction.creator.userName}}</div>
       <p *ngIf="showTimer" class="timer">TIME LEFT: {{timer.m}}:{{timer.s}}</p>
@@ -30,8 +31,8 @@
       </div>
       <hr>
 
-      <div class="bid-info-container">
-        <span  *ngIf="auction.winningBid"><span class="winner">Winner:</span>
+      <div class="bid-info-container" *ngIf="!auction.archived">
+        <span *ngIf="auction.winningBid"><span class="winner">Winner:</span>
           <b>{{auction.winningBid.userIdentity.userName}}</b></span>
         <span class="nobids" *ngIf="!auction.winningBid">Nobody is taking part in auction</span>
       </div>

@@ -9,5 +9,6 @@ namespace Core.Query.Queries.User.UserBids
         private static UserBid[] _bids = new UserBid[0];
 
         public IEnumerable<UserBid> UserBids { get; set; } = _bids;
+        public long Total { get; set; } = 0;
     }
 }

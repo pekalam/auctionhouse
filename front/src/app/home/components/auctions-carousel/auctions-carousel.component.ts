@@ -48,7 +48,8 @@ export class AuctionsCarouselComponent implements OnInit {
       });
   }
 
-  nextAuction() {
+  nextAuction(ev : Event) {
+    ev.stopPropagation();
     if (this.currentAuction + 1 < this.auctions.length) {
       this.currentAuction++;
       this.imgSources = [`/api/auctionImage?img=${this.auctions[this.currentAuction].auctionImages[0].size1Id}`];
@@ -59,7 +60,8 @@ export class AuctionsCarouselComponent implements OnInit {
     }
   }
 
-  prevAuction() {
+  prevAuction(ev: Event) {
+    ev.stopPropagation();
     if (this.currentAuction - 1 >= 0) {
       this.currentAuction--;
       this.imgSources = [`/api/auctionImage?img=${this.auctions[this.currentAuction].auctionImages[0].size1Id}`];

@@ -63,12 +63,13 @@ namespace FunctionalTests.Utils
 			SetupReadModelDbContext();
 			SetupTimeTaskClient();
 			SetupAuctionImageRepository();
+			SetupUserRepository();
 		}
 
 
 		private void SetupUserRepository()
 		{
-			var mssqlConnectionString = TestContextUtils.GetParameterOrDefault("sqlserver", "Data Source=.;Initial Catalog=AuctionhouseDatabase;Integrated Security=True;");
+			var mssqlConnectionString = TestContextUtils.GetParameterOrDefault("sqlserver", "Data Source=.;Initial Catalog=AuctionhouseDatabase;Integrated Security=False;User ID=sa;PWD=Qwerty1234;");
 			UserRepository = new MsSqlUserRepository(new MsSqlConnectionSettings()
 			{
 				ConnectionString = mssqlConnectionString
@@ -77,7 +78,7 @@ namespace FunctionalTests.Utils
 
 		private void SetupAuctionRepository()
 		{
-			var mssqlConnectionString = TestContextUtils.GetParameterOrDefault("sqlserver", "Data Source=.;Initial Catalog=AuctionhouseDatabase;Integrated Security=True;");
+			var mssqlConnectionString = TestContextUtils.GetParameterOrDefault("sqlserver", "Data Source=.;Initial Catalog=AuctionhouseDatabase;Integrated Security=False;User ID=sa;PWD=Qwerty1234;");
 			AuctionRepository = new MsSqlAuctionRepository(new MsSqlConnectionSettings()
 			{
 				ConnectionString = mssqlConnectionString

@@ -80,7 +80,11 @@ namespace Core.Common.Domain.Auctions
             }
             else
             {
-                Tag[] tagsToCpy = auctionArgs.Tags.Distinct().Select(s => (Tag)s).ToArray();
+                if (!(auctionArgs.Tags.Select(tag => tag.Value).Distinct().Count() == auctionArgs.Tags.Length))
+                {
+                    throw new DomainException("Tags array does not contain unique tags");
+                }
+                Tag[] tagsToCpy = auctionArgs.Tags;
                 Tags = new Tag[tagsToCpy.Length];
                 Array.Copy(tagsToCpy, Tags, tagsToCpy.Length);
             }

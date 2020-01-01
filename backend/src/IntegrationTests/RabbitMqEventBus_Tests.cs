@@ -121,7 +121,7 @@ namespace IntegrationTests
             var stubImplProvider = new Mock<IImplProvider>();
                 stubImplProvider.Setup(provider => provider.Get(typeof(TestHandler)))
                 .Returns(handler);
-            bus.InitSubscribers("IntegrationTests", stubImplProvider.Object);
+            bus.InitSubscribers("Test.IntegrationTests", stubImplProvider.Object);
 
             bus.Publish(toPublish);
 

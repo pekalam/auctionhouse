@@ -5,6 +5,7 @@ import { Auction } from '../models/Auctions';
 
 export interface UserAuctions {
   auctions: Auction[];
+  total: number;
 }
 
 @Injectable({

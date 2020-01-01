@@ -24,9 +24,15 @@ namespace FunctionalTests.EventHandling
         [Test]
         public void Test1()
         {
+            var services = TestDepedencies.Instance.Value;
+            var user = new User();
+            user.Register("testUserName");
+            user.AddCredits(10000);
+            var userIdentity = user.UserIdentity;
+
+            services.UserRepository.AddUser(user);
 
 
-            var user = new UserIdentity() {UserId = Guid.NewGuid(), UserName = "testUserName"};
             var product = new Product("test name", "test product description", Condition.New);
             var auctionArgs = new AuctionArgs.Builder()
                     .SetBuyNow(20.0m)
@@ -41,7 +47,6 @@ namespace FunctionalTests.EventHandling
             var auction = new Auction(auctionArgs);
             var sem = new SemaphoreSlim(0, 1);
 
-            var services = TestDepedencies.Instance.Value;
 
             var eventHandler = new Mock<AuctionRaisedHandler>(services.AppEventBuilder,
                 services.DbContext, Mock.Of<IRequestStatusService>(), Mock.Of<ILogger<AuctionRaisedHandler>>());
@@ -61,7 +66,7 @@ namespace FunctionalTests.EventHandling
 
             services.AuctionRepository.AddAuction(auction);
             var cmd = new BidCommand(auction.AggregateId, 21.0m);
-            cmd.SignedInUser = user;
+            cmd.SignedInUser = userIdentity;
             stubHandler.Handle(cmd, CancellationToken.None);
 
 

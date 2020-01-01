@@ -1,9 +1,15 @@
 @import 'breakpoints';
 
+.container *{
+  outline: none;
+}
+
 .container{
   display: block;
   height: 100%;
   width: 100%;
+  outline: none;
+  cursor: pointer;
   .carousel{
     width: 50%;
     float: left;
@@ -80,9 +86,4 @@
 
 .views{
   font-size: 0.8em;
-}
-
-
-@include mobile {
-
 }

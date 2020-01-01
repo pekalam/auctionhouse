@@ -25,7 +25,7 @@ namespace Core.Command.Handler
             var validationContext = new ValidationContext(request);
             var validationResults = new Collection<ValidationResult>();
 
-            _logger.LogTrace("Handling command {name}", nameof(T));
+            _logger.LogTrace("Handling command {name}", typeof(T).Name);
             if (Validator.TryValidateObject(request, validationContext, validationResults, true))
             {
                 return HandleCommand(request, cancellationToken);

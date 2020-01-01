@@ -12,9 +12,12 @@ function tagsValidator(): ValidatorFn {
     const tags = tagsString.split(' ').filter((s) => s.length > 0);
     console.log(tags);
 
+    if (!tags.every((v, ind) => tags.filter((t) => t === v).length === 1)) {
+      return { nonUnique: { value: 'Tags are not unique' } };
+    }
+
     if (tags.length === 0) { return null; }
     if (tags.filter((t) => t.length > 30).length > 0) { return { tagsMaxLength: { value: 'Tag value exceeds max length' } }; }
-
     return null;
   };
 

@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading;
 using Core.Command.CreateAuction;
 using Core.Common.Auth;
+using Core.Common.Domain.AuctionCreateSession;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Auctions.Events;
 using Core.Common.Domain.Categories;
@@ -44,6 +45,7 @@ namespace FunctionalTests.EventHandling
         private User user;
         private Product product;
         private CreateAuctionCommandHandler commandHandler;
+        private AuctionCreateSession session;
 
         [SetUp]
         public void SetUp()
@@ -52,6 +54,7 @@ namespace FunctionalTests.EventHandling
             user = new User();
             user.Register("testUserName");
             user.MarkPendingEventsAsHandled();
+            session = user.UserIdentity.GetAuctionCreateSession();
             product = new Product("test product name", "example description", Condition.New);
             services.DbContext.UsersReadModel.InsertOne(new UserRead()
                 {UserIdentity = new UserIdentityRead(user.UserIdentity)});
@@ -75,7 +78,6 @@ namespace FunctionalTests.EventHandling
             userRepository.Setup(f => f.FindUser(It.IsAny<UserIdentity>()))
                 .Returns(user);
 
-            var session = user.UserIdentity.GetAuctionCreateSession();
             session.AddOrReplaceImage(new AuctionImage("img1-1",
                 "img1-2", "img1-3"), 0);
             services.AuctionImageRepository.Add("img1-1", new AuctionImageRepresentation()
@@ -109,6 +111,7 @@ namespace FunctionalTests.EventHandling
                 DateTime.UtcNow.AddDays(12),
                 categories, Tag.From(new[] {"tag1"}), "test name", false);
             cmd.SignedInUser = user.UserIdentity;
+            cmd.AuctionCreateSession = session;
             return cmd;
         }
 
@@ -146,6 +149,7 @@ namespace FunctionalTests.EventHandling
             };
 
             services.SetupEventBus(eventHandler);
+
             SetUpCommandHandler();
 
             //act

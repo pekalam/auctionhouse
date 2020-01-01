@@ -23,6 +23,7 @@ export class AuctionComponent implements OnInit, OnDestroy {
       this.calculateAuctionTime();
       this.clearAuctionTimeCalcInterval();
       this.timeoutHandle = setInterval(() => { this.calculateAuctionTime(); });
+      this.readOnly = auction.archived;
     }
   }
   @Input()

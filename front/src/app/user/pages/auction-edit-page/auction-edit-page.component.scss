@@ -6,7 +6,27 @@
 }
 
 .tab-content{
-  padding: 20px;
+  padding: 20px 20px 0 20px;
+}
+
+.save-btn-container{
+  text-align: center;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 4px;
+  position: relative;
+  .back{
+    position: absolute;
+    right: 96%;
+    font-size: 20px;
+    cursor: pointer;
+    &:focus,
+    &:hover{
+      color: $highlightColor;
+    }
+  }
 }
 
 

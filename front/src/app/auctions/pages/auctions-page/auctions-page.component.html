@@ -6,16 +6,7 @@
       </app-auction-filters>
     </div>
     <div class="auctions-container">
-      <div style="position: relative;">
-        <div class="goto-div">
-          <span>Go to</span>
-          <mat-form-field class="goto-field">
-            <input (keyup.enter)="onGotoClick($event)" matInput type="number" [min]="1" />
-          </mat-form-field>
-        </div>
-        <mat-paginator [length]="total" [pageSize]="10" [pageIndex]="currentPage" (page)="onPageChange($event)">
-        </mat-paginator>
-      </div>
+      <app-goto-paginator [length]="total" [page]="currentPage" (pageChange)="onPageChange($event)"></app-goto-paginator>
 
       <app-auction-list-item *ngFor="let auction of auctions" [auction]="auction"></app-auction-list-item>
       <mat-paginator *ngIf="auctions && auctions.length > 1" [length]="total" [pageSize]="10" [pageIndex]="currentPage" (page)="onPageChange($event)">
