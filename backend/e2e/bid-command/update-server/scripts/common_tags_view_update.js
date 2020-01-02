@@ -1,4 +1,4 @@
-var conn = new Mongo('db-mongos1');
+var conn = new Mongo('mongodb');
 var db = conn.getDB('appDb');
 
 db.getCollection('AuctionsReadModel').aggregate([
