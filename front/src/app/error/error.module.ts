@@ -5,11 +5,12 @@ import { ErrorRoutingModule } from './error-routing.module';
 import { RouterModule } from '@angular/router';
 import { MaterialModule } from '../material.module';
 import { ServerErrorPageComponent } from './pages/server-error-page/server-error-page.component';
+import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 
 
 
 @NgModule({
-  declarations: [NotAuthenticatedComponent, ServerErrorPageComponent],
+  declarations: [NotAuthenticatedComponent, ServerErrorPageComponent, NotFoundPageComponent],
   imports: [
     ErrorRoutingModule,
     CommonModule,

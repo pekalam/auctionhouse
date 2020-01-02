@@ -65,7 +65,7 @@ namespace CreateAuction
             };
 
             var cmd = new Faker<CreateAuctionCommandDto>()
-                .RuleFor(dto => dto.StartDate, faker => DateTime.UtcNow.AddMinutes(20))
+                .RuleFor(dto => dto.StartDate, faker => DateTime.UtcNow)
                 .RuleFor(dto => dto.EndDate, faker => DateTime.UtcNow.AddDays(faker.Random.Int(5, 10)))
                 .RuleFor(dto => dto.Product, faker => new ProductDto()
                 {
@@ -73,17 +73,30 @@ namespace CreateAuction
                     Description = faker.Lorem.Lines(20),
                     Condition = faker.Random.Bool() ? Condition.New : Condition.Used
                 })
-                .RuleFor(dto => dto.BuyNowOnly, true)
                 .RuleFor(dto => dto.Name, faker => faker.Commerce.ProductName() + " " + faker.Commerce.Color())
-                .RuleFor(dto => dto.Tags, faker => faker.Random.Bool() ? new []{"tag1", "tag2", "tag3"} : new[] { "tag4", "tag5", "tag6" })
-                .RuleSet("buyNowAndAuction", set =>
+                .RuleFor(dto => dto.Tags,
+                    faker => faker.Random.Bool() ? new[] {"tag1", "tag2", "tag3"} : new[] {"tag4", "tag5", "tag6"})
+                .RuleFor(dto => dto.Category, fakeCategory())
+                .RuleSet("buyNowAndAuctionOrAuction", set =>
                 {
-                    set.RuleFor(dto => dto.Category, fakeCategory())
+                    set.RuleFor(dto => dto.BuyNowOnly, false)
                         .RuleFor(dto => dto.BuyNowPrice,
                             faker => faker.Random.Bool() ? faker.Random.Decimal(20, 100) : 0);
+                })
+                .RuleSet("buyNowOnly", set =>
+                {
+                    set.RuleFor(dto => dto.BuyNowOnly, true)
+                        .RuleFor(dto => dto.BuyNowPrice, faker => faker.Random.Decimal(20, 100));
                 });
 
-            return cmd.Generate("default,buyNowAndAuction");
+
+            bool randBool()
+            {
+                var r = new Random();
+                return r.Next(100) < 50;
+            }
+
+            return cmd.Generate(randBool() ? "default,buyNowAndAuctionOrAuction" : "default,buyNowOnly");
         }
 
         static List<(int, int, int)> GetTestCategoriesList(string arg)
@@ -143,7 +156,11 @@ namespace CreateAuction
                 for (int i = 0; i < 5; i++)
                 {
                     var newStatus = api.GetCommandStatus(jwt, status.CorrelationId).Result;
-                    if(newStatus.Status != "PENDING") { break;}
+                    if (newStatus.Status != "PENDING")
+                    {
+                        break;
+                    }
+
                     Thread.Sleep(2000);
                 }
             }

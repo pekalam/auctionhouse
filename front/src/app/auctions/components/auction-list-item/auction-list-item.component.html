@@ -10,13 +10,18 @@
           <span class="condition-text">Condition: {{auction.condition == 0 ? 'Used' : 'New'}}</span>
         </div>
         <div class="price-div">
-          <div class="current-price-div">
+          <div class="current-price-div" *ngIf="!auction.buyNowOnly">
             <span class="current-price-title">Current price</span>
             <br>
             <span class="currentprice"> {{auction.actualPrice | currency}}</span>
           </div>
+          <div class="current-price-div" *ngIf="auction.buyNowOnly">
+            <span class="current-price-title buynow">Buy now price</span>
+            <br>
+            <span class="currentprice"> {{auction.buyNowPrice | currency}}</span>
+          </div>
 
-          <div class="buynowprice-div" [appVisible]="auction.buyNowPrice == 0.0">
+          <div class="buynowprice-div" *ngIf="!auction.buyNowOnly" [appVisible]="auction.buyNowPrice == 0.0">
             <span class="buynowtext">Buy now price</span>
             <br>
             <span class="buynowprice"> {{auction.buyNowPrice | currency}}</span>

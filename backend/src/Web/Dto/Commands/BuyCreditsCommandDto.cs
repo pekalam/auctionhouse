@@ -7,5 +7,6 @@ namespace Web.Dto.Commands
 {
     public class BuyCreditsCommandDto
     {
+        public decimal Ammount { get; set; }
     }
 }

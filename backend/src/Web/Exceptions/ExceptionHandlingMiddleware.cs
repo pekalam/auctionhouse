@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.SqlClient;
 using System.Net;
 using System.Threading.Tasks;
 using Core.Command;
@@ -132,6 +133,16 @@ namespace Web.Exceptions
             {
                 case NotSignedInException e:
                     apiException = new ApiException(HttpStatusCode.Forbidden, "Not signed in", e);
+                    break;
+                case SqlException e:
+                    if (e.Number == -2)
+                    {
+                        apiException = new ApiException(HttpStatusCode.ServiceUnavailable, "Service unavailable - try again later", e);
+                    }
+                    else
+                    {
+                        apiException = new ApiException(HttpStatusCode.InternalServerError, "Server error");
+                    }
                     break;
                 default:
                     apiException = new ApiException(HttpStatusCode.InternalServerError, "Server error");

@@ -27,17 +27,14 @@ namespace Core.Query.Queries.User.UserAuctions
                 request.SignedInUser.UserId.ToString());
             var idsToJoin = await _dbContext.UsersReadModel
                 .Find(userReadModelFilter)
-                .Project(model => new {AuctionsIds = model.CreatedAuctions.Select(s => s).ToArray()})
-                .Skip(request.Page * PageSize)
-                .Limit(PageSize)
+                .Project(model => new {AuctionsIds = model.CreatedAuctions.Select(s => s).Skip(request.Page * PageSize).Take(PageSize).ToArray()})
                 .FirstOrDefaultAsync();
 
             if (idsToJoin != null)
             {
                 var count = _dbContext.UsersReadModel.AsQueryable()
                     .Where(read => read.UserIdentity.UserId == request.SignedInUser.UserId.ToString())
-                    .Select(read => read.CreatedAuctions)
-                    .Count();
+                    .Select(read => read.CreatedAuctions.Count).Single();
 
                 var userAuctionsFilter = Builders<AuctionRead>.Filter
                     .In(field => field.AuctionId, idsToJoin.AuctionsIds);

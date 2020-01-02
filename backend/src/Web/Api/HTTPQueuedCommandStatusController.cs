@@ -29,7 +29,7 @@ namespace Web.Api
 
             if (status != null)
             {
-                return Ok((RequestStatusDto)status);
+                return this.StatusResponse(status);
             }
             else
             {

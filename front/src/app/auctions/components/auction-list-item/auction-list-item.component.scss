@@ -62,6 +62,9 @@ $listItemHeight: 200px;
   .current-price-title {
     margin-bottom: 5px;
   }
+  .buynow{
+    color: $secondaryColor;
+  }
   .currentprice {
     display: block;
     margin-top: 4px;
@@ -87,6 +90,7 @@ $listItemHeight: 200px;
   margin-top: 10px;
   .buynowtext {
     font-size: 0.7em;
+    color: $secondaryColor;
   }
   .buynowprice {
     font-size: 0.8em;

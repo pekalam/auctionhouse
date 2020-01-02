@@ -40,8 +40,8 @@ namespace Web.Api
         public async Task<ActionResult<RequestStatusDto>> SignUp([FromBody] SignUpCommandDto signUpCommandDto)
         {
             var signUpCommand = new SignUpCommand(signUpCommandDto.Username, signUpCommandDto.Password, signUpCommandDto.Email);
-            var response = (RequestStatusDto) await _mediator.Send(signUpCommand);
-            return Ok(response);
+            var response = await _mediator.Send(signUpCommand);
+            return this.StatusResponse(response);
         }
 
         [HttpPost("signin")]
@@ -69,17 +69,17 @@ namespace Web.Api
             {
                 NewPassword = commandDto.NewPassword
             };
-            var result = (RequestStatusDto) await _mediator.Send(cmd);
-            return Ok(result);
+            var result = await _mediator.Send(cmd);
+            return this.StatusResponse(result);
         }
 
         [HttpPost("resetPassword")]
         public async Task<ActionResult<RequestStatusDto>> ResetPassword([FromBody] ResetPasswordCommandDto commandDto)
         {
             var cmd = new ResetPasswordCommand(commandDto.NewPassword, commandDto.ResetCode, commandDto.Email);
-            var result = (RequestStatusDto) await _mediator.Send(cmd);
+            var result = await _mediator.Send(cmd);
 
-            return Ok(result);
+            return this.StatusResponse(result);
         }
 
         [HttpPost("requestResetPassword")]
@@ -87,18 +87,18 @@ namespace Web.Api
             [FromBody] RequestResetPasswordCommandDto commandDto)
         {
             var cmd = new RequestResetPasswordCommand(commandDto.Email);
-            var result = (RequestStatusDto)await _mediator.Send(cmd);
+            var result = await _mediator.Send(cmd);
 
-            return Ok(result);
+            return this.StatusResponse(result);
         }
 
         [HttpPost("checkResetCode")]
         public async Task<ActionResult<RequestStatusDto>> CheckResetCode([FromBody] CheckResetCodeCommandDto commandDto)
         {
             var cmd = new CheckResetCodeCommand(commandDto.ResetCode, commandDto.Email);
-            var result = (RequestStatusDto)await _mediator.Send(cmd);
+            var result = await _mediator.Send(cmd);
 
-            return Ok(result);
+            return this.StatusResponse(result);
         }
     }
 }

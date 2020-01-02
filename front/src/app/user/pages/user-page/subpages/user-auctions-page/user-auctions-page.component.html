@@ -1,5 +1,4 @@
 <div class="container" *ngIf="auctions">
       <app-goto-paginator *ngIf="auctions.length > 0" [length]="total" [page]="currentPage" (pageChange)="onPageChange($event)"></app-goto-paginator>
       <app-user-auctions-list-item  *ngFor="let auction of auctions" [auction]="auction" (itemClick)="onAuctionClick($event)"></app-user-auctions-list-item>
-      <hr style="margin-top: 0; color: black;">
 </div>

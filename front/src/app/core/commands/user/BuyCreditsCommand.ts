@@ -13,9 +13,9 @@ export class BuyCreditsCommand {
   constructor(private httpClient: HttpClient, private commandHelper: CommandHelper) {
   }
 
-  execute(): Observable<RequestStatus> {
+  execute(ammount: number): Observable<RequestStatus> {
     const url = '/api/buyCredits';
-    const req = this.httpClient.post(url, {});
+    const req = this.httpClient.post(url, {ammount});
     return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.WSQueuedCommand);
   }
 }

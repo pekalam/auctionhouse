@@ -66,6 +66,10 @@ namespace Core.Common.Domain.Auctions
         private void Create(AuctionArgs auctionArgs, bool compareToNow)
         {
             ValidateDates(auctionArgs.StartDate, auctionArgs.EndDate, compareToNow);
+            if (BuyNowOnly && BuyNowPrice.Value == 0)
+            {
+                throw new DomainException("Cannot create buyNowOnly auction with buyNowPrice 0");
+            }
             BuyNowPrice = auctionArgs.BuyNowPrice;
             StartDate = auctionArgs.StartDate;
             EndDate = auctionArgs.EndDate;

@@ -46,9 +46,9 @@ namespace Web.Api
             var imgRepresentation = ImageRepresentationUtil.GetImageRepresentationFromFormFile(commandDto.Img);
 
             var cmd = new UserAddAuctionImageCommand(Guid.Parse(commandDto.AuctionId), imgRepresentation);
-            var response = (RequestStatusDto)await _mediator.Send(cmd);
+            var response = await _mediator.Send(cmd);
 
-            return Ok(response);
+            return this.StatusResponse(response);
         }
 
         [Authorize(Roles = "User"), HttpPost("userReplaceAuctionImage")]
@@ -57,18 +57,18 @@ namespace Web.Api
             var imgRepresentation = ImageRepresentationUtil.GetImageRepresentationFromFormFile(commandDto.Img);
 
             var cmd = new UserReplaceAuctionImageCommand(Guid.Parse(commandDto.AuctionId), imgRepresentation, commandDto.ImgNum);
-            var response = (RequestStatusDto)await _mediator.Send(cmd);
+            var response = await _mediator.Send(cmd);
 
-            return Ok(response);
+            return this.StatusResponse(response);
         }
 
         [Authorize(Roles = "User"), HttpPost("userRemoveAuctionImage")]
         public async Task<ActionResult<RequestStatusDto>> UserRemoveAuctionImage([FromForm] UserRemoveAuctionImageCommandDto commandDto)
         {
             var cmd = new UserRemoveAuctionImageCommand(Guid.Parse(commandDto.AuctionId), commandDto.ImgNum);
-            var response = (RequestStatusDto)await _mediator.Send(cmd);
+            var response = await _mediator.Send(cmd);
 
-            return Ok(response);
+            return this.StatusResponse(response);
         }
 
         [Authorize(Roles = "User"), HttpPost("userUpdateAuction")]
@@ -76,27 +76,27 @@ namespace Web.Api
             [FromBody] UpdateAuctionCommandDto commandDto)
         {
             var cmd = _mapper.Map<UpdateAuctionCommand>(commandDto);
-            var response = (RequestStatusDto)await _mediator.Send(cmd);
+            var response = await _mediator.Send(cmd);
 
-            return Ok(response);
+            return this.StatusResponse(response);
         }
 
         [Authorize(Roles = "User"), HttpPost("cancelBid")]
         public async Task<ActionResult<RequestStatusDto>> CancelBid([FromBody] CancelBidCommandDto commandDto)
         {
             var command = _mapper.Map<CancelBidCommand>(commandDto);
-            var response = (RequestStatusDto)await _mediator.Send(command);
+            var response = await _mediator.Send(command);
 
-            return Ok(response);
+            return this.StatusResponse(response);
         }
 
         [Authorize(Roles = "User"), HttpPost("buyCredits")]
         public async Task<ActionResult<RequestStatusDto>> BuyCredits([FromBody] BuyCreditsCommandDto commandDto)
         {
-            var cmd = new BuyCreditsCommand();
-            var response = (RequestStatusDto)await _mediator.Send(cmd);
+            var cmd = new BuyCreditsCommand(ammount: commandDto.Ammount);
+            var response = await _mediator.Send(cmd);
 
-            return Ok(response);
+            return this.StatusResponse(response);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Core.Common.Attributes;
 using Core.Common.Command;
@@ -9,6 +10,14 @@ namespace Core.Command.Commands.BuyCredits
     [AuthorizationRequired]
     public class BuyCreditsCommand : ICommand
     {
+        [Required]
+        public decimal Ammount { get; }
+
         [SignedInUser] public UserIdentity SignedInUser { get; set; }
+
+        public BuyCreditsCommand(decimal ammount)
+        {
+            Ammount = ammount;
+        }
     }
 }

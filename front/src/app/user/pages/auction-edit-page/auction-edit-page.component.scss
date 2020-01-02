@@ -19,7 +19,7 @@
   position: relative;
   .back{
     position: absolute;
-    right: 96%;
+    right: calc(100% - 20px);
     font-size: 20px;
     cursor: pointer;
     &:focus,

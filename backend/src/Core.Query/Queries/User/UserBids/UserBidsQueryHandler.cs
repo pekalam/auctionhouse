@@ -47,9 +47,9 @@ namespace Core.Query.Queries.User.UserBids
                     result.UserBids.Select(b => b.AuctionId).ToArray());
                 var names = await _dbContext.AuctionsReadModel
                     .Find(auctionFilter)
-                    .Project(read => new {AuctionId = read.AuctionId, Name = read.Name})
                     .Limit(PageSize)
                     .Skip(request.Page * PageSize)
+                    .Project(read => new {AuctionId = read.AuctionId, Name = read.Name})
                     .ToListAsync();
 
                 foreach (var name in names)

@@ -1,16 +1,40 @@
-<div class="container" (click)="itemClick.emit(auction)"  *ngIf="auction">
+<div class="container" (click)="itemClick.emit(auction)" *ngIf="auction">
   <div class="left">
+    <div class="imgs">
     <ng-container *ngFor="let img of auction.auctionImages.slice(0,3)">
-        <img class="img-preview" *ngIf="img" [src]="'/api/auctionImage?img=' + img.size3Id"/>
+      <img class="img-preview" *ngIf="img" [src]="'/api/auctionImage?img=' + img.size3Id" />
     </ng-container>
+    </div>
+    <h4>{{auction.name}}</h4>
   </div>
   <div class="right">
-    <p>{{auction.name}}</p>
-    <p>Starts: {{auction.startDate | date : "yyyy MMMM dd"}}</p>
-    <p>Ends: {{auction.endDate | date : "yyyy MMMM dd"}}</p>
+    <table>
+      <tr>
+        <td>
+          Starts: {{auction.startDate | date : "yyyy MMMM dd"}}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Ends: {{auction.endDate | date : "yyyy MMMM dd"}}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Type: {{auction.buyNowOnly ? 'Buy now only' : 'Auction'}}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Buy now price: {{auction.buyNowPrice | currency}}
+        </td>
+      </tr>
+    </table>
   </div>
   <div class="right">
-      <p>Categories: <br>- {{auction.category.name}}<br>-- {{auction.category.subCategory.name}}<br>--- {{auction.category.subCategory.subCategory.name}}</p>
+    <div>Categories: <br>- {{auction.category.name}}<br>-- {{auction.category.subCategory.name}}<br>---
+      {{auction.category.subCategory.subCategory.name}}</div>
   </div>
   <div style="clear: both;"></div>
 </div>
+<hr style="margin: 0; color: black;">

@@ -30,16 +30,13 @@ export class UserCreditsComponent implements OnInit {
 
   }
 
-  onBuyCreditsClick() {
-    this.buyCreditsCommand.execute().subscribe((v) => {
+  onBuyCreditsClick(num: number) {
+    this.buyCreditsCommand.execute(num).subscribe((v) => {
       if (v.status === 'COMPLETED') {
-        this.userData.credits += 1000;
+        this.userData.credits += v.extraData.ammount;
       } else {
         this.router.navigateByUrl('/error');
       }
-    }, (err) => {
-      console.log(err);
-      this.router.navigateByUrl('/error');
     })
   }
 

@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Core.Command.Exceptions;
 using Core.Command.Handler;
@@ -24,6 +25,12 @@ namespace Core.Command.Commands.BuyCredits
         protected override Task<RequestStatus> HandleCommand(BuyCreditsCommand request,
             CancellationToken cancellationToken)
         {
+            //DEMO
+            if (request.Ammount != 15 || request.Ammount != 40 || request.Ammount != 100)
+            {
+                throw new InvalidCommandException($"Invalid amount value: {request.Ammount}");
+            }
+
             var user = _userRepository.FindUser(request.SignedInUser);
 
             if (user == null)
@@ -31,13 +38,17 @@ namespace Core.Command.Commands.BuyCredits
                 throw new CommandException("Cannot find user");
             }
 
-            user.AddCredits(1000.0m);
+            user.AddCredits(request.Ammount);
             _userRepository.UpdateUser(user);
-
             _eventBusService.Publish(user.PendingEvents, request.CommandContext.CorrelationId, request);
             user.MarkPendingEventsAsHandled();
 
-            return Task.FromResult(RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED));
+            var status = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED,
+                new Dictionary<string, object>()
+                {
+                    {"ammount", request.Ammount}
+                });
+            return Task.FromResult(status);
         }
     }
 }

@@ -25,9 +25,9 @@ namespace Core.Query.Queries.User.UserAuctions
                 request.SignedInUser.UserId.ToString());
             var idsToJoin = await _dbContext.UsersReadModel
                 .Find(userReadModelFilter)
-                .Project(model => new {AuctionsIds = model.BoughtAuctions.Select(s => s).ToArray()})
                 .Skip(request.Page * PageSize)
                 .Limit(PageSize)
+                .Project(model => new {AuctionsIds = model.BoughtAuctions.Select(s => s).ToArray()})
                 .FirstOrDefaultAsync();
 
             if (idsToJoin != null)
