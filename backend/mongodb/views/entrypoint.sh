@@ -19,9 +19,12 @@ else
     args=$@
 fi
 
-crond &
+sleep 120
+
+echo "Update server started..."
 
 crontab /root/update-cronjob
+crond &
 
 ./root/scripts/update-top-auctions-in-tag-view.sh
 ./root/scripts/update-common-tags-view.sh

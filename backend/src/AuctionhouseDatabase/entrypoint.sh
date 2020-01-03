@@ -2,7 +2,11 @@
 
 set -e
 
-/opt/mssql/bin/sqlservr &
+if [ -e "/run/secrets/sql_server_password" ]; then
+	SA_PASSWORD=`< /run/secrets/sql_server_password`
+fi
+
+SA_PASSWORD=$SA_PASSWORD /opt/mssql/bin/sqlservr &
 
 wait-for 0.0.0.0:1433 -t 240
 

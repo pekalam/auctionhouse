@@ -60,7 +60,14 @@ namespace Web.Exceptions
 
         private void HandleException(ApiException ex, HttpContext context)
         {
-            _logger.LogDebug(ex.InnerException, "Exception catched, status code: {code}, message: {msg}", ex.StatusCode, ex.Message);
+            if (ex.StatusCode == HttpStatusCode.InternalServerError)
+            {
+                _logger.LogError(ex.InnerException, "Internal server error");
+            }
+            else
+            {
+                _logger.LogDebug(ex.InnerException, "Exception catched, status code: {code}, message: {msg}", ex.StatusCode, ex.Message);
+            }
 
             context.Response.StatusCode = (int) ex.StatusCode;
             context.Response.WriteAsync(ex.Message);
@@ -141,11 +148,11 @@ namespace Web.Exceptions
                     }
                     else
                     {
-                        apiException = new ApiException(HttpStatusCode.InternalServerError, "Server error");
+                        apiException = new ApiException(HttpStatusCode.InternalServerError, "Server error", e);
                     }
                     break;
                 default:
-                    apiException = new ApiException(HttpStatusCode.InternalServerError, "Server error");
+                    apiException = new ApiException(HttpStatusCode.InternalServerError, "Server error", ex);
                     break;
             }
             HandleException(apiException, context);
