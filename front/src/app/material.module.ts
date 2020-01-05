@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import {  MatExpansionModule, MatRadioModule, MatMenuModule, MatProgressSpinnerModule, MatTabsModule, MatPaginatorModule,
   MatDialogModule, MatInputModule, MatFormFieldModule, MatTableModule, MatButtonModule, MatListModule, MatSelectModule, ErrorStateMatcher, MAT_DATE_LOCALE, MatDatepickerModule, MatCheckboxModule,
   MAT_DATE_FORMATS,
-  MatSortModule, MatProgressBarModule} from '@angular/material';
+  MatSortModule, MatProgressBarModule, MatSlideToggleModule, MatChipsModule, MatButtonToggleGroup, MatButtonToggleModule} from '@angular/material';
 import { MatCardModule } from '@angular/material/card';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSliderModule } from '@angular/material/slider';
@@ -46,11 +46,13 @@ export const MY_FORMATS = {
     MatCardModule,
     MatTabsModule,
     MatSliderModule,
+    MatSlideToggleModule,
     MatExpansionModule,
     MatTooltipModule,
     MatCheckboxModule,
     ScrollingModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatButtonToggleModule
   ],
   providers: [
     { provide: MatDialogRef, useValue: {} },

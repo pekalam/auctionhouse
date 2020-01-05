@@ -3,7 +3,7 @@
 .container{
   width: 90%;
   .content-block{
-    height: calc(100vh - 70px - 60px - 71px);
+    min-height: calc(100vh - 70px - 60px - 71px);
     overflow-y: auto;
   }
 }

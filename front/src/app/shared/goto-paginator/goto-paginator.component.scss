@@ -1,24 +1,26 @@
-
-
-.pagination-up-container{
+.pagination-up-container {
   display: flex;
   flex-wrap: wrap;
 }
 
-.paginator-up{
+.paginator-up {
   display: inline;
   flex-grow: 2;
 }
 
-.goto-field{
-  height: 50px;
-    width: 50px;
-    margin-left: 14px;
-    font-size: 0.9em;
+.goto {
+  font-size: .86em;
 }
 
-.goto-div{
+.goto-field {
+  height: 50px;
+  width: 50px;
+  margin-left: 14px;
+  font-size: 0.88em;
+}
+
+.goto-div {
   flex-grow: 1;
   min-width: 100px;
-  padding-left: 10px;
+  padding-left: 20px;
 }

@@ -1,6 +1,6 @@
 <div class="pagination-up-container">
   <div class="goto-div">
-    <span>Go to</span>
+    <span class="goto">Go to</span>
     <mat-form-field class="goto-field">
       <input (keyup.enter)="pageChange.emit($event.target.value - 1)" matInput type="number" [min]="1" />
     </mat-form-field>

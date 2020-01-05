@@ -15,7 +15,7 @@
         <mat-option class="auction-link" [routerLink]="['auction']" [queryParams]="{auctionId: item.auctionId}"
           *ngFor="let item of auctionsByTag">
           <div class="auction-img-container">
-            <img class="auction-img" [src]="'/api/auctionImage?img=' + item.auctionImage.size3Id" />
+            <img *ngIf="item.auctionImage" class="auction-img" [src]="getImageUrl(item.auctionImage.size3Id)" />
           </div>
           {{item.auctionName}}
         </mat-option>
@@ -43,7 +43,7 @@
         <mat-option class="auction-link" [routerLink]="['auction']" [queryParams]="{auctionId: item.auctionId}"
           *ngFor="let item of auctionsByProductName">
           <div class="auction-img-container">
-            <img class="auction-img" [src]="'/api/auctionImage?img=' + item.auctionImage.size3Id" />
+            <img *ngIf="item.auctionImage" class="auction-img" [src]="getImageUrl(item.auctionImage.size3Id)" />
           </div>
           {{item.auctionName}}
         </mat-option>

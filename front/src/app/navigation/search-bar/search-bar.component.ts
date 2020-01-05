@@ -4,6 +4,7 @@ import { TopAuctionsQueryResult, TopAuctionQueryItem, TopAuctionsByTagQuery } fr
 import { switchMap, distinctUntilChanged, debounceTime, catchError } from 'rxjs/operators';
 import { TopAuctionsByProductNameQuery, TopAuctionsByProductNameQueryResult } from '../../core/queries/TopAuctionsByProductNameQuery';
 import { MatAutocompleteTrigger } from '@angular/material';
+import { AuctionImageQuery } from '../../core/queries/AuctionImageQuery';
 
 @Component({
   selector: 'app-search-bar',
@@ -30,7 +31,8 @@ export class SearchBarComponent implements OnInit {
   productName;
   byProcuctLoading = false;
 
-  constructor(private tagsQuery: TopAuctionsByTagQuery, private topAuctionsByProductNameQuery: TopAuctionsByProductNameQuery) {
+  constructor(private tagsQuery: TopAuctionsByTagQuery, private topAuctionsByProductNameQuery: TopAuctionsByProductNameQuery,
+              private auctionImageQuery: AuctionImageQuery) {
 
     this.byTagResults = this.searchVal.pipe(
       debounceTime(500),
@@ -82,6 +84,10 @@ export class SearchBarComponent implements OnInit {
     if (val.length > 0) {
       this.searchVal.next(val);
     }
+  }
+
+  getImageUrl(imageId: string): string{
+    return this.auctionImageQuery.execute(imageId);
   }
 
   ngOnInit() {

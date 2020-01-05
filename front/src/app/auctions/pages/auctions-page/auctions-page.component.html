@@ -8,7 +8,7 @@
     <div class="auctions-container">
       <app-goto-paginator [length]="total" [page]="currentPage" (pageChange)="onPageChange($event)"></app-goto-paginator>
 
-      <app-auction-list-item *ngFor="let auction of auctions" [auction]="auction"></app-auction-list-item>
+      <app-auction-list-item *ngFor="let auction of auctions" [auction]="auction" [routerLink]="['/auction']" [queryParams]="{auctionId: auction.auctionId}"></app-auction-list-item>
       <mat-paginator *ngIf="auctions && auctions.length > 1" [length]="total" [pageSize]="10" [pageIndex]="currentPage" (page)="onPageChange($event.pageIndex)">
       </mat-paginator>
     </div>

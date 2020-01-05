@@ -1,5 +1,5 @@
 <div class="container">
-  <app-user-auctions-list-item  *ngFor="let auction of auctions" [auction]="auction"></app-user-auctions-list-item>
+  <app-user-auctions-list-item  *ngFor="let auction of auctions" [auction]="auction" [routerLink]="['/auction']" [queryParams]="{auctionId: auction.auctionId}"></app-user-auctions-list-item>
   <hr style="margin-top: 0; color: black;">
   <mat-paginator *ngIf="auctions && auctions.length > 1" [length]="total" [pageSize]="10" [pageIndex]="currentPage" (page)="onPageChange($event)">
   </mat-paginator>

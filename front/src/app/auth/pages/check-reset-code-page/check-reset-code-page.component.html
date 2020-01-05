@@ -2,12 +2,12 @@
   <div class="content-block">
     <div class="content-block-title">
       <h2>Reset code has been sent</h2>
-      <p *ngIf="email">Reset code has been sent to {{email}}. Please check your inbox and type code below.</p>
-      <p *ngIf="!email">Please check your inbox and type your email and reset code below.</p>
+      <p *ngIf="emailArg">Reset code has been sent to {{emailArg}}. Please check your inbox and type code below.</p>
+      <p *ngIf="!emailArg">Please check your inbox and type your email and reset code below.</p>
     </div>
     <form id="check-resetcode-form" [formGroup]="form" (ngSubmit)="onFormSubmit()">
 
-      <div class="field-container" *ngIf="!form.value.email">
+      <div class="field-container" *ngIf="!emailArg">
         <mat-form-field id="email-field">
           <input matInput type="email" placeholder="Email" formControlName="email" />
           <mat-error>

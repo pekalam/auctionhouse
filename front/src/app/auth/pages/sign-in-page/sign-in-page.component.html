@@ -24,7 +24,9 @@
           </mat-error>
         </mat-form-field>
         <p class="invalid-creds" [hidden]="validPassword">Invalid credentials</p>
-        <p class="forgot-password" [routerLink]="['/forgot-password']">Forgot password?</p>
+        <div>
+          <a class="forgot-password" [routerLink]="['/forgot-password']">Forgot password?</a>
+        </div>
       </div>
 
       <div class="submit-button-container">

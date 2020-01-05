@@ -23,7 +23,7 @@
 
         <mat-form-field id="buy-now-field">
           <span [style.color]="(!form.controls.buyNow.value ? 'grey': 'initial')">Buy now price</span>
-          <input type="number" matInput formControlName="buyNowPrice" (keydown)="onChange()" />
+          <input type="number" step="0.01" matInput formControlName="buyNowPrice" (keydown)="onChange()" />
           <mat-error>
             <ng-container *ngIf="form.controls.buyNowPrice.errors">
               <span *ngIf="form.controls.buyNowPrice.errors.required">This field is required</span>

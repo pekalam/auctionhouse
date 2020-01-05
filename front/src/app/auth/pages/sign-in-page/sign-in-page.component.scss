@@ -28,13 +28,19 @@
 }
 
 .forgot-password{
-  font-size: 12px;
+  font-size: 0.75em;
   cursor: pointer;
+  &:visited {
+    color: inherit;
+  }
+  &:hover, &:active{
+    color: $highlightColor;
+  }
 }
 
 .invalid-creds{
   color: red;
-  font-size: 14px;
+  font-size: .9em;
 }
 
 #password-field-container{

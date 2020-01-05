@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { AuctionListModel } from '../../../core/models/Auctions';
 import { MostViewedAuction } from '../../../core/queries/MostViewedAuctionsQuery';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
+import { AuctionImageQuery } from '../../../core/queries/AuctionImageQuery';
 
 @Component({
   selector: 'app-auctions-carousel',
@@ -18,7 +19,7 @@ export class AuctionsCarouselComponent implements OnInit {
     if (!auctions || auctions.length <= 0) { return; }
 
     this.imgSources = auctions
-      .map(a => a.auctionImages[0] ? `/api/auctionImage?img=${a.auctionImages[0].size1Id}` : null)
+      .map(a => a.auctionImages[0] ? this.getImageUrl(a.auctionImages[0].size1Id) : null)
       .filter(i => i != null);
     this.auctions = auctions;
   }
@@ -26,7 +27,7 @@ export class AuctionsCarouselComponent implements OnInit {
 
   imgHeight;
 
-  constructor(public breakpointObserver: BreakpointObserver) {
+  constructor(public breakpointObserver: BreakpointObserver, private auctionImageQuery: AuctionImageQuery) {
     this.breakpointObserver
       .observe(['(max-width: 820px)'])
       .subscribe((state: BreakpointState) => {
@@ -48,11 +49,15 @@ export class AuctionsCarouselComponent implements OnInit {
       });
   }
 
+  private getImageUrl(imageId: string): string{
+    return this.auctionImageQuery.execute(imageId);
+  }
+
   nextAuction(ev : Event) {
     ev.stopPropagation();
     if (this.currentAuction + 1 < this.auctions.length) {
       this.currentAuction++;
-      this.imgSources = [`/api/auctionImage?img=${this.auctions[this.currentAuction].auctionImages[0].size1Id}`];
+      this.imgSources = [this.getImageUrl(this.auctions[this.currentAuction].auctionImages[0].size1Id)];
       document.getElementById('auction-container').style.cssText = '';
       window.requestAnimationFrame(() => {
         document.getElementById('auction-container').style.cssText = 'animation: fadeIn 0.5s ease 0s 1 normal forwards running;';
@@ -64,7 +69,7 @@ export class AuctionsCarouselComponent implements OnInit {
     ev.stopPropagation();
     if (this.currentAuction - 1 >= 0) {
       this.currentAuction--;
-      this.imgSources = [`/api/auctionImage?img=${this.auctions[this.currentAuction].auctionImages[0].size1Id}`];
+      this.imgSources = [this.getImageUrl(this.auctions[this.currentAuction].auctionImages[0].size1Id)];
       document.getElementById('auction-container').style.cssText = '';
       window.requestAnimationFrame(() => {
         document.getElementById('auction-container').style.cssText = 'animation: fadeIn 0.5s ease 0s 1 normal forwards running;';

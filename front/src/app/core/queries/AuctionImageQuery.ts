@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuctionImage } from '../models/Auctions';
+import { environment } from '../../../environments/environment';
 
 
 
@@ -9,6 +10,6 @@ import { AuctionImage } from '../models/Auctions';
 })
 export class AuctionImageQuery{
   execute(auctionImageId: string): string{
-    return `/api/auctionImage?img=${auctionImageId}`;
+    return `${environment.API_URL}/api/auctionImage?img=${auctionImageId}`;
   }
 }

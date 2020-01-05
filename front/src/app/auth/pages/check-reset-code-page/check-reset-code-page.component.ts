@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 })
 export class CheckResetCodePageComponent implements OnInit {
 
-  email = '';
+  emailArg = '';
   form = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     resetCode: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]),
@@ -18,8 +18,8 @@ export class CheckResetCodePageComponent implements OnInit {
 
   constructor(private checkResetCodeCommand: CheckResetCodeCommand, private router: Router) {
     if (this.router.getCurrentNavigation().extras.state) {
-      this.email = this.router.getCurrentNavigation().extras.state.email;
-      this.form.controls.email.setValue(this.email);
+      this.emailArg = this.router.getCurrentNavigation().extras.state.email;
+      this.form.controls.email.setValue(this.emailArg);
     }
   }
 

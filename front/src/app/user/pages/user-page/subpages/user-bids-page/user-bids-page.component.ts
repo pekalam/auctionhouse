@@ -45,7 +45,6 @@ export class UserBidsPageComponent implements OnInit {
   //TODO: domain model
   private canBeCanceled(bid: UserBidVM): boolean {
     let now = new Date();
-    console.log('c');
 
     now.setTime(now.getTime() - new Date(bid.dateCreated).getTime());
 

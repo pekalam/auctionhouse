@@ -1,8 +1,8 @@
-<div class="container" (click)="itemClick.emit(auction)" *ngIf="auction">
+<div class="container" (click)="itemClick.emit(auction)" *ngIf="auction" [class.archived]="auction.archived">
   <div class="left">
     <div class="imgs">
     <ng-container *ngFor="let img of auction.auctionImages.slice(0,3)">
-      <img class="img-preview" *ngIf="img" [src]="'/api/auctionImage?img=' + img.size3Id" />
+      <img class="img-preview" *ngIf="img" [src]="getImageUrl(img.size3Id)" />
     </ng-container>
     </div>
     <h4>{{auction.name}}</h4>
