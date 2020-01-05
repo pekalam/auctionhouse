@@ -24,30 +24,30 @@ namespace Web.Adapters.EventSignaling
             _logger = logger;
         }
 
-        public void SendRequestCompletionToUser<T>(IAppEvent<T> appEvent, UserIdentity user) where T : Event
+        public void SendRequestCompletionToUser<T>(IAppEvent<T> appEvent, UserIdentity user, Dictionary<string, object> values = null) where T : Event
         {
             _logger.LogDebug($"Sending completion event {appEvent.Event.EventName} to {user.UserName} with correlationId {appEvent.CorrelationId.Value}");
             _hubContext.Clients.User(user.UserId.ToString())
-                .SendAsync("completed", (RequestStatusDto)new RequestStatus(appEvent.CorrelationId, Status.COMPLETED));
+                .SendAsync("completed", (RequestStatusDto)new RequestStatus(appEvent.CorrelationId, Status.COMPLETED, values));
         }
 
-        public void SendRequestCompletionToAll<T>(IAppEvent<T> appEvent) where T : Event
+        public void SendRequestCompletionToAll<T>(IAppEvent<T> appEvent, Dictionary<string, object> values = null) where T : Event
         {
             throw new NotImplementedException();
         }
 
-        public void SendRequestFailureToUser<T>(IAppEvent<T> appEvent, UserIdentity user) where T : Event
+        public void SendRequestFailureToUser<T>(IAppEvent<T> appEvent, UserIdentity user, Dictionary<string, object> values = null) where T : Event
         {
             _logger.LogDebug($"Sending failure event {appEvent.Event.EventName} to {user.UserName} with correlationId {appEvent.CorrelationId.Value}");
             _hubContext.Clients.User(user.UserId.ToString())
-                .SendAsync("failed", (RequestStatusDto)new RequestStatus(appEvent.CorrelationId, Status.FAILED));
+                .SendAsync("failed", (RequestStatusDto)new RequestStatus(appEvent.CorrelationId, Status.FAILED, values));
         }
 
-        public void TrySendReqestCompletionToUser<T>(IAppEvent<T> appEvent, UserIdentity user) where T : Event
+        public void TrySendReqestCompletionToUser<T>(IAppEvent<T> appEvent, UserIdentity user, Dictionary<string, object> values = null) where T : Event
         {
             try
             {
-                SendRequestCompletionToUser(appEvent, user);
+                SendRequestCompletionToUser(appEvent, user, values);
             }
             catch (Exception)
             {
@@ -55,11 +55,11 @@ namespace Web.Adapters.EventSignaling
             }
         }
 
-        public void TrySendRequestFailureToUser<T>(IAppEvent<T> appEvent, UserIdentity user) where T : Event
+        public void TrySendRequestFailureToUser<T>(IAppEvent<T> appEvent, UserIdentity user, Dictionary<string, object> values = null) where T : Event
         {
             try
             {
-                SendRequestFailureToUser(appEvent, user);
+                SendRequestFailureToUser(appEvent, user, values);
             }
             catch (Exception)
             {

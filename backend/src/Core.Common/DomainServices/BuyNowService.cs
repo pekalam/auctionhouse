@@ -23,10 +23,17 @@ namespace Core.Common.DomainServices
 
             foreach (var bid in auction.Bids)
             {
-                var user = _userRepository.FindUser(bid.UserIdentity);
-                user.ReturnCredits(bid.Price);
-                generatedEvents.AddRange(user.PendingEvents);
-                _userRepository.UpdateUser(user);
+                if (!buyer.UserIdentity.Equals(bid.UserIdentity))
+                {
+                    var user = _userRepository.FindUser(bid.UserIdentity);
+                    user.ReturnCredits(bid.Price);
+                    generatedEvents.AddRange(user.PendingEvents);
+                    _userRepository.UpdateUser(user);
+                }
+                else
+                {
+                    buyer.ReturnCredits(bid.Price);
+                }
             }
 
             auction.BuyNow(buyer);

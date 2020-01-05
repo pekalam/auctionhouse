@@ -10,6 +10,8 @@ using Core.Query.Queries.Auction.Auctions.ByTag;
 using Core.Query.Queries.Auction.CommonTags;
 using Core.Query.Queries.Auction.SingleAuction;
 using Core.Query.Queries.Auction.TopAuctionsByTag;
+using Core.Query.Queries.User.UserAuctions;
+using Core.Query.Queries.User.UserWonAuctions;
 using Web.Dto.Queries;
 
 namespace Web.Dto
@@ -23,6 +25,8 @@ namespace Web.Dto
             CreateMap<AuctionQueryDto, AuctionQuery>();
             CreateMap<TopAuctionsByProductNameDto, TopAuctionsByProductNameQuery>();
             CreateMap<CommonTagsQueryDto, CommonTagsQuery>();
+            CreateMap<UserWonAuctionsQueryDto, UserWonAuctionsQuery>();
+            CreateMap<UserAuctionsQueryDto, UserAuctionsQuery>();
         }
     
     }

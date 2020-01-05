@@ -46,8 +46,10 @@ namespace Core.Query.ReadModel
         [BsonId]
         public ObjectId Id { get; set; }
         public UserIdentityRead UserIdentity { get; set; }
-        public ICollection<string> CreatedAuctions { get; set; } = new HashSet<string>();
-        public ICollection<string> BoughtAuctions { get; set; } = new HashSet<string>();
+        public List<string> CreatedAuctions { get; set; } =
+            new List<string>();
+        public List<string> BoughtAuctions { get; set; } = new List<string>();
+        public List<string> WonAuctions { get; set; } = new List<string>();
         public List<UserBid> UserBids { get; set; } = new List<UserBid>();
         public UserAddress Address { get; set; }
         [BsonDefaultValue(0)]

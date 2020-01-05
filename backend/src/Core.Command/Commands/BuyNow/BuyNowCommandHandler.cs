@@ -84,7 +84,7 @@ namespace Core.Command.Commands.BuyNow
 
             _eventBusService.Publish(generatedEvents, request.CommandContext.CorrelationId, request);
 
-            return Task.FromResult(RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED));
+            return Task.FromResult(RequestStatus.CreateFromCommandContext(request.CommandContext, Status.PENDING));
         }
     }
 }

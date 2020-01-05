@@ -19,6 +19,8 @@ namespace Web
                 .UseSerilog((context, configuration) =>
                 {
                     configuration
+                        .Destructure.ToMaximumStringLength(1000)
+                        .Destructure.ToMaximumCollectionCount(40)
                         .MinimumLevel.Verbose()
                         .Enrich.FromLogContext()
                         .ReadFrom.Configuration(context.Configuration);

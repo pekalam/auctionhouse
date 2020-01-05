@@ -8,7 +8,7 @@ COPY ["Core.Command", "Core.Command/"]
 COPY ["Core.Query", "Core.Query/"]
 COPY ["Infrastructure", "Infrastructure/"]
 COPY ["IntegrationTests", "IntegrationTests/"]
-RUN dotnet build "IntegrationTests/IntegrationTests.csproj"
+RUN dotnet build "IntegrationTests/Test.IntegrationTests.csproj"
 RUN apt-get update
 RUN apt-get -y install netcat
 COPY ["IntegrationTests/wait-for", "/bin/wait-for"]

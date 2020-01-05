@@ -54,7 +54,7 @@ namespace Core.Command.Commands.Bid
             auction.Raise(user, request.Price);
             var bid = auction.Bids.Last();
 
-            var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
+            var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.PENDING);
             _auctionRepository.UpdateAuction(auction);
             _userRepository.UpdateUser(user);
             var toSend = auction.PendingEvents.Concat(user.PendingEvents);
@@ -65,6 +65,7 @@ namespace Core.Command.Commands.Bid
             });
             auction.MarkPendingEventsAsHandled();
             _logger.LogDebug("Bid {@bid} submited for an auction {@auction} by {@user}", bid, auction, request.SignedInUser);
+
 
             return Task.FromResult(response);
         }

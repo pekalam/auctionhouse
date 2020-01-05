@@ -25,7 +25,7 @@ namespace Core.Command.Commands.SignIn
 
         protected override Task<RequestStatus> HandleCommand(SignInCommand command, CancellationToken cancellationToken)
         {
-            var authData = _userAuthenticationDataRepository.FindUserAuth(command.UserName);
+            var authData = _userAuthenticationDataRepository.FindUserAuth(command.Username);
             if (authData != null)
             {
                 if (authData.Password.Equals(command.Password))
@@ -43,7 +43,7 @@ namespace Core.Command.Commands.SignIn
                 }
             }
 
-            throw new UserNotFoundException($"Cannot find user {command.UserName}");
+            throw new UserNotFoundException($"Cannot find user {command.Username}");
         }
     }
 }

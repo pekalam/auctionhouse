@@ -36,10 +36,10 @@ namespace Core.Command.Handler
 
         public virtual void Handle(ICommand command)
         {
-            RequestStatus status = null;
+            RequestStatus result = null;
             try
             {
-                status = _mediator.Send(command).Result;
+                result = _mediator.Send(command).Result;
             }
             catch (Exception e)
             {
@@ -49,7 +49,10 @@ namespace Core.Command.Handler
                 return;
             }
 
-            TryUpdateCommandStatus(command, status);
+            if (result.Status != Status.PENDING)
+            {
+                TryUpdateCommandStatus(command, result);
+            }
         }
     }
 }

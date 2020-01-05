@@ -249,14 +249,14 @@ namespace Core.Common.Domain.Auctions
             Completed = true;
             var winningBid = Bids.FirstOrDefault(b => b.Price == Bids.Max(bid => bid.Price));
             Buyer = winningBid?.UserIdentity;
-            AddEvent(new AuctionCompleted(AggregateId, winningBid));
+            AddEvent(new AuctionCompleted(AggregateId, winningBid, Owner));
         }
 
         private void BuyNow(UserIdentity buyer)
         {
             Buyer = buyer;
             Completed = true;
-            AddEvent(new AuctionBought(AggregateId, buyer));
+            AddEvent(new AuctionBought(AggregateId, buyer, Owner));
         }
 
         public void BuyNow(User user)

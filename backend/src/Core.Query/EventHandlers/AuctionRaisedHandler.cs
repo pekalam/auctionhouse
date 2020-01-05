@@ -16,7 +16,8 @@ namespace Core.Query.EventHandlers
         private readonly ILogger<AuctionRaisedHandler> _logger;
 
         public AuctionRaisedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext,
-            IRequestStatusService requestStatusService, ILogger<AuctionRaisedHandler> logger) : base(appEventBuilder, logger)
+            IRequestStatusService requestStatusService, ILogger<AuctionRaisedHandler> logger) : base(appEventBuilder,
+            logger)
         {
             _dbContext = dbContext;
             _requestStatusService = requestStatusService;
@@ -38,12 +39,12 @@ namespace Core.Query.EventHandlers
             var versionUpd = Builders<AuctionRead>.Update.Set(f => f.Version, ev.AggVersion);
 
             var result = _dbContext.AuctionsReadModel.UpdateMany(session,
-                Builders<AuctionRead>.Filter.And(new[] { auctionIdFilter, byBidFilter }),
-                Builders<AuctionRead>.Update.Combine(new[] { bidUpdate, totalBidsUpd, priceUpd, versionUpd }));
+                Builders<AuctionRead>.Filter.And(new[] {auctionIdFilter, byBidFilter}),
+                Builders<AuctionRead>.Update.Combine(new[] {bidUpdate, totalBidsUpd, priceUpd, versionUpd}));
             if (result.MatchedCount == 0)
             {
                 throw new QueryException($"Cannot find auction with id: {ev.Bid.AuctionId} and" +
-                                    $"Version: {ev.AggVersion}");
+                                         $"Version: {ev.AggVersion}");
             }
         }
 
@@ -56,7 +57,8 @@ namespace Core.Query.EventHandlers
                 Price = ev.Bid.Price,
                 BidId = ev.Bid.BidId.ToString()
             };
-            var userFilter = Builders<UserRead>.Filter.Eq(f => f.UserIdentity.UserId, ev.Bid.UserIdentity.UserId.ToString());
+            var userFilter =
+                Builders<UserRead>.Filter.Eq(f => f.UserIdentity.UserId, ev.Bid.UserIdentity.UserId.ToString());
             var userUpdate = Builders<UserRead>.Update.Push(f => f.UserBids, userBid);
 
             var result = _dbContext.UsersReadModel.UpdateOne(session, userFilter, userUpdate);
@@ -70,23 +72,30 @@ namespace Core.Query.EventHandlers
         {
             AuctionRaised ev = message.Event;
 
-            var session = _dbContext.Client.StartSession();
-            session.StartTransaction();
-            try
+            using (var session = _dbContext.Client.StartSession())
             {
-                UpdateAuction(ev, session);
-                UpdateUser(ev, session);
-                session.CommitTransaction();
-            }
-            catch (Exception e)
-            {
-                session.AbortTransaction();
-                _logger.LogError(e, "Cannot update read collections, appEvent: {@appEvent}", message);
-                _requestStatusService.TrySendRequestFailureToUser(message, ev.Bid.UserIdentity);
-                throw;
-            }
+                var opt = new TransactionOptions(
+                    writeConcern: new WriteConcern(mode: "majority", journal: true)
+                );
 
-            _requestStatusService.TrySendReqestCompletionToUser(message, ev.Bid.UserIdentity);
+                try
+                {
+                    _ = session.WithTransaction((handle, token) =>
+                    {
+                        UpdateAuction(ev, handle);
+                        UpdateUser(ev, handle);
+                        return 0;
+                    }, transactionOptions: opt);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e, "Cannot update read collections, appEvent: {@appEvent}", message);
+                    _requestStatusService.TrySendRequestFailureToUser(message, ev.Bid.UserIdentity);
+                    throw;
+                }
+
+                _requestStatusService.TrySendReqestCompletionToUser(message, ev.Bid.UserIdentity);
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
+using AutoMapper;
 using Core.Command;
 using Core.Command.Commands.ChangePassword;
 using Core.Command.Commands.CheckResetCode;
@@ -28,27 +29,29 @@ namespace Web.Api
         private readonly HTTPQueuedCommandMediator _mediator;
         private readonly ImmediateCommandMediator _immediateCommandMediator;
         private readonly JwtService _jwtService;
+        private readonly IMapper _mapper;
 
-        public AuthenticationCommandController(HTTPQueuedCommandMediator mediator, ImmediateCommandMediator immediateCommandMediator, JwtService jwtService)
+        public AuthenticationCommandController(HTTPQueuedCommandMediator mediator, ImmediateCommandMediator immediateCommandMediator, JwtService jwtService, IMapper mapper)
         {
             _mediator = mediator;
             _immediateCommandMediator = immediateCommandMediator;
             _jwtService = jwtService;
+            _mapper = mapper;
         }
 
         [HttpPost("signup")]
         public async Task<ActionResult<RequestStatusDto>> SignUp([FromBody] SignUpCommandDto signUpCommandDto)
         {
-            var signUpCommand = new SignUpCommand(signUpCommandDto.Username, signUpCommandDto.Password, signUpCommandDto.Email);
-            var response = await _mediator.Send(signUpCommand);
+            var cmd = _mapper.MapDto<SignUpCommandDto, SignUpCommand>(signUpCommandDto);
+            var response = await _mediator.Send(cmd);
             return this.StatusResponse(response);
         }
 
         [HttpPost("signin")]
         public async Task<ActionResult<string>> SignIn([FromBody] SignInCommandDto signInCommandDto)
         {
-            var signInCommand = new SignInCommand(signInCommandDto.UserName, signInCommandDto.Password);
-            var response = await _immediateCommandMediator.Send(signInCommand);
+            var cmd = _mapper.MapDto<SignInCommandDto, SignInCommand>(signInCommandDto);
+            var response = await _immediateCommandMediator.Send(cmd);
             if (response.Status == Status.COMPLETED)
             {
                 var userIdentity = (UserIdentity)response.ExtraData["UserIdentity"];
@@ -65,10 +68,7 @@ namespace Web.Api
         [HttpPost("changePassword")]
         public async Task<ActionResult<RequestStatusDto>> ChangePassword([FromBody] ChangePasswordCommandDto commandDto)
         {
-            var cmd = new ChangePasswordCommand()
-            {
-                NewPassword = commandDto.NewPassword
-            };
+            var cmd = _mapper.MapDto<ChangePasswordCommandDto, ChangePasswordCommand>(commandDto);
             var result = await _mediator.Send(cmd);
             return this.StatusResponse(result);
         }
@@ -76,7 +76,7 @@ namespace Web.Api
         [HttpPost("resetPassword")]
         public async Task<ActionResult<RequestStatusDto>> ResetPassword([FromBody] ResetPasswordCommandDto commandDto)
         {
-            var cmd = new ResetPasswordCommand(commandDto.NewPassword, commandDto.ResetCode, commandDto.Email);
+            var cmd = _mapper.MapDto<ResetPasswordCommandDto, ResetPasswordCommand>(commandDto);
             var result = await _mediator.Send(cmd);
 
             return this.StatusResponse(result);
@@ -86,7 +86,7 @@ namespace Web.Api
         public async Task<ActionResult<RequestStatusDto>> RequestResetPassword(
             [FromBody] RequestResetPasswordCommandDto commandDto)
         {
-            var cmd = new RequestResetPasswordCommand(commandDto.Email);
+            var cmd = _mapper.MapDto<RequestResetPasswordCommandDto, RequestResetPasswordCommand>(commandDto);
             var result = await _mediator.Send(cmd);
 
             return this.StatusResponse(result);
@@ -95,7 +95,7 @@ namespace Web.Api
         [HttpPost("checkResetCode")]
         public async Task<ActionResult<RequestStatusDto>> CheckResetCode([FromBody] CheckResetCodeCommandDto commandDto)
         {
-            var cmd = new CheckResetCodeCommand(commandDto.ResetCode, commandDto.Email);
+            var cmd = _mapper.MapDto<CheckResetCodeCommandDto, CheckResetCodeCommand>(commandDto);
             var result = await _mediator.Send(cmd);
 
             return this.StatusResponse(result);

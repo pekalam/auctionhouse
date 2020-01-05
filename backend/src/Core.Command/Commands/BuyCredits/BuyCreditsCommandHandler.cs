@@ -26,7 +26,7 @@ namespace Core.Command.Commands.BuyCredits
             CancellationToken cancellationToken)
         {
             //DEMO
-            if (request.Ammount != 15 || request.Ammount != 40 || request.Ammount != 100)
+            if (request.Ammount != 15 && request.Ammount != 40 && request.Ammount != 100)
             {
                 throw new InvalidCommandException($"Invalid amount value: {request.Ammount}");
             }
@@ -43,11 +43,7 @@ namespace Core.Command.Commands.BuyCredits
             _eventBusService.Publish(user.PendingEvents, request.CommandContext.CorrelationId, request);
             user.MarkPendingEventsAsHandled();
 
-            var status = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED,
-                new Dictionary<string, object>()
-                {
-                    {"ammount", request.Ammount}
-                });
+            var status = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.PENDING);
             return Task.FromResult(status);
         }
     }

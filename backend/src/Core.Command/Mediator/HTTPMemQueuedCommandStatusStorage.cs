@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Core.Common;
 using Core.Common.Command;
 using Core.Common.EventBus;
@@ -23,20 +24,21 @@ namespace Core.Command.Mediator
 
     public class HTTPMemQueuedCommandStatusStorage : IHTTPQueuedCommandStatusStorage
     {
+        private const int MAX_SIZE = 80_021;
         private Dictionary<string, HTTPMemQueuedCommandStorageItem> _store 
-            = new Dictionary<string, HTTPMemQueuedCommandStorageItem>();
-
-        internal DateTime Now { get; set; } = DateTime.UtcNow;
-
-        internal void SaveStatus(HTTPMemQueuedCommandStorageItem item)
-        {
-            _store.Add(item.RequestStatus.CorrelationId.Value, item);
-        }
+            = new Dictionary<string, HTTPMemQueuedCommandStorageItem>(MAX_SIZE);
 
         public void SaveStatus(RequestStatus status, ICommand command)
         {
+            if (_store.Count == MAX_SIZE)
+            {
+                //TODO
+                var minDate = _store.Values.Min(v => v.DateCreated);
+                var toRemove = _store.Where(kv => kv.Value.DateCreated == minDate).Select(kv => kv.Key).FirstOrDefault();
+                _store.Remove(toRemove);
+            }
             var item = new HTTPMemQueuedCommandStorageItem(DateTime.UtcNow, status, command);
-            SaveStatus(item);
+            _store.Add(item.RequestStatus.CorrelationId.Value, item);
         }
 
         public (RequestStatus, ICommand) GetCommandStatus(CorrelationId correlationId)
@@ -61,20 +63,12 @@ namespace Core.Command.Mediator
                 throw new KeyNotFoundException($"Cannot find request status with correlation id: {status.CorrelationId.Value}");
             }
             var item = _store[status.CorrelationId.Value];
+            if (item.RequestStatus.Status == Status.COMPLETED)
+            {
+                return;
+            }
             item.RequestStatus = status;
             item.Command = command;
-        }
-
-        public void Cleanup()
-        {
-            var toRemove = _store.Values
-                .Where(v => Now.Subtract((DateTime) v.DateCreated).Seconds > 30)
-                .Select(v => v.RequestStatus.CorrelationId.Value)
-                .ToArray();
-            foreach (var key in toRemove)
-            {
-                _store.Remove(key);
-            }
         }
     }
 }

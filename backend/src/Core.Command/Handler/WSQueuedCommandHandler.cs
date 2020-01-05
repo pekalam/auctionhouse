@@ -43,12 +43,12 @@ namespace Core.Command.Handler
                 if (requestStatus.Status == Status.FAILED)
                 {
                     _requestStatusService.TrySendRequestFailureToUser(command.GetType().Name,
-                        command.CommandContext.CorrelationId, command.CommandContext.User);
+                        command.CommandContext.CorrelationId, command.CommandContext.User, requestStatus.ExtraData);
                 }
                 else if (requestStatus.Status == Status.COMPLETED)
                 {
                     _requestStatusService.TrySendRequestCompletionToUser(command.GetType().Name,
-                        command.CommandContext.CorrelationId, command.CommandContext.User);
+                        command.CommandContext.CorrelationId, command.CommandContext.User, requestStatus.ExtraData);
                 }
             }
             else

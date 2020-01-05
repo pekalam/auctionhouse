@@ -6,6 +6,7 @@ using Core.Common.Domain.Users;
 using Core.Query.ReadModel;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
 
 namespace Core.Query.Queries.Auction.Auctions
 {
@@ -23,7 +24,9 @@ namespace Core.Query.Queries.Auction.Auctions
         public DateTime StartDate { get; set; }
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime EndDate { get; set; }
+        [JsonConverter(typeof(DecimalRoundingConverter))]
         public decimal BuyNowPrice { get; set; }
+        [JsonConverter(typeof(DecimalRoundingConverter))]
         public decimal ActualPrice { get; set; }
         public bool BuyNowOnly { get; set; }
         public int TotalBids { get; set; }

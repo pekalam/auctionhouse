@@ -88,23 +88,5 @@ namespace UnitTests.HTTPMemQueuedStorage
                 .BeEquivalentTo(requestStatus1);
             _commandStatusStorage.GetCommandStatus(requestStatus1.CorrelationId).Item1.Should().BeNull();
         }
-
-        [Test]
-        public void Cleanup_when_storage_contains_old_statuses_removes_them()
-        {
-            var cmd = new TestCommand();
-            var newRequestStatus = new HTTPMemQueuedCommandStorageItem(DateTime.UtcNow.AddSeconds(48),
-                new RequestStatus(Status.COMPLETED), cmd);
-            var oldRequestStatus = new RequestStatus(Status.COMPLETED);
-            _commandStatusStorage.SaveStatus(oldRequestStatus, cmd);
-            _commandStatusStorage.SaveStatus(newRequestStatus);
-
-            _commandStatusStorage.Now = DateTime.UtcNow.AddSeconds(50);
-            _commandStatusStorage.Cleanup();
-
-            _commandStatusStorage.GetCommandStatus(oldRequestStatus.CorrelationId).Item1.Should().BeNull();
-            _commandStatusStorage.GetCommandStatus(newRequestStatus.RequestStatus.CorrelationId).Item1.Should()
-                .BeEquivalentTo(newRequestStatus.RequestStatus);
-        }
     }
 }

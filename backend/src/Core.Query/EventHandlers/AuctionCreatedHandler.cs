@@ -37,44 +37,55 @@ namespace Core.Query.EventHandlers
     {
         private readonly ReadModelDbContext _dbContext;
         private readonly IRequestStatusService _requestStatusService;
+        private readonly ILogger<AuctionCreatedHandler> _logger;
 
-        public AuctionCreatedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext, IRequestStatusService requestStatusService, 
+        public AuctionCreatedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext,
+            IRequestStatusService requestStatusService,
             ILogger<AuctionCreatedHandler> logger) : base(appEventBuilder, logger)
         {
             _dbContext = dbContext;
             _requestStatusService = requestStatusService;
+            _logger = logger;
         }
 
         public override void Consume(IAppEvent<AuctionCreated> message)
         {
             var ev = message.Event;
             var mapper = MapperConfigHolder.Configuration.CreateMapper();
-            var auction = mapper.Map<AuctionCreated, AuctionRead>(ev, opt => opt.AfterMap((created, read) => mapper.Map(created.AuctionArgs, read)));
-            
+            var auction = mapper.Map<AuctionCreated, AuctionRead>(ev,
+                opt => opt.AfterMap((created, read) => mapper.Map(created.AuctionArgs, read)));
+
             auction.DateCreated = DateTime.UtcNow;
 
-            var filter = Builders<UserRead>.Filter.Eq(f => f.UserIdentity.UserId, ev.AuctionArgs.Creator.UserId.ToString());
+            var filter =
+                Builders<UserRead>.Filter.Eq(f => f.UserIdentity.UserId, ev.AuctionArgs.Creator.UserId.ToString());
             var update = Builders<UserRead>.Update.Push(f => f.CreatedAuctions, ev.AuctionId.ToString());
 
 
-            var session = _dbContext.Client.StartSession();
-
-            session.StartTransaction();
-            try
+            using (var session = _dbContext.Client.StartSession())
             {
-                var w = new WriteConcern(mode: "majority", journal: true);
-                _dbContext.AuctionsReadModel.WithWriteConcern(w).InsertOne(session, auction);
-                _dbContext.UsersReadModel.UpdateOne(session, filter, update);
-                session.CommitTransaction();
-            }
-            catch (Exception)
-            {
-                session.AbortTransaction();
-                _requestStatusService.TrySendRequestFailureToUser(message, ev.AuctionArgs.Creator);
-                throw;
-            }
+                try
+                {
+                    var opt = new TransactionOptions(
+                        writeConcern: new WriteConcern(mode: "majority", journal: true)
+                    );
 
-            _requestStatusService.TrySendReqestCompletionToUser(message, ev.AuctionArgs.Creator);
+                    _ = session.WithTransaction((handle, token) =>
+                    {
+                        _dbContext.AuctionsReadModel.InsertOne(handle, auction);
+                        _dbContext.UsersReadModel.UpdateOne(handle, filter, update);
+                        return 0;
+                    }, transactionOptions: opt);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogWarning(e, "Cannot create an auction");
+                    _requestStatusService.TrySendRequestFailureToUser(message, ev.AuctionArgs.Creator);
+                    throw;
+                }
+
+                _requestStatusService.TrySendReqestCompletionToUser(message, ev.AuctionArgs.Creator);
+            }
         }
     }
 }

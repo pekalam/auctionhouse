@@ -6,13 +6,13 @@ namespace Core.Command.Commands.SignIn
     public class SignInCommand : ICommand
     {
         [Required]
-        public string UserName { get; }
+        public string Username { get; }
         [Required]
         public string Password { get; }
 
-        public SignInCommand(string userName, string password)
+        public SignInCommand(string username, string password)
         {
-            UserName = userName;
+            Username = username;
             Password = password;
         }
     }

@@ -5,11 +5,13 @@ using System.Linq;
 using System.Reflection;
 using Core.Common;
 using Core.Common.ApplicationServices;
+using Core.Common.Command;
 using Core.Common.Domain;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Categories;
 using Core.Common.EventBus;
 using Core.Common.Query;
+using Core.Common.RequestStatusService;
 using Core.Query.EventHandlers;
 using Core.Query.EventHandlers.AuctionUpdateHandlers;
 using Core.Query.ReadModel;
@@ -27,7 +29,9 @@ namespace Infrastructure.Bootstraper
             {
                 var handlerTypes = Assembly.Load("Core.Query")
                     .GetTypes()
-                    .Where(type => type.BaseType != null && type.BaseType.IsGenericType && type.BaseType.GetGenericTypeDefinition() == typeof(EventConsumer<>));
+                    .Where(type =>
+                        type.BaseType != null && type.BaseType.IsGenericType &&
+                        type.BaseType.GetGenericTypeDefinition() == typeof(EventConsumer<>));
 
                 foreach (var handlerType in handlerTypes)
                 {
@@ -45,13 +49,17 @@ namespace Infrastructure.Bootstraper
                 serviceCollection.AddSingleton(imageDbSettings);
             }
 
-            public static void Configure(IServiceCollection serviceCollection,
+            public static void Configure<RequestStatusServiceImpl>(IServiceCollection serviceCollection,
                 MongoDbSettings mongoDbSettings,
                 CategoryNameServiceSettings categoryNameServiceSettings,
                 ImageDbSettings imageDbSettings,
-                RabbitMqSettings rabbitMqSettings)
+                RabbitMqSettings rabbitMqSettings) where RequestStatusServiceImpl : class, IRequestStatusService
             {
                 serviceCollection.AddSingleton<ReadModelDbContext>();
+                serviceCollection.AddScoped<RequestStatusServiceImpl>();
+                serviceCollection.AddScoped<IRequestStatusService, RequestStatusServiceProxy>(provider =>
+                    new RequestStatusServiceProxy(provider.GetRequiredService<RequestStatusServiceImpl>(),
+                        provider.GetRequiredService<IHTTPQueuedCommandStatusStorage>()));
 
                 ConfigureSettings(serviceCollection, mongoDbSettings, categoryNameServiceSettings, imageDbSettings,
                     rabbitMqSettings);

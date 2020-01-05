@@ -22,7 +22,10 @@ namespace Core.Query.EventHandlers
         {
             IAppEvent<Event> appEventBase = (IAppEvent<Event>) message;
 
-            this.Consume(_appEventBuilder.WithCorrelationId(appEventBase.CorrelationId).WithEvent(appEventBase.Event)
+            this.Consume(_appEventBuilder
+                .WithCorrelationId(appEventBase.CorrelationId)
+                .WithEvent(appEventBase.Event)
+                .WithCommand(appEventBase.Command)
                 .Build<T>());
         }
 

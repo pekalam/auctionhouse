@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Core.Common.Domain.Auctions.Events;
 using Core.Common.EventBus;
+using Core.Common.RequestStatusService;
 using Core.Query.Exceptions;
 using Core.Query.ReadModel;
 using Microsoft.Extensions.Logging;
@@ -13,12 +15,36 @@ namespace Core.Query.EventHandlers
     public class AuctionBoughtHandler : EventConsumer<AuctionBought>
     {
         private ReadModelDbContext _readModelDbContext;
+        private readonly IRequestStatusService _requestStatusService;
         private ILogger<AuctionBoughtHandler> _logger;
 
-        public AuctionBoughtHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext readModelDbContext, ILogger<AuctionBoughtHandler> logger) : base(appEventBuilder, logger)
+        public AuctionBoughtHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext readModelDbContext,
+            IRequestStatusService requestStatusService, ILogger<AuctionBoughtHandler> logger) : base(appEventBuilder,
+            logger)
         {
             _readModelDbContext = readModelDbContext;
+            _requestStatusService = requestStatusService;
             _logger = logger;
+        }
+
+        private void UpdateBids(IClientSessionHandle session, AuctionBought ev)
+        {
+            var bidFilter = Builders<UserBid>.Filter.Eq(f => f.AuctionId, ev.AuctionId.ToString());
+            var filter = Builders<UserRead>.Filter.ElemMatch(model => model.UserBids, bidFilter);
+            var update = Builders<UserRead>.Update.Set(f => f.UserBids[-1].AuctionCompleted, true);
+
+            try
+            {
+                _readModelDbContext.UsersReadModel.UpdateMany(session, filter, update);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        private void UpdateOwner(IClientSessionHandle session, AuctionBought ev)
+        {
         }
 
         private void UpdateUser(IClientSessionHandle session, AuctionBought ev)
@@ -38,12 +64,12 @@ namespace Core.Query.EventHandlers
         private void UpdateAuction(IClientSessionHandle session, AuctionBought ev)
         {
             var filter = Builders<AuctionRead>.Filter.Eq(read => read.AuctionId, ev.AuctionId.ToString());
-            var upd1 = Builders<AuctionRead>.Update.Set(read => read.Bought, true);
-            var upd2 = Builders<AuctionRead>.Update.Set(read => read.Buyer, new UserIdentityRead(ev.UserIdentity));
-            var upd3 = Builders<AuctionRead>.Update.Set(read => read.Archived, true);
+            var update = Builders<AuctionRead>.Update
+                .Set(read => read.Bought, true)
+                .Set(read => read.Buyer, new UserIdentityRead(ev.UserIdentity))
+                .Set(read => read.Archived, true);
 
-            var result = _readModelDbContext.AuctionsReadModel.UpdateMany(session, filter,
-                Builders<AuctionRead>.Update.Combine(upd1, upd2, upd3));
+            var result = _readModelDbContext.AuctionsReadModel.UpdateMany(session, filter, update);
             if (result.ModifiedCount == 0)
             {
                 throw new QueryException("Cannot update AuctionReadModel (ModifiedCount = 0)");
@@ -54,20 +80,26 @@ namespace Core.Query.EventHandlers
         {
             var ev = appEvent.Event;
 
-
-            var session = _readModelDbContext.Client.StartSession();
-            session.StartTransaction();
-            try
+            using (var session = _readModelDbContext.Client.StartSession())
             {
-                UpdateAuction(session, ev);
-                UpdateUser(session, ev);
-                session.CommitTransaction();
-            }
-            catch (Exception e)
-            {
-                session.AbortTransaction();
-                _logger.LogError(e, "Cannot update read collections, appEvent: {@appEvent}", appEvent);
-                throw;
+                try
+                {
+                    _ = session.WithTransaction((handle, token) =>
+                    {
+                        UpdateAuction(handle, ev);
+                        UpdateUser(handle, ev);
+                        UpdateBids(handle, ev);
+                        UpdateOwner(handle, ev);
+                        return 0;
+                    });
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e, "Cannot update read collections, appEvent: {@appEvent}", appEvent);
+                    _requestStatusService.TrySendRequestFailureToUser(appEvent, ev.UserIdentity);
+                    throw;
+                }
+                _requestStatusService.TrySendReqestCompletionToUser(appEvent, ev.UserIdentity);
             }
         }
     }

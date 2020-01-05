@@ -2,6 +2,7 @@
 using Core.Common.Domain.Auctions.Events;
 using Core.Common.EventBus;
 using Core.Common.RequestStatusService;
+using Core.Query.Exceptions;
 using Core.Query.ReadModel;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
@@ -33,28 +34,55 @@ namespace Core.Query.EventHandlers
             }
         }
 
-        public override void Consume(IAppEvent<AuctionCompleted> message)
+        private void UpdateAuction(IClientSessionHandle session, AuctionCompleted ev)
         {
-            AuctionCompleted ev = message.Event;
-
             var auctionFilter = Builders<AuctionRead>.Filter.Eq(field => field.AuctionId, ev.AuctionId.ToString());
             var auctionUpdate = Builders<AuctionRead>.Update
                 .Set(field => field.Completed, true)
                 .Set(field => field.Buyer, new UserIdentityRead(ev.WinningBid?.UserIdentity))
-                .Set(field => field.WinningBid, new BidRead(ev.WinningBid));
+                .Set(field => field.WinningBid, new BidRead(ev.WinningBid))
+                .Set(read => read.Archived, true);
 
-            var session = _dbContext.Client.StartSession();
-            session.StartTransaction();
-            try
+            _dbContext.AuctionsReadModel.UpdateMany(session, auctionFilter, auctionUpdate);
+        }
+
+        private void UpdateUser(IClientSessionHandle session, AuctionCompleted ev)
+        {
+            var filter =
+                Builders<UserRead>.Filter.Eq(read => read.UserIdentity.UserId, ev.WinningBid.UserIdentity.UserId.ToString());
+
+            var upd1 = Builders<UserRead>.Update.Push(read => read.WonAuctions, ev.AuctionId.ToString());
+
+            var result = _dbContext.UsersReadModel.UpdateMany(session, filter, upd1);
+            if (result.ModifiedCount == 0)
             {
-                _dbContext.AuctionsReadModel.UpdateMany(session, auctionFilter, auctionUpdate);
-                UserBidsUpdate(session, ev);
-                session.CommitTransaction();
+                throw new QueryException("Cannot update UserReadModel (ModifiedCount = 0)");
             }
-            catch (Exception)
+        }
+
+        private void UpdateOwner(IClientSessionHandle session, AuctionCompleted ev)
+        {
+
+        }
+
+        public override void Consume(IAppEvent<AuctionCompleted> message)
+        {
+            AuctionCompleted ev = message.Event;
+
+            using (var session = _dbContext.Client.StartSession())
             {
-                session.AbortTransaction();
-                throw;
+                var opt = new TransactionOptions(
+                    writeConcern: new WriteConcern(mode: "majority", journal: true)
+                );
+
+                _ = session.WithTransaction((handle, token) =>
+                {
+                    UpdateAuction(handle, ev);
+                    UserBidsUpdate(handle, ev);
+                    UpdateUser(handle, ev);
+                    UpdateOwner(handle, ev);
+                    return 0;
+                }, opt);
             }
         }
     }

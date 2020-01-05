@@ -28,14 +28,14 @@ namespace Core.Command.SignUp
 
         protected override Task<RequestStatus> HandleCommand(SignUpCommand request, CancellationToken cancellationToken)
         {
-            var existing = _userAuthenticationDataRepository.FindUserAuth(request.UserName);
+            var existing = _userAuthenticationDataRepository.FindUserAuth(request.Username);
             if (existing != null)
             {
-                throw new UsernameConflictException($"User {request.UserName} already exists");
+                throw new UsernameConflictException($"User {request.Username} already exists");
             }
 
             var user = new User();
-            user.Register(request.UserName);
+            user.Register(request.Username);
 
             var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
             var userAuth = new UserAuthenticationData()

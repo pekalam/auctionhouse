@@ -50,6 +50,8 @@
     <DefineTrace>true</DefineTrace>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <SuppressTSqlWarnings>71502;71562</SuppressTSqlWarnings>
+    <TreatTSqlWarningsAsErrors>False</TreatTSqlWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>

@@ -186,7 +186,7 @@ namespace Core.Command.CreateAuction
             var user = GetSignedInUser(request);
             var auction = request.AuctionCreateSession.CreateAuction(GetAuctionArgs(request, user.UserIdentity));
 
-            var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
+            var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.PENDING);
             var addAuctionSequence = new AtomicSequence<Auction>()
                 .AddTask(AddToRepository, AddToRepository_Rollback)
                 .AddTask(SheduleAuctionEndTask, ScheduleAuctionEndTask_Rollback)

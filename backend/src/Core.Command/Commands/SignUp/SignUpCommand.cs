@@ -28,7 +28,7 @@ namespace Core.Command.SignUp
     {
         [Required]
         [MinLength(User.MIN_USERNAME_LENGTH)]
-        public string UserName { get; }
+        public string Username { get; }
         [Required]
         [Regex(@"(?=.*[a-z])(?!.*[\!\@\#\$\%\^\&\*\+\=\)\(_\`\~\'\""\,\.\|])(?=.{4,})")]
         public string Password { get; }
@@ -36,9 +36,9 @@ namespace Core.Command.SignUp
         [EmailAddress]
         public string Email { get; }
 
-        public SignUpCommand(string userName, string password, string email)
+        public SignUpCommand(string username, string password, string email)
         {
-            UserName = userName;
+            Username = username;
             Password = password;
             Email = email;
         }

@@ -61,7 +61,7 @@ namespace Core.DomainModelTests
             }
 
             var generatedEvents = service.BuyNow(auction, users[2]);
-            generatedEvents.Count.Should().Be(3);
+            generatedEvents.Count.Should().Be(2);
 
 
             foreach (var user in users.Take(2))

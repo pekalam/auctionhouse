@@ -68,6 +68,7 @@ namespace Web
                 .Get<UserAuthDbContextOptions>();
             AddOptions<ResetLinkSenderServiceSettings>(services, "ResetLinkService");
 
+            var allowedOrigin = Configuration.GetValue<string>("CORS:AllowedOrigin");
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(builder =>
@@ -76,13 +77,11 @@ namespace Web
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials()
-                        .WithOrigins("http://localhost:4200");
-                    	//.AllowAnyOrigin();
+                        .WithOrigins(allowedOrigin);
                 });
             });
             services.AddHttpContextAccessor();
             services.AddSingleton<JwtService>();
-            services.AddScoped<IRequestStatusService, RequestStatusService>();
             services.AddAutoMapper(typeof(Startup).Assembly);
 
             var categoriesXmlDirLocation = Environment.GetEnvironmentVariable("categories_xml_data");
@@ -97,7 +96,7 @@ namespace Web
                     SchemaFilePath = $"{categoriesXmlDirLocation}/categories.xsd"
                 }
             );
-            DefaultDIBootstraper.Query.Configure(services, mongoDbSettings, new CategoryNameServiceSettings()
+            DefaultDIBootstraper.Query.Configure<RequestStatusService>(services, mongoDbSettings, new CategoryNameServiceSettings()
             {
                 CategoriesFilePath = $"{categoriesXmlDirLocation}/categories.xml",
                 SchemaFilePath = $"{categoriesXmlDirLocation}/categories.xsd"
@@ -122,12 +121,20 @@ namespace Web
             {
                 c.SwaggerDoc("v1", new Info(){ Title = "Auctionhouse API", Version = "v1" });
             });
+
+            services.AddHsts(options =>
+            {
+                options.Preload = true;
+                options.IncludeSubDomains = true;
+                options.MaxAge = TimeSpan.FromDays(60);
+            });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
         {
             DefaultDIBootstraper.Common.Start(serviceProvider);
 
+            app.UseHsts();
             app.UseCors();
 
             app.UseSwagger();
