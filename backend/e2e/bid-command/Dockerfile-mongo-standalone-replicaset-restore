@@ -1,9 +1,11 @@
 FROM mongo
 RUN apt-get update
-RUN apt-get -y install netcat
+RUN apt-get -y install netcat && apt-get -y install cron
 COPY ["mongo-standalone-entrypoint.sh", "/root"]
 COPY ["init.js", "/root"]
 COPY ["data/appDb", "/root/appDb/"]
+COPY scripts /root/scripts
+COPY update-cronjob /root
 EXPOSE 32112
 RUN chmod +x /root/mongo-standalone-entrypoint.sh
 ENTRYPOINT ["/root/mongo-standalone-entrypoint.sh"]

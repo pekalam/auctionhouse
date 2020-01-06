@@ -57,35 +57,20 @@ namespace Core.Query.EventHandlers
 
             auction.DateCreated = DateTime.UtcNow;
 
-            var filter =
-                Builders<UserRead>.Filter.Eq(f => f.UserIdentity.UserId, ev.AuctionArgs.Creator.UserId.ToString());
-            var update = Builders<UserRead>.Update.Push(f => f.CreatedAuctions, ev.AuctionId.ToString());
 
-
-            using (var session = _dbContext.Client.StartSession())
+            try
             {
-                try
-                {
-                    var opt = new TransactionOptions(
-                        writeConcern: new WriteConcern(mode: "majority", journal: true)
-                    );
-
-                    _ = session.WithTransaction((handle, token) =>
-                    {
-                        _dbContext.AuctionsReadModel.InsertOne(handle, auction);
-                        _dbContext.UsersReadModel.UpdateOne(handle, filter, update);
-                        return 0;
-                    }, transactionOptions: opt);
-                }
-                catch (Exception e)
-                {
-                    _logger.LogWarning(e, "Cannot create an auction");
-                    _requestStatusService.TrySendRequestFailureToUser(message, ev.AuctionArgs.Creator);
-                    throw;
-                }
-
-                _requestStatusService.TrySendReqestCompletionToUser(message, ev.AuctionArgs.Creator);
+                _dbContext.AuctionsReadModel.WithWriteConcern(new WriteConcern(mode: "majority", journal: true))
+                    .InsertOne(auction);
             }
+            catch (Exception e)
+            {
+                _logger.LogWarning(e, "Cannot create an auction");
+                _requestStatusService.TrySendRequestFailureToUser(message, ev.AuctionArgs.Creator);
+                throw;
+            }
+
+            _requestStatusService.TrySendReqestCompletionToUser(message, ev.AuctionArgs.Creator);
         }
     }
 }

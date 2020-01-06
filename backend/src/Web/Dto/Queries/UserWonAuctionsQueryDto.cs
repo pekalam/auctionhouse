@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Core.Query.Queries.User.UserAuctions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Dto.Queries
 {
@@ -6,5 +7,9 @@ namespace Web.Dto.Queries
     {
         [FromQuery(Name = "page")]
         public int Page { get; set; } = 0;
+
+        [FromQuery(Name = "sort")] public UserAuctionsSorting Sorting { get; set; }
+
+        [FromQuery(Name = "dir")] public UserAuctionsSorting SortingDirection { get; set; }
     }
 }

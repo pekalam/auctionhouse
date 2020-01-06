@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { filter, switchMap, map, catchError } from 'rxjs/operators';
 import { CommandHelper, ResponseOptions } from '../ComandHelper';
+import { environment } from '../../../../environments/environment';
 
 
 @Injectable({
@@ -14,7 +15,7 @@ export class BuyCreditsCommand {
   }
 
   execute(ammount: number): Observable<RequestStatus> {
-    const url = '/api/buyCredits';
+    const url = `${environment.API_URL}/api/buyCredits`;
     const req = this.httpClient.post(url, {ammount});
     return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.WSQueuedCommand);
   }

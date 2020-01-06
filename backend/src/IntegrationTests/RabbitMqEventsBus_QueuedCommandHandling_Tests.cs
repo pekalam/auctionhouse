@@ -38,6 +38,20 @@ namespace IntegrationTests
         public int X { get; set; }
     }
 
+
+    public class RabbitMqEventBusTestUtils
+    {
+        public static Lazy<RabbitMqEventBus> Bus { get; } = new Lazy<RabbitMqEventBus>(() =>
+        {
+            var bus = new RabbitMqEventBus(new RabbitMqSettings()
+            {
+                ConnectionString =
+                    TestContextUtils.GetParameterOrDefault("rabbitmq-connection-string", "host=localhost"),
+            }, Mock.Of<ILogger<RabbitMqEventBus>>());
+            return bus;
+        });
+    }
+
     public class RabbitMqEventsBus_QueuedCommandHandling_Tests
     {
 
@@ -53,26 +67,12 @@ namespace IntegrationTests
                 CommandContext = new CommandContext(){CorrelationId = new CorrelationId(Guid.NewGuid().ToString()),User = signedInUser},
                 WSQueued = true
             };
-            var sem = new SemaphoreSlim(0, 2);
-            var bus = new RabbitMqEventBus(new RabbitMqSettings()
-            {
-                ConnectionString =
-                    TestContextUtils.GetParameterOrDefault("rabbitmq-connection-string", "host=localhost"),
-            }, Mock.Of<ILogger<RabbitMqEventBus>>());
-
+            var sem = new SemaphoreSlim(0, 1);
 
             var mockUserIdentityService = new Mock<IUserIdentityService>();
             mockUserIdentityService.Setup(service => service.GetSignedInUserIdentity()).Returns(signedInUser);
 
             var mockRequestStatusService = new Mock<IRequestStatusService>();
-            mockRequestStatusService.Setup(service => service.TrySendRequestCompletionToUser(
-                It.IsAny<string>(), It.IsAny<CorrelationId>(), It.IsAny<UserIdentity>(),
-                null
-            )).Callback(
-                () =>
-                {
-                    sem.Release();
-                });
 
 
             var mediatrMock = new Mock<IMediator>();
@@ -89,15 +89,13 @@ namespace IntegrationTests
             mockImplProvider.Setup(provider => provider.Get<IUserIdentityService>()).Returns(mockUserIdentityService.Object);
             mockImplProvider.Setup(provider => provider.Get<WSQueuedCommandHandler>()).Returns(testQueuedCommandHandler.Object);
 
-            bus.InitCommandSubscribers("IntegrationTests", mockImplProvider.Object);
+            RabbitMqEventBusTestUtils.Bus.Value.CancelCommandSubscriptions();
+            RabbitMqEventBusTestUtils.Bus.Value.InitCommandSubscribers("Test.IntegrationTests", mockImplProvider.Object);
 
-          
-            bus.Send(cmd);
+
+            RabbitMqEventBusTestUtils.Bus.Value.Send(cmd);
 
             if (!sem.Wait(TimeSpan.FromSeconds(60))) { Assert.Fail(); };
-
-            if (!sem.Wait(TimeSpan.FromSeconds(60))){Assert.Fail();};
-            
 
             mockRequestStatusService.Verify(service => service.TrySendRequestFailureToUser(
                 It.IsAny<string>(), It.IsAny<CorrelationId>(), It.IsAny<UserIdentity>(),

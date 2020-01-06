@@ -14,19 +14,26 @@ $width: 1100px;
   }
 }
 
+.field-title{
+  font-weight: 500;
+  font-family: Roboto,"Helvetica Neue",sans-serif;
+}
+
+.condition-title{
+  margin-top: 10px;
+  display: block;
+  margin-bottom: 21px;
+}
+
 .container {
   text-align: left;
-  font-size: 14px;
   padding: 20px;
   mat-radio-button{
-    font-size: 14px;
+    font-size: 0.9em;
   }
   mat-form-field {
     display: block;
     margin-bottom: 4px;
-    ::ng-deep .mat-form-field-infix{
-      font-size: 14px;
-    }
     input{
       margin-top: 20px;
     }
@@ -34,15 +41,17 @@ $width: 1100px;
   .form-grid {
     display: flex;
     flex-flow: row;
-    width: 100%;
+    flex-wrap: wrap;
+    width: 90%;
+    margin: 0 auto;
     .g1{
-      flex-grow: 0;
-      flex-basis: 33%;
+      flex-grow: 1;
+      max-width: 33%;
     }
     .g2 {
-      flex-grow: 0;
+      flex-grow: 1;
       flex-basis: 66%;
-      padding-left: 40px;
+      padding-left: 20px;
       display: flex;
       flex-direction: column;
       textarea{

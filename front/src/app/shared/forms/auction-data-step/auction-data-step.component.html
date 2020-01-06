@@ -2,7 +2,7 @@
   <form class="form" [formGroup]="form">
 
     <mat-form-field id="name-form-field">
-      <b>Auction name</b>
+      <span class="field-title">Name</span>
       <input matInput type="text" formControlName="name" (keydown)="onChange()" />
       <mat-error>
         <ng-container *ngIf="form.controls.name.errors">
@@ -12,12 +12,10 @@
     </mat-form-field>
     <div class="group">
       <div class="g1">
-
-        <mat-checkbox id="auction-checkbox" (change)="onAuctionChange($event.checked) || onChange()"
-          formControlName="auction">Auction
+        <span class="field-title type-title">Type</span>
+        <mat-checkbox id="auction-checkbox" (change)="onAuctionChange($event.checked)" formControlName="auction">Auction
         </mat-checkbox>
-        <mat-checkbox id="buynow-checkbox" (change)="onBuyNowChange($event.checked) || onChange()"
-          formControlName="buyNow">
+        <mat-checkbox id="buynow-checkbox" (change)="onBuyNowChange($event.checked)" formControlName="buyNow">
           Buy now
         </mat-checkbox>
 
@@ -32,31 +30,45 @@
         </mat-form-field>
       </div>
       <div class="g2">
-        <mat-form-field [hidden]="disable.startDate">
-          <b>Start date</b>
-          <input #startDatepicker [matDatepicker]="picker1" matInput [(ngModel)]="defaultStartDate" formControlName="startDate"
-            (change)="onChange()" />
-          <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-          <mat-datepicker #picker1></mat-datepicker>
-          <mat-error>
-            <ng-container *ngIf="form.controls.startDate.errors">
-              <span *ngIf="form.controls.startDate.errors.required">This field is required</span>
-            </ng-container>
-          </mat-error>
-        </mat-form-field>
+        <div class="date-group" [hidden]="disable.startDate">
+          <mat-form-field class="date">
+            <span class="field-title">Start date</span>
+            <input #startDatepicker [matDatepicker]="picker1" matInput [(ngModel)]="defaultStartDate"
+              formControlName="startDate" (change)="onChange()" />
+            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+            <mat-datepicker #picker1></mat-datepicker>
+            <mat-error>
+              <ng-container *ngIf="form.controls.startDate.errors">
+                <span *ngIf="form.controls.startDate.errors.required">This field is required</span>
+              </ng-container>
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="time">
+            <span class="field-title">Time</span>
+            <input matInput type="time" formControlName="startTime"/>
+          </mat-form-field>
+        </div>
 
-        <mat-form-field>
-          <b>End date</b>
-          <input #endDatepicker [matDatepicker]="picker2" [(ngModel)]="defaultEndDate" matInput formControlName="endDate"
-            (change)="onChange()" />
-          <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-          <mat-datepicker #picker2></mat-datepicker>
-          <mat-error>
-            <ng-container *ngIf="form.controls.endDate.errors">
-              <span *ngIf="form.controls.endDate.errors.required">This field is required</span>
-            </ng-container>
-          </mat-error>
-        </mat-form-field>
+        <div class="date-group">
+          <mat-form-field class="date">
+            <span class="field-title">End date</span>
+            <input #endDatepicker [matDatepicker]="picker2" [(ngModel)]="defaultEndDate" matInput
+              formControlName="endDate" (change)="onChange()" />
+            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2></mat-datepicker>
+            <mat-error>
+              <ng-container *ngIf="form.controls.endDate.errors">
+                <span *ngIf="form.controls.endDate.errors.required">This field is required</span>
+              </ng-container>
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="time">
+            <span class="field-title">Time</span>
+            <input matInput type="time" formControlName="endTime"/>
+          </mat-form-field>
+        </div>
+
       </div>
     </div>
 

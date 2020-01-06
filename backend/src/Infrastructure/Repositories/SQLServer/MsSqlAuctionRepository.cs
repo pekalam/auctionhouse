@@ -7,7 +7,6 @@ using System.Runtime.Serialization;
 using System.Text;
 using Core.Common.Domain;
 using Core.Common.Domain.Auctions;
-using Core.Common.Domain.Users;
 using Dapper;
 using Newtonsoft.Json;
 
@@ -16,83 +15,6 @@ namespace Infrastructure.Repositories.SQLServer
     public class MsSqlConnectionSettings
     {
         public string ConnectionString { get; set; }
-    }
-
-    public class MsSqlESRepositoryBase
-    {
-        protected MsSqlConnectionSettings _connectionSettings;
-
-        public MsSqlESRepositoryBase(MsSqlConnectionSettings connectionSettings)
-        {
-            _connectionSettings = connectionSettings;
-        }
-
-        private Event DeserializeEvent(string evStr)
-        {
-            try
-            {
-                Event ev = JsonConvert.DeserializeObject<Event>(evStr, new JsonSerializerSettings()
-                {
-                    TypeNameHandling = TypeNameHandling.All
-                });
-                return ev;
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
-
-        protected List<Event> DeserializeEvents(IEnumerable<string> events)
-        {
-            List<Event> aggEvents = new List<Event>();
-            foreach (var evStr in events)
-            {
-                Event ev = DeserializeEvent(evStr);
-                aggEvents.Add(ev);
-            }
-
-            return aggEvents;
-        }
-
-        protected List<Event> ReadEvents(Guid aggId)
-        {
-            var sql = "SELECT e.Data FROM dbo.Events e WHERE e.AggId = @AggId";
-            IEnumerable<string> events;
-            using (var connection = new SqlConnection(_connectionSettings.ConnectionString))
-            {
-                connection.Open();
-                events = connection.Query<string>(sql,
-                    new { AggId = aggId });
-                if (events.Count() == 0)
-                {
-                    return null;
-                }
-            }
-
-            var aggEvents = DeserializeEvents(events);
-            return aggEvents;
-        }
-
-
-        protected List<Event> ReadEvents(Guid aggId, long version)
-        {
-            var sql = "SELECT e.Data FROM dbo.Events e WHERE e.AggId = @AggId AND e.Version <= @Version";
-            IEnumerable<string> events;
-            using (var connection = new SqlConnection(_connectionSettings.ConnectionString))
-            {
-                connection.Open();
-                events = connection.Query<string>(sql,
-                    new { AggId = aggId, Version = version });
-                if (events.Count() == 0)
-                {
-                    return null;
-                }
-            }
-
-            var aggEvents = DeserializeEvents(events);
-            return aggEvents;
-        }
     }
 
     public class MsSqlAuctionRepository : MsSqlESRepositoryBase, IAuctionRepository
@@ -179,79 +101,6 @@ namespace Infrastructure.Repositories.SQLServer
                         Data = json,
                         ExpectedVersion = auction.Version - auction.PendingEvents.Count() + sent++,
                         NewVersion = auction.Version - auction.PendingEvents.Count + sent
-                    }, commandType: CommandType.StoredProcedure);
-                }
-
-            }
-        }
-    }
-
-    public class MsSqlUserRepository : MsSqlESRepositoryBase, IUserRepository
-    {
-        public MsSqlUserRepository(MsSqlConnectionSettings connectionSettings) : base(connectionSettings)
-        {
-        }
-
-        public User AddUser(User user)
-        {
-            var sp = "dbo.insert_event";
-
-            using (var connection = new SqlConnection(_connectionSettings.ConnectionString))
-            {
-                connection.Open();
-                foreach (var pendingEvent in user.PendingEvents)
-                {
-                    var json = JsonConvert.SerializeObject(pendingEvent, new JsonSerializerSettings()
-                    {
-                        TypeNameHandling = TypeNameHandling.All
-                    });
-                    connection.Execute(sp, new
-                    {
-                        AggId = user.AggregateId,
-                        AggName = "User",
-                        EventName = pendingEvent.EventName,
-                        Date = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(1)),
-                        Data = json,
-                        ExpectedVersion = -1,
-                        NewVersion = user.Version
-                    }, commandType: CommandType.StoredProcedure);
-                }
-
-            }
-
-            return user;
-        }
-
-        public User FindUser(UserIdentity userIdentity)
-        {
-            List<Event> aggEvents = ReadEvents(userIdentity.UserId);
-            User user = aggEvents != null ? User.FromEvents(aggEvents) : null;
-            return user;
-        }
-
-        public void UpdateUser(User user)
-        {
-            var sp = "dbo.insert_event";
-
-            using (var connection = new SqlConnection(_connectionSettings.ConnectionString))
-            {
-                connection.Open();
-                var sent = 0;
-                foreach (var pendingEvent in user.PendingEvents)
-                {
-                    var json = JsonConvert.SerializeObject(pendingEvent, new JsonSerializerSettings()
-                    {
-                        TypeNameHandling = TypeNameHandling.All
-                    });
-                    connection.Execute(sp, new
-                    {
-                        AggId = user.AggregateId,
-                        AggName = "User",
-                        EventName = pendingEvent.EventName,
-                        Date = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(1)),
-                        Data = json,
-                        ExpectedVersion = user.Version - user.PendingEvents.Count + sent++,
-                        NewVersion = user.Version - user.PendingEvents.Count + sent
                     }, commandType: CommandType.StoredProcedure);
                 }
 

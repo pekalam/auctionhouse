@@ -13,6 +13,7 @@ import { SharedModule } from '../shared/shared.module';
 import { UserCreditsComponent } from './pages/user-page/subpages/user-credits/user-credits.component';
 import { UserBidsPageComponent } from './pages/user-page/subpages/user-bids-page/user-bids-page.component';
 import { UserBoughtAuctionsPageComponent } from './pages/user-page/subpages/user-bought-auctions-page/user-bought-auctions-page.component';
+import { UserWonAuctionsPageComponent } from './pages/user-page/subpages/user-won-auctions-page/user-won-auctions-page.component';
 
 
 
@@ -25,7 +26,8 @@ import { UserBoughtAuctionsPageComponent } from './pages/user-page/subpages/user
     AuctionEditPageComponent,
     UserCreditsComponent,
     UserBidsPageComponent,
-    UserBoughtAuctionsPageComponent
+    UserBoughtAuctionsPageComponent,
+    UserWonAuctionsPageComponent
   ],
   imports: [
     CommonModule,

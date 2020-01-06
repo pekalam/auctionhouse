@@ -19,4 +19,9 @@ export class LoadingService {
       setTimeout(() => this.isLoading = ++this.loadingCount > 0);
     }
   }
+
+  resetLoading(){
+    this.isLoading = false;
+    this.loadingCount = 0;
+  }
 }

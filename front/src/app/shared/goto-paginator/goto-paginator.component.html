@@ -2,7 +2,7 @@
   <div class="goto-div">
     <span class="goto">Go to</span>
     <mat-form-field class="goto-field">
-      <input (keyup.enter)="pageChange.emit($event.target.value - 1)" matInput type="number" [min]="1" />
+      <input (keyup.enter)="onGotoClick($event.target.value - 1)" matInput type="number" [min]="1" [max]="length / 10 + (length % 10 > 0 ? 1 : 0)"/>
     </mat-form-field>
   </div>
   <mat-paginator class="paginator-up" [length]="length" [pageSize]="10" [pageIndex]="page" (page)="pageChange.emit($event.pageIndex)">

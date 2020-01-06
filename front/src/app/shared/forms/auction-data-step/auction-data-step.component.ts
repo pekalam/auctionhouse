@@ -3,7 +3,7 @@ import { AuctionCreateStep } from '../auctionCreateStep';
 import { AuctionDataStep } from './auctionDataStep';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { MatDatepicker } from '@angular/material';
-import {MomentDateAdapter} from '@angular/material-moment-adapter';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
 
 
 export interface AuctionDataFormValues {
@@ -23,8 +23,8 @@ export interface AuctionDataFormValues {
 })
 export class AuctionDataStepComponent extends AuctionCreateStep<AuctionDataStep> implements OnInit {
 
-  @ViewChild('startDatepicker', {static: true}) startDatepicker: MatDatepicker<MomentDateAdapter>;
-  @ViewChild('endDatepicker', {static: true}) endDatepicker: MatDatepicker<MomentDateAdapter>;
+  @ViewChild('startDatepicker', { static: true }) startDatepicker: MatDatepicker<MomentDateAdapter>;
+  @ViewChild('endDatepicker', { static: true }) endDatepicker: MatDatepicker<MomentDateAdapter>;
 
 
   @Input('disable')
@@ -38,12 +38,15 @@ export class AuctionDataStepComponent extends AuctionCreateStep<AuctionDataStep>
   set setDefaults(defaults: AuctionDataFormValues) {
     if (defaults) {
       console.log(defaults);
+      defaults.startDate = new Date(defaults.startDate);
+      defaults.endDate = new Date(defaults.endDate);
 
-      this.form.setValue({ ...defaults });
-      this.onAuctionChange(defaults.auction);
-      this.onBuyNowChange(defaults.buyNow);
+
       this.defaultEndDate = defaults.endDate;
       this.defaultStartDate = defaults.startDate;
+      this.form.setValue({ ...defaults, startTime: this.getTimeStr(this.defaultStartDate), endTime: this.getTimeStr(this.defaultEndDate) });
+      this.onAuctionChange(defaults.auction);
+      this.onBuyNowChange(defaults.buyNow);
       this.ready = this.form.valid;
     }
   }
@@ -58,6 +61,8 @@ export class AuctionDataStepComponent extends AuctionCreateStep<AuctionDataStep>
     buyNow: new FormControl(false, []),
     auction: new FormControl(true, []),
     buyNowPrice: new FormControl({ disabled: true, value: '' }, [Validators.required]),
+    startTime: new FormControl('', []),
+    endTime: new FormControl('', []),
   });
 
   constructor() {
@@ -66,14 +71,25 @@ export class AuctionDataStepComponent extends AuctionCreateStep<AuctionDataStep>
     const nextMonth = new Date();
     nextMonth.setMonth(nextMonth.getMonth() + 1);
     this.defaultEndDate = nextMonth;
+    this.setDefaultTime();
+  }
+
+  private setDefaultTime() {
+    this.form.controls.startTime.setValue(this.getTimeStr(this.defaultStartDate));
+    this.form.controls.endTime.setValue(this.getTimeStr(this.defaultEndDate));
+  }
+
+  private getTimeStr(date: Date): string {
+    return (date.getHours() < 10 ? '0' + date.getHours() : date.getHours())
+      + ':' + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
   }
 
   onAuctionChange(checked) {
     if (!checked && !this.form.controls.buyNow.value) {
       this.form.controls.auction.setValue(true);
       this.form.controls.auction.updateValueAndValidity();
-
     }
+    this.onChange();
   }
 
   onBuyNowChange(checked) {
@@ -90,6 +106,7 @@ export class AuctionDataStepComponent extends AuctionCreateStep<AuctionDataStep>
       this.form.controls.buyNowPrice.disable();
       this.form.controls.buyNowPrice.reset();
     }
+    this.onChange();
   }
 
   onChange() {
@@ -103,17 +120,23 @@ export class AuctionDataStepComponent extends AuctionCreateStep<AuctionDataStep>
 
   onOkClick() {
     if (this.form.valid) {
-      let step: AuctionDataStep = {
+      const startDate: Date = this.form.value.startDate.toDate ? this.form.value.startDate.toDate() : this.form.value.startDate;
+      startDate.setHours(this.form.value.startTime.split(':')[0]);
+      startDate.setMinutes(this.form.value.startTime.split(':')[1]);
+      const endDate: Date = this.form.value.endDate.toDate ? this.form.value.endDate.toDate() : this.form.value.endDate;
+      endDate.setHours(this.form.value.endTime.split(':')[0]);
+      endDate.setMinutes(this.form.value.endTime.split(':')[1]);
+      const step: AuctionDataStep = {
         name: this.form.value.name,
         buyNow: this.form.value.buyNow,
         buyNowPrice: this.form.value.buyNowPrice,
-        endDate: this.form.value.endDate,
-        startDate: this.form.value.startDate,
+        endDate,
+        startDate,
         auction: this.form.value.auction
       };
       console.log(step);
 
-      this.completeStep(step)
+      this.completeStep(step);
     }
 
   }

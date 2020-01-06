@@ -3,6 +3,7 @@ import { RequestStatus, WSCommandStatusService } from '../../services/WSCommandS
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CommandHelper, ResponseOptions } from '../ComandHelper';
+import { environment } from '../../../../environments/environment';
 
 
 export interface UpdateAuctionCommandArgs {
@@ -24,7 +25,7 @@ export class UpdateAuctionCommand {
   }
 
   execute(args: UpdateAuctionCommandArgs): Observable<RequestStatus> {
-    const url = '/api/userUpdateAuction';
+    const url = `${environment.API_URL}/api/userUpdateAuction`;
     const req = this.httpClient.post(url, { ...args });
     return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.WSQueuedCommand);
   }

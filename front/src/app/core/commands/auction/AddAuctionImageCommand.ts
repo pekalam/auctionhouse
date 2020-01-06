@@ -4,6 +4,8 @@ import { Observable, of } from 'rxjs';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { filter, switchMap, map, catchError } from 'rxjs/operators';
 import { CommandHelper, ResponseOptions } from '../ComandHelper';
+import { environment } from '../../../../environments/environment';
+
 
 
 @Injectable({
@@ -14,7 +16,7 @@ export class AddAuctionImageCommand {
   }
 
   execute(event: FileList, imgNum: number): Observable<RequestStatus> {
-    const url = '/api/addAuctionImage';
+    const url = `${environment.API_URL}/api/addAuctionImage`;
     const file: File = event && event.item(0);
     const formData = new FormData();
     formData.append('img', file);

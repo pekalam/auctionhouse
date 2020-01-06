@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { RequestStatus } from './WSCommandStatusService';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 export const MAX_RETRY = 3;
 export const INTERVAL_SEC = 1000;
@@ -25,7 +26,7 @@ export class HTTPCommandStatusService {
   }
 
   private sendCommandStatusRequest(correlationId: string): Observable<RequestStatus> {
-    const url = `/api/command/${correlationId}`;
+    const url = `${environment.API_URL}/api/command/${correlationId}`;
     return this.httpClient.get<RequestStatus>(url);
   }
 

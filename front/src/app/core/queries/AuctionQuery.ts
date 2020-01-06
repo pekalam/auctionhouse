@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Auction } from '../models/Auctions';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { QueryHelper } from './QueryHelper';
 
 @Injectable({
@@ -13,7 +14,7 @@ export class AuctionQuery {
   }
 
   execute(auctionId: string): Observable<Auction>{
-    const url = `/api/auction?auctionId=${auctionId}`;
+    const url = `${environment.API_URL}/api/auction?auctionId=${auctionId}`;
     return this.queryHelper.pipeLoading(this.httpClient.get<Auction>(url, {}));
   }
 }

@@ -7,6 +7,8 @@ import { WSCommandStatusService, RequestStatus } from '../../services/WSCommandS
 import { Injectable } from '@angular/core';
 import { WSCommandHelper } from '../WSCommandHelper';
 import { CommandHelper, ResponseOptions } from '../ComandHelper';
+import { environment } from '../../../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +18,7 @@ export class CancelBidCommand{
   }
 
   execute(auctionId: string, bidId: string): Observable<RequestStatus> {
-    const url = '/api/cancelBid';
+    const url = `${environment.API_URL}/api/cancelBid`;
     const req = this.httpClient.post(url, { auctionId, bidId });
     return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.WSQueuedCommand);
   }

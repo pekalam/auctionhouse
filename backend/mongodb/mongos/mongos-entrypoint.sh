@@ -27,6 +27,18 @@ wait-for localhost:27017 -t 180
 echo "running init.js..."
 mongo /scripts/init.js
 
-nc -l -k -s 0.0.0.0 -p 32112 &
 echo "mongos initialized"
+
+echo "setting cronjob"
+crontab /root/update-cronjob
+echo "starting cron"
+cron
+
+echo "running update scripts..."
+./scripts/update-top-auctions-in-tag-view.sh
+./scripts/update-common-tags-view.sh
+./scripts/update-top-auctions-by-product-name.sh
+
+nc -l -k -s 0.0.0.0 -p 32112 &
+
 fg %1

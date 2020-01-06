@@ -1,6 +1,6 @@
 <div class="container" *ngIf="commandArgs">
   <p>Product name:&nbsp;{{commandArgs.product.name}}</p>
-  <p *ngIf="commandArgs.buyNow">Buy now price:&nbsp;{{commandArgs.buyNowPrice}}</p>
+  <p *ngIf="commandArgs.buyNowPrice">Buy now price:&nbsp;{{commandArgs.buyNowPrice}}</p>
   <p>Start date: {{commandArgs.startDate | date:'medium'}}</p>
   <p>End date: {{commandArgs.endDate | date:'medium'}}</p>
   <p>Tags:</p>

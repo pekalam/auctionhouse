@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 
 export interface TopAuctionQueryItem {
@@ -23,7 +24,7 @@ export class TopAuctionsByTagQuery {
   }
 
   execute(tag: string, page: number): Observable<TopAuctionsQueryResult>{
-    const url = `/api/topAuctionsByTag?tag=${tag}&page=${page}`;
+    const url = `${environment.API_URL}/api/topAuctionsByTag?tag=${tag}&page=${page}`;
     return this.httpClient.get<TopAuctionsQueryResult>(url, {});
   }
 }

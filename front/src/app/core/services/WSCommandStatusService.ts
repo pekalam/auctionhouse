@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { AuthenticationStateService } from './AuthenticationStateService';
 import { distinctUntilChanged, map, first } from 'rxjs/operators';
 import { AuctionPriceChangedNotification_Name } from '../serverNotifications/AuctionPriceChangedNotification';
+import { environment } from '../../../environments/environment';
 
 export interface RequestStatus {
   correlationId: string;
@@ -50,7 +51,7 @@ export class WSCommandStatusService {
     }
 
     this.connection = new signalR.HubConnectionBuilder()
-      .withUrl(`http://localhost:5000/app?token=${jwt}`)
+      .withUrl(`${environment.WS_URL}/app?token=${jwt}`)
       .build();
 
     this.connection.onclose((err) => {

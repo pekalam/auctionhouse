@@ -1,5 +1,5 @@
 <div class="container" *ngIf="auctions">
-  <app-goto-paginator *ngIf="auctions.length > 0" [length]="total" [page]="currentPage"
+  <app-goto-paginator [length]="total" [page]="currentPage"
     (pageChange)="onPageChange($event)"></app-goto-paginator>
 
 

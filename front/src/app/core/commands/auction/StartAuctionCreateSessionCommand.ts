@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { WSCommandHelper } from '../WSCommandHelper';
 import { ResponseOptions, CommandHelper } from '../ComandHelper';
+import { environment } from '../../../../environments/environment';
 
 
 @Injectable({
@@ -16,7 +17,7 @@ export class StartAuctionCreateSessionCommand {
   }
 
   execute() {
-    const url = '/api/startCreateSession';
+    const url = `${environment.API_URL}/api/startCreateSession`;
     const req = this.httpClient.post(url, {});
     return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.WSQueuedCommand);
   }

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { CategoryTreeNode } from '../models/CategoryTreeNode';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class CategoriesQuery {
   }
 
   execute(): Observable<CategoryTreeNode> {
-    const url = '/api/categories';
+    const url = `${environment.API_URL}/api/categories`;
     return this.httpClient.get<CategoryTreeNode>(url, {});
   }
 

@@ -14,7 +14,6 @@ if [ "$1" = "swarm" ]; then
             -f ./config/config_1/docker-compose$dev.yml \
             -f ./shards/shard_1/docker-compose$dev.yml \
             -f ./shards/shard_2/docker-compose$dev.yml \
-            -f ./views/docker-compose$dev.yml \
             --project-directory . \
             build
     fi
@@ -27,7 +26,6 @@ else
         -f ./config/config_1/docker-compose$dev.yml \
         -f ./shards/shard_1/docker-compose$dev.yml \
         -f ./shards/shard_2/docker-compose$dev.yml \
-        -f ./views/docker-compose$dev.yml \
         --project-directory . \
         up -d "$@"
 fi

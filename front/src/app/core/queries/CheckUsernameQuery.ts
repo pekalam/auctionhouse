@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { CategoryTreeNode } from '../models/CategoryTreeNode';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 export interface CheckUsernameQueryResult{
   username: string;
@@ -18,7 +19,7 @@ export class CheckUsernameQuery {
   }
 
   execute(username: string): Observable<CheckUsernameQueryResult> {
-    const url = `/api/checkUsername?username=${username}`;
+    const url = `${environment.API_URL}/api/checkUsername?username=${username}`;
     return this.httpClient.get<CheckUsernameQueryResult>(url, {});
   }
 }

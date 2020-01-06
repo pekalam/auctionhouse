@@ -33,11 +33,6 @@ namespace IntegrationTests
                 HttpQueued = true
             };
             var sem = new SemaphoreSlim(0, 2);
-            var bus = new RabbitMqEventBus(new RabbitMqSettings()
-            {
-                ConnectionString =
-                    TestContextUtils.GetParameterOrDefault("rabbitmq-connection-string", "host=localhost"),
-            }, Mock.Of<ILogger<RabbitMqEventBus>>());
 
 
             var mockUserIdentityService = new Mock<IUserIdentityService>();
@@ -68,10 +63,10 @@ namespace IntegrationTests
             mockImplProvider.Setup(provider => provider.Get<HTTPQueuedCommandHandler>())
                 .Returns(testQueuedCommandHandler.Object);
 
-            bus.InitCommandSubscribers("IntegrationTests", mockImplProvider.Object);
+            RabbitMqEventBusTestUtils.Bus.Value.CancelCommandSubscriptions();
+            RabbitMqEventBusTestUtils.Bus.Value.InitCommandSubscribers("Test.IntegrationTests", mockImplProvider.Object);
 
-
-            bus.Send(cmd);
+            RabbitMqEventBusTestUtils.Bus.Value.Send(cmd);
 
             if (!sem.Wait(TimeSpan.FromSeconds(60)))
             {

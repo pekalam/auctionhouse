@@ -22,7 +22,10 @@ namespace Infrastructure.Services.SchedulerService
             sheduleRequest.StartDate = auction.EndDate.Value;
             sheduleRequest.Endpoint = _serviceSettings.AuctionEndEchoTaskEndpoint;
             sheduleRequest.Type = "echo";
-            sheduleRequest.Values = new AuctionEndTimeTaskValues(auction);
+            sheduleRequest.Values = new AuctionEndTimeTaskValues()
+            {
+                AuctionId = auction.AggregateId
+            };
             return sheduleRequest;
         }
 

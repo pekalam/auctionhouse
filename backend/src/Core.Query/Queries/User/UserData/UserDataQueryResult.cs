@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Core.Query.ReadModel;
+using Newtonsoft.Json;
 
 namespace Core.Query.Queries.User.UserData
 {
@@ -9,6 +10,7 @@ namespace Core.Query.Queries.User.UserData
     {
         public string Username { get; set; }
         public UserAddress Address { get; set; }
+        [JsonConverter(typeof(DecimalRoundingConverter))]
         public decimal Credits { get; set; }
     }
 }

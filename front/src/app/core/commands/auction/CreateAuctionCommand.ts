@@ -5,6 +5,7 @@ import { RequestStatus, WSCommandStatusService } from '../../services/WSCommandS
 import { filter, catchError, switchMap } from 'rxjs/operators';
 import { Product } from '../../models/Product';
 import { WSCommandHelper } from '../WSCommandHelper';
+import { environment } from '../../../../environments/environment';
 import { CommandHelper, ResponseOptions } from '../ComandHelper';
 
 export interface CreateAuctionCommandArgs {
@@ -26,7 +27,7 @@ export class CreateAuctionCommand {
   }
 
   execute(commandArgs: CreateAuctionCommandArgs): Observable<RequestStatus> {
-    const url = '/api/createAuction';
+    const url = `${environment.API_URL}/api/createAuction`;
     console.log(commandArgs);
 
     const req = this.httpClient.post(url, commandArgs);

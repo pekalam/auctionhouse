@@ -94,12 +94,11 @@ export class ProductStepComponent extends AuctionCreateStep<ProductFormResult> i
       this.tags = [];
     }
     this.showTagsHelp = this.form.value.tags.split(' ').filter((s) => s.length === 0).length > 1;
+    this.onChange();
   }
 
   onChange() {
     this.ready = this.form.valid;
-    console.log(this.form);
-
   }
 
 

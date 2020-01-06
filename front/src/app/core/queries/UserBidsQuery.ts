@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserBid } from '../models/UserBid';
 import { QueryHelper } from './QueryHelper';
+import { environment } from '../../../environments/environment';
+
 
 export interface UserBidsQueryResult{
   userBids: UserBid[];
@@ -18,7 +20,7 @@ export class UserBidsQuery{
   }
 
   execute(page: number = 0): Observable<UserBidsQueryResult>{
-    const url = `/api/userBids?page=${page}`;
+    const url = `${environment.API_URL}/api/userBids?page=${page}`;
 
     let req = this.httpClient.get<UserBidsQueryResult>(url);
     return this.queryHelper.pipeLoading(req);

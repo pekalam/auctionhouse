@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Auction, AuctionImage } from '../models/Auctions';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface MostViewedAuction{
   auctionId: string ;
@@ -24,7 +25,7 @@ export class MostViewedAuctionsQuery {
   }
 
   execute(): Observable<MostViewedAuction[]>{
-    const url = `/api/mostViewedAuctions`;
+    const url = `${environment.API_URL}/api/mostViewedAuctions`;
     return this.httpClient.get<MostViewedAuction[]>(url, {});
   }
 }

@@ -21,4 +21,10 @@ export class GotoPaginatorComponent implements OnInit {
   ngOnInit() {
   }
 
+
+  onGotoClick(newPage: number) {
+    if (newPage > -1 && newPage * 10 < this.length) {
+      this.pageChange.emit(newPage);
+    }
+  }
 }

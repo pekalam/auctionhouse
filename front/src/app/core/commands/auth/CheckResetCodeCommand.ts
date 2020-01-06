@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { RequestStatus } from '../../services/WSCommandStatusService';
 import { CommandHelper, ResponseOptions } from '../ComandHelper';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class CheckResetCodeCommand {
   }
 
   execute(resetCode: string, email: string): Observable<RequestStatus> {
-    const url = '/api/checkResetCode';
+    const url = `${environment.API_URL}/api/checkResetCode`;
     const req = this.httpClient.post(url, { resetCode, email });
     return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.HTTPQueuedCommand);
   }

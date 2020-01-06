@@ -1,7 +1,7 @@
 <div id="container">
   <div>
     <mat-form-field>
-      <h4>Main category</h4>
+      <p class="cat-title">Main category</p>
       <mat-select (selectionChange)="selectMainCategory($event.value)" [value]="defaults ? defaults.name : ''">
         <mat-option selected></mat-option>
         <ng-container *ngFor="let cat of mainCategories; let i = index">
@@ -12,7 +12,7 @@
   </div>
   <div [appVisible]="selectedMainCategory == null">
     <mat-form-field>
-      <h4>Subcategory</h4>
+      <p class="cat-title">Subcategory</p>
       <mat-select (selectionChange)="selectSubCategory($event.value)" [value]="defaults ? defaults.subCategory.name : ''">
         <mat-option selected></mat-option>
         <ng-container *ngFor="let cat of subCategories; let i = index">
@@ -23,7 +23,7 @@
   </div>
   <div [appVisible]="selectedSubCategory == null">
     <mat-form-field>
-      <h4>Second subcategory</h4>
+      <p class="cat-title">Second subcategory</p>
       <mat-select (selectionChange)="selectSubCategory2($event.value)" [value]="defaults ? defaults.subCategory.subCategory.name : ''">
         <mat-option selected></mat-option>
         <ng-container *ngFor="let cat of subCategories2; let i = index">

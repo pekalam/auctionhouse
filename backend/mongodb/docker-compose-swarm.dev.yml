@@ -4,7 +4,6 @@ services:
   db-config1:
     hostname: db-config1
     image: mongodb_db-config1
-    tmpfs: /data/configdb
     command: "--configsvr --replSet configRS --bind_ip_all"
   db-mongos1:
     hostname: db-mongos1
@@ -20,8 +19,4 @@ services:
     hostname: db-node2
     image: mongodb_db-node2
     command: [ "--bind_ip_all", "--replSet", "n2", "--shardsvr" ]
-  update-server:
-    hostname: update-server
-    image: mongodb_update-server
-    tty: true
-    command: ["--wait-for", "db-mongos1:32112"]
+

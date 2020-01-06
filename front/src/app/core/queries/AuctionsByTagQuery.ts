@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { AuctionListModel } from '../models/Auctions';
 import { AuctionFilters, ConditionQuery, AuctionsQueryResult } from './AuctionsQuery';
 import { QueryHelper } from './QueryHelper';
+import { environment } from '../../../environments/environment';
 
 
 
@@ -32,7 +33,7 @@ export class AuctionsByTagQuery {
 
   execute(page: number, tag: string, filters?: AuctionFilters): Observable<AuctionsQueryResult> {
     if (!filters) { filters = new AuctionFilters(); }
-    const url = `/api/auctionsByTag?page=${page}&tag=${tag}&${this.getCondition(filters.condition)}`
+    const url = `${environment.API_URL}/api/auctionsByTag?page=${page}&tag=${tag}&${this.getCondition(filters.condition)}`
     + `&${this.getAuctionTypeQuery(filters)}&${this.getAuctionBuyNowPrice(filters)}&${this.getAuctionPrice(filters)}`;
     return this.queryHelper.pipeLoading(this.httpClient.get<AuctionsQueryResult>(url, {}));
   }

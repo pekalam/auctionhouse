@@ -9,7 +9,7 @@ services:
       - "5001:80"
     environment: 
       - "ClientKey=testk"
-      - "ManagmentKey=testm"
+      - "ManagmentAppKey=testm"
 
   mongodb:
     container_name: mongodb
@@ -44,14 +44,7 @@ services:
       - '5672:5672'
       - '15672:15672'
 
-  update-server:
-    hostname: update-server
-    container_name: update-server
-    build:
-      context: ./update-server
-      dockerfile: Dockerfile-update-server
-    tty: true
-    command: ["--wait-for", "mongodb:32112"]
+
 
 
 

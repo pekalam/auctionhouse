@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Auction } from '../models/Auctions';
 import { Observable } from 'rxjs';
 import { QueryHelper } from './QueryHelper';
+import { environment } from '../../../environments/environment';
+
 
 export interface UserAddress{
   street: string;
@@ -24,7 +26,7 @@ export class UserDataQuery {
   }
 
   execute(): Observable<UserData>{
-    const url = '/api/userData';
+    const url = `${environment.API_URL}/api/userData`;
     let req = this.httpClient.get<UserData>(url);
     return this.queryHelper.pipeLoading(req);
   }

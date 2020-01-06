@@ -17,6 +17,7 @@ using Core.Common.Command;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Products;
 using Core.Common.EventBus;
+using Infrastructure.Services.SchedulerService;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -62,9 +63,10 @@ namespace Web.Api
         }
 
         [HttpPost("endAuction"), Authorize(AuthenticationSchemes = "X-API-Key", Roles = "TimeTaskService")]
-        public async Task<ActionResult<RequestStatusDto>> EndAuction([FromBody] EndAuctionCommand command)
+        public async Task<ActionResult<RequestStatusDto>> EndAuction([FromBody] TimeTaskRequest<AuctionEndTimeTaskValues> commandDto)
         {
-            var response =await _immediateCommandMediator.Send(command);
+            var cmd = new ScheduledTaskDispatcher().GetCommandFromTask(commandDto);
+            var response =await _immediateCommandMediator.Send(cmd);
 
             return this.StatusResponse(response);
         }

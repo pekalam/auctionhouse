@@ -5,6 +5,7 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { filter, catchError, switchMap } from 'rxjs/operators';
 import { WSCommandHelper } from '../WSCommandHelper';
 import { CommandHelper, ResponseOptions } from '../ComandHelper';
+import { environment } from '../../../../environments/environment';
 
 
 @Injectable({
@@ -16,7 +17,7 @@ export class UserRemoveAuctionImageCommand {
   }
 
   execute(imgNum: number, auctionId: string): Observable<RequestStatus> {
-    const url = `/api/userRemoveAuctionImage`;
+    const url = `${environment.API_URL}/api/userRemoveAuctionImage`;
     const formData = new FormData();
     formData.append('img-num', imgNum.toString());
     formData.append('auction-id', auctionId);

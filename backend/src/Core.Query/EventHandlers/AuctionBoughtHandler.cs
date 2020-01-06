@@ -43,29 +43,12 @@ namespace Core.Query.EventHandlers
             }
         }
 
-        private void UpdateOwner(IClientSessionHandle session, AuctionBought ev)
-        {
-        }
-
-        private void UpdateUser(IClientSessionHandle session, AuctionBought ev)
-        {
-            var filter =
-                Builders<UserRead>.Filter.Eq(read => read.UserIdentity.UserId, ev.UserIdentity.UserId.ToString());
-
-            var upd1 = Builders<UserRead>.Update.Push(read => read.BoughtAuctions, ev.AuctionId.ToString());
-
-            var result = _readModelDbContext.UsersReadModel.UpdateMany(session, filter, upd1);
-            if (result.ModifiedCount == 0)
-            {
-                throw new QueryException("Cannot update UserReadModel (ModifiedCount = 0)");
-            }
-        }
-
         private void UpdateAuction(IClientSessionHandle session, AuctionBought ev)
         {
             var filter = Builders<AuctionRead>.Filter.Eq(read => read.AuctionId, ev.AuctionId.ToString());
             var update = Builders<AuctionRead>.Update
                 .Set(read => read.Bought, true)
+                .Set(read => read.Completed, true)
                 .Set(read => read.Buyer, new UserIdentityRead(ev.UserIdentity))
                 .Set(read => read.Archived, true);
 
@@ -87,9 +70,7 @@ namespace Core.Query.EventHandlers
                     _ = session.WithTransaction((handle, token) =>
                     {
                         UpdateAuction(handle, ev);
-                        UpdateUser(handle, ev);
                         UpdateBids(handle, ev);
-                        UpdateOwner(handle, ev);
                         return 0;
                     });
                 }

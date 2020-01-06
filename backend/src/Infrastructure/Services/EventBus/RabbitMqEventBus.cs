@@ -52,6 +52,10 @@ namespace Infrastructure.Services.EventBus
             _settings = settings;
             _logger = logger;
             _bus = RabbitHutch.CreateBus(_settings.ConnectionString);
+            _bus.Advanced.Disconnected += (sender, args) =>
+            {
+                Disconnected(args, _logger);
+            };
         }
 
         internal void InitSubscribers(params RabbitMqEventConsumerFactory[] subscriberFactories)
@@ -100,6 +104,16 @@ namespace Infrastructure.Services.EventBus
                 var cmdType = handlerType.BaseType.GetGenericArguments()[0];
                 CommandSubscribe(cmdType, implProvider);
             }
+        }
+
+        //tests
+        internal void CancelCommandSubscriptions()
+        {
+            foreach (var subscription in _cmdSubscriptions)
+            {
+                subscription.Dispose();
+            }
+            _cmdSubscriptions.Clear();
         }
 
         private void CommandSubscribe(Type cmdType, IImplProvider implProvider)
@@ -197,7 +211,6 @@ namespace Infrastructure.Services.EventBus
         {
             var errorQueueName = "EasyNetQ_Default_Error_Queue";
             var queue = _bus.Advanced.QueueDeclare(errorQueueName);
-
             _bus.Advanced.Consume<Error>(queue, HandleErrorMessage);
         }
 
@@ -244,5 +257,7 @@ namespace Infrastructure.Services.EventBus
             _logger.LogDebug("Publishing command {@command}", command);
             _bus.Publish(typeof(ICommand), command, command.GetType().Name);
         }
+
+        public event Action<EventArgs, ILogger> Disconnected;
     }
 }

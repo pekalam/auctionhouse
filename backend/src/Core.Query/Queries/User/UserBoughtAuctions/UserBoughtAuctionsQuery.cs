@@ -9,15 +9,20 @@ namespace Core.Query.Queries.User.UserAuctions
     [AuthorizationRequired]
     public class UserBoughtAuctionsQuery : IQuery<UserBoughtAuctionQueryResult>
     {
-        [Range(0, Int32.MaxValue)]
-        public int Page { get; }
+        [Range(0, Int32.MaxValue)] public int Page { get; }
+
+        public UserAuctionsSorting Sorting { get; }
+
+        public UserAuctionsSortDir SortingDirection { get; }
 
         [SignedInUser]
         public UserIdentity SignedInUser { get; set; }
 
-        public UserBoughtAuctionsQuery(int page = 0)
+        public UserBoughtAuctionsQuery(int page, UserAuctionsSorting sorting, UserAuctionsSortDir sortingDirection)
         {
             Page = page;
+            Sorting = sorting;
+            SortingDirection = sortingDirection;
         }
     }
 }

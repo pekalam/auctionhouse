@@ -17,13 +17,13 @@ $width: 1000px;
   text-align: left;
   padding: 20px;
   mat-radio-button{
-    font-size: 14px;
+    font-size: 0.8em;
   }
   mat-form-field {
     display: block;
     margin-bottom: 4px;
     ::ng-deep .mat-form-field-infix{
-      font-size: 16px;
+      font-size: 1em;
     }
     input{
       margin-top: 20px;
@@ -35,13 +35,29 @@ $width: 1000px;
   display: flex;
   flex-flow: row;
   flex-wrap: wrap;
-  .g1, .g2{
-    flex-grow: 1;
-    padding: 10px;
-  }
+  width: 90%;
+  margin: 0 auto;
   .g1{
-    padding-top: 20px;
+    flex-grow: 1;
+    padding-right: 10px;
+    padding-top: 10px;
   }
+  .g2{
+    flex-grow: 1;
+    padding-left: 10px;
+    padding-top: 10px;
+  }
+}
+
+.field-title{
+  font-weight: 500;
+  font-family: Roboto,"Helvetica Neue",sans-serif;
+}
+
+.type-title{
+  margin-bottom: 21px;
+  margin-top: 17px;
+  display: block;
 }
 
 #name-form-field{
@@ -55,4 +71,18 @@ $width: 1000px;
 
 #buy-now-field{
   width: 100px;
+}
+
+.date-group{
+  display: flex;
+  justify-content: space-between;
+  .date{
+    width: 70%;
+  }
+  .time{
+    width: 20%;
+    position: relative;
+    bottom: 2px;
+    left: 0;
+  }
 }

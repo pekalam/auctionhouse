@@ -7,13 +7,13 @@ using Core.Common.SchedulerService;
 
 namespace Infrastructure.Services.SchedulerService
 {
-    public class ScheduledTaskDispatcher : IScheduledTaskDispatcher
+    public class ScheduledTaskDispatcher
     {
-        public ICommand GetCommandFromTask(IScheduledTask scheduledTask)
+        public ICommand GetCommandFromTask<T>(TimeTaskRequest<T> request) where T : class
         {
-            if (scheduledTask is TimeTaskRequest<AuctionEndTimeTaskValues>)
+            if (request is TimeTaskRequest<AuctionEndTimeTaskValues>)
             {
-                var task = (TimeTaskRequest<AuctionEndTimeTaskValues>) scheduledTask;
+                var task = request as TimeTaskRequest<AuctionEndTimeTaskValues>;
                 return new EndAuctionCommand(task.Values.AuctionId);
             }
 

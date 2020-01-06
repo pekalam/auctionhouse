@@ -49,7 +49,7 @@ namespace Core.Query.Queries.User.UserBids
                     .Find(auctionFilter)
                     .Limit(PageSize)
                     .Skip(request.Page * PageSize)
-                    .Project(read => new {AuctionId = read.AuctionId, Name = read.Name})
+                    .Project(read => new { read.AuctionId, read.Name })
                     .ToListAsync();
 
                 foreach (var name in names)

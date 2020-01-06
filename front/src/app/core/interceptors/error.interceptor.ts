@@ -11,13 +11,14 @@ import { flatMap, map, tap, catchError } from 'rxjs/operators';
 import { AuthenticationStateService } from '../services/AuthenticationStateService';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { LoadingService } from '../services/LoadingService';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class ErrorInterceptor implements HttpInterceptor {
-  constructor(private router: Router) { }
+  constructor(private router: Router, private loadingService: LoadingService) { }
 
   private handleError(err: HttpErrorResponse): boolean {
     switch (err.status) {
@@ -33,6 +34,7 @@ export class ErrorInterceptor implements HttpInterceptor {
       default:
         return false;
     }
+    this.loadingService.resetLoading();
     return true;
   }
 

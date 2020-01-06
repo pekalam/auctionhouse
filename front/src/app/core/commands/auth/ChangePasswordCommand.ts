@@ -7,6 +7,7 @@ import { WSCommandStatusService, RequestStatus } from '../../services/WSCommandS
 import { Injectable } from '@angular/core';
 import { WSCommandHelper } from '../WSCommandHelper';
 import { CommandHelper, ResponseOptions } from '../ComandHelper';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class ChangePasswordCommand {
 
   execute(password: string): Observable<any> {
     const req = this.httpClient.post(
-      '/api/changePassword', { newPassword: password }
+      `${environment.API_URL}/api/changePassword`, { newPassword: password }
     );
     return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.HTTPQueuedCommand);
   }

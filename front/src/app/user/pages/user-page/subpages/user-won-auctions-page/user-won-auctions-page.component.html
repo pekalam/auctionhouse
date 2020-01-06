@@ -1,0 +1,32 @@
+<div class="container">
+
+  <app-goto-paginator [length]="total" [page]="currentPage"
+    (pageChange)="onPageChange($event)"></app-goto-paginator>
+
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Filters
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="filter-container">
+      <div class="filter-el sort">
+        <span class="sort-title">Sort by</span>
+        <mat-form-field>
+          <select matNativeControl (change)="onSortChange($event.value)">
+            <option value="0">Date created</option>
+          </select>
+        </mat-form-field>
+      </div>
+      <div class="filter-el">
+        <mat-button-toggle-group (change)="onDirChange($event.value)">
+          <mat-button-toggle value="1">Ascending</mat-button-toggle>
+          <mat-button-toggle value="0" checked="descending">Descending</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+    </div>
+  </mat-expansion-panel>
+
+  <app-user-auctions-list-item *ngFor="let auction of auctions" [auction]="auction" [routerLink]="['/auction']"
+    [queryParams]="{auctionId: auction.auctionId}"></app-user-auctions-list-item>
+</div>

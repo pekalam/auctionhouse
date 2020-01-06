@@ -27,7 +27,9 @@ namespace Web.Dto
             CreateMap<CommonTagsQueryDto, CommonTagsQuery>();
             CreateMap<UserWonAuctionsQueryDto, UserWonAuctionsQuery>();
             CreateMap<UserAuctionsQueryDto, UserAuctionsQuery>();
+            CreateMap<UserBoughtAuctionsQueryDto, UserBoughtAuctionsQuery>();
+            CreateMap<UserWonAuctionsQueryDto, UserWonAuctionsQuery>();
         }
-    
+
     }
 }

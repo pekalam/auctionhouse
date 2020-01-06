@@ -1,4 +1,6 @@
-﻿using Core.Common;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using Core.Common;
 using Core.Common.Attributes;
 using Core.Common.Domain.Users;
 using Core.Common.Query;
@@ -19,6 +21,7 @@ namespace Core.Query.Queries.User.UserAuctions
     [AuthorizationRequired]
     public class UserAuctionsQuery : IQuery<UserAuctionsQueryResult>
     {
+        [Range(0, Int32.MaxValue)]
         public int Page { get; set; } = 0;
 
         public bool ShowArchived { get; set; } = false;

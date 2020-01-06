@@ -39,8 +39,8 @@ namespace Web.Api
         public async Task<ActionResult<UserAuctionsQueryResult>> UserAuctions(
             [FromQuery] UserAuctionsQueryDto queryDto)
         {
-            var cmd = _mapper.MapDto<UserAuctionsQueryDto, UserAuctionsQuery>(queryDto);
-            var auctions = await _mediator.Send(cmd);
+            var query = _mapper.MapDto<UserAuctionsQueryDto, UserAuctionsQuery>(queryDto);
+            var auctions = await _mediator.Send(query);
             return Ok(auctions);
         }
 
@@ -54,8 +54,8 @@ namespace Web.Api
         [HttpGet("userBids")]
         public async Task<ActionResult<UserBidsQueryResult>> UserBids()
         {
-            var cmd = new UserBidsQuery();
-            var userBids = await _mediator.Send(cmd);
+            var query = new UserBidsQuery();
+            var userBids = await _mediator.Send(query);
             return Ok(userBids);
         }
 
@@ -63,8 +63,8 @@ namespace Web.Api
         public async Task<ActionResult<UserBoughtAuctionQueryResult>> UserBoughtAuctions(
             [FromQuery] UserBoughtAuctionsQueryDto dto)
         {
-            var cmd = new UserBoughtAuctionsQuery(dto.Page);
-            var userWonAuctions = await _mediator.Send(cmd);
+            var query = _mapper.MapDto<UserBoughtAuctionsQueryDto, UserBoughtAuctionsQuery>(dto);
+            var userWonAuctions = await _mediator.Send(query);
             return Ok(userWonAuctions);
         }
 
@@ -72,8 +72,8 @@ namespace Web.Api
         public async Task<ActionResult<UserWonAuctionQueryResult>> UserWonAuctions(
             [FromQuery] UserWonAuctionsQueryDto dto)
         {
-            var cmd = new UserWonAuctionsQuery(dto.Page);
-            var userWonAuctions = await _mediator.Send(cmd);
+            var query = _mapper.MapDto<UserWonAuctionsQueryDto, UserWonAuctionsQuery>(dto);
+            var userWonAuctions = await _mediator.Send(query);
             return Ok(userWonAuctions);
         }
     }

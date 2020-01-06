@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Core.Common.Domain.Users;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
 
 namespace Core.Query.ReadModel
 {
@@ -10,6 +11,7 @@ namespace Core.Query.ReadModel
     {
         public string AuctionId { get; set; }
         public string AuctionName { get; set; }
+        [JsonConverter(typeof(DecimalRoundingConverter))]
         public decimal Price { get; set; }
         public DateTime DateCreated { get; set; }
         public bool AuctionCanceled { get; set; }
@@ -44,15 +46,13 @@ namespace Core.Query.ReadModel
     public class UserRead
     {
         [BsonId]
+        [JsonIgnore]
         public ObjectId Id { get; set; }
         public UserIdentityRead UserIdentity { get; set; }
-        public List<string> CreatedAuctions { get; set; } =
-            new List<string>();
-        public List<string> BoughtAuctions { get; set; } = new List<string>();
-        public List<string> WonAuctions { get; set; } = new List<string>();
         public List<UserBid> UserBids { get; set; } = new List<UserBid>();
         public UserAddress Address { get; set; }
         [BsonDefaultValue(0)]
+        [JsonConverter(typeof(DecimalRoundingConverter))]
         public decimal Credits { get; set; }
     }
 }

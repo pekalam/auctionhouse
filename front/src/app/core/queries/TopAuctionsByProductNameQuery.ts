@@ -2,6 +2,7 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TopAuctionQueryItem } from './TopAuctionsByTagQuery';
+import { environment } from '../../../environments/environment';
 
 
 export interface TopAuctionsByProductNameQueryResult {
@@ -18,7 +19,7 @@ export class TopAuctionsByProductNameQuery {
   }
 
   execute(productName: string, page: number): Observable<TopAuctionsByProductNameQueryResult>{
-    const url = `/api/topAuctionsByProductName?product-name=${productName}&page=${page}`;
+    const url = `${environment.API_URL}/api/topAuctionsByProductName?product-name=${productName}&page=${page}`;
     return this.httpClient.get<TopAuctionsByProductNameQueryResult>(url, {});
   }
 }

@@ -22,31 +22,37 @@ namespace Core.Query.Queries.User.UserWonAuctions
         protected async override Task<UserWonAuctionQueryResult> HandleQuery(UserWonAuctionsQuery request,
             CancellationToken cancellationToken)
         {
-            var userReadModelFilter = Builders<UserRead>.Filter.Eq(field => field.UserIdentity.UserId,
-                request.SignedInUser.UserId.ToString());
-            var idsToJoin = await _dbContext.UsersReadModel
-                .Find(userReadModelFilter)
-                .Skip(request.Page * PageSize)
-                .Limit(PageSize)
-                .Project(model => new { AuctionsIds = model.WonAuctions.Select(s => s).ToArray() })
-                .FirstOrDefaultAsync();
-
-            if (idsToJoin != null)
+            SortDefinition<AuctionRead> sorting = null;
+            if (request.Sorting == UserAuctionsSorting.DATE_CREATED)
             {
-                var count = _dbContext.UsersReadModel.AsQueryable()
-                    .Where(read => read.UserIdentity.UserId == request.SignedInUser.UserId.ToString())
-                    .Select(read => read.WonAuctions)
-                    .Count();
-
-                var userAuctionsFilter = Builders<AuctionRead>.Filter
-                    .In(field => field.AuctionId, idsToJoin.AuctionsIds);
-                var userAuctions = await _dbContext.AuctionsReadModel
-                    .Find(userAuctionsFilter)
-                    .ToListAsync();
-
-                return new UserWonAuctionQueryResult() { Auctions = userAuctions, Total = count };
+                sorting = request.SortingDirection == UserAuctionsSortDir.ASCENDING ?
+                    Builders<AuctionRead>.Sort.Ascending(read => read.DateCreated) :
+                    Builders<AuctionRead>.Sort.Descending(read => read.DateCreated);
             }
 
+            var completedFilter = Builders<AuctionRead>.Filter.Eq(read => read.Completed, true);
+            var boughtFilter = Builders<AuctionRead>.Filter.Eq(read => read.Bought, false);
+            var buyerFilter =
+                Builders<AuctionRead>.Filter.Eq(read => read.Buyer.UserId, request.SignedInUser.UserId.ToString());
+            var filter =
+                Builders<AuctionRead>.Filter.And(buyerFilter, completedFilter, boughtFilter);
+
+            var count = await _dbContext.AuctionsReadModel.CountDocumentsAsync(filter);
+
+            if (count > 0)
+            {
+                var wonAuctions = await _dbContext.AuctionsReadModel
+                    .Find(filter)
+                    .Sort(sorting)
+                    .Skip(PageSize * request.Page)
+                    .Limit(PageSize)
+                    .ToListAsync();
+                return new UserWonAuctionQueryResult()
+                {
+                    Total = count,
+                    Auctions = wonAuctions
+                };
+            }
             return new UserWonAuctionQueryResult();
         }
     }

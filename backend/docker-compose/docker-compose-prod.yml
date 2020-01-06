@@ -62,15 +62,6 @@ services:
         command: [ "--bind_ip_all", "--replSet", "n2", "--shardsvr" ]
 
 
-    update-server:
-        image: marekbf3/auctionhouse-update-server
-        hostname: update-server
-        container_name: update-server
-        tty: true
-        command: ["--wait-for", "db-mongos1:32112"]
-        depends_on: 
-            - db-mongos1
-
     auctionhouse-webapi:
         image: marekbf3/auctionhouse-test:0.1.2
         hostname: auctionhouse-webapi
