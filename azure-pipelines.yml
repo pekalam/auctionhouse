@@ -31,6 +31,12 @@ steps:
   inputs:
     scriptPath: 'backend/cli/docker-run_functional_tests.sh'
     cwd: 'backend/cli'
+- task: VSBuild@1
+  displayName: 'Build'
+  inputs:
+    solution: '**\*.sln'
+    vsVersion: '16.0'
+    msbuildArchitecture: 'x64'
 - task: ShellScript@2
   displayName: 'Command database tests'
   inputs:
