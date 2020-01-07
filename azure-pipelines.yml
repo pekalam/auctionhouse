@@ -1,8 +1,3 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
 - sqlserver
 
@@ -17,34 +12,27 @@ steps:
     version: 2.2.401
     installationPath: $(Agent.ToolsDirectory)/dotnet
 - task: ShellScript@2
-  displayName: 'Run domain tests'
+  displayName: 'Domain tests'
   inputs:
     scriptPath: 'backend/cli/local-run_domain_tests.sh'
-    #args: '' # Optional
-    #disableAutoCwd: false # Optional
     cwd: 'backend/cli'
-    #failOnStandardError: false
 - task: ShellScript@2
-  displayName: 'Run unit tests'
+  displayName: 'Unit tests'
   inputs:
     scriptPath: 'backend/cli/local-run_unit_tests.sh'
-    #args: '' # Optional
-    #disableAutoCwd: false # Optional
     cwd: 'backend/cli'
-    #failOnStandardError: false
 - task: ShellScript@2
-  displayName: 'Run integration tests'
+  displayName: 'Integration tests'
   inputs:
     scriptPath: 'backend/cli/docker-run_integration_tests.sh'
-    #args: '' # Optional
-    #disableAutoCwd: false # Optional
     cwd: 'backend/cli'
-    #failOnStandardError: false
 - task: ShellScript@2
-  displayName: 'Run functional tests'
+  displayName: 'Functional tests'
   inputs:
     scriptPath: 'backend/cli/docker-run_functional_tests.sh'
-    #args: '' # Optional
-    #disableAutoCwd: false # Optional
     cwd: 'backend/cli'
-    #failOnStandardError: false
+- task: ShellScript@2
+  displayName: 'Command database tests'
+  inputs:
+    scriptPath: 'backend/cli/docker-run_command_db_tests.sh'
+    cwd: 'backend/cli'
