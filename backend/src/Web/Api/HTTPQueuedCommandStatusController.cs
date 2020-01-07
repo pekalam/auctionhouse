@@ -6,12 +6,14 @@ using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.EventBus;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement.Mvc;
 using Web.Dto.Commands;
 
 namespace Web.Api
 {
     [ApiController]
     [Route("api/command")]
+    [FeatureGate("Auctionhouse_QueuedCommandStatusQueries")]
     public class HTTPQueuedCommandStatusController : ControllerBase
     {
         private HTTPQueuedCommandStatusService _commandStatusService;

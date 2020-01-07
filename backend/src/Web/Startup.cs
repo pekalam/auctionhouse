@@ -9,6 +9,7 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using ConfigCat.Client;
 using Core.Common.RequestStatusService;
 using Core.Query.ReadModel;
 using Infrastructure.Auth;
@@ -17,11 +18,16 @@ using Infrastructure.Repositories.SQLServer;
 using Infrastructure.Services;
 using Infrastructure.Services.EventBus;
 using Infrastructure.Services.SchedulerService;
+using Microsoft.AspNetCore.Hosting.Internal;
+using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 using Swashbuckle.AspNetCore.Swagger;
 using Web.Adapters;
 using Web.Adapters.EventSignaling;
 using Web.Auth;
 using Web.Exceptions;
+using Web.FeatureFlags;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 using IUserIdProvider = Microsoft.AspNetCore.SignalR.IUserIdProvider;
 
 namespace Web
@@ -42,6 +48,18 @@ namespace Web
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(jwtConfig.ConfigureJwt);
+        }
+
+        protected virtual void ConfigureFeatureFlags(IServiceCollection services)
+        {
+            var clientConfiguration = new ManualPollConfiguration()
+            {
+                ApiKey = Configuration.GetSection("ConfigCat")["ApiKey"],
+            };
+
+            var configCatClient = new ConfigCatClient(clientConfiguration);
+            services.AddSingleton<IConfigCatClient>(configCatClient);
+            services.AddFeatureManagement(new ConfigCatConfiguration(configCatClient, null));
         }
 
         private void AddOptions<T>(IServiceCollection serviceCollection, string sectionName) where T : class
@@ -67,6 +85,7 @@ namespace Web
             var userAuthDbSettings = Configuration.GetSection("UserAuthDb")
                 .Get<UserAuthDbContextOptions>();
             AddOptions<ResetLinkSenderServiceSettings>(services, "ResetLinkService");
+            AddOptions<FeatureFlagsAuthorizationSettings>(services, "FeatureFlagsManagment");
 
             var allowedOrigin = Configuration.GetValue<string>("CORS:AllowedOrigin");
             services.AddCors(options =>
@@ -115,7 +134,7 @@ namespace Web
                     null);
 
             ConfigureJWT(services);
-
+            ConfigureFeatureFlags(services);
 
             services.AddSwaggerGen(c =>
             {
@@ -132,8 +151,11 @@ namespace Web
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
         {
-            DefaultDIBootstraper.Common.Start(serviceProvider);
-
+            DefaultDIBootstraper.Common.Start(serviceProvider, (EventArgs args, ILogger logger) =>
+                {
+                    logger.LogCritical("Disconnected from event bus! Shutting down application...", args.ToString());
+                    Program.Shutdown();
+                });
             app.UseHsts();
             app.UseCors();
 

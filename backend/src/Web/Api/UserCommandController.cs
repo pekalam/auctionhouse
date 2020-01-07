@@ -19,6 +19,7 @@ using Core.Common.EventBus;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement.Mvc;
 using Web.Dto;
 using Web.Dto.Commands;
 using Web.Utils;
@@ -27,6 +28,7 @@ namespace Web.Api
 {
     [Route("api")]
     [ApiController]
+    [FeatureGate("Auctionhouse_UserCommands")]
     public class UserCommandController : Controller
     {
         private readonly WSQueuedCommandMediator _mediator;

@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore;
+﻿using System.Diagnostics;
+using System.Threading;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
+using System.Threading.Tasks;
 
 namespace Web
 {
@@ -30,5 +33,10 @@ namespace Web
                             theme: AnsiConsoleTheme.Literate);
                     }
                 });
+
+        public static void Shutdown()
+        {
+            Process.GetCurrentProcess().Kill();
+        }
     }
 }

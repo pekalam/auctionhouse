@@ -11,3 +11,7 @@ backend/src/AuthDataDatabase/AuthDataDatabase.dbmdl
 backend/src/Test.AuctionhouseDatabase/Assemblies/
 
 backend/src/Test.AuctionhouseDatabase/Import Schema Logs/
+
+backend/src/AuctionhouseDatabase/AuctionhouseDatabase.dbmdl
+
+backend/src/Test.AuctionhouseDatabase/Test.AuctionhouseDatabase.dbmdl

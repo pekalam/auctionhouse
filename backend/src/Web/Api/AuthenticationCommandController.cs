@@ -16,6 +16,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement.Mvc;
 using Web.Auth;
 using Web.Dto;
 using Web.Dto.Commands;
@@ -24,6 +25,7 @@ namespace Web.Api
 {
     [ApiController]
     [Route("api")]
+    [FeatureGate("Auctionhouse_AuthenticationCommands")]
     public class AuthenticationCommandController : Controller
     {
         private readonly HTTPQueuedCommandMediator _mediator;

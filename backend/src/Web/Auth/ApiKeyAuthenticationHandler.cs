@@ -5,6 +5,7 @@ using Infrastructure.Services.SchedulerService;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Web.FeatureFlags;
 
 namespace Web.Auth
 {
@@ -18,22 +19,37 @@ namespace Web.Auth
         private const string ApiKeyHeader = "X-API-Key";
         private ILogger<ApiKeyAuthenticationHandler> _logger;
         private readonly TimeTaskServiceSettings _taskServiceSettings;
+        private readonly FeatureFlagsAuthorizationSettings _featureFlagsAuthorizationSettings;
 
-        public ApiKeyAuthenticationHandler(IOptionsMonitor<ApiKeyAuthenticationOptions> options, ILoggerFactory logger,
-            UrlEncoder encoder, ISystemClock clock, TimeTaskServiceSettings taskServiceSettings) : base(options, logger, encoder, clock)
+        public ApiKeyAuthenticationHandler(IOptionsMonitor<ApiKeyAuthenticationOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, ILogger<ApiKeyAuthenticationHandler> logger2, TimeTaskServiceSettings taskServiceSettings, FeatureFlagsAuthorizationSettings featureFlagsAuthorizationSettings) : base(options, logger, encoder, clock)
         {
-            _logger = logger.CreateLogger<ApiKeyAuthenticationHandler>();
+            _logger = logger2;
             _taskServiceSettings = taskServiceSettings;
+            _featureFlagsAuthorizationSettings = featureFlagsAuthorizationSettings;
         }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            if (Request.Headers.TryGetValue(ApiKeyHeader, out var apiHeaderValues) && TimeTaskServiceAuhorization.Authorize(apiHeaderValues, _taskServiceSettings, _logger))
+            if (Request.Headers.TryGetValue(ApiKeyHeader, out var apiHeaderValues))
             {
-                var claimsIdentity = new ClaimsIdentity(new []{new Claim(ClaimTypes.Sid, apiHeaderValues[0]), new Claim(ClaimTypes.Role, "TimeTaskService"),  });
-                var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-                var authTicket = new AuthenticationTicket(claimsPrincipal, ApiKeyAuthenticationOptions.Scheme);
-                return Task.FromResult(AuthenticateResult.Success(authTicket));
+                if (TimeTaskServiceAuhorization.Authorize(apiHeaderValues, _taskServiceSettings, _logger))
+                {
+                    var claimsIdentity = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Sid, apiHeaderValues[0]), new Claim(ClaimTypes.Role, "TimeTaskService"), });
+                    var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+                    var authTicket = new AuthenticationTicket(claimsPrincipal, ApiKeyAuthenticationOptions.Scheme);
+                    return Task.FromResult(AuthenticateResult.Success(authTicket));
+                }
+
+                if (FeatureFlagsAuthorizationService.Authorize(apiHeaderValues, _featureFlagsAuthorizationSettings,
+                    _logger))
+                {
+                    var claimsIdentity = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Sid, apiHeaderValues[0]), new Claim(ClaimTypes.Role, "FeatureFlagsManagment"), });
+                    var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+                    var authTicket = new AuthenticationTicket(claimsPrincipal, ApiKeyAuthenticationOptions.Scheme);
+                    return Task.FromResult(AuthenticateResult.Success(authTicket));
+                }
+
+                return Task.FromResult(AuthenticateResult.NoResult());
             }
             else
             {

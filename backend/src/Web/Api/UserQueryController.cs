@@ -15,6 +15,7 @@ using Core.Query.Queries.User.UserWonAuctions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement.Mvc;
 using Web.Dto.Queries;
 
 namespace Web.Api
@@ -22,6 +23,7 @@ namespace Web.Api
     [ApiController]
     [Route("api")]
     [Authorize]
+    [FeatureGate("Auctionhouse_UserQueries")]
     public class UserQueryController : Controller
     {
         private readonly QueryMediator _mediator;

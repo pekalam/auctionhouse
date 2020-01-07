@@ -6,6 +6,7 @@ using Core.Query.Mediator;
 using Core.Query.Queries.Auth.CheckUsername;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement.Mvc;
 using Web.Auth;
 using Web.Dto.Queries;
 
@@ -13,6 +14,7 @@ namespace Web.Api
 {
     [ApiController]
     [Route("api")]
+    [FeatureGate("Auctionhouse_AuthenticationQueries")]
     public class AuthenticationQueryController : Controller
     {
         private readonly QueryMediator _mediator;

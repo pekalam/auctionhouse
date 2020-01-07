@@ -169,9 +169,6 @@ namespace FunctionalTests.EventHandling
             auctionReadModel.Creator.UserId.Should()
                 .Be(userRead.UserIdentity.UserId);
 
-            userRead.CreatedAuctions.Count.Should()
-                .Be(1);
-
             services.AuctionImageRepository.Find("img1-1")
                 .Metadata.IsAssignedToAuction.Should()
                 .BeTrue();

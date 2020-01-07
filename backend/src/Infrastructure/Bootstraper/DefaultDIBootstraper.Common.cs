@@ -12,6 +12,7 @@ using Infrastructure.Services;
 using Infrastructure.Services.EventBus;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Bootstraper
 {
@@ -52,12 +53,13 @@ namespace Infrastructure.Bootstraper
                 serviceCollection.AddScoped<QueryMediator>();
             }
 
-            public static void Start(IServiceProvider serviceProvider)
+            public static void Start(IServiceProvider serviceProvider, Action<EventArgs, ILogger> eventBusDisconnectedCallback)
             {
                 ((CategoryTreeService) (serviceProvider.GetRequiredService<ICategoryTreeService>())).Init();
                 var implProvider = serviceProvider.GetRequiredService<IImplProvider>();
                 RollbackHandlerRegistry.ImplProvider = implProvider;
                 var rabbitmq = (RabbitMqEventBus)implProvider.Get<IEventBus>();
+                rabbitmq.Disconnected += eventBusDisconnectedCallback;
                 rabbitmq.InitSubscribers("Core.Query", implProvider);
                 rabbitmq.InitCommandSubscribers("Core.Command", implProvider);
             }

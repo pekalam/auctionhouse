@@ -19,12 +19,14 @@ using Core.Query.ReadModel;
 using Core.Query.Views;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement.Mvc;
 using Web.Dto.Queries;
 
 namespace Web.Api
 {
     [ApiController]
     [Route("api")]
+    [FeatureGate("Auctionhouse_AuctionQueries")]
     public class AuctionQueryController : ControllerBase
     {
         private readonly QueryMediator _mediator;
