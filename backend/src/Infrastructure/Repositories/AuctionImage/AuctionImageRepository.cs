@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Core.Common.Domain.Auctions;
 using Microsoft.Extensions.Logging;
@@ -11,46 +9,6 @@ using MongoDB.Driver.GridFS;
 
 namespace Infrastructure.Repositories.AuctionImage
 {
-    public class AuctionImageSizeConverterService : IAuctionImageSizeConverterService
-    {
-        private List<string[]> allowedFirstBytes = new List<string[]>();
-
-        public AuctionImageSizeConverterService()
-        {
-            var jpg = new string[] { "FF", "D8" };
-            var png = new string[] { "89", "50", "4E", "47", "0D", "0A", "1A", "0A" };
-            allowedFirstBytes.Add(jpg);
-            allowedFirstBytes.Add(png);
-        }
-
-        public AuctionImageRepresentation ConvertTo(AuctionImageRepresentation imageRepresentation,
-            AuctionImageSize size)
-        {
-            return imageRepresentation;
-        }
-
-        public bool ValidateImage(AuctionImageRepresentation imageRepresentation, string[] allowedExtensions)
-        {
-            using (var stream = new MemoryStream(imageRepresentation.Img))
-            {
-                var read = new List<string>();
-
-                for (int i = 0; i < 8; i++)
-                {
-                    var b = stream.ReadByte().ToString("X2");
-                    read.Add(b);
-                    bool isValid = allowedFirstBytes.Any(imgBytes => !imgBytes.Except(read).Any());
-                    if (isValid)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-        }
-    }
-
     public class AuctionImageRepository : IAuctionImageRepository
     {
         private readonly ImageDbContext _dbContext;
@@ -98,11 +56,7 @@ namespace Infrastructure.Repositories.AuctionImage
             }
             var metadata = BsonSerializer.Deserialize<AuctionImageMetadata>(fileInfo.Metadata);
             var fileBytes = GetFileFromDb(fileInfo.Id);
-            return new AuctionImageRepresentation()
-            {
-                Img = fileBytes,
-                Metadata = metadata 
-            };
+            return new AuctionImageRepresentation(metadata, fileBytes);
         }
 
         public void UpdateMetadata(string imageId, AuctionImageMetadata metadata)
@@ -126,7 +80,7 @@ namespace Infrastructure.Repositories.AuctionImage
         public void UpdateManyMetadata(string[] imageIds, AuctionImageMetadata metadata)
         {
             var filter = Builders<BsonDocument>.Filter.In("filename", imageIds);
-            var update = Builders<BsonDocument>.Update.Set("metadata", metadata);
+            var update = Builders<BsonDocument>.Update.Set("metadata.IsAssignedToAuction", metadata.IsAssignedToAuction);
 
             var result = _dbContext.Bucket.Database
                 .GetCollection<BsonDocument>("fs.files")

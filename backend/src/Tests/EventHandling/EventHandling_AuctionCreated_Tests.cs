@@ -80,11 +80,7 @@ namespace FunctionalTests.EventHandling
 
             session.AddOrReplaceImage(new AuctionImage("img1-1",
                 "img1-2", "img1-3"), 0);
-            services.AuctionImageRepository.Add("img1-1", new AuctionImageRepresentation()
-            {
-                Metadata = new AuctionImageMetadata(),
-                Img = File.ReadAllBytes("./test_image.jpg")
-            });
+            services.AuctionImageRepository.Add("img1-1", new AuctionImageRepresentation(new AuctionImageMetadata("jpg"), File.ReadAllBytes("./test_image.jpg")));
             var sessionService = services.GetAuctionCreateSessionService(session);
 
             var handlerDepedencies = new CreateAuctionCommandHandlerDepedencies()

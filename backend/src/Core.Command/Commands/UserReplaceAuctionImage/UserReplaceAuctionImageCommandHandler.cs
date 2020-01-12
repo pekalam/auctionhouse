@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Command.Exceptions;
@@ -38,7 +39,12 @@ namespace Core.Command.Commands.UserReplaceAuctionImage
                 throw new CommandException($"Cannot find auction {request.AuctionId}");
             }
 
-            var newImg = _auctionImageService.AddAuctionImage(request.Img);
+            var file = File.ReadAllBytes(request.TempPath);
+            File.Delete(request.TempPath);
+
+            var img = new AuctionImageRepresentation(new AuctionImageMetadata(request.Extension), file);
+
+            var newImg = _auctionImageService.AddAuctionImage(img);
 
             auction.ReplaceImage(newImg, request.ImgNum);
 

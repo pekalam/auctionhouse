@@ -10,6 +10,13 @@
   }
 }
 
+@mixin desktop-md {
+  @media only screen and (min-width: 821px) and (max-width: 897px){
+    @content
+  }
+}
+
+
 @mixin small {
   @media only screen and (max-width: 470px) {
     @content

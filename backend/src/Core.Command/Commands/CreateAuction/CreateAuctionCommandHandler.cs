@@ -93,7 +93,7 @@ namespace Core.Command.CreateAuction
                 _deps.auctionImageRepository.UpdateManyMetadata(auction.AuctionImages
                     .Where(image => image != null)
                     .SelectMany(img => new string[3] {img.Size1Id, img.Size2Id, img.Size3Id}.AsEnumerable())
-                    .ToArray(), new AuctionImageMetadata()
+                    .ToArray(), new AuctionImageMetadata(null)
                 {
                     IsAssignedToAuction = true
                 });
@@ -117,7 +117,7 @@ namespace Core.Command.CreateAuction
                 _deps.auctionImageRepository.UpdateManyMetadata(auction.AuctionImages
                     .Where(image => image != null)
                     .SelectMany(img => new string[3] { img.Size1Id, img.Size2Id, img.Size3Id }.AsEnumerable())
-                    .ToArray(), new AuctionImageMetadata()
+                    .ToArray(), new AuctionImageMetadata(null)
                 {
                     IsAssignedToAuction = false
                 });

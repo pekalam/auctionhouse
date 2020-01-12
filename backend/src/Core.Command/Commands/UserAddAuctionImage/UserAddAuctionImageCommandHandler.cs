@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Command.Exceptions;
@@ -46,8 +48,12 @@ namespace Core.Command.Commands.UserAddAuctionImage
                     $"User {request.SignedInUser.UserId} cannot modify auction ${auction.AggregateId}");
             }
 
+            var file = File.ReadAllBytes(request.TempPath);
+            File.Delete(request.TempPath);
 
-            var newImg = _auctionImageService.AddAuctionImage(request.Img);
+            var img = new AuctionImageRepresentation(new AuctionImageMetadata(request.Extension), file);
+
+            var newImg = _auctionImageService.AddAuctionImage(img);
 
             auction.AddImage(newImg);
 

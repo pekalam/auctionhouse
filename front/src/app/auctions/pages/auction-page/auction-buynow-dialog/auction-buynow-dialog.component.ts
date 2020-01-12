@@ -23,7 +23,7 @@ export class AuctionBuynowDialogComponent implements OnInit {
               private router: Router) {
     this.auction = data.auction;
 
-    this.imgsrc = auctionImageQuery.execute(this.auction.auctionImages[0].size1Id);
+    this.imgsrc = auctionImageQuery.execute(this.auction.auctionImages[0].size2Id);
   }
 
   ngOnInit() {

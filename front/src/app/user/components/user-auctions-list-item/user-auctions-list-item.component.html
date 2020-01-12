@@ -2,7 +2,7 @@
   <div class="left">
     <div class="imgs">
     <ng-container *ngFor="let img of auction.auctionImages.slice(0,3)">
-      <img class="img-preview" *ngIf="img" [src]="getImageUrl(img.size3Id)" />
+      <img class="img-preview" *ngIf="img" [src]="getImageUrl(img.size2Id)" />
     </ng-container>
     </div>
     <p>{{auction.name}}</p>

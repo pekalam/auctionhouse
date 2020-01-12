@@ -1,5 +1,11 @@
 @import 'breakpoints';
 
+:host{
+  display: block;
+  height: 270px;
+  width: 100%;
+}
+
 .container *{
   outline: none;
 }
@@ -10,22 +16,35 @@
   width: 100%;
   outline: none;
   cursor: pointer;
-  .carousel{
-    width: 50%;
-    float: left;
-    height: 100%;
-  }
-  .auction{
-    width: 50%;
-    float: left;
-    box-sizing: border-box;
-    padding-left: 30px;
-    cursor: pointer;
-  }
+
 }
 
 #auction-container{
   height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  .auction{
+    box-sizing: border-box;
+    padding-left: 30px;
+    cursor: pointer;
+    flex-grow: 1;
+    flex-basis: 50%;
+  }
+  .carousel-container{
+    height: 100%;
+    min-width: 238px;
+    flex-grow: 1;
+    flex-basis: 50%;
+    max-width: 420px;
+    @include mobile{
+      min-width: 0;
+    }
+  }
+}
+
+@media only screen and (min-width: 934px){
+
 }
 
 @keyframes fadeIn{
@@ -78,6 +97,10 @@
   }
 }
 
+.auction-title{
+  font-size: 1.2em;
+  font-weight: bold;
+}
 
 .current-price{
   font-weight: bold;

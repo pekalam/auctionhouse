@@ -13,11 +13,16 @@ export interface ImgSelectedEvent{
 })
 export class ImgUploadInputComponent implements OnInit {
 
+  previewsrc: string;
+
   @Input()
   imgnum: number;
 
-  @Input()
-  previewsrc: string;
+  @Input('previewsrc')
+  set setPreviewSrc(src: string){
+    this.previewsrc = src;
+    this.loading = true;
+  }
 
   @Output()
   cancel = new EventEmitter<number>();
@@ -27,6 +32,12 @@ export class ImgUploadInputComponent implements OnInit {
 
   @HostListener('change', ['$event.target.files']) emitFiles(event: FileList) {
     this.imgSelected.emit({files: event, imgnum: this.imgnum});
+  }
+
+  loading = false;
+
+  onImgLoaded(){
+    this.loading = false;
   }
 
   constructor() { }

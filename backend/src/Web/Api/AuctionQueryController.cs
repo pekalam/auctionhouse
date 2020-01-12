@@ -70,7 +70,15 @@ namespace Web.Api
                 ImageId = queryDto.ImageId
             };
             var result = await _mediator.Send(query);
-            return File(result.Img.Img, "image/jpeg");
+            if (result.Img != null)
+            {
+                return File(result.Img.Img, "image/jpeg");
+            }
+            else
+            {
+                //TODO
+                return NotFound();
+            }
         }
 
         [HttpGet("topAuctionsByTag")]

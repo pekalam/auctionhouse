@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
+using Web.Adapters;
 using Web.Dto.Commands;
 using Web.Utils;
 
@@ -38,7 +39,9 @@ namespace Web.Api
         private readonly ImmediateCommandMediator _immediateCommandMediator;
         private readonly IMapper _mapper;
 
-        public AuctionCommandController(WSQueuedCommandMediator wsCommandMediator, HTTPQueuedCommandMediator httpQueuedCommandMediator, ImmediateCommandMediator immediateCommandMediator, IMapper mapper)
+        public AuctionCommandController(WSQueuedCommandMediator wsCommandMediator,
+            HTTPQueuedCommandMediator httpQueuedCommandMediator, ImmediateCommandMediator immediateCommandMediator,
+            IMapper mapper)
         {
             _wsCommandMediator = wsCommandMediator;
             _httpQueuedCommandMediator = httpQueuedCommandMediator;
@@ -59,16 +62,17 @@ namespace Web.Api
         public async Task<ActionResult<RequestStatusDto>> CreateAuction([FromBody] CreateAuctionCommandDto commandDto)
         {
             var cmd = _mapper.MapDto<CreateAuctionCommandDto, CreateAuctionCommand>(commandDto);
-            var response =await _httpQueuedCommandMediator.Send(cmd);
+            var response = await _httpQueuedCommandMediator.Send(cmd);
 
             return this.StatusResponse(response);
         }
 
         [HttpPost("endAuction"), Authorize(AuthenticationSchemes = "X-API-Key", Roles = "TimeTaskService")]
-        public async Task<ActionResult<RequestStatusDto>> EndAuction([FromBody] TimeTaskRequest<AuctionEndTimeTaskValues> commandDto)
+        public async Task<ActionResult<RequestStatusDto>> EndAuction(
+            [FromBody] TimeTaskRequest<AuctionEndTimeTaskValues> commandDto)
         {
             var cmd = new ScheduledTaskDispatcher().GetCommandFromTask(commandDto);
-            var response =await _immediateCommandMediator.Send(cmd);
+            var response = await _immediateCommandMediator.Send(cmd);
 
             return this.StatusResponse(response);
         }
@@ -77,26 +81,28 @@ namespace Web.Api
         public async Task<ActionResult<RequestStatusDto>> StartCreateSession()
         {
             var cmd = new StartAuctionCreateSessionCommand();
-            var response =await _immediateCommandMediator.Send(cmd);
+            var response = await _immediateCommandMediator.Send(cmd);
 
             return this.StatusResponse(response);
         }
 
         [Authorize(Roles = "User"), HttpPost("removeAuctionImage")]
-        public async Task<ActionResult<RequestStatusDto>> RemoveAuctionImage([FromQuery] RemoveImageCommandDto commandDto)
+        public async Task<ActionResult<RequestStatusDto>> RemoveAuctionImage(
+            [FromQuery] RemoveImageCommandDto commandDto)
         {
             var cmd = new RemoveImageCommand(commandDto.ImgNum);
-            var response =await _httpQueuedCommandMediator.Send(cmd);
+            var response = await _httpQueuedCommandMediator.Send(cmd);
 
             return this.StatusResponse(response);
         }
 
         [Authorize(Roles = "User"), HttpPost("addAuctionImage")]
-        public async Task<ActionResult<RequestStatusDto>> AddAuctionImage([FromForm] AddAuctionImageCommandDto commandDto)
+        public async Task<ActionResult<RequestStatusDto>> AddAuctionImage(
+            [FromForm] AddAuctionImageCommandDto commandDto)
         {
-            var imgRepresentation = ImageRepresentationUtil.GetImageRepresentationFromFormFile(commandDto.Img);
-            var cmd = new AddAuctionImageCommand(imgRepresentation, commandDto.ImgNum);
-            var response =await _httpQueuedCommandMediator.Send(cmd);
+            var cmd = new AddAuctionImageCommand(new FileStreamAccessor(commandDto.Img), commandDto.ImgNum,
+                FileExtensionUtil.GetFileExtensionOrThrow400(commandDto.Img.FileName));
+            var response = await _httpQueuedCommandMediator.Send(cmd);
 
             return this.StatusResponse(response);
         }
@@ -106,7 +112,7 @@ namespace Web.Api
         public async Task<ActionResult<RequestStatusDto>> BuyNow([FromBody] BuyNowCommandDto commandDto)
         {
             var cmd = _mapper.MapDto<BuyNowCommandDto, BuyNowCommand>(commandDto);
-            var response =await _httpQueuedCommandMediator.Send(cmd);
+            var response = await _httpQueuedCommandMediator.Send(cmd);
 
             return this.StatusResponse(response);
         }

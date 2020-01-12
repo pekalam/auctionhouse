@@ -13,22 +13,24 @@ export class ServerConnectionGuard implements CanActivate {
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
 
-    return new Promise<boolean>((resolve, reject ) => {
+    return new Promise<boolean>((resolve, reject) => {
       this.serverMessageService.connectionStarted.pipe(
-        first(),
-        tap(() => this.loadingService.setLoading(true))
+        first()
       ).subscribe((connected) => {
-        this.loadingService.setLoading(false);
         if (!connected) {
+          this.loadingService.resetLoading();
           this.router.navigateByUrl('/error');
           reject(false);
+        } else {
+          this.loadingService.setLoading(false);
+          resolve(true);
         }
-        resolve(true);
       }, (err) => {
-        this.loadingService.setLoading(false);
-        reject(err);
+        this.loadingService.resetLoading();
+        this.router.navigateByUrl('/error');
+        reject(false);
       });
-
+      this.loadingService.setLoading(true);
       this.serverMessageService.ensureConnected();
     });
   }

@@ -12,7 +12,7 @@
       <span>X</span>
     </div>
     <div class="img-container" style="cursor: initial;">
-      <img [src]="previewsrc"/>
+      <img (load)="onImgLoaded()" [src]="previewsrc"/>
     </div>
   </div>
 

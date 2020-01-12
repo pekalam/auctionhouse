@@ -34,7 +34,7 @@ export class AddImageStepComponent extends AuctionCreateStep<AddImageFormResult[
     this.show[this.show.lastIndexOf(1) + 1 % this.show.length] = 1;
     this.previews = new Array<number>(6)
       .fill(null)
-      .map((v, ind) => values.existingImages[ind] ? this.auctionImgQuery.execute(values.existingImages[ind].size1Id) : null);
+      .map((v, ind) => values.existingImages[ind] ? this.auctionImgQuery.execute(values.existingImages[ind].size2Id) : null);
     this.defaultValues = values;
   }
 

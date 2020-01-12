@@ -1,18 +1,121 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Xml.Linq;
 using Core.Common.Auth;
 using Core.Common.Command;
 using Core.Common.Domain.AuctionCreateSession;
+using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Users;
 using Core.Common.Exceptions;
 using Core.Common.Query;
+using Microsoft.Extensions.Logging;
 
 
 namespace Core.Common.Attributes
 {
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+    public class SaveTempPathAttribute : Attribute
+    {
+    }
+
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+    public class AuctionImageAttribute : Attribute
+    {
+    }
+
+    public class SaveTempAuctionImageAttribute : Attribute, ICommandAttribute
+    {
+        internal static Dictionary<Type, PropertyInfo> _auctionImagePathCommandProperties;
+        internal static Dictionary<Type, PropertyInfo> _auctionImageAccessorCommandProperties;
+
+        public Action<IImplProvider, ICommand> PreHandleAttributeStrategy => SaveImage;
+        public Action<IImplProvider, ICommand> PostHandleAttributeStrategy => null;
+        public int Order => 1;
+
+        static SaveTempAuctionImageAttribute()
+        {
+            LoadImagePathCommandMembers("Core.Command");
+        }
+
+        internal static void LoadImagePathCommandMembers(string cmdAssembly)
+        {
+            var imgPathMembers = Assembly.Load(cmdAssembly)
+                .GetTypes()
+                .Where(type => type.BaseType == typeof(ICommand))
+                .Where(type => type.GetCustomAttributes()
+                                   .Count(attribute => attribute.GetType() == typeof(SaveTempAuctionImageAttribute)) >
+                               0)
+                .Select(type => type.GetProperties())
+                .SelectMany(infos => infos)
+                .Where(info => info.CanWrite && info.GetCustomAttribute<SaveTempPathAttribute>() != null &&
+                               info.PropertyType == typeof(string))
+                .Select(info => new
+                {
+                    CmdType = info.DeclaringType,
+                    PropertyInfo = info
+                });
+
+            var imgAccessorMembers = Assembly.Load(cmdAssembly)
+                .GetTypes()
+                .Where(type => type.BaseType == typeof(ICommand))
+                .Where(type => type.GetCustomAttributes()
+                                   .Count(attribute => attribute.GetType() == typeof(SaveTempAuctionImageAttribute)) >
+                               0)
+                .Select(type => type.GetProperties())
+                .SelectMany(infos => infos)
+                .Where(info => info.CanWrite && info.GetCustomAttribute<AuctionImageAttribute>() != null &&
+                               info.PropertyType == typeof(IFileStreamAccessor))
+                .Select(info => new
+                {
+                    CmdType = info.DeclaringType,
+                    PropertyInfo = info
+                });
+
+            _auctionImagePathCommandProperties = new Dictionary<Type, PropertyInfo>();
+            _auctionImageAccessorCommandProperties = new Dictionary<Type, PropertyInfo>();
+
+            foreach (var member in imgPathMembers)
+            {
+                _auctionImagePathCommandProperties[member.CmdType] = member.PropertyInfo;
+                if (imgAccessorMembers.Count(arg => arg.CmdType == member.CmdType) == 0)
+                {
+                    throw new Exception(
+                        $"Command {member.CmdType} decorated with {nameof(SaveTempAuctionImageAttribute)} attribute doesn't contain property decorated with{nameof(AuctionImageAttribute)} which should correspond to {member.PropertyInfo.Name} property");
+                }
+            }
+
+            foreach (var member in imgAccessorMembers)
+            {
+                _auctionImageAccessorCommandProperties[member.CmdType] = member.PropertyInfo;
+                if (imgPathMembers.Count(arg => arg.CmdType == member.CmdType) == 0)
+                {
+                    throw new Exception(
+                        $"Command {member.CmdType} decorated with {nameof(SaveTempAuctionImageAttribute)} attribute doesn't contain property decorated with{nameof(SaveTempPathAttribute)} which should correspond to {member.PropertyInfo.Name} property");
+                }
+            }
+        }
+
+        internal static void SaveImage(IImplProvider implProvider, ICommand command)
+        {
+            if (_auctionImagePathCommandProperties.ContainsKey(command.GetType()))
+            {
+                var tempFileService = implProvider.Get<ITempFileService>();
+                var streamAccessor = (IFileStreamAccessor)_auctionImageAccessorCommandProperties[command.GetType()].GetValue(command);
+                var stream = streamAccessor.GetStream();
+                var tempFile = tempFileService.SaveAsTempFile(stream);
+                stream.Close();
+                _auctionImageAccessorCommandProperties[command.GetType()].SetValue(command, null);
+                _auctionImagePathCommandProperties[command.GetType()].SetValue(command, tempFile);
+            }
+        }
+    }
+
+
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
     public class InAuctionCreateSessionRemoveAttribute : InAuctionCreateSessionAttribute
     {
         public new Action<IImplProvider, ICommand> PostHandleAttributeStrategy =>
@@ -29,7 +132,7 @@ namespace Core.Common.Attributes
     }
 
 
-   [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
     public class InAuctionCreateSessionAttribute : Attribute, ICommandAttribute
     {
         internal static Dictionary<Type, PropertyInfo> _auctionCreateSessionCommandProperties;
@@ -39,6 +142,7 @@ namespace Core.Common.Attributes
 
         public Action<IImplProvider, ICommand> PostHandleAttributeStrategy =>
             new Action<IImplProvider, ICommand>(SaveAuctionCreateSession);
+
         public int Order => 1;
 
         static InAuctionCreateSessionAttribute()
@@ -69,7 +173,6 @@ namespace Core.Common.Attributes
 
             foreach (var member in commandMembers)
             {
-                var interfaces = member.CmdType.GetInterfaces();
                 _auctionCreateSessionCommandProperties[member.CmdType] = member.PropertyInfo;
             }
         }
@@ -89,7 +192,8 @@ namespace Core.Common.Attributes
             if (_auctionCreateSessionCommandProperties.ContainsKey(command.GetType()))
             {
                 var auctionCreateSessionService = implProvider.Get<IAuctionCreateSessionService>();
-                var session = _auctionCreateSessionCommandProperties[command.GetType()].GetValue(command) as AuctionCreateSession; 
+                var session =
+                    _auctionCreateSessionCommandProperties[command.GetType()].GetValue(command) as AuctionCreateSession;
                 auctionCreateSessionService.SaveSession(session);
             }
         }

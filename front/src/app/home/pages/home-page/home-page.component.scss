@@ -21,12 +21,7 @@
       padding-left: 25px;
     }
     .promo {
-      flex-grow: 1;
       width: 100%;
-      height: 270px;
-      float: left;
-      display: flex;
-      align-items: center;
       box-sizing: border-box;
       padding: 0 10px 0 10px;
     }
@@ -39,6 +34,14 @@
     .promo-container {
       flex-grow: 0;
       margin-left: 0;
+    }
+  }
+}
+
+@include desktop-md{
+  #home-container {
+    .promo-container {
+      height: auto;
     }
   }
 }

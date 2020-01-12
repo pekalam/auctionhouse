@@ -17,7 +17,7 @@ export class AuctionListItemComponent implements OnInit {
 
   ngOnInit() {
     if(this.auction.auctionImages[0]){
-      this.auctionImgSrc = this.auctionImageQuery.execute(this.auction.auctionImages[0].size1Id);
+      this.auctionImgSrc = this.auctionImageQuery.execute(this.auction.auctionImages[0].size2Id);
 
     }
   }

@@ -50,10 +50,7 @@ namespace IntegrationTests
         public void AddImage_when_valid_file_adds_image()
         {
             var testFile = File.ReadAllBytes("./test_image.jpg");
-            var imgRepresentation = new AuctionImageRepresentation()
-            {
-                Img = testFile, Metadata = new AuctionImageMetadata()
-            };
+            var imgRepresentation = new AuctionImageRepresentation(new AuctionImageMetadata("jpg"), testFile);
             auctionImageRepository.Add("img1", imgRepresentation);
             var fetched = auctionImageRepository.Find("img1");
 
@@ -69,14 +66,10 @@ namespace IntegrationTests
         public void UpdateMetadata_when_file_exists_changes_metadata()
         {
             var testFile = File.ReadAllBytes("./test_image.jpg");
-            var imgRepresentation = new AuctionImageRepresentation()
-            {
-                Img = testFile,
-                Metadata = new AuctionImageMetadata()
-            };
+            var imgRepresentation = new AuctionImageRepresentation(new AuctionImageMetadata("jpg"), testFile);
             auctionImageRepository.Add("img1", imgRepresentation);
 
-            auctionImageRepository.UpdateMetadata("img1", new AuctionImageMetadata()
+            auctionImageRepository.UpdateMetadata("img1", new AuctionImageMetadata("jpg")
             {
                 IsAssignedToAuction = true
             });
@@ -94,11 +87,7 @@ namespace IntegrationTests
         private void AddTestImageToRepository(string imageId)
         {
             var testFile = File.ReadAllBytes("./test_image.jpg");
-            var imgRepresentation = new AuctionImageRepresentation()
-            {
-                Img = testFile,
-                Metadata = new AuctionImageMetadata()
-            };
+            var imgRepresentation = new AuctionImageRepresentation(new AuctionImageMetadata("jpg"), testFile);
             auctionImageRepository.Add(imageId, imgRepresentation);
         }
 
@@ -108,7 +97,7 @@ namespace IntegrationTests
             AddTestImageToRepository("img1");
             AddTestImageToRepository("img2");
 
-            auctionImageRepository.UpdateManyMetadata(new []{"img1", "img2"}, new AuctionImageMetadata()
+            auctionImageRepository.UpdateManyMetadata(new []{"img1", "img2"}, new AuctionImageMetadata("jpg")
             {
                 IsAssignedToAuction = true
             });

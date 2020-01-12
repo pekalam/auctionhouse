@@ -3,6 +3,10 @@
 set -m
 set -e
 
+if [ -e "/run/secrets/mongo_password" ]; then
+	MONGO_INITDB_ROOT_PASSWORD=`< /run/secrets/mongo_password`
+fi
+
 if [ "$1" == "--wait-for" ]; then
     shift 1
     args=($@)
@@ -20,7 +24,7 @@ else
     args=$@
 fi
 
-mongod $args & 
+MONGO_INITDB_ROOT_PASSWORD=$MONGO_INITDB_ROOT_PASSWORD mongod $args & 
 
 echo "waiting for port 27018"
 wait-for localhost:27018 -t 180

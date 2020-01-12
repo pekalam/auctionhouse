@@ -73,7 +73,7 @@ namespace Infrastructure.Bootstraper
             {
                 serviceCollection.AddSingleton<ImageDbContext>();
                 serviceCollection.AddScoped<IAuctionImageRepository, AuctionImageRepository>();
-                serviceCollection.AddSingleton<IAuctionImageSizeConverterService, AuctionImageSizeConverterService>();
+                serviceCollection.AddSingleton<IAuctionImageConversionService, AuctionImageConversionService>();
                 serviceCollection.AddScoped<AuctionImageService>();
             }
 

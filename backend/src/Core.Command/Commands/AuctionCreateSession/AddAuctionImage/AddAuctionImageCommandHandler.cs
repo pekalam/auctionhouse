@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Command.Handler;
 using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.Domain.AuctionCreateSession;
+using Core.Common.Domain.Auctions;
 using Core.Common.DomainServices;
 using Core.Common.RequestStatusService;
 using Microsoft.Extensions.Logging;
@@ -27,7 +29,12 @@ namespace Core.Command.Commands.AuctionCreateSession.AddAuctionImage
 
         protected override Task<RequestStatus> HandleCommand(AddAuctionImageCommand request, CancellationToken cancellationToken)
         {
-            var added = _auctionImageService.AddAuctionImage(request.Img);
+            var file = File.ReadAllBytes(request.TempPath);
+            File.Delete(request.TempPath);
+
+            var img = new AuctionImageRepresentation(new AuctionImageMetadata(request.Extension), file);
+
+            var added = _auctionImageService.AddAuctionImage(img);
 
             request.AuctionCreateSession.AddOrReplaceImage(added, request.ImgNum);
 

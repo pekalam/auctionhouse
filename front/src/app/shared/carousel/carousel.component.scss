@@ -13,7 +13,18 @@
     position: relative;
     top: 0;
     height: 100%;
+    .img-container{
+      width: 100%;
+      max-height: 100%;
+      text-align: center;
+    }
   }
+}
+
+.loading-bar{
+  width: 70%;
+  height: 4px;
+  margin: 0 auto;
 }
 
 .btn-container {
@@ -29,4 +40,10 @@
     top: -12px;
     font-size: 0.8em;
   }
+}
+
+.img{
+  width: 75%;
+  height: 100%;
+  max-height: 100%;
 }

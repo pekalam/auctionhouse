@@ -35,7 +35,7 @@ services:
         image: marekbf3/auctionhouse-db-config1
         hostname: db-config1
         container_name: db-config1
-        command: "--configsvr --replSet configRS --bind_ip_all"
+        command: ["--configsvr", "--replSet", "configRS", "--bind_ip_all"]
 
     db-mongos1:
         image: marekbf3/auctionhouse-db-mongos1
@@ -60,7 +60,6 @@ services:
         hostname: db-node2
         container_name: db-node2
         command: [ "--bind_ip_all", "--replSet", "n2", "--shardsvr" ]
-
 
     auctionhouse-webapi:
         image: marekbf3/auctionhouse-test:0.1.2

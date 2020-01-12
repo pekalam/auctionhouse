@@ -30,10 +30,12 @@ using WireMock.Settings;
 namespace FunctionalTests.Commands
 {
     [TestFixture]
+    [NonParallelizable]
+    [SingleThreaded]
     public class CreateAuctionCommand_Tests
     {
         private FluentMockServer server;
-        private bool called;
+        public static Dictionary<Guid, bool> called = new Dictionary<Guid, bool>();
         private DateTime startDate;
         private DateTime endDate;
         private TestCreateAuctionCommandHandler testCommandHandler;
@@ -53,7 +55,11 @@ namespace FunctionalTests.Commands
         {
             server = FluentMockServer.Start(new FluentMockServerSettings() {Port = 9998});
             var responseProvider = new FakeResponseProvider(HttpStatusCode.OK);
-            responseProvider.Callback = message => { called = true; };
+            responseProvider.Callback = message =>
+            {
+                var res = (TimeTaskRequest<AuctionEndTimeTaskValues>) message.BodyAsJson;
+                called[res.Values.AuctionId] = true;
+            };
             server.Given(Request.Create()
                     .WithPath("/test")
                     .UsingPost())
@@ -96,9 +102,8 @@ namespace FunctionalTests.Commands
         public void SetUp()
         {
             AuctionConstantsFactory.MinAuctionTimeM = -1;
-            called = false;
             startDate = DateTime.UtcNow.AddSeconds(10);
-            endDate = DateTime.UtcNow.AddSeconds(20);
+            endDate = DateTime.UtcNow.AddSeconds(50);
             SetUpCommandHandler();
         }
 
@@ -106,8 +111,6 @@ namespace FunctionalTests.Commands
         [Test]
         public void Handle_when_called_adds_auction_to_repository_and_schedules_end()
         {
-            startDate = DateTime.UtcNow;
-            endDate = DateTime.UtcNow.AddSeconds(35);
             var command = new CreateAuctionCommand(Decimal.One,
                 new Product("test product name", "example description", Condition.New),
                 startDate, endDate,
@@ -117,10 +120,10 @@ namespace FunctionalTests.Commands
             testCommandHandler.Handle(command, CancellationToken.None)
                 .Wait();
 
-            Thread.Sleep(40_000);
+            Thread.Sleep(120_000);
 
             var added = testDepedencies.AuctionRepository.FindAuction(testCommandHandler.AddedAuction.AggregateId);
-            called.Should()
+            called[added.AggregateId].Should()
                 .BeTrue();
             added.StartDate.Value.Year.Should().Be(startDate.Year);
             added.StartDate.Value.Month.Should().Be(startDate.Month);
@@ -146,9 +149,9 @@ namespace FunctionalTests.Commands
                     .Wait();
             });
 
-            Thread.Sleep(7_000);
+            Thread.Sleep(120_000);
 
-            called.Should()
+            called[testCommandHandler.AddedAuction.AggregateId].Should()
                 .BeFalse();
         }
 
@@ -170,9 +173,9 @@ namespace FunctionalTests.Commands
                     .Wait();
             });
 
-            Thread.Sleep(15_000);
+            Thread.Sleep(120_000);
 
-            called.Should()
+            called[testCommandHandler.AddedAuction.AggregateId].Should()
                 .BeFalse();
         }
     }
@@ -209,18 +212,14 @@ namespace FunctionalTests.Commands
 
         protected override void AddToRepository(Auction auction, AtomicSequence<Auction> context)
         {
+            CreateAuctionCommand_Tests.called[auction.AggregateId] = false;
+            AddedAuction = auction;
             if (AuctionRepositoryThrows)
             {
                 throw new NotImplementedException();
             }
 
             base.AddToRepository(auction, context);
-            AddedAuction = auction;
-        }
-
-        protected override void AddToRepository_Rollback(Auction auction, AtomicSequence<Auction> context)
-        {
-            base.AddToRepository_Rollback(auction, context);
         }
 
         protected override void SheduleAuctionEndTask(Auction auction, AtomicSequence<Auction> context)
@@ -231,11 +230,6 @@ namespace FunctionalTests.Commands
             }
 
             base.SheduleAuctionEndTask(auction, context);
-        }
-
-        protected override void ScheduleAuctionEndTask_Rollback(Auction auction, AtomicSequence<Auction> context)
-        {
-            base.ScheduleAuctionEndTask_Rollback(auction, context);
         }
 
         protected override void PublishEvents(Auction auction, User user, CreateAuctionCommand createAuctionCommand, CorrelationId correlationId)

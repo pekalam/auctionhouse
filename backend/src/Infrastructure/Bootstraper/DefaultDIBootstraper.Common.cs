@@ -51,6 +51,7 @@ namespace Infrastructure.Bootstraper
                     new DefaultDIImplProvider(provider.GetService<IServiceScopeFactory>()));
 
                 serviceCollection.AddScoped<QueryMediator>();
+                serviceCollection.AddScoped<ITempFileService, TempFileService>();
             }
 
             public static void Start(IServiceProvider serviceProvider, Action<EventArgs, ILogger> eventBusDisconnectedCallback)

@@ -17,13 +17,22 @@ namespace Core.Query.Queries.Auction.AuctionImage
             _auctionImageRepository = auctionImageRepository;
         }
 
-        protected override Task<AuctionImageQueryResult> HandleQuery(AuctionImageQuery request, CancellationToken cancellationToken)
+        protected override Task<AuctionImageQueryResult> HandleQuery(AuctionImageQuery request,
+            CancellationToken cancellationToken)
         {
             var img = _auctionImageRepository.Find(request.ImageId);
-            return Task.FromResult(new AuctionImageQueryResult()
+
+            if (img == null)
             {
-                Img = img
-            });
+                return null;
+            }
+            else
+            {
+                return Task.FromResult(new AuctionImageQueryResult()
+                {
+                    Img = img
+                });
+            }
         }
     }
 }

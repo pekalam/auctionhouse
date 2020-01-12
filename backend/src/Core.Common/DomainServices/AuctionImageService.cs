@@ -11,10 +11,10 @@ namespace Core.Common.DomainServices
     public class AuctionImageService
     {
         private readonly IAuctionImageRepository _imageRepository;
-        private readonly IAuctionImageSizeConverterService _imageConverterService;
+        private readonly IAuctionImageConversionService _imageConverterService;
 
 
-        public AuctionImageService(IAuctionImageRepository imageRepository, IAuctionImageSizeConverterService imageConverterService)
+        public AuctionImageService(IAuctionImageRepository imageRepository, IAuctionImageConversionService imageConverterService)
         {
             _imageRepository = imageRepository;
             _imageConverterService = imageConverterService;
@@ -44,7 +44,7 @@ namespace Core.Common.DomainServices
 
         public AuctionImage AddAuctionImage(AuctionImageRepresentation representation)
         {
-            if (!_imageConverterService.ValidateImage(representation, new[] {"jpg", "png"}))
+            if (!_imageConverterService.ValidateImage(representation, AuctionImage.AllowedExtensions))
             {
                 throw new DomainException("Invalid image");
             }

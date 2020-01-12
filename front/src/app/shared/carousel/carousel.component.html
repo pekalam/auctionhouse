@@ -1,8 +1,8 @@
 <div class="container" >
   <div class="container-center">
     <div class="img-container">
-      <img #image (load)="loading = false" *ngFor="let imgInd of imgInd" class="img" [src]="imgs[imgInd]" [hidden]="imgInd != shown || loading" style="max-width: 100%;"/>
-
+      <img #image (load)="onImgLoaded(imgInd)" *ngFor="let imgInd of imgInd" class="img" [src]="imgs[imgInd]" [hidden]="imgInd != shown || loading"/>
+      <mat-progress-bar class="loading-bar" *ngIf="loading" mode="buffer"></mat-progress-bar>
     </div>
 
   </div>

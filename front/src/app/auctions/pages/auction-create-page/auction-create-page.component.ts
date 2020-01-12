@@ -38,7 +38,7 @@ export class AuctionCreatePageComponent implements OnInit {
   error: string = null;
   showCreateForm = false;
 
-  step = 1;
+  step = 0;
   stepComponents = [];
 
   constructor(private startAuctionCreateSessionCommand: StartAuctionCreateSessionCommand,

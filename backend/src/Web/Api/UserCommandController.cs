@@ -20,6 +20,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
+using Web.Adapters;
 using Web.Dto;
 using Web.Dto.Commands;
 using Web.Utils;
@@ -45,9 +46,7 @@ namespace Web.Api
         [Authorize(Roles = "User"), HttpPost("userAddAuctionImage")]
         public async Task<ActionResult<RequestStatusDto>> UserAddAuctionImage([FromForm] UserAddAuctionImageCommandDto commandDto)
         {
-            var imgRepresentation = ImageRepresentationUtil.GetImageRepresentationFromFormFile(commandDto.Img);
-
-            var cmd = new UserAddAuctionImageCommand(Guid.Parse(commandDto.AuctionId), imgRepresentation);
+            var cmd = new UserAddAuctionImageCommand(Guid.Parse(commandDto.AuctionId), new FileStreamAccessor(commandDto.Img), FileExtensionUtil.GetFileExtensionOrThrow400(commandDto.Img.FileName));
             var response = await _mediator.Send(cmd);
 
             return this.StatusResponse(response);
@@ -56,9 +55,8 @@ namespace Web.Api
         [Authorize(Roles = "User"), HttpPost("userReplaceAuctionImage")]
         public async Task<ActionResult<RequestStatusDto>> UserReplaceAuctionImage([FromForm] UserReplaceAuctionImageCommandDto commandDto)
         {
-            var imgRepresentation = ImageRepresentationUtil.GetImageRepresentationFromFormFile(commandDto.Img);
 
-            var cmd = new UserReplaceAuctionImageCommand(Guid.Parse(commandDto.AuctionId), imgRepresentation, commandDto.ImgNum);
+            var cmd = new UserReplaceAuctionImageCommand(Guid.Parse(commandDto.AuctionId), new FileStreamAccessor(commandDto.Img), commandDto.ImgNum, FileExtensionUtil.GetFileExtensionOrThrow400(commandDto.Img.FileName));
             var response = await _mediator.Send(cmd);
 
             return this.StatusResponse(response);

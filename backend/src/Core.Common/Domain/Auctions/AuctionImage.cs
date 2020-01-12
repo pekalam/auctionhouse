@@ -2,24 +2,27 @@
 
 namespace Core.Common.Domain.Auctions
 {
-    public enum AuctionImageSize
+    public class AuctionImageSize
     {
-        SIZE1,
-        SIZE2,
-        SIZE3
+        public static readonly AuctionImageSize SIZE1 = new AuctionImageSize(720, 480);
+        public static readonly AuctionImageSize SIZE2 = new AuctionImageSize(192, 108);
+        public static readonly AuctionImageSize SIZE3 = new AuctionImageSize(96, 54);
+
+        public int W { get; }
+        public int H { get; }
+
+        public AuctionImageSize(int w, int h)
+        {
+            W = w;
+            H = h;
+        }
     }
 
     public class AuctionImage
     {
-        public const int SIZE1_MAX_H = 1080;
-        public const int SIZE1_MAX_W = 1920;
-        public const int SIZE2_MAX_H = 480;
-        public const int SIZE2_MAX_W = 720;
-        public const int SIZE3_MAX_H = 54;
-        public const int SIZE3_MAX_W = 96;
+        public static readonly string[] AllowedExtensions = {"jpg", "png"};
 
-
-        public static string GenerateImageId(AuctionImageSize size) => $"auction-img-{Guid.NewGuid().ToString()}-{size}";
+        public static string GenerateImageId(AuctionImageSize size) => $"auction-img-{Guid.NewGuid().ToString()}-{size.W}";
 
 
         public string Size1Id { get; }

@@ -15,7 +15,7 @@ export class CarouselComponent implements OnInit, AfterViewInit {
   imgs = [];
   imgInd = [];
   shown = 0;
-  loading = false;
+  loading = true;
 
   @Input()
   imageButtons = true;
@@ -41,6 +41,10 @@ export class CarouselComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
 
+  }
+
+  onImgLoaded(imgInd: number){
+    this.loading = imgInd == this.shown ? false : this.loading;
   }
 
   onPrev() {
