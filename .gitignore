@@ -13,3 +13,5 @@ backend/src/Test.AuctionhouseDatabase/Import Schema Logs/
 backend/src/AuctionhouseDatabase/AuctionhouseDatabase.dbmdl
 
 backend/src/Test.AuctionhouseDatabase/Test.AuctionhouseDatabase.dbmdl
+
+backend/scripts/mongodb/node_modules/*
