@@ -21,7 +21,7 @@ namespace Core.Command.CreateAuction
         {
             try
             {
-                var cmd = (CreateAuctionCommand)commandEvent.Command;
+                var cmd = (CreateAuctionCommand)commandEvent.CommandBase;
                 var ev = (AuctionCreated)commandEvent.Event;
                 _auctionRepository.RemoveAuction(ev.AuctionId);
             }

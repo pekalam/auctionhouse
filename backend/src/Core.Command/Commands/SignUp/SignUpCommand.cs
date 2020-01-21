@@ -24,7 +24,7 @@ namespace Core.Command.SignUp
         }
     }
 
-    public class SignUpCommand : ICommand
+    public class SignUpCommand : CommandBase
     {
         [Required]
         [MinLength(User.MIN_USERNAME_LENGTH)]

@@ -24,7 +24,7 @@ namespace Core.Query.Queries.Auction.AuctionImage
 
             if (img == null)
             {
-                return null;
+                return Task.FromResult(new AuctionImageQueryResult());
             }
             else
             {

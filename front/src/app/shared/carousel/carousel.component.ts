@@ -20,6 +20,15 @@ export class CarouselComponent implements OnInit, AfterViewInit {
   @Input()
   imageButtons = true;
 
+  @Input()
+  showThumbnails = false;
+
+  @Input()
+  fullscreen = false;
+
+  @Input()
+  thumbnails = [];
+
   @Input('sources')
   set sources(srcs: Array<string>) {
     console.log(srcs);
@@ -32,6 +41,7 @@ export class CarouselComponent implements OnInit, AfterViewInit {
   @Output('imgSelected')
   imgSelected = new EventEmitter<number>();
 
+  showFullscreen = false;
 
   constructor() { }
 
@@ -43,8 +53,19 @@ export class CarouselComponent implements OnInit, AfterViewInit {
 
   }
 
+  onShowFullScreen(){
+    if(this.fullscreen){
+      this.showFullscreen = true;
+    }
+  }
+
   onImgLoaded(imgInd: number){
     this.loading = imgInd == this.shown ? false : this.loading;
+  }
+
+  onThumbnailClick(imgInd){
+    this.shown = imgInd;
+    this.imgSelected.emit(this.shown);
   }
 
   onPrev() {

@@ -32,8 +32,8 @@ namespace Core.Common.Attributes
         internal static Dictionary<Type, PropertyInfo> _auctionImagePathCommandProperties;
         internal static Dictionary<Type, PropertyInfo> _auctionImageAccessorCommandProperties;
 
-        public Action<IImplProvider, ICommand> PreHandleAttributeStrategy => SaveImage;
-        public Action<IImplProvider, ICommand> PostHandleAttributeStrategy => null;
+        public Action<IImplProvider, CommandBase> PreHandleAttributeStrategy => SaveImage;
+        public Action<IImplProvider, CommandBase> PostHandleAttributeStrategy => null;
         public int Order => 1;
 
         static SaveTempAuctionImageAttribute()
@@ -45,7 +45,7 @@ namespace Core.Common.Attributes
         {
             var imgPathMembers = Assembly.Load(cmdAssembly)
                 .GetTypes()
-                .Where(type => type.BaseType == typeof(ICommand))
+                .Where(type => type.BaseType == typeof(CommandBase))
                 .Where(type => type.GetCustomAttributes()
                                    .Count(attribute => attribute.GetType() == typeof(SaveTempAuctionImageAttribute)) >
                                0)
@@ -61,7 +61,7 @@ namespace Core.Common.Attributes
 
             var imgAccessorMembers = Assembly.Load(cmdAssembly)
                 .GetTypes()
-                .Where(type => type.BaseType == typeof(ICommand))
+                .Where(type => type.BaseType == typeof(CommandBase))
                 .Where(type => type.GetCustomAttributes()
                                    .Count(attribute => attribute.GetType() == typeof(SaveTempAuctionImageAttribute)) >
                                0)
@@ -99,17 +99,17 @@ namespace Core.Common.Attributes
             }
         }
 
-        internal static void SaveImage(IImplProvider implProvider, ICommand command)
+        internal static void SaveImage(IImplProvider implProvider, CommandBase commandBase)
         {
-            if (_auctionImagePathCommandProperties.ContainsKey(command.GetType()))
+            if (_auctionImagePathCommandProperties.ContainsKey(commandBase.GetType()))
             {
                 var tempFileService = implProvider.Get<ITempFileService>();
-                var streamAccessor = (IFileStreamAccessor)_auctionImageAccessorCommandProperties[command.GetType()].GetValue(command);
+                var streamAccessor = (IFileStreamAccessor)_auctionImageAccessorCommandProperties[commandBase.GetType()].GetValue(commandBase);
                 var stream = streamAccessor.GetStream();
                 var tempFile = tempFileService.SaveAsTempFile(stream);
                 stream.Close();
-                _auctionImageAccessorCommandProperties[command.GetType()].SetValue(command, null);
-                _auctionImagePathCommandProperties[command.GetType()].SetValue(command, tempFile);
+                _auctionImageAccessorCommandProperties[commandBase.GetType()].SetValue(commandBase, null);
+                _auctionImagePathCommandProperties[commandBase.GetType()].SetValue(commandBase, tempFile);
             }
         }
     }
@@ -118,12 +118,12 @@ namespace Core.Common.Attributes
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
     public class InAuctionCreateSessionRemoveAttribute : InAuctionCreateSessionAttribute
     {
-        public new Action<IImplProvider, ICommand> PostHandleAttributeStrategy =>
-            new Action<IImplProvider, ICommand>(RemoveAuctionCreateSession);
+        public new Action<IImplProvider, CommandBase> PostHandleAttributeStrategy =>
+            new Action<IImplProvider, CommandBase>(RemoveAuctionCreateSession);
 
-        private static void RemoveAuctionCreateSession(IImplProvider implProvider, ICommand command)
+        private static void RemoveAuctionCreateSession(IImplProvider implProvider, CommandBase commandBase)
         {
-            if (_auctionCreateSessionCommandProperties.ContainsKey(command.GetType()))
+            if (_auctionCreateSessionCommandProperties.ContainsKey(commandBase.GetType()))
             {
                 var auctionCreateSessionService = implProvider.Get<IAuctionCreateSessionService>();
                 auctionCreateSessionService.RemoveSession();
@@ -137,11 +137,11 @@ namespace Core.Common.Attributes
     {
         internal static Dictionary<Type, PropertyInfo> _auctionCreateSessionCommandProperties;
 
-        public Action<IImplProvider, ICommand> PreHandleAttributeStrategy =>
-            new Action<IImplProvider, ICommand>(AddAuctionCreateSessionToCommand);
+        public Action<IImplProvider, CommandBase> PreHandleAttributeStrategy =>
+            new Action<IImplProvider, CommandBase>(AddAuctionCreateSessionToCommand);
 
-        public Action<IImplProvider, ICommand> PostHandleAttributeStrategy =>
-            new Action<IImplProvider, ICommand>(SaveAuctionCreateSession);
+        public Action<IImplProvider, CommandBase> PostHandleAttributeStrategy =>
+            new Action<IImplProvider, CommandBase>(SaveAuctionCreateSession);
 
         public int Order => 1;
 
@@ -155,7 +155,7 @@ namespace Core.Common.Attributes
             var commandMembers = assemblyNames.Select(s => Assembly.Load(s))
                 .Select(assembly =>
                     assembly.GetTypes()
-                        .Where(type => type.BaseType == typeof(ICommand))
+                        .Where(type => type.BaseType == typeof(CommandBase))
                         .Select(type => type.GetProperties())
                         .SelectMany(infos => infos)
                         .Where(info =>
@@ -177,23 +177,23 @@ namespace Core.Common.Attributes
             }
         }
 
-        private static void AddAuctionCreateSessionToCommand(IImplProvider implProvider, ICommand command)
+        private static void AddAuctionCreateSessionToCommand(IImplProvider implProvider, CommandBase commandBase)
         {
-            if (_auctionCreateSessionCommandProperties.ContainsKey(command.GetType()))
+            if (_auctionCreateSessionCommandProperties.ContainsKey(commandBase.GetType()))
             {
                 var auctionCreateSessionService = implProvider.Get<IAuctionCreateSessionService>();
                 var session = auctionCreateSessionService.GetExistingSession();
-                _auctionCreateSessionCommandProperties[command.GetType()].SetValue(command, session);
+                _auctionCreateSessionCommandProperties[commandBase.GetType()].SetValue(commandBase, session);
             }
         }
 
-        private static void SaveAuctionCreateSession(IImplProvider implProvider, ICommand command)
+        private static void SaveAuctionCreateSession(IImplProvider implProvider, CommandBase commandBase)
         {
-            if (_auctionCreateSessionCommandProperties.ContainsKey(command.GetType()))
+            if (_auctionCreateSessionCommandProperties.ContainsKey(commandBase.GetType()))
             {
                 var auctionCreateSessionService = implProvider.Get<IAuctionCreateSessionService>();
                 var session =
-                    _auctionCreateSessionCommandProperties[command.GetType()].GetValue(command) as AuctionCreateSession;
+                    _auctionCreateSessionCommandProperties[commandBase.GetType()].GetValue(commandBase) as AuctionCreateSession;
                 auctionCreateSessionService.SaveSession(session);
             }
         }

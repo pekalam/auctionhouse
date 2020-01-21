@@ -26,15 +26,15 @@ namespace Core.Query.EventHandlers
             where T : Event
         {
             var requestStatus =
-                RequestStatus.CreateFromCommandContext(appEvent.Command.CommandContext, Status.COMPLETED, values);
-            _httpQueuedCommandStatusStorage.UpdateCommandStatus(requestStatus, appEvent.Command);
+                RequestStatus.CreateFromCommandContext(appEvent.CommandBase.CommandContext, Status.COMPLETED, values);
+            _httpQueuedCommandStatusStorage.UpdateCommandStatus(requestStatus, appEvent.CommandBase);
         }
 
         private void SendHttpFailed<T>(IAppEvent<T> appEvent, Dictionary<string, object> values) where T : Event
         {
             var requestStatus =
-                RequestStatus.CreateFromCommandContext(appEvent.Command.CommandContext, Status.FAILED, values);
-            _httpQueuedCommandStatusStorage.UpdateCommandStatus(requestStatus, appEvent.Command);
+                RequestStatus.CreateFromCommandContext(appEvent.CommandBase.CommandContext, Status.FAILED, values);
+            _httpQueuedCommandStatusStorage.UpdateCommandStatus(requestStatus, appEvent.CommandBase);
         }
 
         private void TrySendHttpCompleted<T>(IAppEvent<T> appEvent, Dictionary<string, object> values)
@@ -63,7 +63,7 @@ namespace Core.Query.EventHandlers
 
         public void SendRequestCompletionToUser<T>(IAppEvent<T> appEvent, UserIdentity user, Dictionary<string, object> values = null) where T : Event
         {
-            if (appEvent.Command.HttpQueued)
+            if (appEvent.CommandBase.HttpQueued)
             {
                 SendHttpCompleted(appEvent, values);
             }
@@ -75,7 +75,7 @@ namespace Core.Query.EventHandlers
 
         public void SendRequestCompletionToAll<T>(IAppEvent<T> appEvent, Dictionary<string, object> values = null) where T : Event
         {
-            if (appEvent.Command.HttpQueued)
+            if (appEvent.CommandBase.HttpQueued)
             {
                 throw new QueryException("Cannot send request status to all of http queued command");
             }
@@ -85,7 +85,7 @@ namespace Core.Query.EventHandlers
 
         public void SendRequestFailureToUser<T>(IAppEvent<T> appEvent, UserIdentity user, Dictionary<string, object> values = null) where T : Event
         {
-            if (appEvent.Command.HttpQueued)
+            if (appEvent.CommandBase.HttpQueued)
             {
                 SendHttpFailed(appEvent, values);
             }
@@ -98,7 +98,7 @@ namespace Core.Query.EventHandlers
         public void TrySendReqestCompletionToUser<T>(IAppEvent<T> appEvent, UserIdentity user,
             Dictionary<string, object> values = null) where T : Event
         {
-            if (appEvent.Command.HttpQueued)
+            if (appEvent.CommandBase.HttpQueued)
             {
                 TrySendHttpCompleted(appEvent, values);
             }
@@ -111,7 +111,7 @@ namespace Core.Query.EventHandlers
         public void TrySendRequestFailureToUser<T>(IAppEvent<T> appEvent, UserIdentity user,
             Dictionary<string, object> values = null) where T : Event
         {
-            if (appEvent.Command.HttpQueued)
+            if (appEvent.CommandBase.HttpQueued)
             {
                 TrySendHttpFailed(appEvent, values);
             }

@@ -25,7 +25,7 @@ namespace Core.Query.EventHandlers
             this.Consume(_appEventBuilder
                 .WithCorrelationId(appEventBase.CorrelationId)
                 .WithEvent(appEventBase.Event)
-                .WithCommand(appEventBase.Command)
+                .WithCommand(appEventBase.CommandBase)
                 .Build<T>());
         }
 

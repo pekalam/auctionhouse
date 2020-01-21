@@ -87,5 +87,13 @@ namespace Core.Common.Domain.Users
 
             AddEvent(new CreditsReturned(toReturn, UserIdentity));
         }
+
+        public void CancelCredits(decimal ammount)
+        {
+            ThrowIfNotRegistered();
+            Credits -= ammount;
+
+            AddEvent(new CreditsCanceled(ammount, UserIdentity));
+        }
     }
 }

@@ -27,16 +27,16 @@ namespace IntegrationTests
 
     public class TestAppEvent : IAppEvent<Event>
     {
-        public ICommand Command { get; } = null;
+        public CommandBase CommandBase { get; } = null;
         public CorrelationId CorrelationId { get; }
         public Event Event { get; }
 
 
-        public TestAppEvent(CorrelationId correlationId, Event @event, ICommand cmd = null)
+        public TestAppEvent(CorrelationId correlationId, Event @event, CommandBase cmd = null)
         {
             CorrelationId = correlationId;
             Event = @event;
-            Command = cmd;
+            CommandBase = cmd;
         }
     }
 
@@ -73,7 +73,7 @@ namespace IntegrationTests
         }
     }
 
-    public class TestCommand : ICommand { }
+    public class TestCommandBase : CommandBase { }
 
     public class TestCommandRollbackHandler : ICommandRollbackHandler
     {
@@ -133,8 +133,8 @@ namespace IntegrationTests
 
         private bool CheckRollbackAppEvent(IAppEvent<Event> ev)
         {
-            return ev.Command.GetType()
-                       .Equals(typeof(TestCommand)) && ev.CorrelationId.Value.Equals("123") && ev.Event.GetType()
+            return ev.CommandBase.GetType()
+                       .Equals(typeof(TestCommandBase)) && ev.CorrelationId.Value.Equals("123") && ev.Event.GetType()
                        .Equals(typeof(TestEvent));
         }
 
@@ -143,7 +143,7 @@ namespace IntegrationTests
         {
             int called = 0;
             var sem = new SemaphoreSlim(0, 1);
-            var toPublish = new TestAppEvent(new CorrelationId("123"), new TestEvent(), new TestCommand());
+            var toPublish = new TestAppEvent(new CorrelationId("123"), new TestEvent(), new TestCommandBase());
             var rollbackHandler = new TestCommandRollbackHandler(new Action<IAppEvent<Event>>(ev =>
             {
                 called++;
@@ -153,7 +153,7 @@ namespace IntegrationTests
             rollbackHandler.Throws = true;
 
             RollbackHandlerRegistry.ImplProvider = new TestImplProv();
-            RollbackHandlerRegistry.RegisterCommandRollbackHandler(nameof(TestCommand), provider => rollbackHandler);
+            RollbackHandlerRegistry.RegisterCommandRollbackHandler(nameof(TestCommandBase), provider => rollbackHandler);
 
             var bus = new RabbitMqEventBus(new RabbitMqSettings()
             {

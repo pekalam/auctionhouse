@@ -10,11 +10,11 @@ namespace Core.Command.Mediator
         {
         }
 
-        public override Task<RequestStatus> Send(ICommand command)
+        public override Task<RequestStatus> Send(CommandBase commandBase)
         {
-            command.WSQueued = true;
-            command.HttpQueued = false;
-            return base.Send(command);
+            commandBase.WSQueued = true;
+            commandBase.HttpQueued = false;
+            return base.Send(commandBase);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Core.Command.Commands.AuctionCreateSession.AddAuctionImage
     [AuthorizationRequired]
     [InAuctionCreateSession]
     [SaveTempAuctionImage]
-    public class AddAuctionImageCommand : ICommand
+    public class AddAuctionImageCommand : CommandBase
     {
         [AuctionImage]
         public IFileStreamAccessor Img { get; set; }

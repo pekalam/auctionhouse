@@ -14,7 +14,7 @@ using NUnit.Framework;
 namespace Test.UnitTests.SaveTempAuctionImageAttributeTests
 {
     [SaveTempAuctionImage]
-    public class TestCommand : ICommand
+    public class TestCommandBase : CommandBase
     {
         [AuctionImage] public IFileStreamAccessor Img { get; set; }
 
@@ -32,13 +32,13 @@ namespace Test.UnitTests.SaveTempAuctionImageAttributeTests
             SaveTempAuctionImageAttribute._auctionImagePathCommandProperties.Count.Should().Be(1);
             var validPath = SaveTempAuctionImageAttribute._auctionImagePathCommandProperties.First();
             validPath.Key.Should()
-                .Be(typeof(TestCommand));
+                .Be(typeof(TestCommandBase));
             validPath.Value.Name.Should().Be("Path");
 
             SaveTempAuctionImageAttribute._auctionImageAccessorCommandProperties.Count.Should().Be(1);
             var validImg = SaveTempAuctionImageAttribute._auctionImageAccessorCommandProperties.First();
             validImg.Key.Should()
-                .Be(typeof(TestCommand));
+                .Be(typeof(TestCommandBase));
             validImg.Value.Name.Should().Be("Img");
         }
 
@@ -56,7 +56,7 @@ namespace Test.UnitTests.SaveTempAuctionImageAttributeTests
             var stubStreamAccessor = new Mock<IFileStreamAccessor>();
             stubStreamAccessor.Setup(f => f.GetStream()).Returns(Stream.Null);
 
-            var cmd = new TestCommand()
+            var cmd = new TestCommandBase()
             {
                 Img = stubStreamAccessor.Object
             };

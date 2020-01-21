@@ -8,7 +8,7 @@ using Core.Common.Domain.Auctions;
 namespace Core.Command.Commands.UserRemoveAuctionImage
 {
     [AuthorizationRequired]
-    public class UserRemoveAuctionImageCommand : ICommand
+    public class UserRemoveAuctionImageCommand : CommandBase
     {
         public Guid AuctionId { get; }
         [Range(0, AuctionConstantsFactory.DEFAULT_MAX_IMAGES - 1)]

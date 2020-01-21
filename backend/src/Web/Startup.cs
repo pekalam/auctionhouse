@@ -54,7 +54,7 @@ namespace Web
         {
             var clientConfiguration = new ManualPollConfiguration()
             {
-                ApiKey = Configuration.GetSection("ConfigCat")["ApiKey"],
+                ApiKey = Configuration.GetSection("ConfigCat")["ApiKey"]
             };
 
             var configCatClient = new ConfigCatClient(clientConfiguration);
@@ -149,6 +149,15 @@ namespace Web
             });
         }
 
+        private void FetchFeatureFlags(IServiceProvider serviceProvider)
+        {
+            var client = serviceProvider.GetRequiredService<IConfigCatClient>();
+            var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
+            
+            logger.LogInformation("Starting initial fetch of feature flags");
+            client.ForceRefresh();
+        }
+
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
         {
             DefaultDIBootstraper.Common.Start(serviceProvider, (EventArgs args, ILogger logger) =>
@@ -156,6 +165,9 @@ namespace Web
                     logger.LogCritical("Disconnected from event bus! Shutting down application...", args.ToString());
                     Program.Shutdown();
                 });
+            FetchFeatureFlags(serviceProvider);
+
+
             app.UseHsts();
             app.UseCors();
 

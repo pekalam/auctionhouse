@@ -4,6 +4,7 @@ using AutoMapper;
 using Core.Command;
 using Core.Command.Commands.ChangePassword;
 using Core.Command.Commands.CheckResetCode;
+using Core.Command.Commands.RequestResetPassword;
 using Core.Command.Commands.ResetPassword;
 using Core.Command.Commands.SignIn;
 using Core.Command.Mediator;

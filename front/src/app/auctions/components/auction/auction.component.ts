@@ -18,6 +18,7 @@ export class AuctionComponent implements OnInit, OnDestroy {
     if (auction) {
       this.auction = auction;
       this.imgs = auction.auctionImages.filter(img => img != null).map(img => this.auctionImageQuery.execute(img.size1Id));
+      this.thumbnails = auction.auctionImages.filter(img => img != null).map(img => this.auctionImageQuery.execute(img.size3Id));
       this.checkCanShowButtons();
       this.setDaysLeft();
       this.calculateAuctionTime();
@@ -37,6 +38,7 @@ export class AuctionComponent implements OnInit, OnDestroy {
   auction: Auction;
   daysLeft = 0;
   imgs = [];
+  thumbnails = [];
   showAuctionButtons = true;
 
   private setDaysLeft() {

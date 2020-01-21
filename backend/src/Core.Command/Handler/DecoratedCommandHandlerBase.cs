@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Core.Command.Handler
 {
-    public abstract class DecoratedCommandHandlerBase<T> where T : ICommand
+    public abstract class DecoratedCommandHandlerBase<T> where T : CommandBase
     {
         private readonly ILogger _logger;
 

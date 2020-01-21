@@ -11,7 +11,7 @@ namespace Core.Common.EventBus
     {
         void Publish<T>(IAppEvent<T> @event) where T : Event;
         void Publish<T>(IEnumerable<IAppEvent<T>> events) where T : Event;
-        void Send<T>(T command) where T : ICommand;
+        void Send<T>(T command) where T : CommandBase;
         event Action<EventArgs, ILogger> Disconnected;
     }
 }

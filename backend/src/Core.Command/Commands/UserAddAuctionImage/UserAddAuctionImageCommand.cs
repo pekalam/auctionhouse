@@ -12,7 +12,7 @@ namespace Core.Command.Commands.UserAddAuctionImage
 {
     [AuthorizationRequired]
     [SaveTempAuctionImage]
-    public class UserAddAuctionImageCommand : ICommand
+    public class UserAddAuctionImageCommand : CommandBase
     {
         public Guid AuctionId { get; }
 

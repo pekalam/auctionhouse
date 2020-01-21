@@ -125,6 +125,9 @@ namespace Web.Exceptions
                 case InvalidQueryException e:
                     apiException = new ApiException(HttpStatusCode.BadRequest, e.Message, e);
                     break;
+                case ResourceNotFoundException e:
+                    apiException = new ApiException(HttpStatusCode.NotFound, e.Message, e);
+                    break;
                 default:
                     apiException = new ApiException(HttpStatusCode.InternalServerError, "Server error");
                     break;

@@ -54,7 +54,7 @@ namespace Infrastructure.Services.EventBus
             _bus = RabbitHutch.CreateBus(_settings.ConnectionString);
             _bus.Advanced.Disconnected += (sender, args) =>
             {
-                Disconnected(args, _logger);
+                Disconnected?.Invoke(args, _logger);
             };
         }
 
@@ -119,10 +119,10 @@ namespace Infrastructure.Services.EventBus
         private void CommandSubscribe(Type cmdType, IImplProvider implProvider)
         {
             var cmdName = cmdType.Name;
-            var subscription = _bus.Subscribe(typeof(ICommand), cmdName,
+            var subscription = _bus.Subscribe(typeof(CommandBase), cmdName,
                 obj =>
                 {
-                    var cmd = obj as ICommand;
+                    var cmd = (CommandBase)obj;
                     _logger.LogDebug("Reveived command message from MQ: {@command}", cmd);
                     if (cmd.WSQueued)
                     {
@@ -173,6 +173,7 @@ namespace Infrastructure.Services.EventBus
 
         private void TryExecuteCommandRollback(ICommandRollbackHandler handler, IAppEvent<Event> commandEvent)
         {
+            //TODO Command rollback request status msg
             try
             {
                 handler.Rollback(commandEvent);
@@ -191,7 +192,7 @@ namespace Infrastructure.Services.EventBus
                 IAppEvent<Event> commandEvent = ParseEventFromMessage(message);
                 if (commandEvent != null)
                 {
-                    var commandName = commandEvent.Command?.GetType()
+                    var commandName = commandEvent.CommandBase?.GetType()
                         .Name;
                     var handler = RollbackHandlerRegistry.GetCommandRollbackHandler(commandName);
                     TryExecuteCommandRollback(handler, commandEvent);
@@ -252,10 +253,10 @@ namespace Infrastructure.Services.EventBus
             }
         }
 
-        public void Send<T>(T command) where T : ICommand
+        public void Send<T>(T command) where T : CommandBase
         {
             _logger.LogDebug("Publishing command {@command}", command);
-            _bus.Publish(typeof(ICommand), command, command.GetType().Name);
+            _bus.Publish(typeof(CommandBase), command, command.GetType().Name);
         }
 
         public event Action<EventArgs, ILogger> Disconnected;

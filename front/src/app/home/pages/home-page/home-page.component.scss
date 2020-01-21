@@ -1,6 +1,5 @@
-@import 'global-vars';
-@import 'breakpoints';
-
+@import "global-vars";
+@import "breakpoints";
 
 #home-container {
   width: 100%;
@@ -9,24 +8,126 @@
   flex-direction: row;
   padding: 0 20px 20px 20px;
   box-sizing: border-box;
-  .promo-container {
-    background-color: $primaryColor;
-    height: 370px;
-    width: 100%;
-    margin-left: 20px;
-    @include mobile{
-      margin-top: 30px;
-    }
-    #promo-title{
+}
+
+.dyn-promo {
+  padding-left: 20px;
+  width: calc(100% - 325px - 16px);
+  display: flex;
+  flex-direction: column;
+}
+
+.promo-container {
+  background-color: $primaryColor;
+  display: table;
+  width: 100%;
+  padding-bottom: 40px;
+  min-height: 401px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: column;
+  @include mobile {
+    margin-top: 30px;
+  }
+  .promo-title-container {
+    .promo-title {
       padding-left: 25px;
+      display: inline-block;
     }
-    .promo {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 0 10px 0 10px;
+    hr {
+      margin-top: 0;
     }
   }
+  .promo {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 10px 0 10px;
+    flex-basis: 100%;
+  }
 }
+
+.promo2 {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.recently-viewed {
+  width: 50%;
+  min-height: 350px;
+  height: 350px;
+  box-sizing: border-box;
+  .promo {
+    display: flex;
+  }
+  .auctions {
+    flex-grow: 2;
+    display: flex;
+    flex-flow: column;
+    padding-right: 10px;
+    max-width: 80%;
+    .auction {
+      flex-grow: 1;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      box-sizing: border-box;
+      margin-right: 10px;
+      border-bottom: 1px solid #ddd;
+      outline: none;
+      &:hover {
+        background-color: #f4f4f4;
+      }
+      cursor: pointer;
+      .img-container {
+        min-width: 120px;
+        height: 54px;
+
+        text-align: center;
+      }
+      .link-container {
+        flex-basis: 100%;
+        text-align: center;
+      }
+    }
+  }
+
+  .user {
+    flex-grow: 1;
+    flex-grow: 1;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-around;
+    align-items: center;
+    .user-button {
+      height: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: $secondaryColor;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      max-width: 100px;
+      max-height: 96px;
+      &:hover {
+        background-color: $secondaryLightColor;
+      }
+      .fas {
+        font-size: 2em;
+      }
+    }
+  }
+  @include mobile {
+    width: 100%;
+  }
+  @media only screen and (max-width: 1130px) {
+    width: 100%;
+  }
+}
+
+
 
 @include mobile {
   #home-container {
@@ -36,9 +137,13 @@
       margin-left: 0;
     }
   }
+  .dyn-promo {
+    width: 100%;
+    padding-left: 0;
+  }
 }
 
-@include desktop-md{
+@include desktop-md {
   #home-container {
     .promo-container {
       height: auto;

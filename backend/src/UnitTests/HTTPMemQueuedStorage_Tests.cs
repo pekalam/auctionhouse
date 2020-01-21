@@ -10,7 +10,7 @@ using NUnit.Framework;
 
 namespace UnitTests.HTTPMemQueuedStorage
 {
-    public class TestCommand : ICommand
+    public class TestCommandBase : CommandBase
     {
         public int Param { get; set; }
     }
@@ -29,7 +29,7 @@ namespace UnitTests.HTTPMemQueuedStorage
         [Test]
         public void SaveStatus_saves_and_get_status_returns_it()
         {
-            var cmd = new TestCommand();
+            var cmd = new TestCommandBase();
             var requestStatus1 = new RequestStatus(Status.COMPLETED);
             var requestStatus2 = new RequestStatus(Status.FAILED);
             _commandStatusStorage.SaveStatus(requestStatus1, cmd);
@@ -44,7 +44,7 @@ namespace UnitTests.HTTPMemQueuedStorage
         [Test]
         public void UpdateStatus_updates_saved_status()
         {
-            var cmd = new TestCommand();
+            var cmd = new TestCommandBase();
             var requestStatus1 = new RequestStatus(Status.PENDING);
             _commandStatusStorage.SaveStatus(requestStatus1, cmd);
 
@@ -68,7 +68,7 @@ namespace UnitTests.HTTPMemQueuedStorage
         [Test]
         public void GetStatus_when_returned_status_is_completed_removes_it_from_storage()
         {
-            var cmd = new TestCommand();
+            var cmd = new TestCommandBase();
             var requestStatus1 = new RequestStatus(Status.COMPLETED);
             _commandStatusStorage.SaveStatus(requestStatus1, cmd);
 
@@ -80,7 +80,7 @@ namespace UnitTests.HTTPMemQueuedStorage
         [Test]
         public void GetStatus_when_returned_status_is_failed_removes_it_from_storage()
         {
-            var cmd = new TestCommand();
+            var cmd = new TestCommandBase();
             var requestStatus1 = new RequestStatus(Status.FAILED);
             _commandStatusStorage.SaveStatus(requestStatus1, cmd);
 

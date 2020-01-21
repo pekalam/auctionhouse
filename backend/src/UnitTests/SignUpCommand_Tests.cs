@@ -81,7 +81,7 @@ namespace UnitTests
                     It.IsAny<CorrelationId>(),
                     command)
                 )
-                .Callback((IEnumerable<Event> evs, CorrelationId id, ICommand cmd) =>
+                .Callback((IEnumerable<Event> evs, CorrelationId id, CommandBase cmd) =>
                 {
                     userIdentity = (evs.First() as UserRegistered).UserIdentity;
                 })

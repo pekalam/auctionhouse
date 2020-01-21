@@ -22,18 +22,18 @@ namespace Core.Command.Mediator
             _eventBusService = eventBusService;
         }
 
-        public Task<RequestStatus> Send(ICommand command)
+        public Task<RequestStatus> Send(CommandBase commandBase)
         {
             var correlationId = new CorrelationId(Guid.NewGuid().ToString());
             var requestStatus = new RequestStatus(correlationId, Status.PENDING);
 
-            command.CommandContext = new CommandContext()
+            commandBase.CommandContext = new CommandContext()
             {
                 CorrelationId = correlationId
             };
 
-            _commandStatusStorage.SaveStatus(requestStatus, command);
-            _eventBusService.SendQueuedCommand(command);
+            _commandStatusStorage.SaveStatus(requestStatus, commandBase);
+            _eventBusService.SendQueuedCommand(commandBase);
 
             return Task.FromResult(requestStatus);
         }
@@ -45,11 +45,11 @@ namespace Core.Command.Mediator
         {
         }
 
-        public override Task<RequestStatus> Send(ICommand command)
+        public override Task<RequestStatus> Send(CommandBase commandBase)
         {
-            command.HttpQueued = true;
-            command.WSQueued = false;
-            return base.Send(command);
+            commandBase.HttpQueued = true;
+            commandBase.WSQueued = false;
+            return base.Send(commandBase);
         }
     }
 }

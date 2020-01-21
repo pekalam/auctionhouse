@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.Command.Commands.RequestResetPassword;
 using Core.Command.Exceptions;
 using Core.Command.Handler;
 using Core.Command.Mediator;

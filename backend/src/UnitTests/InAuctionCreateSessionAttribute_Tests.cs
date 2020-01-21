@@ -14,7 +14,7 @@ using NUnit.Framework;
 namespace UnitTests.AuctionCreateSessionAttributeTests
 {
     [InAuctionCreateSession]
-    public class TestCommand : ICommand
+    public class TestCommandBase : CommandBase
     {
         public AuctionCreateSession CreateSession { get; set; }
         public int Param { get; set; }
@@ -31,7 +31,7 @@ namespace UnitTests.AuctionCreateSessionAttributeTests
             var internalMap = InAuctionCreateSessionAttribute._auctionCreateSessionCommandProperties;
 
             internalMap.Count.Should().Be(1);
-            internalMap.First().Key.Should().Be(typeof(TestCommand));
+            internalMap.First().Key.Should().Be(typeof(TestCommandBase));
             internalMap.First().Value.PropertyType.Should().Be(typeof(AuctionCreateSession));
             internalMap.First().Value.Name.Should().Be("CreateSession");
         }
@@ -50,7 +50,7 @@ namespace UnitTests.AuctionCreateSessionAttributeTests
             mockImplProvider.Setup(provider => provider.Get<IAuctionCreateSessionService>())
                 .Returns(mockAuctionCreateSessionService.Object);
 
-            var cmd = new TestCommand(){Param = 1};
+            var cmd = new TestCommandBase(){Param = 1};
             attr.PreHandleAttributeStrategy.Invoke(mockImplProvider.Object, cmd);
 
             cmd.CreateSession.Should().BeEquivalentTo(testSession);

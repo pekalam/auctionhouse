@@ -20,7 +20,7 @@ namespace Core.Query.Queries.Auction.SingleAuction
             _readModelDbContext = readModelDbContext;
         }
 
-        protected async override Task<AuctionRead> HandleQuery(AuctionQuery request, CancellationToken cancellationToken)
+        protected override async Task<AuctionRead> HandleQuery(AuctionQuery request, CancellationToken cancellationToken)
         {
             var filter = Builders<AuctionRead>.Filter.Eq(model => model.AuctionId, request.AuctionId);
             var upd = Builders<AuctionRead>.Update.Inc(f => f.Views, 1);
@@ -31,7 +31,7 @@ namespace Core.Query.Queries.Auction.SingleAuction
                 .FirstOrDefaultAsync();
             if (auction == null)
             {
-                throw new InvalidQueryException($"Cannot find auction with id: {request.AuctionId}");
+                throw new ResourceNotFoundException($"Cannot find auction with id: {request.AuctionId}");
             }
 
             await _readModelDbContext.AuctionsReadModel.UpdateManyAsync(filter, upd);

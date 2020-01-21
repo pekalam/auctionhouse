@@ -18,27 +18,27 @@ using NUnit.Framework.Internal;
 
 namespace UnitTests
 {
-    public class TestCommand : ICommand
+    public class TestCommandBase : CommandBase
     {
         [Required] public string Param1 { get; }
 
         [MinLength(5)] public string Param2 { get; }
 
-        public TestCommand(string param1, string param2)
+        public TestCommandBase(string param1, string param2)
         {
             Param1 = param1;
             Param2 = param2;
         }
     }
 
-    public class TestCommandHandler : CommandHandlerBase<TestCommand>
+    public class TestCommandHandler : CommandHandlerBase<TestCommandBase>
     {
 
-        public TestCommandHandler(ILogger<CommandHandlerBase<TestCommand>> logger) : base(logger)
+        public TestCommandHandler(ILogger<CommandHandlerBase<TestCommandBase>> logger) : base(logger)
         {
         }
 
-        protected override Task<RequestStatus> HandleCommand(TestCommand request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(TestCommandBase request, CancellationToken cancellationToken)
         {
             Assert.Fail("Should not be called");
             return Task.FromResult(new RequestStatus(Status.FAILED));
@@ -53,9 +53,9 @@ namespace UnitTests
         [Test]
         public void Handle_when_command_is_invalid_throws()
         {
-            var stubCommand = new TestCommand(null, "11");
+            var stubCommand = new TestCommandBase(null, "11");
 
-            var mockCommandHandler = new TestCommandHandler(Mock.Of<ILogger<CommandHandlerBase<TestCommand>>>());
+            var mockCommandHandler = new TestCommandHandler(Mock.Of<ILogger<CommandHandlerBase<TestCommandBase>>>());
 
 
             Assert.Throws<InvalidCommandException>(() =>

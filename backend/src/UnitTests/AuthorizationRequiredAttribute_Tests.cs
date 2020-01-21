@@ -16,7 +16,7 @@ using NUnit.Framework;
 namespace UnitTests.AuthorizationRequiredAttribute_Tests
 {
     [AuthorizationRequired]
-    public class TestCommand : ICommand
+    public class TestCommandBase : CommandBase
     {
         public int Prop { get; set; }
 
@@ -34,7 +34,7 @@ namespace UnitTests.AuthorizationRequiredAttribute_Tests
     }
 
     [AuthorizationRequired]
-    public class TestCommandNoUser : ICommand
+    public class TestCommandBaseNoUser : CommandBase
     {
         public int Prop { get; set; }
     }
@@ -55,17 +55,17 @@ namespace UnitTests.AuthorizationRequiredAttribute_Tests
 
             foreach (var cmdToProp in AuthorizationRequiredAttribute._signedInUserCommandProperties)
             {
-                (cmdToProp.Key.Implements(typeof(ICommand)) || cmdToProp.Key.Implements(typeof(IQuery))).Should().BeTrue();
+                (cmdToProp.Key.Implements(typeof(CommandBase)) || cmdToProp.Key.Implements(typeof(IQuery))).Should().BeTrue();
                 cmdToProp.Key.GetCustomAttributes(typeof(AuthorizationRequiredAttribute), false)
                     .Length.Should().Be(1);
             }
 
             AuthorizationRequiredAttribute._signedInUserCommandProperties
-                .Where(pair => pair.Key.Equals(typeof(TestCommand)))
+                .Where(pair => pair.Key.Equals(typeof(TestCommandBase)))
                 .Count().Should().Be(1);
 
             var prop = AuthorizationRequiredAttribute._signedInUserCommandProperties
-                .First(pair => pair.Key.Equals(typeof(TestCommand)))
+                .First(pair => pair.Key.Equals(typeof(TestCommandBase)))
                 .Value;
 
             prop.Name.Should().Be("User");
@@ -90,7 +90,7 @@ namespace UnitTests.AuthorizationRequiredAttribute_Tests
 
 
             var nullProp = AuthorizationRequiredAttribute._signedInUserCommandProperties
-                .FirstOrDefault(pair => pair.Key.Equals(typeof(TestCommandNoUser)));
+                .FirstOrDefault(pair => pair.Key.Equals(typeof(TestCommandBaseNoUser)));
 
             nullProp.Key.Should().BeNull();
             nullProp.Value.Should().BeNull();

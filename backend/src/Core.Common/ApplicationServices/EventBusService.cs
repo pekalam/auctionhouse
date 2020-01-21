@@ -17,27 +17,27 @@ namespace Core.Common.ApplicationServices
             _appEventBuilder = appEventBuilder;
         }
 
-        public virtual void Publish<T>(T @event, CorrelationId correlationId, ICommand command) where T : Event
+        public virtual void Publish<T>(T @event, CorrelationId correlationId, CommandBase commandBase) where T : Event
         {
             var appEvent = _appEventBuilder
-                .WithCommand(command)
+                .WithCommand(commandBase)
                 .WithEvent(@event)
                 .WithCorrelationId(correlationId)
                 .Build<T>();
             _eventBus.Publish(appEvent);
         }
 
-        public virtual void Publish(IEnumerable<Event> events, CorrelationId correlationId, ICommand command)
+        public virtual void Publish(IEnumerable<Event> events, CorrelationId correlationId, CommandBase commandBase)
         {
             foreach (var @event in events)
             {
-                Publish(@event, correlationId, command);
+                Publish(@event, correlationId, commandBase);
             }
         }
 
-        public virtual void SendQueuedCommand(ICommand command)
+        public virtual void SendQueuedCommand(CommandBase commandBase)
         {
-            _eventBus.Send(command);
+            _eventBus.Send(commandBase);
         }
     }
 }

@@ -12,7 +12,7 @@ using Core.Common.Domain.Users;
 namespace Core.Command.Commands.UpdateAuction
 {
     [AuthorizationRequired]
-    public class UpdateAuctionCommand : ICommand
+    public class UpdateAuctionCommand : CommandBase
     {
         public Guid AuctionId { get; }
 

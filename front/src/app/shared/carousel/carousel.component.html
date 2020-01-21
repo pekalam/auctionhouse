@@ -1,13 +1,29 @@
-<div class="container" >
+<div class="container">
   <div class="container-center">
-    <div class="img-container">
-      <img #image (load)="onImgLoaded(imgInd)" *ngFor="let imgInd of imgInd" class="img" [src]="imgs[imgInd]" [hidden]="imgInd != shown || loading"/>
+    <div class="img-container" [class.fullscreen]="showFullscreen">
+      <i *ngIf="showFullscreen" (click)="showFullscreen = false" class="fas fa-window-close cancel-icon"></i>
+      <img #image (load)="onImgLoaded(imgInd)" *ngFor="let imgInd of imgInd" class="img" [src]="imgs[imgInd]"
+        [hidden]="imgInd != shown || loading"/>
       <mat-progress-bar class="loading-bar" *ngIf="loading" mode="buffer"></mat-progress-bar>
     </div>
-
+    <div *ngIf="showFullscreen" class="fullscreen-navig">
+      <div class="thumbnail" *ngFor="let imgInd of imgInd">
+        <img #image (click)="onThumbnailClick(imgInd)" (load)="onImgLoaded(imgInd)" [class.selected]="imgInd == shown"
+          [src]="thumbnails[imgInd]" />
+      </div>
+    </div>
   </div>
-  <div class="btn-container" *ngIf="imageButtons">
+  <div class="btn-container" *ngIf="imageButtons"  [class.btncontainer-fullscreen]="fullscreen" (click)="onShowFullScreen()">
     <button id="prev" (click)="onPrev()" [hidden]="imgInd.length == 1">Prev</button>
     <button id="next" (click)="onNext()" [hidden]="imgInd.length == 1">Next</button>
+  </div>
+  <div *ngIf="showThumbnails" class="thumbnail-container">
+    <div class="thumbnail-overfl">
+        <div class="thumbnail" *ngFor="let imgInd of imgInd">
+          <img #image (click)="onThumbnailClick(imgInd)" (load)="onImgLoaded(imgInd)" [class.selected]="imgInd == shown"
+            [src]="thumbnails[imgInd]" />
+        </div>
+    </div>
+
   </div>
 </div>

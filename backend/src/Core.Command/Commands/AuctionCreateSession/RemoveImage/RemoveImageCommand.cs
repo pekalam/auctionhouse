@@ -6,7 +6,7 @@ using Core.Common.Domain.Auctions;
 namespace Core.Command.Commands.AuctionCreateSession.RemoveImage
 {
     [AuthorizationRequired]
-    public class RemoveImageCommand : ICommand
+    public class RemoveImageCommand : CommandBase
     {
         [Range(0, AuctionConstantsFactory.DEFAULT_MAX_IMAGES - 1)]
         public int ImgNum { get; }

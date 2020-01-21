@@ -15,10 +15,10 @@ namespace Core.Command.Mediator
     {
         private const string CommandsAssemblyName = "Core.Command";
 
-        private ICommandHandlerMediator _mediator;
-        private IImplProvider _implProvider;
-        internal static Dictionary<Type, IEnumerable<Action<IImplProvider, ICommand>>> PreHandleCommandAttributeStrategies;
-        internal static Dictionary<Type, IEnumerable<Action<IImplProvider, ICommand>>> PostHandleCommandAttributeStrategies;
+        private readonly ICommandHandlerMediator _mediator;
+        private readonly IImplProvider _implProvider;
+        internal static Dictionary<Type, IEnumerable<Action<IImplProvider, CommandBase>>> PreHandleCommandAttributeStrategies;
+        internal static Dictionary<Type, IEnumerable<Action<IImplProvider, CommandBase>>> PostHandleCommandAttributeStrategies;
 
         static CommandMediator()
         {
@@ -27,11 +27,11 @@ namespace Core.Command.Mediator
 
         internal static void LoadCommandAttributeStrategies(string commandsAssemblyName)
         {
-            PreHandleCommandAttributeStrategies = new Dictionary<Type, IEnumerable<Action<IImplProvider, ICommand>>>();
-            PostHandleCommandAttributeStrategies = new Dictionary<Type, IEnumerable<Action<IImplProvider, ICommand>>>();
+            PreHandleCommandAttributeStrategies = new Dictionary<Type, IEnumerable<Action<IImplProvider, CommandBase>>>();
+            PostHandleCommandAttributeStrategies = new Dictionary<Type, IEnumerable<Action<IImplProvider, CommandBase>>>();
             var commandAttributes = Assembly.Load(commandsAssemblyName)
                 .GetTypes()
-                .Where(type => type.BaseType == typeof(ICommand))
+                .Where(type => type.BaseType == typeof(CommandBase))
                 .Where(type => type.GetCustomAttributes(typeof(ICommandAttribute), false).Length > 0)
                 .Select(type => new
                 {
@@ -53,13 +53,13 @@ namespace Core.Command.Mediator
             }
         }
 
-        internal static void InvokePostCommandAttributeStrategies(IImplProvider implProvider, ICommand command)
+        internal static void InvokePostCommandAttributeStrategies(IImplProvider implProvider, CommandBase commandBase)
         {
-            if (PostHandleCommandAttributeStrategies.ContainsKey(command.GetType()))
+            if (PostHandleCommandAttributeStrategies.ContainsKey(commandBase.GetType()))
             {
-                foreach (var strategy in PostHandleCommandAttributeStrategies[command.GetType()])
+                foreach (var strategy in PostHandleCommandAttributeStrategies[commandBase.GetType()])
                 {
-                    strategy?.Invoke(implProvider, command);
+                    strategy?.Invoke(implProvider, commandBase);
                 }
             }
         }
@@ -70,21 +70,21 @@ namespace Core.Command.Mediator
             _implProvider = implProvider;
         }
 
-        public virtual async Task<RequestStatus> Send(ICommand command)
+        public virtual async Task<RequestStatus> Send(CommandBase commandBase)
         {
-            if (PreHandleCommandAttributeStrategies.ContainsKey(command.GetType()))
+            if (PreHandleCommandAttributeStrategies.ContainsKey(commandBase.GetType()))
             {
-                foreach (var strategy in PreHandleCommandAttributeStrategies[command.GetType()])
+                foreach (var strategy in PreHandleCommandAttributeStrategies[commandBase.GetType()])
                 {
-                    strategy?.Invoke(_implProvider, command);
+                    strategy?.Invoke(_implProvider, commandBase);
                 }
             }
 
-            var requestStatus = await _mediator.Send(command);
+            var requestStatus = await _mediator.Send(commandBase);
 
-            if (!command.HttpQueued && !command.WSQueued)
+            if (!commandBase.HttpQueued && !commandBase.WSQueued)
             {
-                InvokePostCommandAttributeStrategies(_implProvider, command);
+                InvokePostCommandAttributeStrategies(_implProvider, commandBase);
             }
 
             return requestStatus;

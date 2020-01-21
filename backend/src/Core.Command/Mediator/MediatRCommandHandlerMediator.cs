@@ -14,9 +14,9 @@ namespace Core.Command.Mediator
             _mediator = mediator;
         }
 
-        public Task<RequestStatus> Send(ICommand command)
+        public Task<RequestStatus> Send(CommandBase commandBase)
         {
-            return _mediator.Send(command);
+            return _mediator.Send(commandBase);
         }
     }
 }

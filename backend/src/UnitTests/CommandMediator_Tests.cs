@@ -18,24 +18,24 @@ using NUnit.Framework;
 
 namespace UnitTests.CommandMediator_Tests
 {
-    public class TestCommand : ICommand
+    public class TestCommandBase : CommandBase
     {
     }
 
     [AuthorizationRequired]
-    public class TestCommandAuth : ICommand
+    public class TestCommandBaseAuth : CommandBase
     {
 
     }
 
     [AuthorizationRequired]
-    public class TestCommandAuthWithSignedUser : ICommand
+    public class TestCommandBaseAuthWithSignedUser : CommandBase
     {
         public int AnotherProp { get; }
         [SignedInUser]
         public UserIdentity SignedInUser { get; set; }
 
-        public TestCommandAuthWithSignedUser(int anotherProp)
+        public TestCommandBaseAuthWithSignedUser(int anotherProp)
         {
             AnotherProp = anotherProp;
         }
@@ -57,13 +57,13 @@ namespace UnitTests.CommandMediator_Tests
             var expectedResponse = new RequestStatus(Status.COMPLETED);
             var mockMediatr = new Mock<IMediator>();
             mockMediatr
-                .Setup(f => f.Send(It.IsAny<TestCommand>(), It.IsAny<CancellationToken>()))
+                .Setup(f => f.Send(It.IsAny<TestCommandBase>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedResponse);
             var mediatrHandlerMediator = new MediatRCommandHandlerMediator(mockMediatr.Object);
 
             var mediator = new CommandMediator(mediatrHandlerMediator, Mock.Of<IImplProvider>());
 
-            var response = await mediator.Send(new TestCommand());
+            var response = await mediator.Send(new TestCommandBase());
 
             response.Status.Should()
                 .Be(Status.COMPLETED);
@@ -86,12 +86,12 @@ namespace UnitTests.CommandMediator_Tests
             var mediator = new CommandMediator(mediatrHandlerMediator, stubImplProvider.Object);
 
 
-            Assert.ThrowsAsync<NotSignedInException>(async () => await mediator.Send(new TestCommandAuth()));
+            Assert.ThrowsAsync<NotSignedInException>(async () => await mediator.Send(new TestCommandBaseAuth()));
         }
 
         public bool VerifyTestCommand(IRequest<RequestStatus> req)
         {
-            var cmd = (TestCommandAuthWithSignedUser) req;
+            var cmd = (TestCommandBaseAuthWithSignedUser) req;
             cmd.SignedInUser.UserName.Should().Be("test");
             return true;
         }
@@ -118,7 +118,7 @@ namespace UnitTests.CommandMediator_Tests
             var mediator = new CommandMediator(mediatrHandlerMediator, stubImplProvider.Object);
 
 
-            Assert.DoesNotThrowAsync(async () => await mediator.Send(new TestCommandAuthWithSignedUser(12)));
+            Assert.DoesNotThrowAsync(async () => await mediator.Send(new TestCommandBaseAuthWithSignedUser(12)));
         }
     }
 }

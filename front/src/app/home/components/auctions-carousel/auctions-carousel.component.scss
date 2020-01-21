@@ -2,8 +2,9 @@
 
 :host{
   display: block;
-  height: 270px;
+  height: 100%;
   width: 100%;
+  padding-top: 40px;
 }
 
 .container *{
@@ -16,7 +17,7 @@
   width: 100%;
   outline: none;
   cursor: pointer;
-
+  position: relative;
 }
 
 #auction-container{
@@ -26,17 +27,18 @@
   justify-content: center;
   .auction{
     box-sizing: border-box;
-    padding-left: 30px;
+    padding-left: 15px;
     cursor: pointer;
     flex-grow: 1;
     flex-basis: 50%;
   }
   .carousel-container{
-    height: 100%;
-    min-width: 238px;
     flex-grow: 1;
     flex-basis: 50%;
-    max-width: 420px;
+    height: 210px;
+    padding-right: 15px;
+    padding-left: 15px;
+    box-sizing: border-box;
     @include mobile{
       min-width: 0;
     }
@@ -60,14 +62,17 @@
   display: flex;
   justify-content: space-between;
   clear: both;
-  height: 0;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
 }
 
 .next-btn{
   position: relative;
   width: 50px;
-  height: 270px;
-  top: -270px;
+  height: 100%;
+  top: 0;
   flex-flow: column;
   justify-content: center;
   align-items: center;
@@ -81,6 +86,7 @@
 }
 
 .progress-container{
+  margin-top: 25px;
   text-align: center;
   .progress{
     width: 70%;

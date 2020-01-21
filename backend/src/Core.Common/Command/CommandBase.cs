@@ -11,7 +11,7 @@ namespace Core.Common.Command
         public UserIdentity User { get; set; }
     }
 
-    public class ICommand : IRequest<RequestStatus>
+    public class CommandBase : IRequest<RequestStatus>
     {
         public CommandContext CommandContext { get; set; }
         public bool HttpQueued { get; set; }

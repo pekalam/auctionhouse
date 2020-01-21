@@ -13,37 +13,135 @@
     position: relative;
     top: 0;
     height: 100%;
-    .img-container{
-      width: 100%;
-      max-height: 100%;
-      text-align: center;
-    }
   }
 }
 
-.loading-bar{
+.loading-bar {
   width: 70%;
   height: 4px;
   margin: 0 auto;
 }
 
 .btn-container {
-  position: relative;
+  position: absolute;
   z-index: 900;
   display: flex;
   justify-content: space-between;
-  top: -50%;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  align-items: center;
   button {
     @include app-btn;
     height: 25px;
     position: relative;
-    top: -12px;
     font-size: 0.8em;
   }
 }
 
-.img{
-  width: 75%;
+.btncontainer-fullscreen{
+  cursor: pointer;
+}
+
+.thumbnail-container {
+  position: absolute;
+  width: 100%;
+  height: 54px;
+  bottom: -26px;
+  background-color: #f0f0f05e;
+  text-align: left;
+  z-index: 9999;
+  overflow-y: hidden;
+  overflow-x: auto;
+  .thumbnail-overfl {
+    height: 54px;
+    white-space: nowrap;
+  }
+  &::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #f5f5f5;
+  }
+
+  &::-webkit-scrollbar {
+    height: 5px;
+    background-color: #f5f5f5;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: $secondaryColor;
+  }
+}
+
+.thumbnail {
+  margin-left: 10px;
+  margin-right: 10px;
   height: 100%;
+  display: inline-block;
+  max-height: 54px;
+  img {
+    max-height: 100%;
+    vertical-align: middle;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.6;
+    }
+  }
+}
+
+.fullscreen {
+  position: fixed !important;
+  width: 100vw !important;
+  left: 0 !important;
+  top: 0 !important;
+  height: calc(100vh - 100px) !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 99999 !important;
+  background-color: #353535b3 !important;
+}
+
+.fullscreen-navig {
+  z-index: 100000 !important;
+  position: fixed !important;
+  width: 100vw !important;
+  left: 0 !important;
+  top: calc(100vh - 100px) !important;
+  height: 100px !important;
+  background-color: #171717b3 !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cancel-icon {
+  color: white;
+  font-size: 51px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 23px;
+  cursor: pointer;
+  &:hover{
+    color: black;
+  }
+}
+
+.img-container {
+  width: 100%;
   max-height: 100%;
+  text-align: center;
+  z-index: 100;
+  position: relative;
+}
+
+.selected {
+  opacity: 0.2;
+}
+
+.img {
+  //width: 75%;
+  //height: 100%;
+  //max-height: 100%;
+  max-height: 100%;
+  max-width: 100%;
 }

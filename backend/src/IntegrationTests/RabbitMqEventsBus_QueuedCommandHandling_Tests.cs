@@ -21,19 +21,19 @@ using NUnit.Framework;
 
 namespace IntegrationTests
 {
-    public class TestQueuedCommandHandler : CommandHandlerBase<QueuedCommand>
+    public class TestQueuedCommandHandler : CommandHandlerBase<QueuedCommandBase>
     {
         public TestQueuedCommandHandler(ILogger logger) : base(logger)
         {
         }
 
-        protected override Task<RequestStatus> HandleCommand(QueuedCommand request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(QueuedCommandBase request, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
     }
 
-    public class QueuedCommand : ICommand
+    public class QueuedCommandBase : CommandBase
     {
         public int X { get; set; }
     }
@@ -61,7 +61,7 @@ namespace IntegrationTests
         public void METHOD()
         {
             var signedInUser = new UserIdentity(Guid.NewGuid(), "test");
-            var cmd = new QueuedCommand()
+            var cmd = new QueuedCommandBase()
             {
                 X = 1,
                 CommandContext = new CommandContext(){CorrelationId = new CorrelationId(Guid.NewGuid().ToString()),User = signedInUser},
@@ -81,7 +81,7 @@ namespace IntegrationTests
                 .Returns(Task.FromResult(new RequestStatus(cmd.CommandContext.CorrelationId, Status.COMPLETED)));
 
             var testQueuedCommandHandler = new Mock<WSQueuedCommandHandler>(mockRequestStatusService.Object, mediatrMock.Object, Mock.Of<ILogger<WSQueuedCommandHandler>>());
-            testQueuedCommandHandler.Setup(handler => handler.Handle(It.IsAny<QueuedCommand>()))
+            testQueuedCommandHandler.Setup(handler => handler.Handle(It.IsAny<QueuedCommandBase>()))
                 .Callback(() => sem.Release())
                 .CallBase();
 

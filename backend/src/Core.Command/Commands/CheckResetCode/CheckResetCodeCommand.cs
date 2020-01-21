@@ -6,7 +6,7 @@ using Core.Common.Command;
 
 namespace Core.Command.Commands.CheckResetCode
 {
-    public class CheckResetCodeCommand : ICommand
+    public class CheckResetCodeCommand : CommandBase
     {
         [Required] public ResetCode ResetCode { get; }
         [Required] public string Email { get; }

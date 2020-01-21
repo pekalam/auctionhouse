@@ -38,7 +38,7 @@ namespace Core.Common.Domain.Users
         private void ApplyEvent(CreditsAdded ev) => AddCredits(ev.CreditsCount);
         private void ApplyEvent(CreditsReturned ev) => ReturnCredits(ev.CreditsCount);
         private void ApplyEvent(CreditsWithdrawn ev) => WithdrawCredits(ev.CreditsCount);
-
+        private void ApplyEvent(CreditsCanceled ev) => CancelCredits(ev.Ammount);
 
     }
 }

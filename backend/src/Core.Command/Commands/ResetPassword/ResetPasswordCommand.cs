@@ -7,7 +7,7 @@ using Core.Common.Command;
 
 namespace Core.Command.Commands.ResetPassword
 {
-    public class ResetPasswordCommand : ICommand
+    public class ResetPasswordCommand : CommandBase
     {
         [Required] public string NewPassword { get; }
         [Required] public ResetCode ResetCode { get; }

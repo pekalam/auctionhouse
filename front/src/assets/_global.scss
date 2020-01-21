@@ -27,6 +27,7 @@
   cursor: pointer;
   text-align: center;
   border: 0;
+  border-radius: 3px;
   &:hover{
     background-color: $secondaryDarkColor;
   }

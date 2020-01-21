@@ -26,7 +26,7 @@ namespace IntegrationTests
         public void METHOD()
         {
             var signedInUser = new UserIdentity(Guid.NewGuid(), "test");
-            var cmd = new QueuedCommand()
+            var cmd = new QueuedCommandBase()
             {
                 X = 1,
                 CommandContext = new CommandContext(){CorrelationId = new CorrelationId(Guid.NewGuid().ToString()), User = signedInUser},
@@ -40,7 +40,7 @@ namespace IntegrationTests
 
             var mockQueuedCommandStatusStorage = new Mock<IHTTPQueuedCommandStatusStorage>();
             mockQueuedCommandStatusStorage
-                .Setup(storage => storage.UpdateCommandStatus(It.IsAny<RequestStatus>(), It.IsAny<ICommand>()))
+                .Setup(storage => storage.UpdateCommandStatus(It.IsAny<RequestStatus>(), It.IsAny<CommandBase>()))
                 .Callback(() => sem.Release());
 
             var mediatrMock = new Mock<IMediator>();
@@ -53,7 +53,7 @@ namespace IntegrationTests
                 mediatrMock.Object,
                 Mock.Of<ILogger<HTTPQueuedCommandHandler>>()
             );
-            testQueuedCommandHandler.Setup(handler => handler.Handle(It.IsAny<QueuedCommand>()))
+            testQueuedCommandHandler.Setup(handler => handler.Handle(It.IsAny<QueuedCommandBase>()))
                 .Callback(() => sem.Release())
                 .CallBase();
 
@@ -79,7 +79,7 @@ namespace IntegrationTests
             }
 
             mockQueuedCommandStatusStorage
-                .Verify(storage => storage.UpdateCommandStatus(It.IsAny<RequestStatus>(), It.IsAny<ICommand>()), Times.Once());
+                .Verify(storage => storage.UpdateCommandStatus(It.IsAny<RequestStatus>(), It.IsAny<CommandBase>()), Times.Once());
 
             Assert.AreEqual(0, sem.CurrentCount);
         }

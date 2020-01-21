@@ -12,13 +12,13 @@ namespace Core.Command.Mediator
     {
         public DateTime DateCreated { get; }
         public RequestStatus RequestStatus { get; set; }
-        public ICommand Command { get; set; }
+        public CommandBase CommandBase { get; set; }
 
-        public HTTPMemQueuedCommandStorageItem(DateTime dateCreated, RequestStatus requestStatus, ICommand command)
+        public HTTPMemQueuedCommandStorageItem(DateTime dateCreated, RequestStatus requestStatus, CommandBase commandBase)
         {
             DateCreated = dateCreated;
             RequestStatus = requestStatus;
-            Command = command;
+            CommandBase = commandBase;
         }
     }
 
@@ -28,7 +28,7 @@ namespace Core.Command.Mediator
         private Dictionary<string, HTTPMemQueuedCommandStorageItem> _store 
             = new Dictionary<string, HTTPMemQueuedCommandStorageItem>(MAX_SIZE);
 
-        public void SaveStatus(RequestStatus status, ICommand command)
+        public void SaveStatus(RequestStatus status, CommandBase commandBase)
         {
             if (_store.Count == MAX_SIZE)
             {
@@ -37,11 +37,11 @@ namespace Core.Command.Mediator
                 var toRemove = _store.Where(kv => kv.Value.DateCreated == minDate).Select(kv => kv.Key).FirstOrDefault();
                 _store.Remove(toRemove);
             }
-            var item = new HTTPMemQueuedCommandStorageItem(DateTime.UtcNow, status, command);
+            var item = new HTTPMemQueuedCommandStorageItem(DateTime.UtcNow, status, commandBase);
             _store.Add(item.RequestStatus.CorrelationId.Value, item);
         }
 
-        public (RequestStatus, ICommand) GetCommandStatus(CorrelationId correlationId)
+        public (RequestStatus, CommandBase) GetCommandStatus(CorrelationId correlationId)
         {
             if (!_store.TryGetValue(correlationId.Value, out var item))
             {
@@ -53,10 +53,10 @@ namespace Core.Command.Mediator
                 _store.Remove(item.RequestStatus.CorrelationId.Value);
             }
 
-            return (item.RequestStatus, item.Command);
+            return (item.RequestStatus, item.CommandBase);
         }
 
-        public void UpdateCommandStatus(RequestStatus status, ICommand command)
+        public void UpdateCommandStatus(RequestStatus status, CommandBase commandBase)
         {
             if (!_store.ContainsKey(status.CorrelationId.Value))
             {
@@ -68,7 +68,7 @@ namespace Core.Command.Mediator
                 return;
             }
             item.RequestStatus = status;
-            item.Command = command;
+            item.CommandBase = commandBase;
         }
     }
 }

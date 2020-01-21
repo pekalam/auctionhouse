@@ -9,7 +9,7 @@ namespace Infrastructure.Services.SchedulerService
 {
     public class ScheduledTaskDispatcher
     {
-        public ICommand GetCommandFromTask<T>(TimeTaskRequest<T> request) where T : class
+        public CommandBase GetCommandFromTask<T>(TimeTaskRequest<T> request) where T : class
         {
             if (request is TimeTaskRequest<AuctionEndTimeTaskValues>)
             {

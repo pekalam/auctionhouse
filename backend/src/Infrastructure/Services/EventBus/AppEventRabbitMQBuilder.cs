@@ -10,11 +10,11 @@ namespace Infrastructure.Services.EventBus
     {
         private CorrelationId _correlationId;
         private Event _event;
-        private ICommand _command;
+        private CommandBase _commandBase;
 
-        public IAppEventBuilder WithCommand(ICommand cmd)
+        public IAppEventBuilder WithCommand(CommandBase cmd)
         {
-            _command = cmd;
+            _commandBase = cmd;
             return this;
         }
 
@@ -32,7 +32,7 @@ namespace Infrastructure.Services.EventBus
 
         public IAppEvent<TEvent> Build<TEvent>() where TEvent : Event
         {
-            return new AppEventRabbitMQ<TEvent>(_correlationId, (TEvent)_event, _command);
+            return new AppEventRabbitMQ<TEvent>(_correlationId, (TEvent)_event, _commandBase);
         }
     }
 }

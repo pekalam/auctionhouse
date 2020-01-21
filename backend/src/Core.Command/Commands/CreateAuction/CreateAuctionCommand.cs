@@ -12,7 +12,7 @@ namespace Core.Command.CreateAuction
 {
     [AuthorizationRequired]
     [InAuctionCreateSessionRemove]
-    public class CreateAuctionCommand : ICommand
+    public class CreateAuctionCommand : CommandBase
     {
         public BuyNowPrice BuyNowPrice { get; set; }
         [Required]

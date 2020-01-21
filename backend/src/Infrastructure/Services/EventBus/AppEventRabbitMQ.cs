@@ -8,15 +8,15 @@ namespace Infrastructure.Services.EventBus
 {
     public class AppEventRabbitMQ<T> : IAppEvent<T> where T : Event
     {
-        public ICommand Command { get; }
+        public CommandBase CommandBase { get; }
         public CorrelationId CorrelationId { get; }
         public T Event { get; }
 
-        public AppEventRabbitMQ(CorrelationId correlationId, T @event, ICommand command)
+        public AppEventRabbitMQ(CorrelationId correlationId, T @event, CommandBase commandBase)
         {
             CorrelationId = correlationId;
             Event = @event;
-            Command = command;
+            CommandBase = commandBase;
         }
     }
 }

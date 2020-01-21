@@ -10,8 +10,8 @@ namespace Core.Command.Mediator
 {
     public class EventBusCommandHandlerMediator : ICommandHandlerMediator
     {
-        private EventBusService _eventBusService;
-        private IUserIdentityService _userIdentityService;
+        private readonly EventBusService _eventBusService;
+        private readonly IUserIdentityService _userIdentityService;
 
         public EventBusCommandHandlerMediator(EventBusService eventBusService, IUserIdentityService userIdentityService)
         {
@@ -19,15 +19,15 @@ namespace Core.Command.Mediator
             _userIdentityService = userIdentityService;
         }
 
-        public Task<RequestStatus> Send(ICommand command)
+        public Task<RequestStatus> Send(CommandBase commandBase)
         {
             var correlationId = new CorrelationId(Guid.NewGuid().ToString());
             var requestStatus = new RequestStatus(correlationId, Status.PENDING);
 
             var signedInUser = _userIdentityService.GetSignedInUserIdentity();
-            command.CommandContext = new CommandContext() { CorrelationId = correlationId, User = signedInUser };
+            commandBase.CommandContext = new CommandContext() { CorrelationId = correlationId, User = signedInUser };
 
-            _eventBusService.SendQueuedCommand(command);
+            _eventBusService.SendQueuedCommand(commandBase);
 
             return Task.FromResult(requestStatus);
         }
