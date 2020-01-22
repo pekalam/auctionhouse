@@ -14,10 +14,10 @@
     </div>
   </div>
   <div class="btn-container" *ngIf="imageButtons"  [class.btncontainer-fullscreen]="fullscreen" (click)="onShowFullScreen()">
-    <button id="prev" (click)="onPrev()" [hidden]="imgInd.length == 1">Prev</button>
-    <button id="next" (click)="onNext()" [hidden]="imgInd.length == 1">Next</button>
+    <button id="prev" (click)="onPrev($event)" [hidden]="imgInd.length == 1">Prev</button>
+    <button id="next" (click)="onNext($event)" [hidden]="imgInd.length == 1">Next</button>
   </div>
-  <div *ngIf="showThumbnails" class="thumbnail-container">
+  <div *ngIf="showThumbnails && imgs.length > 1" class="thumbnail-container">
     <div class="thumbnail-overfl">
         <div class="thumbnail" *ngFor="let imgInd of imgInd">
           <img #image (click)="onThumbnailClick(imgInd)" (load)="onImgLoaded(imgInd)" [class.selected]="imgInd == shown"

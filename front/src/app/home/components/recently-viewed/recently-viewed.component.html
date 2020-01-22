@@ -1,0 +1,28 @@
+<div *ngIf="recentlyViewed" class="recently-viewed promo-container">
+  <div class="promo-title-container">
+    <h3 class="promo-title">Recently viewed</h3>
+    <hr>
+  </div>
+  <div class="promo">
+    <div class="auctions">
+      <div class="auction" [routerLink]="['/auction']" [queryParams]="{auctionId: auction.auctionId}"
+        *ngFor="let auction of recentlyViewed; let i = index">
+        <div class="img-container">
+          <img height="54" *ngIf="imgs && imgs[i]" [src]="imgs[i]" [alt]="auction.name">
+        </div>
+        <div class="link-container">
+          <a>{{auction.name}}</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="user">
+      <div class="user-button" [routerLink]="['/user']" [queryParams]="{tab: 0}">
+        <i class="fas fa-user"></i>
+      </div>
+      <div class="user-button" [routerLink]="['/user']" [queryParams]="{tab: 2}">
+        <i class="fas fa-dollar-sign"></i>
+      </div>
+    </div>
+  </div>
+</div>

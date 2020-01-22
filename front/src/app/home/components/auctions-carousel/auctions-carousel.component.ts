@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { AuctionListModel } from '../../../core/models/Auctions';
 import { MostViewedAuction } from '../../../core/queries/MostViewedAuctionsQuery';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
@@ -9,10 +9,24 @@ import { AuctionImageQuery } from '../../../core/queries/AuctionImageQuery';
   templateUrl: './auctions-carousel.component.html',
   styleUrls: ['./auctions-carousel.component.scss']
 })
-export class AuctionsCarouselComponent implements OnInit {
+export class AuctionsCarouselComponent implements OnInit, OnDestroy {
+  private rotateInterval;
+  private animationTimeout;
 
   auctions: MostViewedAuction[] = [];
   imgSources: string[] = [];
+  currentAuction = 0;
+  imgHeight;
+
+  @Input('rotateTime')
+  set setRotateTime(rotateTime: number) {
+    if (this.rotateInterval) {
+      clearInterval(this.rotateInterval);
+    }
+    if (rotateTime > 0) {
+      this.rotateInterval = setInterval(() => this.rotate(), rotateTime);
+    }
+  }
 
   @Input('auctions')
   set setAuctions(auctions: MostViewedAuction[]) {
@@ -23,9 +37,6 @@ export class AuctionsCarouselComponent implements OnInit {
       .filter(i => i != null);
     this.auctions = auctions;
   }
-  currentAuction = 0;
-
-  imgHeight;
 
   constructor(public breakpointObserver: BreakpointObserver, private auctionImageQuery: AuctionImageQuery) {
     this.breakpointObserver
@@ -49,31 +60,48 @@ export class AuctionsCarouselComponent implements OnInit {
       });
   }
 
-  private getImageUrl(imageId: string): string{
+  ngOnDestroy(): void {
+    clearInterval(this.rotateInterval);
+    clearTimeout(this.animationTimeout);
+  }
+
+  private rotate() {
+    this.currentAuction = (this.currentAuction + 1) % this.auctions.length;
+    this.changeAuction(1000);
+  }
+
+  private getImageUrl(imageId: string): string {
     return this.auctionImageQuery.execute(imageId);
   }
 
-  nextAuction(ev : Event) {
+  private changeAuction(animSec: number = 500) {
+    this.imgSources = [this.getImageUrl(this.auctions[this.currentAuction].auctionImages[0].size1Id)];
+    clearTimeout(this.animationTimeout);
+    document.getElementById('auction-container').style.cssText = '';
+    window.requestAnimationFrame(() => {
+      document.getElementById('auction-container')
+        .style.cssText = `animation: fadeIn ${animSec / 1000}s ease 0s 1 normal forwards running;`;
+      this.animationTimeout = setTimeout(() => {
+        document.getElementById('auction-container').style.cssText = '';
+      }, animSec);
+    });
+  }
+
+  nextAuction(ev: Event) {
     ev.stopPropagation();
+    clearInterval(this.rotateInterval);
     if (this.currentAuction + 1 < this.auctions.length) {
       this.currentAuction++;
-      this.imgSources = [this.getImageUrl(this.auctions[this.currentAuction].auctionImages[0].size1Id)];
-      document.getElementById('auction-container').style.cssText = '';
-      window.requestAnimationFrame(() => {
-        document.getElementById('auction-container').style.cssText = 'animation: fadeIn 0.5s ease 0s 1 normal forwards running;';
-      });
+      this.changeAuction();
     }
   }
 
   prevAuction(ev: Event) {
     ev.stopPropagation();
+    clearInterval(this.rotateInterval);
     if (this.currentAuction - 1 >= 0) {
       this.currentAuction--;
-      this.imgSources = [this.getImageUrl(this.auctions[this.currentAuction].auctionImages[0].size1Id)];
-      document.getElementById('auction-container').style.cssText = '';
-      window.requestAnimationFrame(() => {
-        document.getElementById('auction-container').style.cssText = 'animation: fadeIn 0.5s ease 0s 1 normal forwards running;';
-      });
+      this.changeAuction();
     }
   }
 

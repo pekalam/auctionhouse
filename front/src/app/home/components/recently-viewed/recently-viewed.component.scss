@@ -1,0 +1,72 @@
+@import "global-vars";
+@import "breakpoints";
+@import "promo-container";
+
+.recently-viewed {
+  width: 100%;
+  min-height: 350px;
+  height: 350px;
+  box-sizing: border-box;
+  .promo {
+    display: flex;
+  }
+  .auctions {
+    flex-grow: 2;
+    display: flex;
+    flex-flow: column;
+    padding-right: 10px;
+    max-width: 80%;
+    .auction {
+      flex-grow: 1;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      box-sizing: border-box;
+      margin-right: 10px;
+      border-bottom: 1px solid #ddd;
+      outline: none;
+      &:hover {
+        background-color: #f4f4f4;
+      }
+      cursor: pointer;
+      .img-container {
+        min-width: 120px;
+        height: 54px;
+
+        text-align: center;
+      }
+      .link-container {
+        flex-basis: 100%;
+        text-align: center;
+      }
+    }
+  }
+
+  .user {
+    flex-grow: 1;
+    flex-grow: 1;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-around;
+    align-items: center;
+    .user-button {
+      height: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: $secondaryColor;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      max-width: 100px;
+      max-height: 96px;
+      &:hover {
+        background-color: $secondaryLightColor;
+      }
+      .fas {
+        font-size: 2em;
+      }
+    }
+  }
+}

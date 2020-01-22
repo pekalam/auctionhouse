@@ -14,22 +14,15 @@ import { AuctionImageQuery } from '../../../core/queries/AuctionImageQuery';
 export class HomePageComponent implements OnInit {
 
   mostViewedAuctions: MostViewedAuction[];
-  recentlyViewed: Auction[];
-  imgs: string[];
 
-  constructor(private mostViewedAuctionsQuery: MostViewedAuctionsQuery,
-              private recentlyViewedService: RecentlyViewedService,
-              private auctionImageQuery: AuctionImageQuery) {
+  constructor(private mostViewedAuctionsQuery: MostViewedAuctionsQuery) {
     this.mostViewedAuctionsQuery.execute().subscribe((result) => {
       this.mostViewedAuctions = result;
-      this.imgs = this.mostViewedAuctions.map((a) => this.auctionImageQuery.execute(a.auctionImages[0].size3Id));
     });
   }
 
   ngOnInit() {
-    this.recentlyViewedService.getRecentlyViewedAuctions().subscribe((auctions) => {
-      this.recentlyViewed = auctions;
-    });
+
   }
 
 }

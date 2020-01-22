@@ -29,6 +29,16 @@ export class CarouselComponent implements OnInit, AfterViewInit {
   @Input()
   thumbnails = [];
 
+  @Input('rotateTime')
+  set setRotate(rotateTime: number) {
+    if (this.rotateInterval) {
+      clearInterval(this.rotateInterval);
+    }
+    if (rotateTime > 0) {
+      setInterval(() => this.rotateImages(), rotateTime);
+    }
+  }
+
   @Input('sources')
   set sources(srcs: Array<string>) {
     console.log(srcs);
@@ -40,6 +50,8 @@ export class CarouselComponent implements OnInit, AfterViewInit {
 
   @Output('imgSelected')
   imgSelected = new EventEmitter<number>();
+
+  private rotateInterval = null;
 
   showFullscreen = false;
 
@@ -53,28 +65,42 @@ export class CarouselComponent implements OnInit, AfterViewInit {
 
   }
 
-  onShowFullScreen(){
-    if(this.fullscreen){
+  rotateImages() {
+    this.goToNext();
+  }
+
+  onShowFullScreen() {
+    if (this.fullscreen) {
       this.showFullscreen = true;
     }
   }
 
-  onImgLoaded(imgInd: number){
+  onImgLoaded(imgInd: number) {
     this.loading = imgInd == this.shown ? false : this.loading;
   }
 
-  onThumbnailClick(imgInd){
+  onThumbnailClick(imgInd) {
     this.shown = imgInd;
     this.imgSelected.emit(this.shown);
   }
 
-  onPrev() {
+  private goToPrevious(){
     this.shown = this.shown - 1 < 0 ? this.imgInd.length - 1 : this.shown - 1;
     this.imgSelected.emit(this.shown);
   }
 
-  onNext() {
+  onPrev(ev: Event) {
+    this.goToPrevious();
+    ev.stopPropagation();
+  }
+
+  private goToNext(){
     this.shown = (this.shown + 1) % this.imgInd.length;
     this.imgSelected.emit(this.shown);
+  }
+
+  onNext(ev: Event) {
+    this.goToNext();
+    ev.stopPropagation();
   }
 }

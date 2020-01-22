@@ -7,11 +7,13 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { SharedModule } from '../shared/shared.module';
 import { AuctionsCarouselComponent } from './components/auctions-carousel/auctions-carousel.component';
 import { HomeRoutingModule } from './home-routing.module';
+import { RecentlyViewedComponent } from './components/recently-viewed/recently-viewed.component';
+import { EndingAuctionsComponent } from './components/ending-auctions/ending-auctions.component';
 
 
 
 @NgModule({
-  declarations: [HomePageComponent, CategoriesComponent, AuctionsCarouselComponent],
+  declarations: [HomePageComponent, CategoriesComponent, AuctionsCarouselComponent, RecentlyViewedComponent, EndingAuctionsComponent],
   imports: [
     CommonModule,
     RouterModule,

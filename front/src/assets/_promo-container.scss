@@ -1,0 +1,29 @@
+.promo-container {
+  background-color: $primaryColor;
+  display: table;
+  width: 100%;
+  padding-bottom: 40px;
+  min-height: 401px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: column;
+  @include mobile {
+    margin-top: 30px;
+  }
+  .promo-title-container {
+    .promo-title {
+      padding-left: 25px;
+      display: inline-block;
+    }
+    hr {
+      margin-top: 0;
+    }
+  }
+  .promo {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 10px 0 10px;
+    flex-basis: 100%;
+  }
+}
