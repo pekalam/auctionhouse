@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading;
@@ -20,6 +20,7 @@ using FunctionalTests.Utils;
 using Infrastructure.Services.SchedulerService;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using WireMock;
 using WireMock.RequestBuilders;
@@ -57,7 +58,7 @@ namespace FunctionalTests.Commands
             var responseProvider = new FakeResponseProvider(HttpStatusCode.OK);
             responseProvider.Callback = message =>
             {
-                var res = (TimeTaskRequest<AuctionEndTimeTaskValues>) message.BodyAsJson;
+                var res = JsonConvert.DeserializeObject<TimeTaskRequest<AuctionEndTimeTaskValues>>(message.Body);
                 called[res.Values.AuctionId] = true;
             };
             server.Given(Request.Create()
