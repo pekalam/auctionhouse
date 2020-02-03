@@ -39,7 +39,11 @@ namespace Infrastructure.Services.SchedulerService
 
         public Task CancelAuctionEndTask(ScheduledTaskId id)
         {
-            return _timeTaskClient.CancelTask("echo", id.Value);
+            return _timeTaskClient.CancelTask(new CancelTaskRequest()
+            {
+                Id = id.Value,
+                Type = "echo"
+            });
         }
     }
 }

@@ -4,6 +4,12 @@ using RestEase;
 
 namespace Infrastructure.Services.SchedulerService
 {
+    public class CancelTaskRequest
+    {
+        public Guid Id { get; set; }
+        public string Type { get; set; }
+    }
+
     public interface ITimeTaskClient
     {
         [Header("X-API-Key")]
@@ -14,6 +20,6 @@ namespace Infrastructure.Services.SchedulerService
             where TValue : class;
 
         [Post("task/cancel")]
-        Task CancelTask([Query] string type, [Query] Guid id);
+        Task CancelTask([Body] CancelTaskRequest cancelTaskRequest);
     }
 }

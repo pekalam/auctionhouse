@@ -1,3 +1,8 @@
+SQL Server:&nbsp;&nbsp;&nbsp;[![Build Status](https://dev.azure.com/marekbf3/auctionhouse/_apis/build/status/pekalam.auctionhouse?branchName=sqlserver)](https://dev.azure.com/marekbf3/auctionhouse/_build/latest?definitionId=1&branchName=sqlserver)
+
+Eventstore:&nbsp;&nbsp;&nbsp;[![Build Status](https://dev.azure.com/marekbf3/auctionhouse/_apis/build/status/pekalam.auctionhouse?branchName=eventstore)](https://dev.azure.com/marekbf3/auctionhouse/_build/latest?definitionId=1&branchName=eventstore)
+
+
 **Frontend**
 
 Angular8 + material components
