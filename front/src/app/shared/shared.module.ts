@@ -13,6 +13,7 @@ import { AddImageStepComponent } from './forms/add-image-step/add-image-step.com
 import { ImgUploadInputComponent } from './forms/img-upload-input/img-upload-input.component';
 import { CreateSummaryStepComponent } from './forms/create-summary-step/create-summary-step.component';
 import { GotoPaginatorComponent } from './goto-paginator/goto-paginator.component';
+import { DateToTimerPipe } from './date-to-timer.pipe';
 
 
 
@@ -27,7 +28,8 @@ import { GotoPaginatorComponent } from './goto-paginator/goto-paginator.componen
     AddImageStepComponent,
     ImgUploadInputComponent,
     CreateSummaryStepComponent,
-    GotoPaginatorComponent
+    GotoPaginatorComponent,
+    DateToTimerPipe
   ],
   imports: [
     CoreModule,
@@ -45,7 +47,8 @@ import { GotoPaginatorComponent } from './goto-paginator/goto-paginator.componen
     AddImageStepComponent,
     ImgUploadInputComponent,
     CreateSummaryStepComponent,
-    GotoPaginatorComponent
+    GotoPaginatorComponent,
+    DateToTimerPipe
   ]
 })
 export class SharedModule { }

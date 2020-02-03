@@ -7,14 +7,14 @@ COPY ["Core.Common", "Core.Common/"]
 COPY ["Core.Command", "Core.Command/"]
 COPY ["Core.Query", "Core.Query/"]
 COPY ["Infrastructure", "Infrastructure/"]
-COPY ["Tests", "Tests/"]
-RUN dotnet build "Tests/Test.FunctionalTests.csproj"
+COPY ["Test.FunctionalTests", "Test.FunctionalTests/"]
+RUN dotnet build "Test.FunctionalTests/Test.FunctionalTests.csproj"
 RUN apt-get update
 RUN apt-get -y install netcat
-COPY ["Tests/wait-for", "/bin/wait-for"]
+COPY ["Test.FunctionalTests/wait-for", "/bin/wait-for"]
 RUN chmod +x /bin/wait-for
-COPY ["Tests/wait-for-services", "/bin/wait-for-services"]
+COPY ["Test.FunctionalTests/wait-for-services", "/bin/wait-for-services"]
 RUN chmod +x /bin/wait-for-services
 EXPOSE 9998
-WORKDIR "/src/Tests"
+WORKDIR "/src/Test.FunctionalTests"
 CMD ["dotnet", "test", "--no-build", "-s", "docker.runsettings"] 

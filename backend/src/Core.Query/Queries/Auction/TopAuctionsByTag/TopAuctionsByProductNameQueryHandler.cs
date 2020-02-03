@@ -5,6 +5,7 @@ using Core.Common.Query;
 using Core.Query.Mediator;
 using Core.Query.ReadModel;
 using Core.Query.Views;
+using Core.Query.Views.TopAuctionsByProductName;
 using MongoDB.Driver;
 
 namespace Core.Query.Queries.Auction.TopAuctionsByTag
@@ -22,7 +23,7 @@ namespace Core.Query.Queries.Auction.TopAuctionsByTag
         {
             var productName = request.ProductName.Trim();
             var canonicalName = Product.CanonicalizeProductName(productName);
-            var topByProductName = await _dbContext.TopAuctionsByProductName.Find(t => t.CanonicalName == canonicalName)
+            var topByProductName = await _dbContext.TopAuctionsByProductNameCollection.Find(t => t.CanonicalName == canonicalName)
                 .Skip(request.Page * TopAuctionsInTagQuery.MAX_PER_PAGE)
                 .Limit(TopAuctionsInTagQuery.MAX_PER_PAGE)
                 .FirstOrDefaultAsync();

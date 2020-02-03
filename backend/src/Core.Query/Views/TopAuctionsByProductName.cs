@@ -4,7 +4,7 @@ using System.Text;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Core.Query.Views
+namespace Core.Query.Views.TopAuctionsByProductName
 {
 
     public class TopAuctionsByProductName

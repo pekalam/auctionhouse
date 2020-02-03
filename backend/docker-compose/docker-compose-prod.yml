@@ -22,6 +22,12 @@ services:
         image: marekbf3/auctionhouse-sqlserver
         secrets:
             - sql_server_password
+        deploy:
+            restart_policy:
+                condition: on-failure
+                delay: 30s
+                max_attempts: 2
+                window: 4m
 
     rabbitmq:
         hostname: rabbitmq
@@ -48,6 +54,13 @@ services:
             - db-node1
             - db-node2
             - db-config1
+        deploy:
+            restart_policy:
+                condition: on-failure
+                delay: 30s
+                max_attempts: 2
+                window: 4m
+    
 
     db-node1:
         image: marekbf3/auctionhouse-db-node1

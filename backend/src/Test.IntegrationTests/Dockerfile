@@ -7,14 +7,14 @@ COPY ["Core.Common", "Core.Common/"]
 COPY ["Core.Command", "Core.Command/"]
 COPY ["Core.Query", "Core.Query/"]
 COPY ["Infrastructure", "Infrastructure/"]
-COPY ["IntegrationTests", "IntegrationTests/"]
-RUN dotnet build "IntegrationTests/Test.IntegrationTests.csproj"
+COPY ["Test.IntegrationTests", "Test.IntegrationTests/"]
+RUN dotnet build "Test.IntegrationTests/Test.IntegrationTests.csproj"
 RUN apt-get update
 RUN apt-get -y install netcat
-COPY ["IntegrationTests/wait-for", "/bin/wait-for"]
+COPY ["Test.IntegrationTests/wait-for", "/bin/wait-for"]
 RUN chmod +x /bin/wait-for
-COPY ["IntegrationTests/wait-for-services", "/bin/wait-for-services"]
+COPY ["Test.IntegrationTests/wait-for-services", "/bin/wait-for-services"]
 RUN chmod +x /bin/wait-for-services
 EXPOSE 9998
-WORKDIR "/src/IntegrationTests"
+WORKDIR "/src/Test.IntegrationTests"
 CMD ["dotnet", "test", "--no-build", "-s", "docker.runsettings"] 

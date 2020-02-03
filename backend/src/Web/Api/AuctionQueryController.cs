@@ -12,11 +12,13 @@ using Core.Query.Queries.Auction.Auctions.ByCategory;
 using Core.Query.Queries.Auction.Auctions.ByTag;
 using Core.Query.Queries.Auction.Categories;
 using Core.Query.Queries.Auction.CommonTags;
+using Core.Query.Queries.Auction.EndingAuctions;
 using Core.Query.Queries.Auction.MostViewed;
 using Core.Query.Queries.Auction.SingleAuction;
 using Core.Query.Queries.Auction.TopAuctionsByTag;
 using Core.Query.ReadModel;
 using Core.Query.Views;
+using Core.Query.Views.TopAuctionsByProductName;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
@@ -118,6 +120,14 @@ namespace Web.Api
         public async Task<ActionResult<IEnumerable<MostViewedAuctionsResult>>> MostViewedAuctions()
         {
             var query = new MostViewedAuctionsQuery();
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+
+        [HttpGet("endingAuctions")]
+        public async Task<ActionResult<IEnumerable<EndingAuctions>>> EndingAuctions()
+        {
+            var query = new EndingAuctionsQuery();
             var result = await _mediator.Send(query);
             return Ok(result);
         }

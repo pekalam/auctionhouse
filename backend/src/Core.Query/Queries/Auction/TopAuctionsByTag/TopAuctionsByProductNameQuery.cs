@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Core.Common.Query;
 using Core.Query.Views;
+using Core.Query.Views.TopAuctionsByProductName;
 
 namespace Core.Query.Queries.Auction.TopAuctionsByTag
 {

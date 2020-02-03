@@ -5,7 +5,7 @@ services:
     container_name: mongodb
     tmpfs: /data/db
     build:
-      context: ../src/IntegrationTests
+      context: ../src/Test.IntegrationTests
       dockerfile: Dockerfile-mongo-standalone-replicaset
     ports:
       - "27017:27017"
@@ -37,7 +37,7 @@ services:
       /bin/sh -c "wait-for-services && dotnet test --no-build -s docker.runsettings -v n"
     build:
       context: ../src
-      dockerfile: IntegrationTests/Dockerfile
+      dockerfile: Test.IntegrationTests/Dockerfile
     depends_on:
       - sql_server
       - mongodb

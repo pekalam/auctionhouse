@@ -34,9 +34,9 @@ fi
 echo "Setting up db..."
 /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -i create.sql
 echo "AuctionhouseDatabase created"
-
 sleep 5
 
-nc -l -s 0.0.0.0 -p 32112 &
+echo "AuctionhouseDatabase started"
+/container-scripts/listen-on-health-port.sh &
 
 wait

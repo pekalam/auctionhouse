@@ -1,6 +1,7 @@
 ﻿using System;
 using Core.Common.Domain.Categories;
 using Core.Query.Views;
+using Core.Query.Views.TopAuctionsByProductName;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
@@ -42,13 +43,17 @@ namespace Core.Query.ReadModel
             _db.GetCollection<UserRead>("UsersReadModel");
 
         public virtual IMongoCollection<TopAuctionsInTag> TagsAuctionsCollection =>
-            _db.GetCollection<TopAuctionsInTag>("TopAuctionsInTag");
+            _db.GetCollection<TopAuctionsInTag>(nameof(TopAuctionsInTag));
 
-        public virtual IMongoCollection<TopAuctionsByProductName> TopAuctionsByProductName =>
-            _db.GetCollection<TopAuctionsByProductName>("TopAuctionsByProductName");
+        public virtual IMongoCollection<TopAuctionsByProductName> TopAuctionsByProductNameCollection =>
+            _db.GetCollection<TopAuctionsByProductName>(nameof(TopAuctionsByProductName));
 
         public virtual IMongoCollection<CommonTags> CommonTagsCollection =>
-            _db.GetCollection<CommonTags>("CommonTags");
-        
+            _db.GetCollection<CommonTags>(nameof(CommonTags));
+
+
+        public virtual IMongoCollection<EndingAuctions> EndingAuctionsCollection =>
+            _db.GetCollection<EndingAuctions>(nameof(EndingAuctions));
+
     }
 }

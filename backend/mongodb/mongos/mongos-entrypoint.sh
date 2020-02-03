@@ -39,6 +39,7 @@ echo "running update scripts..."
 ./scripts/update-common-tags-view.sh
 ./scripts/update-top-auctions-by-product-name.sh
 
-nc -l -k -s 0.0.0.0 -p 32112 &
+echo "mongos started"
+/container-scripts/listen-on-health-port.sh &
 
 fg %1

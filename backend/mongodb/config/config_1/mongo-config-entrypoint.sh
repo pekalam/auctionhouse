@@ -32,5 +32,5 @@ echo "running init.js..."
 mongo --port 27019 /scripts/init.js
 
 echo "mongo configsvr initialized"
-nc -l -k -s 0.0.0.0 -p 32112 &
+/container-scripts/listen-on-health-port.sh &
 fg %1

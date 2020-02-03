@@ -1,1 +1,14 @@
-<p>ending-auctions works!</p>
+<div class="container promo-container">
+  <div class="promo-title-container">
+    <h3 class="promo-title">Ending auctions</h3>
+    <hr>
+  </div>
+  <div class="ending-auctions-container promo">
+    <div *ngFor="let auction of endingAuctions; let i = index" class="auction-container" [routerLink]="['/auction']" [queryParams]="{auctionId: auction.queryResult.auctionId}">
+      <img class="img" [src]="imgs[i]"/>
+      <p class="auction-name">{{auction.queryResult.name}}</p>
+      <p>{{auction.timeLeft | dateToTimer}}</p>
+    </div>
+  </div>
+
+</div>

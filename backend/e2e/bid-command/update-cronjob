@@ -1,4 +1,5 @@
-* * * * * /root/scripts/update-common-tags-view.sh
-* * * * * /root/scripts/update-top-auctions-in-tag-view.sh
-* * * * * /root/scripts/update-top-auctions-by-product-name.sh
-10 * * * * /root/scripts/remove_unasigned_auction_images.sh
+* * * * * /scripts/update-common-tags-view.sh
+* * * * * /scripts/update-top-auctions-in-tag-view.sh
+* * * * * /scripts/update-top-auctions-by-product-name.sh
+10 * * * * /scripts/remove_unasigned_auction_images.sh
+* * * * * /scripts/update-ending-auctions-view.sh
