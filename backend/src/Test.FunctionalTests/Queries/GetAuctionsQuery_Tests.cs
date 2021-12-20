@@ -420,9 +420,9 @@ namespace FunctionalTests.Queries
             results2.Auctions.Count().Should()
                 .Be(AuctionsByCategoryQueryHandler.PageSize);
             results2.Total.Should().Be(AuctionsByCategoryQueryHandler.PageSize);
-            results2.Auctions.ElementAt(0).AuctionId
-                .Should()
-                .Be(stubAuctions[0].AuctionId);
+            results2.Auctions.Select(a => a.AuctionId)
+                .Intersect(stubAuctions.Select(a => a.AuctionId))
+                .Count().Should().Be(results2.Auctions.Count());
         }
     }
 }
