@@ -30,8 +30,6 @@ namespace Core.Common.Domain
             return t;
         }
 
-        public abstract Event GetRemovedEvent();
-
         public void MarkPendingEventsAsHandled()
         {
             _pendingEvents.Clear();

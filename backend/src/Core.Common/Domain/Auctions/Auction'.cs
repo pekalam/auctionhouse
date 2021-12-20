@@ -8,11 +8,6 @@ namespace Core.Common.Domain.Auctions
 {
     public partial class Auction
     {
-        public override Event GetRemovedEvent()
-        {
-            return new AuctionRemoved(AggregateId);
-        }
-
         protected override void Apply(Event @event)
         {
             try

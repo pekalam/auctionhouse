@@ -7,11 +7,6 @@ namespace Core.Common.Domain.Users
 {
     public partial class User
     {
-        public override Event GetRemovedEvent()
-        {
-            return new UserRemoved();
-        }
-
         protected override void Apply(Event @event)
         {
             try
