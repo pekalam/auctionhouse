@@ -3,6 +3,7 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:3.1.416-alpine3.14 AS build
 WORKDIR /src
+COPY ["Core.DomainFramework", "Core.DomainFramework/"]
 COPY ["Core.Common", "Core.Common/"]
 COPY ["Core.Command", "Core.Command/"]
 COPY ["Core.Query", "Core.Query/"]
