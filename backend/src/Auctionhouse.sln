@@ -30,6 +30,8 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Test.AuctionhouseDatabase",
 		{31D723E0-FB8D-4C1A-8200-68570D4ED3A8} = {31D723E0-FB8D-4C1A-8200-68570D4ED3A8}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.DomainFramework", "Core.DomainFramework\Core.DomainFramework.csproj", "{F7720E68-77D4-401B-B4C6-348CDC8DFB81}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -88,6 +90,10 @@ Global
 		{4DD3B832-93FD-4D4B-9CE7-D4AF44D182E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4DD3B832-93FD-4D4B-9CE7-D4AF44D182E3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4DD3B832-93FD-4D4B-9CE7-D4AF44D182E3}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{F7720E68-77D4-401B-B4C6-348CDC8DFB81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7720E68-77D4-401B-B4C6-348CDC8DFB81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7720E68-77D4-401B-B4C6-348CDC8DFB81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7720E68-77D4-401B-B4C6-348CDC8DFB81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
