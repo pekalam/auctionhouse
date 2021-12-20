@@ -18,9 +18,10 @@ using Infrastructure.Repositories.SQLServer;
 using Infrastructure.Services;
 using Infrastructure.Services.EventBus;
 using Infrastructure.Services.SchedulerService;
-using Microsoft.AspNetCore.Hosting.Internal;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 using Web.Adapters;
 using Web.Adapters.EventSignaling;
@@ -52,14 +53,16 @@ namespace Web
 
         protected virtual void ConfigureFeatureFlags(IServiceCollection services)
         {
-            var clientConfiguration = new ManualPollConfiguration()
-            {
-                ApiKey = Configuration.GetSection("ConfigCat")["ApiKey"]
-            };
+            services.AddLocalFeatureFlags(Configuration);
 
-            var configCatClient = new ConfigCatClient(clientConfiguration);
-            services.AddSingleton<IConfigCatClient>(configCatClient);
-            services.AddFeatureManagement(new ConfigCatConfiguration(configCatClient, null));
+            //var clientConfiguration = new ManualPollConfiguration()
+            //{
+            //    ApiKey = Configuration.GetSection("ConfigCat")["ApiKey"]
+            //};
+
+            //var configCatClient = new ConfigCatClient(clientConfiguration);
+            //services.AddSingleton<IConfigCatClient>(configCatClient);
+            //services.AddFeatureManagement(new ConfigCatConfiguration(configCatClient, null));
         }
 
         private void AddOptions<T>(IServiceCollection serviceCollection, string sectionName) where T : class
@@ -138,7 +141,7 @@ namespace Web
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info(){ Title = "Auctionhouse API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo(){ Title = "Auctionhouse API", Version = "v1" });
             });
 
             services.AddHsts(options =>
@@ -158,18 +161,20 @@ namespace Web
             client.ForceRefresh();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
             DefaultDIBootstraper.Common.Start(serviceProvider, (EventArgs args, ILogger logger) =>
                 {
                     logger.LogCritical("Disconnected from event bus! Shutting down application...", args.ToString());
                     Program.Shutdown();
                 });
-            FetchFeatureFlags(serviceProvider);
+            //FetchFeatureFlags(serviceProvider);
 
-
+            
             app.UseHsts();
             app.UseCors();
+
+            app.UseStaticFiles();
 
             app.UseSwagger();
             app.UseSwaggerUI(options =>
@@ -185,9 +190,14 @@ namespace Web
 
 
             app.UseAuthentication();
-            app.UseSignalR(builder => { builder.MapHub<ApplicationHub>("/app"); });
             app.UseSession();
-            app.UseMvc();
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseEndpoints(cfg =>
+            {
+                cfg.MapHub<ApplicationHub>("/app");
+                cfg.MapControllers();
+            });
         }
     }
 }
