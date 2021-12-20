@@ -55,7 +55,7 @@ namespace UnitTests.AuthorizationRequiredAttribute_Tests
 
             foreach (var cmdToProp in AuthorizationRequiredAttribute._signedInUserCommandProperties)
             {
-                (cmdToProp.Key.Implements(typeof(CommandBase)) || cmdToProp.Key.Implements(typeof(IQuery))).Should().BeTrue();
+                (cmdToProp.Key.IsSubclassOf(typeof(CommandBase)) || typeof(IQuery).IsAssignableFrom(cmdToProp.Key)).Should().BeTrue();
                 cmdToProp.Key.GetCustomAttributes(typeof(AuthorizationRequiredAttribute), false)
                     .Length.Should().Be(1);
             }

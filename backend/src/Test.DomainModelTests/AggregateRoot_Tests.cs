@@ -40,11 +40,6 @@ namespace Core.DomainModelTests
             AddUpdateEvent(new TestUpdateEvent());
         }
 
-        public override Event GetRemovedEvent()
-        {
-            throw new NotImplementedException();
-        }
-
         protected override void Apply(Event @event)
         {
             throw new NotImplementedException();

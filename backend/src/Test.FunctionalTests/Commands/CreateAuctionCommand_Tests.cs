@@ -35,7 +35,7 @@ namespace FunctionalTests.Commands
     [SingleThreaded]
     public class CreateAuctionCommand_Tests
     {
-        private FluentMockServer server;
+        private WireMockServer server;
         public static Dictionary<Guid, bool> called = new Dictionary<Guid, bool>();
         private DateTime startDate;
         private DateTime endDate;
@@ -54,7 +54,7 @@ namespace FunctionalTests.Commands
 
         private void SetUpFakeTimeTaskServer()
         {
-            server = FluentMockServer.Start(new FluentMockServerSettings() {Port = 9998});
+            server = WireMockServer.Start(new WireMockServerSettings() {Port = 9998});
             var responseProvider = new FakeResponseProvider(HttpStatusCode.OK);
             responseProvider.Callback = message =>
             {
@@ -191,11 +191,11 @@ namespace FunctionalTests.Commands
             _responseCode = responseCode;
         }
 
-        public Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage,
-            IFluentMockServerSettings settings)
+        public Task<(ResponseMessage Message, IMapping Mapping)> ProvideResponseAsync(RequestMessage requestMessage,
+            IWireMockServerSettings settings)
         {
             Callback?.Invoke(requestMessage);
-            return Task.FromResult(new ResponseMessage() {StatusCode = (int) _responseCode});
+            return Task.FromResult((new ResponseMessage() {StatusCode = (int) _responseCode}, (IMapping)null));
         }
     }
 
