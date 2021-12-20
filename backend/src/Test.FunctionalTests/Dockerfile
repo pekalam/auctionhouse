@@ -1,7 +1,7 @@
-FROM mcr.microsoft.com/dotnet/core/runtime:2.2-stretch-slim AS base
+FROM mcr.microsoft.com/dotnet/runtime:3.1.22-alpine3.14 AS base
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/core/sdk:2.2-stretch AS build
+FROM mcr.microsoft.com/dotnet/sdk:3.1.416-alpine3.14 AS build
 WORKDIR /src
 COPY ["Core.Common", "Core.Common/"]
 COPY ["Core.Command", "Core.Command/"]
@@ -9,8 +9,9 @@ COPY ["Core.Query", "Core.Query/"]
 COPY ["Infrastructure", "Infrastructure/"]
 COPY ["Test.FunctionalTests", "Test.FunctionalTests/"]
 RUN dotnet build "Test.FunctionalTests/Test.FunctionalTests.csproj"
-RUN apt-get update
-RUN apt-get -y install netcat
+RUN apk update
+RUN apk add netcat-openbsd
+RUN apk add bash
 COPY ["Test.FunctionalTests/wait-for", "/bin/wait-for"]
 RUN chmod +x /bin/wait-for
 COPY ["Test.FunctionalTests/wait-for-services", "/bin/wait-for-services"]
