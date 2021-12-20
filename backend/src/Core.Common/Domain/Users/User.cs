@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Users.Events;

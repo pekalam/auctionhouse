@@ -1,4 +1,4 @@
-﻿namespace Core.Common.Domain
+namespace Core.Common.Domain
 {
     public interface IInternalEventAdd
     {
@@ -11,6 +11,15 @@
     public interface IInternalEventApply
     {
         void Apply(Event @event);
+    }
+
+    /// <summary>
+    /// Temporary
+    /// </summary>
+    /// <typeparam name="TId"></typeparam>
+    public class SimpleEntity<TId> where TId : ValueObject
+    {
+        public TId Id { get; protected set; }
     }
 
     public abstract class Entity<TId>

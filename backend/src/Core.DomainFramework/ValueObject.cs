@@ -41,12 +41,12 @@ namespace Core.Common.Domain
         }
         public static bool operator ==(ValueObject one, ValueObject two)
         {
-            return one?.Equals(two) ?? false;
+            return (one is null && two is null) || (one?.Equals(two) ?? false);
         }
 
         public static bool operator !=(ValueObject one, ValueObject two)
         {
-            return !(one?.Equals(two) ?? false);
+            return !((one is null && two is null) || (one?.Equals(two) ?? false));
         }
     }
 }

@@ -27,9 +27,10 @@ namespace Core.Common.Domain.Auctions
 
             private void CheckCanBuild()
             {
+                //TODO null object pattern?
                 if (args.Product == null ||
-                    args.StartDate == default ||
-                    args.EndDate == default ||
+                    args.StartDate == null ||
+                    args.EndDate == null ||
                     args.Creator == null ||
                     args.Category == null ||
                     args.Tags == null ||

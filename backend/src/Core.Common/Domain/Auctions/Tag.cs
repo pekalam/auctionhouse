@@ -1,9 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Core.Common.Exceptions;
 
 namespace Core.Common.Domain.Auctions
 {
-    public class Tag
+    public class Tag : ValueObject
     {
         public const int MAX_LENGTH = 30;
         public const int MIN_LENGTH = 1;
@@ -25,11 +26,14 @@ namespace Core.Common.Domain.Auctions
 
         public static Tag[] From(string[] tags) => tags.Select(s => new Tag(s)).ToArray();
 
-        public override bool Equals(object obj) => obj is Tag && ((Tag) obj).Value.Equals(this.Value);
-        public override int GetHashCode() => this.Value.GetHashCode();
         public override string ToString() => this.Value;
 
         public static implicit operator Tag(string value) => new Tag(value);
         public static implicit operator string(Tag obj) => obj.Value;
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return Value;
+        }
     }
 }

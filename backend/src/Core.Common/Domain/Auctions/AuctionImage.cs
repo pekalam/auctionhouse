@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Core.Common.Domain.Auctions
 {
-    public class AuctionImageSize
+    public class AuctionImageSize : ValueObject
     {
         public static readonly AuctionImageSize SIZE1 = new AuctionImageSize(720, 480);
         public static readonly AuctionImageSize SIZE2 = new AuctionImageSize(192, 108);
@@ -16,9 +17,15 @@ namespace Core.Common.Domain.Auctions
             W = w;
             H = h;
         }
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return W;
+            yield return H;
+        }
     }
 
-    public class AuctionImage
+    public class AuctionImage : ValueObject
     {
         public static readonly string[] AllowedExtensions = {"jpg", "png"};
 
@@ -37,5 +44,11 @@ namespace Core.Common.Domain.Auctions
         }
 
 
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return Size1Id;
+            yield return Size2Id;
+            yield return Size3Id;
+        }
     }
 }

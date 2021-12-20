@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Core.Common.Exceptions;
 
@@ -10,7 +11,7 @@ namespace Core.Common.Domain.Products
         New
     }
 
-    public class Product
+    public class Product : ValueObject
     {
         public const int NAME_MIN_LENGTH = 5;
         public const int DESCRIPTION_MIN_LENGTH = 5;
@@ -52,7 +53,8 @@ namespace Core.Common.Domain.Products
         }
 
         public string CanonicalName { get; private set; }
-        public Condition Condition { get; set; }
+        //TODO fix tests to allow get only
+        public Condition Condition { get; internal set; }
 
         public Product(string name, string description, Condition condition)
         {
@@ -69,6 +71,14 @@ namespace Core.Common.Domain.Products
                 .OrderBy(x => x)
                 .Aggregate("", (x, y) => x + " " + y)
                 .Trim();
+        }
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return Name;
+            yield return Description;
+            yield return CanonicalName;
+            yield return Condition;
         }
     }
 }

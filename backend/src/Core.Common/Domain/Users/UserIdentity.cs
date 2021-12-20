@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Core.Common.Domain.Users
 {
-    public class UserIdentity
+    public class UserIdentity : ValueObject
     {
         public static readonly UserIdentity Empty = new UserIdentity();
 
@@ -14,7 +15,6 @@ namespace Core.Common.Domain.Users
 
         public UserIdentity()
         {
-            
         }
 
         public Guid UserId { get; set; }
@@ -25,8 +25,12 @@ namespace Core.Common.Domain.Users
             return new AuctionCreateSession.AuctionCreateSession(this);
         }
 
-        public override bool Equals(object obj) => obj is UserIdentity && ((UserIdentity) obj).UserId.Equals(UserId);
-        public override int GetHashCode() => UserId.GetHashCode();
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return UserId;
+            yield return UserName;
+        }
+
         public override string ToString() => $"Username: {UserName}, UserId: {UserId}";
     }
 }

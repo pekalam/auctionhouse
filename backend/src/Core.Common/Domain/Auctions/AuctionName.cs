@@ -1,13 +1,16 @@
-﻿using Core.Common.Exceptions;
+﻿using System.Collections.Generic;
+using Core.Common.Exceptions;
 
 namespace Core.Common.Domain.Auctions
 {
-    public class AuctionName
+    public class AuctionName : ValueObject
     {
         public const int MAX_LENGTH = 40;
         public const int MIN_LENGTH = 5;
 
         public string Value { get; }
+
+        private AuctionName(){}
 
         public AuctionName(string value)
         {
@@ -27,11 +30,14 @@ namespace Core.Common.Domain.Auctions
             Value = value.Trim();
         }
 
-        public override bool Equals(object obj) => obj is AuctionName && ((AuctionName)obj).Value.Equals(this.Value);
-        public override int GetHashCode() => this.Value.GetHashCode();
         public override string ToString() => this.Value.ToString();
 
         public static implicit operator AuctionName(string value) => new AuctionName(value);
         public static implicit operator string(AuctionName auctionName) => auctionName.Value;
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return Value;
+        }
     }
 }

@@ -44,7 +44,7 @@ namespace Core.Query
                     str += ';';
                 }
                 str += next.Name;
-                writer.WriteInt32($"Category{i++}Id", value.CategoryId);
+                writer.WriteInt32($"Category{i++}Id", value.Id);
                 next = next.SubCategory;
             }
             writer.WriteString("CategoryName", str);
