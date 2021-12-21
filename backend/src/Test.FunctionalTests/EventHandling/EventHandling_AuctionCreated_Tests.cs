@@ -53,7 +53,7 @@ namespace FunctionalTests.EventHandling
             var services = TestDepedencies.Instance.Value;
             user = User.Create(new Username("testUserName"));
             user.MarkPendingEventsAsHandled();
-            session = new AuctionCreateSession(user.AggregateId);
+            session = AuctionCreateSession.CreateSession(user.AggregateId);
             product = new Product("test product name", "example description", Condition.New);
             services.DbContext.UsersReadModel.InsertOne(new UserRead()
                 {UserIdentity = new UserIdentityRead(user.AggregateId, user.Username)});
@@ -161,7 +161,7 @@ namespace FunctionalTests.EventHandling
                 .NotBeNull();
             auctionReadModel.Product.Should()
                 .BeEquivalentTo(product);
-            auctionReadModel.Creator.UserId.Should()
+            auctionReadModel.Owner.UserId.Should()
                 .Be(userRead.UserIdentity.UserId);
 
             services.AuctionImageRepository.Find("img1-1")

@@ -15,7 +15,7 @@ namespace Core.Query.Queries.Auction.Auctions
         [BsonId]
         public ObjectId Id { get; set; }
         public string AuctionId { get; set; }
-        public UserIdentityRead Creator { get; set; }
+        public UserIdentityRead Owner { get; set; }
         public string ProductName { get; set; }
         public string Name { get; set; }
         public Condition Condition { get; set; }

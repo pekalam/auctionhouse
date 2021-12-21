@@ -141,7 +141,7 @@ namespace FunctionalTests.CommandRollback
             testRollbackHandler.Object.AfterAction = () => { sem2.Release(); };
 
 
-            var session = new AuctionCreateSession(user.AggregateId);
+            var session = AuctionCreateSession.CreateSession(user.AggregateId);
             command.AuctionCreateSession = session;
 
             var handlerDepedencies = new CreateAuctionCommandHandlerDepedencies()

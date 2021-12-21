@@ -30,7 +30,6 @@ namespace FunctionalTests.EventHandling
 
             services.UserRepository.AddUser(user);
 
-            var userId = UserId.New();
             var product = new Product("test name", "test product description", Condition.New);
             var auctionArgs = new AuctionArgs.Builder()
                     .SetBuyNow(20.0m)
@@ -38,7 +37,7 @@ namespace FunctionalTests.EventHandling
                     .SetStartDate(DateTime.UtcNow.AddMinutes(10))
                     .SetEndDate(DateTime.UtcNow.AddDays(1))
                     .SetCategory(new Category("test", 0))
-                    .SetOwner(userId)
+                    .SetOwner(UserId.New())
                     .SetProduct(product)
                     .SetTags(new string[]{"tag1", "tag2"})
                     .Build();
@@ -64,7 +63,7 @@ namespace FunctionalTests.EventHandling
 
             services.AuctionRepository.AddAuction(auction);
             var cmd = new BidCommand(auction.AggregateId, 21.0m);
-            cmd.SignedInUser = userId;
+            cmd.SignedInUser = user.AggregateId;
             stubHandler.Handle(cmd, CancellationToken.None);
 
 

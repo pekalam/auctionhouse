@@ -30,11 +30,16 @@ namespace Core.Common.Domain.AuctionCreateSession
             Creator = creator;
         }
 
-        public AuctionCreateSession(UserId creator)
+        private AuctionCreateSession(UserId creator)
         {
             Creator = creator;
             DateCreated = DateTime.UtcNow;
             SessionAuctionImages = new AuctionImage[Auction.MAX_IMAGES];
+        }
+
+        public static AuctionCreateSession CreateSession(UserId creator)
+        {
+            return new AuctionCreateSession(creator);
         }
 
         private void CheckIsSessionValid()

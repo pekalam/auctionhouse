@@ -83,7 +83,7 @@ namespace Web.Adapters
         {
             var user = GetSignedInUserIdentity();
             _logger.LogDebug("Creating new AuctionCreateSession for {@user}", user);
-            var newSession = new AuctionCreateSession(user);
+            var newSession = AuctionCreateSession.CreateSession(user);
             SaveSession(newSession);
             return newSession;
         }

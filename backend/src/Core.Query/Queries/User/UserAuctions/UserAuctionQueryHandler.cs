@@ -33,7 +33,7 @@ namespace Core.Query.Queries.User.UserAuctions
 
             FilterDefinition<AuctionRead> filter = null;
             var idfilter =
-                Builders<AuctionRead>.Filter.Eq(read => read.Creator.UserId, request.SignedInUser.ToString());
+                Builders<AuctionRead>.Filter.Eq(read => read.Owner.UserId, request.SignedInUser.ToString());
 
             if (request.ShowArchived)
             {

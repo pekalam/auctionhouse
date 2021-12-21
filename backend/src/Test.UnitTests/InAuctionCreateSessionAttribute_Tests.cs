@@ -42,7 +42,7 @@ namespace UnitTests.AuctionCreateSessionAttributeTests
             InAuctionCreateSessionAttribute.LoadAuctionCreateSessionCommandMembers("Test.UnitTests");
             var attr = new InAuctionCreateSessionAttribute();
 
-            var testSession = new AuctionCreateSession(UserId.New());
+            var testSession = AuctionCreateSession.CreateSession(UserId.New());
             var mockImplProvider = new Mock<IImplProvider>();
             var mockAuctionCreateSessionService = new Mock<IAuctionCreateSessionService>();
             mockAuctionCreateSessionService.Setup(service => service.GetExistingSession())

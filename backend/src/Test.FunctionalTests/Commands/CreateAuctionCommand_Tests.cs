@@ -78,7 +78,7 @@ namespace FunctionalTests.Commands
 
             var auctionCreateSessionService = new Mock<IAuctionCreateSessionService>();
             auctionCreateSessionService.Setup(f => f.GetExistingSession())
-                .Returns(new AuctionCreateSession(user.AggregateId));
+                .Returns(AuctionCreateSession.CreateSession(user.AggregateId));
             auctionCreateSessionService.Setup(f => f.RemoveSession());
 
             var eventBusService = new Mock<EventBusService>(Mock.Of<IEventBus>(), Mock.Of<IAppEventBuilder>());
@@ -116,7 +116,7 @@ namespace FunctionalTests.Commands
                 startDate, endDate,
                 categories, Tag.From(new []{"tag1"}), "test name", false);
             command.SignedInUser = user.AggregateId;
-            command.AuctionCreateSession = new AuctionCreateSession(user.AggregateId);
+            command.AuctionCreateSession = AuctionCreateSession.CreateSession(user.AggregateId);
             testCommandHandler.Handle(command, CancellationToken.None)
                 .Wait();
 
@@ -140,7 +140,7 @@ namespace FunctionalTests.Commands
                 new Product("test product name", "example description", Condition.New),
                 startDate, endDate, categories, Tag.From(new []{"tag1"}), "test name", false);
             command.SignedInUser = user.AggregateId;
-            command.AuctionCreateSession = new AuctionCreateSession(user.AggregateId);
+            command.AuctionCreateSession = AuctionCreateSession.CreateSession(user.AggregateId);
 
 
             Assert.Throws<Exception>(() =>
@@ -164,7 +164,7 @@ namespace FunctionalTests.Commands
                 startDate,
                 endDate, categories, Tag.From(new []{"tag1"}), "test auction name", false);
             command.SignedInUser = user.AggregateId;
-            command.AuctionCreateSession = new AuctionCreateSession(user.AggregateId);
+            command.AuctionCreateSession = AuctionCreateSession.CreateSession(user.AggregateId);
 
 
             Assert.Throws<Exception>(() =>
