@@ -17,7 +17,7 @@ namespace Core.Query.Queries.User.UserWonAuctions
         public UserAuctionsSortDir SortingDirection { get; }
 
         [SignedInUser]
-        public UserIdentity SignedInUser { get; set; }
+        public UserId SignedInUser { get; set; }
 
         public UserWonAuctionsQuery(int page, UserAuctionsSorting sorting, UserAuctionsSortDir sortingDirection)
         {

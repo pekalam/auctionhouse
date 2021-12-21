@@ -14,6 +14,6 @@ namespace Core.Command.Commands.ChangePassword
         public string NewPassword { get; set; }
 
         [SignedInUser]
-        public UserIdentity SignedInUser { get; set; }
+        public UserId SignedInUser { get; set; }
     }
 }

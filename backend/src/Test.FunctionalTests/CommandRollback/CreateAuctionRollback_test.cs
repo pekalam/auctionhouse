@@ -88,8 +88,7 @@ namespace FunctionalTests.CommandRollback
         public void METHOD()
         {
             var services = TestDepedencies.Instance.Value;
-            var user = new User();
-            user.Register("testUserName");
+            var user = User.Create(new Username("testUserName"));
             user.MarkPendingEventsAsHandled();
             var product = new Product("test product name", "example description", Condition.New);
             var sem = new SemaphoreSlim(0, 1);
@@ -101,13 +100,13 @@ namespace FunctionalTests.CommandRollback
             };
 
             var userRepository = new Mock<IUserRepository>();
-            userRepository.Setup(f => f.FindUser(It.IsAny<UserIdentity>()))
+            userRepository.Setup(f => f.FindUser(It.IsAny<UserId>()))
                 .Returns(user);
 
             var command = new CreateAuctionCommand(20.0m, product, DateTime.UtcNow.AddMinutes(10),
                 DateTime.UtcNow.AddDays(12),
                 categories, Tag.From(new[] {"tag1"}), "test auction name", false);
-            command.SignedInUser = user.UserIdentity;
+            command.SignedInUser = user.AggregateId;
 
             IAppEvent<AuctionCreated> publishedEvent = null;
 
@@ -142,7 +141,7 @@ namespace FunctionalTests.CommandRollback
             testRollbackHandler.Object.AfterAction = () => { sem2.Release(); };
 
 
-            var session = user.UserIdentity.GetAuctionCreateSession();
+            var session = new AuctionCreateSession(user.AggregateId);
             command.AuctionCreateSession = session;
 
             var handlerDepedencies = new CreateAuctionCommandHandlerDepedencies()

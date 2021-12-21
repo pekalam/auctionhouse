@@ -26,8 +26,8 @@ namespace Core.Common.Domain.Users
 
         private void ApplyEvent(UserRegistered @event)
         {
-            AggregateId = @event.UserIdentity.UserId;
-            Register(@event.UserIdentity.UserName);
+            AggregateId = @event.UserId;
+            Username = new Username(@event.Username);
         }
 
         private void ApplyEvent(CreditsAdded ev) => AddCredits(ev.CreditsCount);

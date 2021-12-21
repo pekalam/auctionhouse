@@ -21,17 +21,17 @@ namespace Core.Command.Commands.ChangePassword
 
         protected override Task<RequestStatus> HandleCommand(ChangePasswordCommand request, CancellationToken cancellationToken)
         {
-            var userAuthData = _authenticationDataRepository.FindUserAuthById(request.SignedInUser.UserId);
+            var userAuthData = _authenticationDataRepository.FindUserAuthById(request.SignedInUser);
             if (userAuthData == null)
             {
-                throw new UserNotFoundException($"Cannot find {request.SignedInUser.UserId} user");
+                throw new UserNotFoundException($"Cannot find {request.SignedInUser} user");
             }
 
             userAuthData.Password = request.NewPassword;
 
             _authenticationDataRepository.UpdateUserAuth(userAuthData);
 
-            _logger.LogDebug("User {user} has changed password", request.SignedInUser.UserId);
+            _logger.LogDebug("User {user} has changed password", request.SignedInUser);
             var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
             return Task.FromResult(response);
         }

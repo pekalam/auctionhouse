@@ -61,7 +61,7 @@ namespace Core.Query.EventHandlers
             }
         }
 
-        public void SendRequestCompletionToUser<T>(IAppEvent<T> appEvent, UserIdentity user, Dictionary<string, object> values = null) where T : Event
+        public void SendRequestCompletionToUser<T>(IAppEvent<T> appEvent, Guid user, Dictionary<string, object> values = null) where T : Event
         {
             if (appEvent.CommandBase.HttpQueued)
             {
@@ -83,7 +83,7 @@ namespace Core.Query.EventHandlers
             _wsRequestStatusService.SendRequestCompletionToAll(appEvent, values);
         }
 
-        public void SendRequestFailureToUser<T>(IAppEvent<T> appEvent, UserIdentity user, Dictionary<string, object> values = null) where T : Event
+        public void SendRequestFailureToUser<T>(IAppEvent<T> appEvent, Guid user, Dictionary<string, object> values = null) where T : Event
         {
             if (appEvent.CommandBase.HttpQueued)
             {
@@ -95,7 +95,7 @@ namespace Core.Query.EventHandlers
             }
         }
 
-        public void TrySendReqestCompletionToUser<T>(IAppEvent<T> appEvent, UserIdentity user,
+        public void TrySendReqestCompletionToUser<T>(IAppEvent<T> appEvent, Guid user,
             Dictionary<string, object> values = null) where T : Event
         {
             if (appEvent.CommandBase.HttpQueued)
@@ -108,7 +108,7 @@ namespace Core.Query.EventHandlers
             }
         }
 
-        public void TrySendRequestFailureToUser<T>(IAppEvent<T> appEvent, UserIdentity user,
+        public void TrySendRequestFailureToUser<T>(IAppEvent<T> appEvent, Guid user,
             Dictionary<string, object> values = null) where T : Event
         {
             if (appEvent.CommandBase.HttpQueued)
@@ -121,13 +121,13 @@ namespace Core.Query.EventHandlers
             }
         }
 
-        public void TrySendRequestCompletionToUser(string signalName, CorrelationId correlationId, UserIdentity user,
+        public void TrySendRequestCompletionToUser(string signalName, CorrelationId correlationId, Guid user,
             Dictionary<string, object> values = null)
         {
             _wsRequestStatusService.TrySendRequestCompletionToUser(signalName, correlationId, user, values);
         }
 
-        public void TrySendRequestFailureToUser(string signalName, CorrelationId correlationId, UserIdentity user,
+        public void TrySendRequestFailureToUser(string signalName, CorrelationId correlationId, Guid user,
             Dictionary<string, object> values = null)
         {
             _wsRequestStatusService.TrySendRequestFailureToUser(signalName, correlationId, user, values);

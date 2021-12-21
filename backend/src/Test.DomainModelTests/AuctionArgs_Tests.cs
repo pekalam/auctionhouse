@@ -18,7 +18,7 @@ namespace Core.DomainModelTests
             Assert.Throws<DomainException>(() => builder.Build());
             builder.SetCategory(new Category("test", 0));
             Assert.Throws<DomainException>(() => builder.Build());
-            builder.SetOwner(new UserIdentity());
+            builder.SetOwner(UserId.New());
             Assert.Throws<DomainException>(() => builder.Build());
             builder.SetProduct(new Product("test name", "desccription 1111", Condition.New));
             Assert.Throws<DomainException>(() => builder.Build());

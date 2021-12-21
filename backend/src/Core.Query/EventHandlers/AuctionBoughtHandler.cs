@@ -49,7 +49,7 @@ namespace Core.Query.EventHandlers
             var update = Builders<AuctionRead>.Update
                 .Set(read => read.Bought, true)
                 .Set(read => read.Completed, true)
-                .Set(read => read.Buyer, new UserIdentityRead(ev.UserIdentity))
+                .Set(read => read.Buyer, new UserIdentityRead(ev.UserIdentity, ev.UserIdentity.ToString())) //TODO
                 .Set(read => read.Archived, true);
 
             var result = _readModelDbContext.AuctionsReadModel.UpdateMany(session, filter, update);

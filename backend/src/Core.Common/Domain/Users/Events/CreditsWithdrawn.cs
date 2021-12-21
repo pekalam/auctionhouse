@@ -7,9 +7,9 @@ namespace Core.Common.Domain.Users.Events
     public class CreditsWithdrawn : Event
     {
         public decimal CreditsCount { get; }
-        public UserIdentity UserIdentity { get; }
+        public Guid UserIdentity { get; }
 
-        public CreditsWithdrawn(decimal creditsCount, UserIdentity userIdentity) : base("creditsWithdrawn")
+        public CreditsWithdrawn(decimal creditsCount, Guid userIdentity) : base("creditsWithdrawn")
         {
             CreditsCount = creditsCount;
             UserIdentity = userIdentity;

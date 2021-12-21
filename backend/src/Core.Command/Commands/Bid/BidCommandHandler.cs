@@ -48,7 +48,7 @@ namespace Core.Command.Commands.Bid
             var user = _userRepository.FindUser(request.SignedInUser);
             if (user == null)
             {
-                throw new CommandException($"Cannot find user {request.SignedInUser.UserName}");
+                throw new CommandException($"Cannot find user {request.SignedInUser}");
             }
             
             auction.Raise(user, request.Price);

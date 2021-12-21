@@ -2,11 +2,14 @@
 {
     public class UserRegistered : Event
     {
-        public UserIdentity UserIdentity { get; }
+        public UserId UserId { get; }
 
-        public UserRegistered(UserIdentity userIdentity) : base(EventNames.UserRegistered)
+        public string Username { get; }
+
+        public UserRegistered(UserId userId, string username) : base(EventNames.UserRegistered)
         {
-            UserIdentity = userIdentity;
+            UserId = userId;
+            Username = username;
         }
     }
 }

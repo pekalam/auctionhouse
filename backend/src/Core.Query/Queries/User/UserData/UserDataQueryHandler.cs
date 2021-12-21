@@ -25,7 +25,7 @@ namespace Core.Query.Queries.User.UserData
             _userIdentityService = userIdentityService;
         }
 
-        private UserIdentity GetSignedInUserIdentity()
+        private Guid GetSignedInUserIdentity()
         {
             var user = _userIdentityService.GetSignedInUserIdentity();
             if (user == null)
@@ -37,9 +37,9 @@ namespace Core.Query.Queries.User.UserData
 
         protected async override Task<UserDataQueryResult> HandleQuery(UserDataQuery request, CancellationToken cancellationToken)
         {
-            var user = GetSignedInUserIdentity();
+            var userId = GetSignedInUserIdentity();
 
-            var userReadModelFilter = Builders<UserRead>.Filter.Eq(field => field.UserIdentity.UserId, user.UserId.ToString());
+            var userReadModelFilter = Builders<UserRead>.Filter.Eq(field => field.UserIdentity.UserId, userId.ToString());
             var result = await _dbContext.UsersReadModel
                 .Find(userReadModelFilter)
                 .Project(model => new UserDataQueryResult() { Address = model.Address, Username = model.UserIdentity.UserName, Credits = model.Credits})

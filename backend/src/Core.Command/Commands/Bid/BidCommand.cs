@@ -13,7 +13,7 @@ namespace Core.Command.Bid
         public decimal Price { get; set; }
 
         [SignedInUser]
-        public UserIdentity SignedInUser { get; set; }
+        public UserId SignedInUser { get; set; }
 
         public BidCommand(Guid auctionId, decimal price)
         {

@@ -45,9 +45,9 @@ namespace Infrastructure.Repositories.SQLServer
             return user;
         }
 
-        public User FindUser(UserIdentity userIdentity)
+        public User FindUser(UserId userId)
         {
-            List<Event> aggEvents = ReadEvents(userIdentity.UserId);
+            List<Event> aggEvents = ReadEvents(userId);
             User user = aggEvents != null ? User.FromEvents(aggEvents) : null;
             return user;
         }

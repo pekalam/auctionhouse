@@ -58,13 +58,13 @@ namespace Core.Query.EventHandlers
                 BidId = ev.Bid.BidId.ToString()
             };
             var userFilter =
-                Builders<UserRead>.Filter.Eq(f => f.UserIdentity.UserId, ev.Bid.UserIdentity.UserId.ToString());
+                Builders<UserRead>.Filter.Eq(f => f.UserIdentity.UserId, ev.Bid.UserId.ToString());
             var userUpdate = Builders<UserRead>.Update.Push(f => f.UserBids, userBid);
 
             var result = _dbContext.UsersReadModel.UpdateOne(session, userFilter, userUpdate);
             if (result.MatchedCount == 0)
             {
-                throw new QueryException($"Cannot find user with id: {ev.Bid.UserIdentity.UserId.ToString()}");
+                throw new QueryException($"Cannot find user with id: {ev.Bid.UserId.ToString()}");
             }
         }
 
@@ -90,11 +90,11 @@ namespace Core.Query.EventHandlers
                 catch (Exception e)
                 {
                     _logger.LogError(e, "Cannot update read collections, appEvent: {@appEvent}", message);
-                    _requestStatusService.TrySendRequestFailureToUser(message, ev.Bid.UserIdentity);
+                    _requestStatusService.TrySendRequestFailureToUser(message, ev.Bid.UserId);
                     throw;
                 }
 
-                _requestStatusService.TrySendReqestCompletionToUser(message, ev.Bid.UserIdentity);
+                _requestStatusService.TrySendReqestCompletionToUser(message, ev.Bid.UserId);
             }
         }
     }

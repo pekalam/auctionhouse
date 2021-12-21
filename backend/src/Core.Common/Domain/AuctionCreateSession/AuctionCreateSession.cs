@@ -17,9 +17,9 @@ namespace Core.Common.Domain.AuctionCreateSession
         public AuctionImage[] SessionAuctionImages { get; }
         public DateTime DateCreated { get; private set; }
 
-        public UserIdentity Creator { get; }
+        public UserId Creator { get; }
 
-        public AuctionCreateSession(AuctionImage[] sessionAuctionImages, DateTime dateCreated, UserIdentity creator)
+        public AuctionCreateSession(AuctionImage[] sessionAuctionImages, DateTime dateCreated, UserId creator)
         {
             if (sessionAuctionImages.Length < Auction.MAX_IMAGES)
             {
@@ -30,7 +30,7 @@ namespace Core.Common.Domain.AuctionCreateSession
             Creator = creator;
         }
 
-        internal AuctionCreateSession(UserIdentity creator)
+        public AuctionCreateSession(UserId creator)
         {
             Creator = creator;
             DateCreated = DateTime.UtcNow;

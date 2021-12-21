@@ -27,14 +27,14 @@ namespace Core.DomainModelTests
         [SetUp]
         public void SetUp()
         {
-            user = new User();
+            user = User.Create(new Username(username));
             auctionArgs = new AuctionArgs.Builder()
                 .SetBuyNow(12)
                 .SetStartDate(DateTime.UtcNow.AddMinutes(20))
                 .SetEndDate(DateTime.UtcNow.AddDays(1))
                 .SetProduct(new Product("test name", "desccription 1111", Condition.New))
                 .SetCategory(new Category("", 0))
-                .SetOwner(new UserIdentity())
+                .SetOwner(UserId.New())
                 .SetTags(new[] {"tag1"})
                 .SetName("Test name")
                 .Build();
@@ -43,8 +43,7 @@ namespace Core.DomainModelTests
         [Test]
         public void AddOrReplaceImage_when_session_max_time_reached_throws()
         {
-            user.Register(username);
-            var session = user.UserIdentity.GetAuctionCreateSession();
+            var session = new AuctionCreateSession(user.AggregateId);
             var img = new AuctionImage("1", "2", "3");
             AuctionCreateSession.SESSION_MAX_TIME = -1;
             Assert.Throws<DomainException>(() => session.AddOrReplaceImage(img, 0));
@@ -53,8 +52,7 @@ namespace Core.DomainModelTests
         [Test]
         public void CreateAuction_when_session_max_time_reached_throws()
         {
-            user.Register(username);
-            var session = user.UserIdentity.GetAuctionCreateSession();
+            var session = new AuctionCreateSession(user.AggregateId);
             AuctionCreateSession.SESSION_MAX_TIME = -1;
             Assert.Throws<DomainException>(() => session.CreateAuction(auctionArgs));
         }
@@ -63,8 +61,7 @@ namespace Core.DomainModelTests
         public void ResetSession_when_session_max_time_not_reached_resets()
         {
             AuctionCreateSession.SESSION_MAX_TIME = AuctionCreateSession.DEFAULT_SESSION_MAX_TIME;
-            user.Register(username);
-            var session = user.UserIdentity.GetAuctionCreateSession();
+            var session = new AuctionCreateSession(user.AggregateId);
             var img = new AuctionImage("1", "2", "3");
             session.AddOrReplaceImage(img, 0);
             session.ResetSession();
@@ -76,8 +73,7 @@ namespace Core.DomainModelTests
         [Test]
         public void ResetSession_when_session_max_time_throws()
         {
-            user.Register(username);
-            var session = user.UserIdentity.GetAuctionCreateSession();
+            var session = new AuctionCreateSession(user.AggregateId);
             AuctionCreateSession.SESSION_MAX_TIME = -1;
             Assert.Throws<DomainException>(() => session.ResetSession());
         }
@@ -88,8 +84,7 @@ namespace Core.DomainModelTests
             AuctionCreateSession.SESSION_MAX_TIME = AuctionCreateSession.DEFAULT_SESSION_MAX_TIME;
             int imgNum = 1;
 
-            user.Register(username);
-            var session = user.UserIdentity.GetAuctionCreateSession();
+            var session = new AuctionCreateSession(user.AggregateId);
             var image1 = new AuctionImage("id1", "id2", "id3");
             session.AddOrReplaceImage(image1, imgNum);
 
@@ -120,8 +115,7 @@ namespace Core.DomainModelTests
             AuctionCreateSession.SESSION_MAX_TIME = AuctionCreateSession.DEFAULT_SESSION_MAX_TIME;
             int imgNum = 1;
 
-            user.Register(username);
-            var session = user.UserIdentity.GetAuctionCreateSession();
+            var session = new AuctionCreateSession(user.AggregateId);
             var image1 = new AuctionImage("id1", "id2", "id3");
             var image2 = new AuctionImage("id1", "id2", "id3");
             session.AddOrReplaceImage(image1, imgNum);
@@ -152,8 +146,7 @@ namespace Core.DomainModelTests
         public void CreateAuction_when_not_null_image_adds_it_to_auction_images()
         {
             AuctionCreateSession.SESSION_MAX_TIME = AuctionCreateSession.DEFAULT_SESSION_MAX_TIME;
-            user.Register(username);
-            var session = user.UserIdentity.GetAuctionCreateSession();
+            var session = new AuctionCreateSession(user.AggregateId);
             var image1 = new AuctionImage("id1", "id2", "id3");
             session.AddOrReplaceImage(image1, 0);
             var image2 = new AuctionImage("id1", "id2", "id3");
@@ -181,8 +174,7 @@ namespace Core.DomainModelTests
         public void CreateAuction_null_image_in_session_creates_auction_without_images()
         {
             AuctionCreateSession.SESSION_MAX_TIME = AuctionCreateSession.DEFAULT_SESSION_MAX_TIME;
-            user.Register(username);
-            var session = user.UserIdentity.GetAuctionCreateSession();
+            var session = new AuctionCreateSession(user.AggregateId);
             session.AddOrReplaceImage(null, 0);
 
             var auction = session.CreateAuction(auctionArgs);

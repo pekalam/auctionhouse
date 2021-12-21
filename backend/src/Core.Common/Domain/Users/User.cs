@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Xml;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Users.Events;
 using Core.Common.Exceptions;
@@ -20,8 +22,73 @@ namespace Core.Common.Domain.Users
         }
     }
 
+    public class Username : ValueObject
+    {
+        public string Value { get; private set; }
+
+        internal Username(string value)
+        {
+            Value = value;
+        }
+
+        public static async Task<Username> Create(string username, IUsernameProfanityCheck profanityCheck = null) //TODO
+        {
+            if (profanityCheck == null) profanityCheck = new NullUsernameProfanityCheck();
+
+
+            if (username.Length < User.MIN_USERNAME_LENGTH)
+            {
+                throw new InvalidUsernameException("Too short username");
+            }
+            if (await profanityCheck.CheckIsSatisfyingConditions(username))
+            {
+                return new Username(username);
+            }
+
+            throw new UsernameProfanityFoundException(username, $"Found username profanity: {username}");
+        }
+
+        public override string ToString() => Value;
+        public static implicit operator string(Username username) => username.Value;
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return Value;
+        }
+    }
+
+    public class UsernameProfanityFoundException : DomainException
+    {
+        public string Username { get; }
+
+        public UsernameProfanityFoundException(string username, string message) : base(message)
+        {
+            Username = username;
+        }
+
+        public UsernameProfanityFoundException(string username, string message, Exception innerException) : base(message, innerException)
+        {
+            Username = username;
+        }
+    }
+
+    public interface IUsernameProfanityCheck //TODO
+    {
+        Task<bool> CheckIsSatisfyingConditions(string username);
+    }
+
+    class NullUsernameProfanityCheck : IUsernameProfanityCheck
+    {
+        public Task<bool> CheckIsSatisfyingConditions(string username)
+        {
+            return Task.FromResult(true);
+        }
+    }
+
     public class UserId : ValueObject
     {
+        public static readonly UserId Empty = new UserId(Guid.Empty);
+
         public Guid Value { get; }
 
         public UserId(Guid value)
@@ -46,48 +113,39 @@ namespace Core.Common.Domain.Users
         public const int MIN_USERNAME_LENGTH = 4;
 
 
-        public UserIdentity UserIdentity { get; private set; }
         public decimal Credits { get; private set; }
+        public Username Username { get; private set; }
+
+        public static User Create(Username username)
+        {
+            var user = new User()
+            {
+                AggregateId = UserId.New(), Username = username
+            };
+            user.AddEvent(new UserRegistered(user.AggregateId, username.Value));
+            return user;
+        }
 
         public User()
         {
-            AggregateId = UserId.New();
         }
 
-        private object ThrowIfNotRegistered() => UserIdentity ?? throw new DomainException("User is not registered");
 
-        public void CheckIsRegistered() => ThrowIfNotRegistered();
 
-        public bool IsRegistered => UserIdentity != null;
-
-        public void Register(string username)
+        public void CheckIsRegistered()
         {
-            if (UserIdentity != null)
-            {
-                throw new DomainException($"User {username} is already registered");
-            }
-            if (username.Length < MIN_USERNAME_LENGTH)
-            {
-                throw new InvalidUsernameException("Too short username");
-            }
-            UserIdentity = new UserIdentity()
-            {
-                UserId = AggregateId.Value,
-                UserName = username
-            };
-            AddEvent(new UserRegistered(UserIdentity));
         }
+
+        public bool IsRegistered => true;
 
         public void AddCredits(decimal toAdd)
         {
-            ThrowIfNotRegistered();
             Credits += toAdd;
-            AddEvent(new CreditsAdded(toAdd, UserIdentity));
+            AddEvent(new CreditsAdded(toAdd, AggregateId));
         }
 
         public void WithdrawCredits(decimal toWithdraw)
         {
-            ThrowIfNotRegistered();
             if (Credits < toWithdraw)
             {
                 throw new DomainException("Not enough credits");
@@ -95,27 +153,25 @@ namespace Core.Common.Domain.Users
 
             Credits -= toWithdraw;
 
-            AddEvent(new CreditsWithdrawn(toWithdraw, UserIdentity));
+            AddEvent(new CreditsWithdrawn(toWithdraw, AggregateId));
         }
 
         public void ReturnCredits(decimal toReturn)
         {
-            ThrowIfNotRegistered();
             if (toReturn == 0)
             {
                 throw new DomainException("Cannot return 0 credits");
             }
             Credits += toReturn;
 
-            AddEvent(new CreditsReturned(toReturn, UserIdentity));
+            AddEvent(new CreditsReturned(toReturn, AggregateId));
         }
 
         public void CancelCredits(decimal ammount)
         {
-            ThrowIfNotRegistered();
             Credits -= ammount;
 
-            AddEvent(new CreditsCanceled(ammount, UserIdentity));
+            AddEvent(new CreditsCanceled(ammount, AggregateId));
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Core.Query.Queries.User.UserBids
             CancellationToken cancellationToken)
         {
             var userReadModelFilter = Builders<UserRead>.Filter.Eq(field => field.UserIdentity.UserId,
-                request.SignedInUser.UserId.ToString());
+                request.SignedInUser.ToString());
             var result = await _dbContext.UsersReadModel
                 .Find(userReadModelFilter)
                 .Limit(PageSize)

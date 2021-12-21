@@ -21,7 +21,7 @@ namespace IntegrationTests
                 .SetBuyNow(20.0m)
                 .SetStartDate(DateTime.UtcNow.AddMinutes(10))
                 .SetEndDate(DateTime.UtcNow.AddDays(1))
-                .SetOwner(new UserIdentity() { UserName = "test", UserId = Guid.NewGuid() })
+                .SetOwner(UserId.New())
                 .SetProduct(new Product("product name", "description 1111", Condition.New))
                 .SetCategory(new Category("test", 0))
                 .SetTags(new []{"tag1", "tag2"})
@@ -40,8 +40,7 @@ namespace IntegrationTests
                     "Data Source=.;Initial Catalog=AuctionhouseDatabase;Integrated Security=False;User ID=sa;PWD=Qwerty1234;")
             };
             auctionRepository = new MsSqlAuctionRepository(serverOpt);
-            user = new User();
-            user.Register("Test username");
+            user = User.Create(new Username("Test username"));
             user.AddCredits(1000);
             user.MarkPendingEventsAsHandled();
         }

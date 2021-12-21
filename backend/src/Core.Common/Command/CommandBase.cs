@@ -8,7 +8,7 @@ namespace Core.Common.Command
     public class CommandContext
     {
         public CorrelationId CorrelationId { get; set; }
-        public UserIdentity User { get; set; }
+        public Guid User { get; set; }
     }
 
     public class CommandBase : IRequest<RequestStatus>

@@ -27,7 +27,7 @@ namespace Core.DomainModelTests
                 .SetBuyNow(90.00m)
                 .SetStartDate(DateTime.UtcNow.AddMinutes(20))
                 .SetEndDate(DateTime.UtcNow.AddDays(5))
-                .SetOwner(new UserIdentity())
+                .SetOwner(UserId.New())
                 .SetProduct(new Product("test name", "desccription 1111", Condition.New))
                 .SetCategory(new Category("test", 0))
                 .SetBuyNowOnly(false)
@@ -54,7 +54,7 @@ namespace Core.DomainModelTests
                 .Be(bid);
             auction.ActualPrice.Should()
                 .Be(21);
-            bid.UserIdentity.Should().BeEquivalentTo(user.UserIdentity);
+            bid.UserId.Should().Be(user.AggregateId);
             bid.AuctionId.Should().Be(auction.AggregateId);
             bid.DateCreated.Kind.Should().Be(DateTimeKind.Utc);
 
@@ -87,7 +87,7 @@ namespace Core.DomainModelTests
         {
             var auction = AuctionTestUtils.CreateBuyNowOnlyAuction();
             var user = AuctionTestUtils.CreateUser();
-            Assert.Throws<DomainException>(() => auction.CancelBid(user, new Bid(auction.AggregateId, user.UserIdentity, 12, DateTime.UtcNow)));
+            Assert.Throws<DomainException>(() => auction.CancelBid(user, new Bid(auction.AggregateId, user.AggregateId, 12, DateTime.UtcNow)));
         }
 
         [Test]

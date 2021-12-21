@@ -51,13 +51,12 @@ namespace FunctionalTests.EventHandling
         public void SetUp()
         {
             var services = TestDepedencies.Instance.Value;
-            user = new User();
-            user.Register("testUserName");
+            user = User.Create(new Username("testUserName"));
             user.MarkPendingEventsAsHandled();
-            session = user.UserIdentity.GetAuctionCreateSession();
+            session = new AuctionCreateSession(user.AggregateId);
             product = new Product("test product name", "example description", Condition.New);
             services.DbContext.UsersReadModel.InsertOne(new UserRead()
-                {UserIdentity = new UserIdentityRead(user.UserIdentity)});
+                {UserIdentity = new UserIdentityRead(user.AggregateId, user.Username)});
         }
 
         [TearDown]
@@ -75,7 +74,7 @@ namespace FunctionalTests.EventHandling
             var services = TestDepedencies.Instance.Value;
 
             var userRepository = new Mock<IUserRepository>();
-            userRepository.Setup(f => f.FindUser(It.IsAny<UserIdentity>()))
+            userRepository.Setup(f => f.FindUser(It.IsAny<UserId>()))
                 .Returns(user);
 
             session.AddOrReplaceImage(new AuctionImage("img1-1",
@@ -106,7 +105,7 @@ namespace FunctionalTests.EventHandling
             var cmd = new CreateAuctionCommand(20.0m, product, DateTime.UtcNow.AddMinutes(20),
                 DateTime.UtcNow.AddDays(12),
                 categories, Tag.From(new[] {"tag1"}), "test name", false);
-            cmd.SignedInUser = user.UserIdentity;
+            cmd.SignedInUser = user.AggregateId;
             cmd.AuctionCreateSession = session;
             return cmd;
         }
@@ -119,7 +118,7 @@ namespace FunctionalTests.EventHandling
                      auctionCreated.AuctionArgs.Product.Description.Equals(command.Product.Description);
             var v4 = auctionCreated.AuctionArgs.BuyNowPrice.Equals(command.BuyNowPrice);
             var v5 = auctionCreated.AuctionArgs.StartDate.Value.CompareTo(command.StartDate) == 0;
-            var v6 = auctionCreated.AuctionArgs.Creator.UserId.Equals(user.UserIdentity.UserId);
+            var v6 = auctionCreated.AuctionArgs.Owner.Equals(user.AggregateId);
             return v1 && v2 && v3 && v4 && v5 && v6;
         }
 
@@ -155,7 +154,7 @@ namespace FunctionalTests.EventHandling
             var auctionReadModel = services.DbContext.AuctionsReadModel.Find(a => a.AuctionId == idFromHandler)
                 .FirstOrDefault();
             UserRead userRead = services.DbContext.UsersReadModel
-                .Find(f => f.UserIdentity.UserId == user.UserIdentity.UserId.ToString())
+                .Find(f => f.UserIdentity.UserId == user.AggregateId.ToString())
                 .FirstOrDefault();
 
             auctionReadModel.Should()

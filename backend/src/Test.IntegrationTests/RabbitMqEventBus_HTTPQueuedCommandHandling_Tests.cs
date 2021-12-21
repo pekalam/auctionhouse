@@ -25,7 +25,7 @@ namespace IntegrationTests
         [Test]
         public void METHOD()
         {
-            var signedInUser = new UserIdentity(Guid.NewGuid(), "test");
+            var signedInUser = UserId.New();
             var cmd = new QueuedCommandBase()
             {
                 X = 1,

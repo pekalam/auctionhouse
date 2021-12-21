@@ -25,14 +25,12 @@ namespace FunctionalTests.EventHandling
         public void Test1()
         {
             var services = TestDepedencies.Instance.Value;
-            var user = new User();
-            user.Register("testUserName");
+            var user = User.Create(new Username("testUserName"));
             user.AddCredits(10000);
-            var userIdentity = user.UserIdentity;
 
             services.UserRepository.AddUser(user);
 
-
+            var userId = UserId.New();
             var product = new Product("test name", "test product description", Condition.New);
             var auctionArgs = new AuctionArgs.Builder()
                     .SetBuyNow(20.0m)
@@ -40,7 +38,7 @@ namespace FunctionalTests.EventHandling
                     .SetStartDate(DateTime.UtcNow.AddMinutes(10))
                     .SetEndDate(DateTime.UtcNow.AddDays(1))
                     .SetCategory(new Category("test", 0))
-                    .SetOwner(new UserIdentity(){UserId = Guid.NewGuid(), UserName = "owner"})
+                    .SetOwner(userId)
                     .SetProduct(product)
                     .SetTags(new string[]{"tag1", "tag2"})
                     .Build();
@@ -66,7 +64,7 @@ namespace FunctionalTests.EventHandling
 
             services.AuctionRepository.AddAuction(auction);
             var cmd = new BidCommand(auction.AggregateId, 21.0m);
-            cmd.SignedInUser = userIdentity;
+            cmd.SignedInUser = userId;
             stubHandler.Handle(cmd, CancellationToken.None);
 
 

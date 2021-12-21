@@ -18,7 +18,7 @@ namespace Web.Adapters
 {
     public class AuctionCreateSessionService : IAuctionCreateSessionService
     {
-        private string GetSessionKey(UserIdentity userIdentity) => $"user-{userIdentity.UserId}";
+        private string GetSessionKey(UserId userIdentity) => $"user-{userIdentity}";
 
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserIdentityService _userIdentityService;
@@ -52,7 +52,7 @@ namespace Web.Adapters
             return deserialized;
         }
 
-        private UserIdentity GetSignedInUserIdentity()
+        private UserId GetSignedInUserIdentity()
         {
             var userIdnIdentity = _userIdentityService.GetSignedInUserIdentity();
             if (userIdnIdentity == null)
@@ -83,7 +83,7 @@ namespace Web.Adapters
         {
             var user = GetSignedInUserIdentity();
             _logger.LogDebug("Creating new AuctionCreateSession for {@user}", user);
-            var newSession = user.GetAuctionCreateSession();
+            var newSession = new AuctionCreateSession(user);
             SaveSession(newSession);
             return newSession;
         }

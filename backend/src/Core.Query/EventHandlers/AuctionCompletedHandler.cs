@@ -39,7 +39,7 @@ namespace Core.Query.EventHandlers
             var auctionFilter = Builders<AuctionRead>.Filter.Eq(field => field.AuctionId, ev.AuctionId.ToString());
             var auctionUpdate = Builders<AuctionRead>.Update
                 .Set(field => field.Completed, true)
-                .Set(field => field.Buyer, new UserIdentityRead(ev.WinningBid.UserIdentity))
+                .Set(field => field.Buyer, new UserIdentityRead(ev.WinningBid.UserId, ev.WinningBid.UserId.ToString())) //TODO
                 .Set(field => field.WinningBid, new BidRead(ev.WinningBid))
                 .Set(read => read.Archived, true);
 

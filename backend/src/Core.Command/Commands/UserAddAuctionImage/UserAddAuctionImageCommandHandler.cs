@@ -42,10 +42,10 @@ namespace Core.Command.Commands.UserAddAuctionImage
                 throw new CommandException($"Cannot find auction {request.AuctionId}");
             }
 
-            if (!auction.Owner.UserId.Equals(request.SignedInUser.UserId))
+            if (!auction.Owner.Equals(request.SignedInUser))
             {
                 throw new CommandException(
-                    $"User {request.SignedInUser.UserId} cannot modify auction ${auction.AggregateId}");
+                    $"User {request.SignedInUser} cannot modify auction ${auction.AggregateId}");
             }
 
             var file = File.ReadAllBytes(request.TempPath);

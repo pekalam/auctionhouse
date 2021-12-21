@@ -26,10 +26,7 @@ namespace UnitTests
         {
             var ev = @event.Select(e => e as UserRegistered)
                 .ToList();
-            return ev.Count == 1 && ev[0]
-                                     .UserIdentity.UserName == "test"
-                                 && ev[0]
-                                     .UserIdentity.UserId != Guid.Empty;
+            return ev.Count == 1 && ev[0].UserId != Guid.Empty;
         }
 
 
@@ -74,7 +71,7 @@ namespace UnitTests
             var command = new SignUpCommand(username, password, email);
             var authRepo = new Mock<IUserAuthenticationDataRepository>();
 
-            UserIdentity userIdentity = null;
+            UserId userIdentity = null;
             var mockEventBusService = new Mock<EventBusService>(Mock.Of<IEventBus>(), Mock.Of<IAppEventBuilder>());
             mockEventBusService.Setup(f => f.Publish(
                     It.Is<IEnumerable<Event>>(ev => verifyRegisteredEvent(ev)),
@@ -83,7 +80,7 @@ namespace UnitTests
                 )
                 .Callback((IEnumerable<Event> evs, CorrelationId id, CommandBase cmd) =>
                 {
-                    userIdentity = (evs.First() as UserRegistered).UserIdentity;
+                    userIdentity = (evs.First() as UserRegistered).UserId;
                 })
                 .Verifiable();
 
@@ -96,10 +93,8 @@ namespace UnitTests
 
             mockEventBusService.Verify(
                 f => f.Publish(It.IsAny<IEnumerable<Event>>(), It.IsAny<CorrelationId>(), command), Times.Once);
-            userIdentity.UserName.Should()
-                .Be(username);
-            userIdentity.UserId.Should()
-                .NotBe(Guid.Empty);
+            userIdentity.Should()
+                .NotBe(UserId.Empty);
         }
 
         [Test]

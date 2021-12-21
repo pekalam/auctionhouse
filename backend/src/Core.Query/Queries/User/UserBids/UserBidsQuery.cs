@@ -11,6 +11,6 @@ namespace Core.Query.Queries.User.UserBids
         public int Page { get; set; } = 0;
 
         [SignedInUser]
-        public UserIdentity SignedInUser { get; set; }
+        public UserId SignedInUser { get; set; }
     }
 }

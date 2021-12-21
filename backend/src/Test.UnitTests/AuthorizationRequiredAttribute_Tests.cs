@@ -21,7 +21,7 @@ namespace UnitTests.AuthorizationRequiredAttribute_Tests
         public int Prop { get; set; }
 
         [SignedInUser]
-        public UserIdentity User { get; set; }
+        public UserId User { get; set; }
     }
 
     [AuthorizationRequired]
@@ -30,7 +30,7 @@ namespace UnitTests.AuthorizationRequiredAttribute_Tests
         public int Prop { get; set; }
 
         [SignedInUser]
-        public UserIdentity User { get; set; }
+        public UserId User { get; set; }
     }
 
     [AuthorizationRequired]
@@ -69,7 +69,7 @@ namespace UnitTests.AuthorizationRequiredAttribute_Tests
                 .Value;
 
             prop.Name.Should().Be("User");
-            prop.PropertyType.Should().Be(typeof(UserIdentity));
+            prop.PropertyType.Should().Be(typeof(UserId));
 
 
 
@@ -84,7 +84,7 @@ namespace UnitTests.AuthorizationRequiredAttribute_Tests
                 .Value;
 
             prop.Name.Should().Be("User");
-            prop.PropertyType.Should().Be(typeof(UserIdentity));
+            prop.PropertyType.Should().Be(typeof(UserId));
 
 
 

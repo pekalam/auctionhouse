@@ -18,8 +18,8 @@ namespace Core.Query.EventHandlers
     {
         public AuctionReadProfile()
         {
-            CreateMap<UserIdentity, UserIdentityRead>()
-                .ForMember(read => read.UserId, opt => opt.MapFrom(identity => identity.UserId.ToString()));
+            CreateMap<UserId, UserIdentityRead>() //TODO
+                .ForMember(read => read.UserId, opt => opt.MapFrom(identity => identity.ToString()));
             CreateMap<Bid, BidRead>()
                 .ForMember(read => read.AuctionId, opt => opt.MapFrom(bid => bid.AuctionId.ToString()));
             CreateMap<AuctionArgs, AuctionRead>();
@@ -66,11 +66,11 @@ namespace Core.Query.EventHandlers
             catch (Exception e)
             {
                 _logger.LogWarning(e, "Cannot create an auction");
-                _requestStatusService.TrySendRequestFailureToUser(message, ev.AuctionArgs.Creator);
+                _requestStatusService.TrySendRequestFailureToUser(message, ev.AuctionArgs.Owner);
                 throw;
             }
 
-            _requestStatusService.TrySendReqestCompletionToUser(message, ev.AuctionArgs.Creator);
+            _requestStatusService.TrySendReqestCompletionToUser(message, ev.AuctionArgs.Owner);
         }
     }
 }

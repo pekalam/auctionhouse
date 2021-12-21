@@ -69,17 +69,16 @@ namespace FunctionalTests.Commands
 
         private void SetUpCommandHandler()
         {
-            user = new User();
-            user.Register("test");
+            user = User.Create(new Username("test"));
             user.MarkPendingEventsAsHandled();
 
             var userRepository = new Mock<IUserRepository>();
-            userRepository.Setup(f => f.FindUser(It.IsAny<UserIdentity>()))
+            userRepository.Setup(f => f.FindUser(It.IsAny<UserId>()))
                 .Returns(user);
 
             var auctionCreateSessionService = new Mock<IAuctionCreateSessionService>();
             auctionCreateSessionService.Setup(f => f.GetExistingSession())
-                .Returns(user.UserIdentity.GetAuctionCreateSession());
+                .Returns(new AuctionCreateSession(user.AggregateId));
             auctionCreateSessionService.Setup(f => f.RemoveSession());
 
             var eventBusService = new Mock<EventBusService>(Mock.Of<IEventBus>(), Mock.Of<IAppEventBuilder>());
@@ -116,8 +115,8 @@ namespace FunctionalTests.Commands
                 new Product("test product name", "example description", Condition.New),
                 startDate, endDate,
                 categories, Tag.From(new []{"tag1"}), "test name", false);
-            command.SignedInUser = user.UserIdentity;
-            command.AuctionCreateSession = user.UserIdentity.GetAuctionCreateSession();
+            command.SignedInUser = user.AggregateId;
+            command.AuctionCreateSession = new AuctionCreateSession(user.AggregateId);
             testCommandHandler.Handle(command, CancellationToken.None)
                 .Wait();
 
@@ -140,8 +139,8 @@ namespace FunctionalTests.Commands
             var command = new CreateAuctionCommand(Decimal.One,
                 new Product("test product name", "example description", Condition.New),
                 startDate, endDate, categories, Tag.From(new []{"tag1"}), "test name", false);
-            command.SignedInUser = user.UserIdentity;
-            command.AuctionCreateSession = user.UserIdentity.GetAuctionCreateSession();
+            command.SignedInUser = user.AggregateId;
+            command.AuctionCreateSession = new AuctionCreateSession(user.AggregateId);
 
 
             Assert.Throws<Exception>(() =>
@@ -164,8 +163,8 @@ namespace FunctionalTests.Commands
                 new Product("test product name", "example description", Condition.New),
                 startDate,
                 endDate, categories, Tag.From(new []{"tag1"}), "test auction name", false);
-            command.SignedInUser = user.UserIdentity;
-            command.AuctionCreateSession = user.UserIdentity.GetAuctionCreateSession();
+            command.SignedInUser = user.AggregateId;
+            command.AuctionCreateSession = new AuctionCreateSession(user.AggregateId);
 
 
             Assert.Throws<Exception>(() =>

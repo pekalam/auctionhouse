@@ -14,7 +14,7 @@ namespace Core.DomainModelTests
         {
             var args = new AuctionArgs.Builder()
                 .SetBuyNowOnly(false)
-                .SetOwner(new UserIdentity())
+                .SetOwner(UserId.New())
                 .SetCategory(new Category("", 1))
                 .SetBuyNow(123)
                 .SetStartDate(DateTime.UtcNow.AddDays(1))
@@ -30,7 +30,7 @@ namespace Core.DomainModelTests
         {
             var args = new AuctionArgs.Builder()
                 .SetBuyNowOnly(true)
-                .SetOwner(new UserIdentity())
+                .SetOwner(UserId.New())
                 .SetCategory(new Category("", 1))
                 .SetBuyNow(123)
                 .SetStartDate(DateTime.UtcNow.AddDays(1))
@@ -44,8 +44,7 @@ namespace Core.DomainModelTests
 
         public static User CreateUser(decimal credits = 1000)
         {
-            var user = new User();
-            user.Register($"test username {UserNum++}");
+            var user = User.Create(new Username($"test username {UserNum++}"));
             user.AddCredits(credits);
             user.MarkPendingEventsAsHandled();
             return user;

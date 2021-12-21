@@ -3,7 +3,7 @@
     public interface IUserRepository
     {
         User AddUser(User user);
-        User FindUser(UserIdentity userIdentity);
+        User FindUser(UserId userId);
         void UpdateUser(User user);
     }
 }

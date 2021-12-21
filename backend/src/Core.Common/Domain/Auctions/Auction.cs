@@ -65,9 +65,9 @@ namespace Core.Common.Domain.Auctions
         public IReadOnlyCollection<Bid> Bids => _bids;
         public AuctionDate StartDate { get; private set; }
         public AuctionDate EndDate { get; private set; }
-        public UserIdentity Owner { get; private set; }
+        public UserId Owner { get; private set; }
         public Product Product { get; private set; }
-        public UserIdentity Buyer { get; private set; } = UserIdentity.Empty;
+        public UserId Buyer { get; private set; } = UserId.Empty;
         public Category Category { get; private set; }
         public bool Completed { get; private set; }
         public bool Canceled { get; private set; }
@@ -95,7 +95,7 @@ namespace Core.Common.Domain.Auctions
             BuyNowPrice = auctionArgs.BuyNowPrice;
             StartDate = auctionArgs.StartDate;
             EndDate = auctionArgs.EndDate;
-            Owner = auctionArgs.Creator;
+            Owner = auctionArgs.Owner;
             Product = auctionArgs.Product;
             Category = auctionArgs.Category;
             BuyNowOnly = auctionArgs.BuyNowOnly;
@@ -188,7 +188,7 @@ namespace Core.Common.Domain.Auctions
             {
                 throw new DomainException("Price is to low");
             }
-            if (bid.UserIdentity.UserId == Owner.UserId)
+            if (bid.UserId == Owner)
             {
                 throw new DomainException("Auction cannot be raised by auction creator");
             }
@@ -204,7 +204,7 @@ namespace Core.Common.Domain.Auctions
             {
                 throw new DomainException("User is not registered");
             }
-            var bid = new Bid(AggregateId, user.UserIdentity, newPrice, DateTime.UtcNow);
+            var bid = new Bid(AggregateId, user.AggregateId, newPrice, DateTime.UtcNow);
             Raise(bid);
 
             user.WithdrawCredits(newPrice);
@@ -248,9 +248,9 @@ namespace Core.Common.Domain.Auctions
 
         public void CancelBid(User user, Bid bid)
         {
-            if (!bid.UserIdentity.Equals(user.UserIdentity))
+            if (!bid.UserId.Equals(user.AggregateId))
             {
-                throw new DomainException($"Bid cannot be canceled by user {user.UserIdentity.UserId}");
+                throw new DomainException($"Bid cannot be canceled by user {user.AggregateId}");
             }
 
             CancelBid(bid, false);
@@ -270,11 +270,11 @@ namespace Core.Common.Domain.Auctions
             ThrowIfCompletedOrCanceled();
             Completed = true;
             var winningBid = Bids.FirstOrDefault(b => b.Price == Bids.Max(bid => bid.Price));
-            Buyer = winningBid?.UserIdentity;
+            Buyer = winningBid?.UserId;
             AddEvent(new AuctionCompleted(AggregateId, winningBid, Owner));
         }
 
-        private void BuyNow(UserIdentity buyer)
+        private void BuyNow(UserId buyer)
         {
             Buyer = buyer;
             Completed = true;
@@ -292,7 +292,7 @@ namespace Core.Common.Domain.Auctions
 
             user.CheckIsRegistered();
             user.WithdrawCredits(BuyNowPrice);
-            BuyNow(user.UserIdentity);
+            BuyNow(user.AggregateId);
         }
 
         public void AddImage(AuctionImage img)

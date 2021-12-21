@@ -19,8 +19,7 @@ namespace IntegrationTests
                     "Data Source=.;Initial Catalog=AuctionhouseDatabase;Integrated Security=False;User ID=sa;PWD=Qwerty1234;")
             };
             userRepository = new MsSqlUserRepository(serverOpt);
-            user = new User();
-            user.Register("test");
+            user = User.Create(new Username("test"));
             user.AddCredits(100);
         }
 
@@ -30,7 +29,7 @@ namespace IntegrationTests
             userRepository.AddUser(user);
             user.MarkPendingEventsAsHandled();
 
-            var read = userRepository.FindUser(user.UserIdentity);
+            var read = userRepository.FindUser(user.AggregateId);
 
             read.Should().BeEquivalentTo(user);
         }
@@ -38,7 +37,7 @@ namespace IntegrationTests
         [Test]
         public void FindUser_when_not_found_returns_null()
         {
-            var read = userRepository.FindUser(user.UserIdentity);
+            var read = userRepository.FindUser(user.AggregateId);
 
             read.Should()
                 .BeNull();
@@ -54,7 +53,7 @@ namespace IntegrationTests
             userRepository.UpdateUser(user);
             user.MarkPendingEventsAsHandled();
 
-            var read = userRepository.FindUser(user.UserIdentity);
+            var read = userRepository.FindUser(user.AggregateId);
             read.Should().BeEquivalentTo(user);
         }
 
@@ -66,7 +65,7 @@ namespace IntegrationTests
             userRepository.UpdateUser(user);
             user.MarkPendingEventsAsHandled();
 
-            var read = userRepository.FindUser(user.UserIdentity);
+            var read = userRepository.FindUser(user.AggregateId);
             read.Should().BeEquivalentTo(user);
         }
     }

@@ -15,7 +15,7 @@ namespace Core.Common.Domain.Auctions
         public AuctionImage[] AuctionImages { get; set; }
         public AuctionDate StartDate { get; set; }
         public AuctionDate EndDate { get; set; }
-        public UserIdentity Creator { get; set; }
+        public UserId Owner { get; set; }
         public Product Product { get; set; }
         public Category Category { get; set; }
         public Tag[] Tags { get; set; }
@@ -31,7 +31,7 @@ namespace Core.Common.Domain.Auctions
                 if (args.Product == null ||
                     args.StartDate == null ||
                     args.EndDate == null ||
-                    args.Creator == null ||
+                    args.Owner == null ||
                     args.Category == null ||
                     args.Tags == null ||
                     args.Name == null
@@ -81,9 +81,9 @@ namespace Core.Common.Domain.Auctions
                 return this;
             }
 
-            public Builder SetOwner(UserIdentity owner)
+            public Builder SetOwner(UserId owner)
             {
-                args.Creator = owner;
+                args.Owner = owner;
                 return this;
             }
 

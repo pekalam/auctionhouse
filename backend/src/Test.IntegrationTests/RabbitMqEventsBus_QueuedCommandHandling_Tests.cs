@@ -60,7 +60,7 @@ namespace IntegrationTests
         [Test]
         public void METHOD()
         {
-            var signedInUser = new UserIdentity(Guid.NewGuid(), "test");
+            var signedInUser = UserId.New();
             var cmd = new QueuedCommandBase()
             {
                 X = 1,
@@ -98,7 +98,7 @@ namespace IntegrationTests
             if (!sem.Wait(TimeSpan.FromSeconds(60))) { Assert.Fail(); };
 
             mockRequestStatusService.Verify(service => service.TrySendRequestFailureToUser(
-                It.IsAny<string>(), It.IsAny<CorrelationId>(), It.IsAny<UserIdentity>(),
+                It.IsAny<string>(), It.IsAny<CorrelationId>(), It.IsAny<Guid>(),
                 null
             ), Times.Never());
 

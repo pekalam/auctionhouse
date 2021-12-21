@@ -28,7 +28,7 @@ namespace Core.Command.Commands.UserAddAuctionImage
         public string Extension { get; }
 
         [SignedInUser]
-        public UserIdentity SignedInUser { get; set; }
+        public UserId SignedInUser { get; set; }
 
         public UserAddAuctionImageCommand(Guid auctionId, IFileStreamAccessor img, string extension)
         {

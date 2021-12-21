@@ -9,9 +9,9 @@ namespace Core.Common.Domain.Auctions.Events
     {
         public Guid AuctionId { get; }
         public int ImgNum { get; }
-        public UserIdentity AuctionOwner { get; }
+        public Guid AuctionOwner { get; }
 
-        public AuctionImageRemoved(Guid auctionId, int imgNum, UserIdentity auctionOwner) : base(EventNames.AuctionImageRemoved)
+        public AuctionImageRemoved(Guid auctionId, int imgNum, Guid auctionOwner) : base(EventNames.AuctionImageRemoved)
         {
             AuctionId = auctionId;
             ImgNum = imgNum;

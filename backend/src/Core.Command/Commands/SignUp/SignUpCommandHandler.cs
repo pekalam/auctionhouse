@@ -26,7 +26,7 @@ namespace Core.Command.SignUp
             _logger = logger;
         }
 
-        protected override Task<RequestStatus> HandleCommand(SignUpCommand request, CancellationToken cancellationToken)
+        protected override async Task<RequestStatus> HandleCommand(SignUpCommand request, CancellationToken cancellationToken)
         {
             var existing = _userAuthenticationDataRepository.FindUserAuth(request.Username);
             if (existing != null)
@@ -34,15 +34,15 @@ namespace Core.Command.SignUp
                 throw new UsernameConflictException($"User {request.Username} already exists");
             }
 
-            var user = new User();
-            user.Register(request.Username);
+            var username = await Username.Create(request.Username);
+            var user = User.Create(username);
 
             var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
             var userAuth = new UserAuthenticationData()
             {
                 Password = request.Password,
-                UserId = user.UserIdentity.UserId,
-                UserName = user.UserIdentity.UserName,
+                UserId = user.AggregateId,
+                UserName = user.Username,
                 Email = request.Email
             };
             _userAuthenticationDataRepository.AddUserAuth(userAuth);
@@ -50,7 +50,7 @@ namespace Core.Command.SignUp
             _eventBusService.Publish(user.PendingEvents, response.CorrelationId, request);
             user.MarkPendingEventsAsHandled();
 
-            return Task.FromResult(response);
+            return response;
         }
     }
 }

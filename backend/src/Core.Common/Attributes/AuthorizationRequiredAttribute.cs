@@ -34,7 +34,7 @@ namespace Core.Common.Attributes
                         .Where(info =>
                             info.CanWrite &&
                             info.GetCustomAttribute<SignedInUserAttribute>() != null &&
-                            info.PropertyType.Equals(typeof(UserIdentity)))
+                            info.PropertyType.Equals(typeof(UserId)))
                         .Select(info => new
                         {
                             CmdOrQueryType = info.DeclaringType,
@@ -72,11 +72,11 @@ namespace Core.Common.Attributes
 
         public int Order => 0;
 
-        private static UserIdentity GetSignedInUser(IImplProvider implProvider)
+        private static UserId GetSignedInUser(IImplProvider implProvider)
         {
             var userIdentityService = implProvider.Get<IUserIdentityService>();
             var userIdentity = userIdentityService.GetSignedInUserIdentity();
-            if (userIdentity == null || userIdentity == UserIdentity.Empty)
+            if (userIdentity == null || userIdentity == UserId.Empty)
             {
                 throw new NotSignedInException("User not signed in");
             }

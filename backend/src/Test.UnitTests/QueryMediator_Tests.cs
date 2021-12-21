@@ -21,7 +21,7 @@ namespace UnitTests.CommandMediator_Tests
     {
         public int AnotherProp { get; }
         [SignedInUser]
-        public UserIdentity SignedInUser { get; set; }
+        public UserId SignedInUser { get; set; }
 
         public TestQueryAuth(int anotherProp)
         {
@@ -64,7 +64,7 @@ namespace UnitTests.CommandMediator_Tests
             var mockMediatr = new Mock<IMediator>();
 
             var stubUserIdentityService = new Mock<IUserIdentityService>();
-            stubUserIdentityService.Setup(f => f.GetSignedInUserIdentity()).Returns(UserIdentity.Empty);
+            stubUserIdentityService.Setup(f => f.GetSignedInUserIdentity()).Returns(UserId.Empty);
             var stubImplProvider = new Mock<IImplProvider>();
             stubImplProvider.Setup(f => f.Get<IUserIdentityService>())
                 .Returns(stubUserIdentityService.Object);
@@ -74,11 +74,11 @@ namespace UnitTests.CommandMediator_Tests
             Assert.ThrowsAsync<NotSignedInException>(async () => await queryMediator.Send(new TestQueryAuth(5)));
         }
 
-        private bool VerifyTestQuery(IRequest<int> req)
+        private bool VerifyTestQuery(IRequest<int> req, UserId userId)
         {
             var cmd = (TestQueryAuth)req;
             cmd.AnotherProp.Should().Be(100);
-            cmd.SignedInUser.UserName.Should().Be("test");
+            cmd.SignedInUser.Should().Be(userId);
             return true;
         }
 
@@ -86,16 +86,17 @@ namespace UnitTests.CommandMediator_Tests
         [Test]
         public async Task Send_when_query_with_authorization_required_attribute_and_signed_in_sets_user_prop()
         {
+            var userId = UserId.New();
             int expectedResponse = 5;
             var mockMediatr = new Mock<IMediator>();
             mockMediatr.Setup(f => f.Send(It.Is<IRequest<int>>(
-                        request => VerifyTestQuery(request)
+                        request => VerifyTestQuery(request, userId)
                     ),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedResponse);
 
             var stubUserIdentityService = new Mock<IUserIdentityService>();
-            stubUserIdentityService.Setup(f => f.GetSignedInUserIdentity()).Returns(new UserIdentity(Guid.NewGuid(), "test"));
+            stubUserIdentityService.Setup(f => f.GetSignedInUserIdentity()).Returns(userId);
             var stubImplProvider = new Mock<IImplProvider>();
             stubImplProvider.Setup(f => f.Get<IUserIdentityService>())
                 .Returns(stubUserIdentityService.Object);

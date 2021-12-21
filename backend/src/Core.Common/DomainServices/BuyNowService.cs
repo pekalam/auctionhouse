@@ -23,9 +23,9 @@ namespace Core.Common.DomainServices
 
             foreach (var bid in auction.Bids)
             {
-                if (!buyer.UserIdentity.Equals(bid.UserIdentity))
+                if (!buyer.AggregateId.Value.Equals(bid.UserId))
                 {
-                    var user = _userRepository.FindUser(bid.UserIdentity);
+                    var user = _userRepository.FindUser(bid.UserId);
                     user.ReturnCredits(bid.Price);
                     generatedEvents.AddRange(user.PendingEvents);
                     _userRepository.UpdateUser(user);

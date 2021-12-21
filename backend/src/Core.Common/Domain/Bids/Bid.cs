@@ -1,5 +1,4 @@
 ﻿using System;
-using Core.Common.Domain.Users;
 using Core.Common.Exceptions;
 
 namespace Core.Common.Domain.Bids
@@ -8,19 +7,19 @@ namespace Core.Common.Domain.Bids
     {
         public Guid BidId { get; set; }
         public Guid AuctionId { get; set; }
-        public UserIdentity UserIdentity { get; set; }
+        public Guid UserId { get; set; }
         public decimal Price { get; set; }
 
         //TODO
         public DateTime DateCreated { get; }
 
-        public Bid(Guid auctionId, UserIdentity userIdentity, decimal price, DateTime dateCreated)
+        public Bid(Guid auctionId, Guid userId, decimal price, DateTime dateCreated)
         {
             if (dateCreated.Kind != DateTimeKind.Utc)
             {
                 throw new DomainException("Invalid date format");
             }
-            if (userIdentity == null || userIdentity == UserIdentity.Empty)
+            if (userId == Guid.Empty)
             {
                 throw new DomainException("Invalid user");
             }
@@ -31,7 +30,7 @@ namespace Core.Common.Domain.Bids
 
             BidId = Guid.NewGuid();
             AuctionId = auctionId;
-            UserIdentity = userIdentity;
+            UserId = userId;
             Price = price;
             DateCreated = dateCreated;
         }

@@ -30,12 +30,12 @@ namespace Core.DomainModelTests
 
 
             var mockRepo = new Mock<IUserRepository>();
-            mockRepo.Setup(r => r.FindUser(It.IsAny<UserIdentity>())).Returns<UserIdentity>(identity =>
+            mockRepo.Setup(r => r.FindUser(It.IsAny<UserId>())).Returns<UserId>(id =>
             {
-                return auction.Bids.Where(bid => bid.UserIdentity.UserId.Equals(identity.UserId))
-                    .Select(bid => bid.UserIdentity)
-                    .Select(userIdentity =>
-                        users.First(user => user.UserIdentity.UserId.Equals(userIdentity.UserId)))
+                return auction.Bids.Where(bid => bid.UserId.Equals(id))
+                    .Select(bid => bid.UserId)
+                    .Select(userId =>
+                        users.First(user => user.AggregateId.Value.Equals(userId)))
                     .FirstOrDefault();
             });
 

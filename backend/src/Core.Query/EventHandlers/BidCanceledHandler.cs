@@ -51,7 +51,7 @@ namespace Core.Query.EventHandlers
         private void UpdateUser(IClientSessionHandle session, BidCanceled bidCanceled)
         {
             var filter = Builders<UserRead>.Filter.Eq(field => field.UserIdentity.UserId,
-                bidCanceled.CanceledBid.UserIdentity.UserId.ToString());
+                bidCanceled.CanceledBid.UserId.ToString());
 
             var bidFilter =
                 Builders<UserBid>.Filter.Eq(userBid => userBid.BidId, bidCanceled.CanceledBid.BidId.ToString());

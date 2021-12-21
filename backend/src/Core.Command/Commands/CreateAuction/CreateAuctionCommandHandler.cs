@@ -155,13 +155,13 @@ namespace Core.Command.CreateAuction
             var user = _deps.userRepository.FindUser(cmd.SignedInUser);
             if (user == null)
             {
-                throw new DomainException($"Cannot find user {cmd.SignedInUser.UserName}");
+                throw new DomainException($"Cannot find user {cmd.SignedInUser}");
             }
 
             return user;
         }
 
-        private AuctionArgs GetAuctionArgs(CreateAuctionCommand request, UserIdentity owner)
+        private AuctionArgs GetAuctionArgs(CreateAuctionCommand request, UserId owner)
         {
             var category = _deps.categoryBuilder.FromCategoryNamesList(request.Category);
             var builder = new AuctionArgs.Builder()
@@ -184,7 +184,7 @@ namespace Core.Command.CreateAuction
         protected override Task<RequestStatus> HandleCommand(CreateAuctionCommand request, CancellationToken cancellationToken)
         {
             var user = GetSignedInUser(request);
-            var auction = request.AuctionCreateSession.CreateAuction(GetAuctionArgs(request, user.UserIdentity));
+            var auction = request.AuctionCreateSession.CreateAuction(GetAuctionArgs(request, user.AggregateId));
 
             var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.PENDING);
             var addAuctionSequence = new AtomicSequence<Auction>()

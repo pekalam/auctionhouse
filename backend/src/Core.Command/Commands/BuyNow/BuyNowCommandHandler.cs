@@ -62,7 +62,7 @@ namespace Core.Command.Commands.BuyNow
             if (user == null)
             {
                 _logger.LogError("BuyNowCommandHandler cannot find user {@user}", request.SignedInUser);
-                throw new CommandException($"Cannot find user: {user.UserIdentity}");
+                throw new CommandException($"Cannot find user");
             }
 
             var auction = _auctionRepository.FindAuction(request.AuctionId);

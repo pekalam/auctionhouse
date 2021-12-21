@@ -15,7 +15,7 @@ namespace Core.Command.Commands.BuyNow
         public Guid AuctionId { get; }
 
         [SignedInUser]
-        public UserIdentity SignedInUser { get; set; }
+        public UserId SignedInUser { get; set; }
 
         public BuyNowCommand(Guid auctionId)
         {

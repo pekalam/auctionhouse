@@ -32,7 +32,7 @@ namespace Core.Query.Queries.User.UserAuctions
             var completedFilter = Builders<AuctionRead>.Filter.Eq(read => read.Completed, true);
             var boughtFilter = Builders<AuctionRead>.Filter.Eq(read => read.Bought, true);
             var buyerFilter =
-                Builders<AuctionRead>.Filter.Eq(read => read.Buyer.UserId, request.SignedInUser.UserId.ToString());
+                Builders<AuctionRead>.Filter.Eq(read => read.Buyer.UserId, request.SignedInUser.ToString());
             var filter = Builders<AuctionRead>.Filter.And(buyerFilter, completedFilter, boughtFilter);
 
             var count = await _dbContext.AuctionsReadModel.CountDocumentsAsync(filter);

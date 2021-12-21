@@ -105,10 +105,10 @@ namespace Tests
 
             var sem = new SemaphoreSlim(0, 1);
             mockRequestStatusService.Setup(service => service.TrySendRequestFailureToUser(It.IsAny<string>(),
-                    It.IsAny<CorrelationId>(), It.IsAny<UserIdentity>(), null))
+                    It.IsAny<CorrelationId>(), It.IsAny<Guid>(), null))
                 .Callback(() => sem.Release());
             mockRequestStatusService.Verify(service => service.TrySendRequestCompletionToUser(It.IsAny<string>(),
-                It.IsAny<CorrelationId>(), It.IsAny<UserIdentity>(), null), Times.Never());
+                It.IsAny<CorrelationId>(), It.IsAny<Guid>(), null), Times.Never());
 
 
             var cmdReq = new HttpRequestMessage(HttpMethod.Post, "/api/bid")
@@ -139,9 +139,9 @@ namespace Tests
 
             var sem = new SemaphoreSlim(0, 1);
             mockRequestStatusService.Verify(service => service.TrySendRequestFailureToUser(It.IsAny<string>(),
-                It.IsAny<CorrelationId>(), It.IsAny<UserIdentity>(), null), Times.Never());
+                It.IsAny<CorrelationId>(), It.IsAny<Guid>(), null), Times.Never());
             mockRequestStatusService.Setup(service => service.TrySendRequestCompletionToUser(It.IsAny<string>(),
-                    It.IsAny<CorrelationId>(), It.IsAny<UserIdentity>(), null))
+                    It.IsAny<CorrelationId>(), It.IsAny<Guid>(), null))
                 .Callback(() => sem.Release());
 
 

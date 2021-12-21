@@ -25,7 +25,7 @@ namespace Core.DomainModelTests
                 .SetBuyNow(90.00m)
                 .SetStartDate(DateTime.UtcNow.AddMinutes(20))
                 .SetEndDate(DateTime.UtcNow.AddDays(5))
-                .SetOwner(new UserIdentity())
+                .SetOwner(UserId.New())
                 .SetProduct(new Product("test name", "desccription 1111", Condition.New))
                 .SetCategory(new Category("test", 0))
                 .SetBuyNowOnly(false)
@@ -42,7 +42,7 @@ namespace Core.DomainModelTests
                 .SetBuyNow(90.00m)
                 .SetStartDate(DateTime.UtcNow.AddMinutes(20))
                 .SetEndDate(DateTime.UtcNow.AddDays(5))
-                .SetOwner(new UserIdentity())
+                .SetOwner(UserId.New())
                 .SetProduct(new Product("test name", "desccription 1111", Condition.New))
                 .SetCategory(new Category("test", 0))
                 .SetBuyNowOnly(false)
@@ -63,7 +63,7 @@ namespace Core.DomainModelTests
             var imgs = new AuctionImage[] {image1, image2};
             var start = DateTime.UtcNow.AddMinutes(20);
             var end = DateTime.UtcNow.AddDays(1);
-            var owner = new UserIdentity() {UserId = Guid.NewGuid(), UserName = "test"};
+            var owner = UserId.New();
 
             var auctionArgs = new AuctionArgs.Builder()
                 .SetBuyNow(90.00m)
@@ -137,7 +137,7 @@ namespace Core.DomainModelTests
                 .SetBuyNow(90.00m)
                 .SetStartDate(date.AddMinutes(minutesStart))
                 .SetEndDate(date.AddMinutes(minutesEnd))
-                .SetOwner(new UserIdentity())
+                .SetOwner(UserId.New())
                 .SetProduct(new Product("test name", "desccription 1111", Condition.New))
                 .SetCategory(new Category("test", 0))
                 .SetTags(new[] {"t1"})
@@ -163,7 +163,7 @@ namespace Core.DomainModelTests
                 .SetBuyNow(20)
                 .SetStartDate(start)
                 .SetEndDate(end)
-                .SetOwner(new UserIdentity())
+                .SetOwner(UserId.New())
                 .SetProduct(new Product("test name", "desccription 1111", Condition.New))
                 .SetCategory(new Category("test", 0))
                 .SetTags(new[] {"tag1"})
@@ -186,7 +186,7 @@ namespace Core.DomainModelTests
             auction.Product.Should()
                 .NotBeNull();
             auction.Buyer.Should()
-                .Be(UserIdentity.Empty);
+                .Be(UserId.Empty);
             auction.Completed.Should()
                 .BeFalse();
             auction.ActualPrice.Should()
@@ -270,7 +270,7 @@ namespace Core.DomainModelTests
             auction.PendingEvents.Count.Should()
                 .Be(1);
             auction.Buyer.Should()
-                .Be(user.UserIdentity);
+                .Be(user.AggregateId);
             auction.Completed.Should()
                 .BeTrue();
 
@@ -317,7 +317,7 @@ namespace Core.DomainModelTests
             auction.PendingEvents.Count.Should()
                 .Be(1);
             auction.Buyer.Should()
-                .Be(user.UserIdentity);
+                .Be(user.AggregateId);
             auction.Completed.Should()
                 .BeTrue();
             var ev = auction.PendingEvents.First() as AuctionBought;
@@ -325,7 +325,7 @@ namespace Core.DomainModelTests
             ev.AuctionId.Should()
                 .Be(auction.AggregateId);
             ev.UserIdentity.Should()
-                .Be(user.UserIdentity);
+                .Be(user.AggregateId);
 
             user.Credits.Should().Be(1000 - auction.BuyNowPrice);
             user.PendingEvents.Count.Should().Be(1);
@@ -391,7 +391,7 @@ namespace Core.DomainModelTests
                 .SetBuyNow(90.00m)
                 .SetStartDate(DateTime.UtcNow)
                 .SetEndDate(DateTime.UtcNow.AddDays(1))
-                .SetOwner(new UserIdentity())
+                .SetOwner(UserId.New())
                 .SetProduct(new Product("test name", "desccription 1111", Condition.New))
                 .SetCategory(new Category("test", 0))
                 .SetTags(new[] {"t1", "t1"})

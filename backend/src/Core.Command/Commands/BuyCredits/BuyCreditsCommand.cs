@@ -13,7 +13,7 @@ namespace Core.Command.Commands.BuyCredits
         [Required]
         public decimal Ammount { get; }
 
-        [SignedInUser] public UserIdentity SignedInUser { get; set; }
+        [SignedInUser] public UserId SignedInUser { get; set; }
 
         public BuyCreditsCommand(decimal ammount)
         {

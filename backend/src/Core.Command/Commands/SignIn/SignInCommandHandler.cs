@@ -30,10 +30,10 @@ namespace Core.Command.Commands.SignIn
             {
                 if (authData.Password.Equals(command.Password))
                 {
-                    var userIdentity = new UserIdentity() { UserId = authData.UserId, UserName = authData.UserName };
                     var response = RequestStatus.CreateFromCommandContext(command.CommandContext, Status.COMPLETED, new Dictionary<string, object>()
                     {
-                        {"UserIdentity", userIdentity}
+                        {"UserId", authData.UserId},
+                        {"Username", authData.UserName}
                     });
                     return Task.FromResult(response);
                 }

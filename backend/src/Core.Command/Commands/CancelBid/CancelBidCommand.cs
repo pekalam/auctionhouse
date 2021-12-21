@@ -14,7 +14,7 @@ namespace Core.Command.Commands.CancelBid
         public Guid AuctionId { get; }
 
         [SignedInUser]
-        public UserIdentity SignedInUser { get; set; }
+        public UserId SignedInUser { get; set; }
 
         public CancelBidCommand(Guid bidId, Guid auctionId)
         {

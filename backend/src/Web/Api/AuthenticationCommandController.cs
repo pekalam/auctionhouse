@@ -57,8 +57,9 @@ namespace Web.Api
             var response = await _immediateCommandMediator.Send(cmd);
             if (response.Status == Status.COMPLETED)
             {
-                var userIdentity = (UserIdentity)response.ExtraData["UserIdentity"];
-                var token = _jwtService.IssueToken(userIdentity.UserId, userIdentity.UserName);
+                var userId = (UserId)response.ExtraData["UserId"];
+                var username = (Username)response.ExtraData["Username"];
+                var token = _jwtService.IssueToken(userId, username);
 
                 return Ok(token);
             }

@@ -36,10 +36,10 @@ namespace Core.Query.ReadModel
             
         }
 
-        public UserIdentityRead(UserIdentity userIdentity)
+        public UserIdentityRead(Guid userId, string username)
         {
-            UserId = userIdentity.UserId.ToString();
-            UserName = userIdentity.UserName;
+            UserId = userId.ToString();
+            UserName = username;
         }
     }
 

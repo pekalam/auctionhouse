@@ -21,7 +21,7 @@ namespace Web.Adapters
             _logger = logger;
         }
 
-        public UserIdentity GetSignedInUserIdentity()
+        public Guid GetSignedInUserIdentity()
         {
             var userName = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var id = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid);
@@ -33,7 +33,7 @@ namespace Web.Adapters
             Guid userId;
             if (Guid.TryParse(id, out userId))
             {
-                return new UserIdentity() {UserId = userId, UserName = userName};
+                return userId;
             }
             else
             {

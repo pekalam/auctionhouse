@@ -1,9 +1,10 @@
-﻿using Core.Common.Domain.Users;
+﻿using System;
+using Core.Common.Domain.Users;
 
 namespace Core.Common.Auth
 {
     public interface IUserIdentityService
     {
-        UserIdentity GetSignedInUserIdentity();
+        Guid GetSignedInUserIdentity();
     }
 }

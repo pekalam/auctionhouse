@@ -43,7 +43,7 @@ namespace Core.Query.ReadModel
         {
             BidId = bid.BidId.ToString();
             AuctionId = bid.AuctionId.ToString();
-            UserIdentity = new UserIdentityRead(bid.UserIdentity);
+            UserIdentity = new UserIdentityRead(bid.UserId, bid.UserId.ToString()); //TODO
             Price = bid.Price;
             DateCreated = bid.DateCreated;
         }

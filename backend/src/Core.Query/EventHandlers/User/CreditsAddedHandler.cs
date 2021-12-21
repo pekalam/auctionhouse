@@ -16,22 +16,22 @@ namespace Core.Query.EventHandlers.User
     internal class CreditsChangeHelper
     {
         public static UserRead AddCredits<T>(ReadModelDbContext dbContext, IAppEvent<T> appEvent,
-            decimal creditsCount, UserIdentity user,
+            decimal creditsCount, UserId userId,
             IRequestStatusService requestStatusService) where T : Event
         {
             var filter = Builders<UserRead>.Filter.Eq(read => read.UserIdentity.UserId,
-                user.UserId.ToString());
+                userId.ToString());
 
             var update = Builders<UserRead>.Update.Inc(read => read.Credits, creditsCount);
 
             var userRead = dbContext.UsersReadModel.FindOneAndUpdate(filter, update);
             if (userRead == null)
             {
-                requestStatusService.TrySendRequestFailureToUser(appEvent, user);
+                requestStatusService.TrySendRequestFailureToUser(appEvent, userId);
                 throw new QueryException("Null userReadModel");
             }
 
-            requestStatusService.TrySendReqestCompletionToUser(appEvent, user,
+            requestStatusService.TrySendReqestCompletionToUser(appEvent, userId,
                 new Dictionary<string, object>()
                 {
                     {"ammount", creditsCount}
