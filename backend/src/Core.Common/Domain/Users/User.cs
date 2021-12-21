@@ -13,14 +13,35 @@ namespace Core.Common.Domain.Users
         }
     }
 
-    public class UserUpdateEventGroup : UpdateEventGroup
+    public class UserUpdateEventGroup : UpdateEventGroup<UserId>
     {
         public UserUpdateEventGroup() : base("userUpdated")
         {
         }
     }
 
-    public partial class User : AggregateRoot<User, UserUpdateEventGroup>
+    public class UserId : ValueObject
+    {
+        public Guid Value { get; }
+
+        public UserId(Guid value)
+        {
+            Value = value;
+        }
+
+        public static UserId New() => new UserId(Guid.NewGuid());
+
+        public override string ToString() => Value.ToString();
+        public static implicit operator Guid(UserId id) => id.Value;
+        public static implicit operator UserId(Guid guid) => new UserId(guid);
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return Value;
+        }
+    }
+
+    public partial class User : AggregateRoot<User, UserId, UserUpdateEventGroup>
     {
         public const int MIN_USERNAME_LENGTH = 4;
 
@@ -30,6 +51,7 @@ namespace Core.Common.Domain.Users
 
         public User()
         {
+            AggregateId = UserId.New();
         }
 
         private object ThrowIfNotRegistered() => UserIdentity ?? throw new DomainException("User is not registered");
@@ -50,7 +72,7 @@ namespace Core.Common.Domain.Users
             }
             UserIdentity = new UserIdentity()
             {
-                UserId = AggregateId,
+                UserId = AggregateId.Value,
                 UserName = username
             };
             AddEvent(new UserRegistered(UserIdentity));

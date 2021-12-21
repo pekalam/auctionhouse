@@ -30,7 +30,7 @@ namespace Infrastructure.Repositories.SQLServer
                     });
                     connection.Execute(sp, new
                     {
-                        AggId = user.AggregateId,
+                        AggId = user.AggregateId.ToString(),
                         AggName = "User",
                         EventName = pendingEvent.EventName,
                         Date = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(1)),
@@ -68,7 +68,7 @@ namespace Infrastructure.Repositories.SQLServer
                     });
                     connection.Execute(sp, new
                     {
-                        AggId = user.AggregateId,
+                        AggId = user.AggregateId.ToString(),
                         AggName = "User",
                         EventName = pendingEvent.EventName,
                         Date = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(1)),

@@ -24,7 +24,7 @@ namespace Infrastructure.Services.SchedulerService
             sheduleRequest.Type = "echo";
             sheduleRequest.Values = new AuctionEndTimeTaskValues()
             {
-                AuctionId = auction.AggregateId
+                AuctionId = auction.AggregateId.Value
             };
             return sheduleRequest;
         }

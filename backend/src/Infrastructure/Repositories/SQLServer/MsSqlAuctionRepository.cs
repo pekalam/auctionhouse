@@ -52,7 +52,7 @@ namespace Infrastructure.Repositories.SQLServer
                     });
                     connection.Execute(sp, new
                     {
-                        AggId = auction.AggregateId,
+                        AggId = auction.AggregateId.ToString(),
                         AggName = "Auction",
                         EventName = pendingEvent.EventName,
                         Date = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(1)),
@@ -94,7 +94,7 @@ namespace Infrastructure.Repositories.SQLServer
                     });
                     connection.Execute(sp, new
                     {
-                        AggId = auction.AggregateId,
+                        AggId = auction.AggregateId.ToString(),
                         AggName = "Auction",
                         EventName = pendingEvent.EventName,
                         Date = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(1)),

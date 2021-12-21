@@ -28,7 +28,28 @@ namespace Core.Common.Domain.Auctions
         internal static int MinTags { get; set; } = DEFAULT_MIN_TAGS;
     }
 
-    public partial class Auction : AggregateRoot<Auction, AuctionUpdateEventGroup>
+    public class AuctionId : ValueObject
+    {
+        public Guid Value { get; }
+
+        public AuctionId(Guid value)
+        {
+            Value = value;
+        }
+
+        public static AuctionId New() => new AuctionId(Guid.NewGuid());
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return Value;
+        }
+
+        public override string ToString() => Value.ToString();
+        public static implicit operator Guid(AuctionId id) => id.Value;
+        public static implicit operator AuctionId(Guid guid) => new AuctionId(guid);
+    }
+
+    public partial class Auction : AggregateRoot<Auction, AuctionId, AuctionUpdateEventGroup>
     {
         public static int MAX_IMAGES => AuctionConstantsFactory.MaxImages;
         public static int MAX_TODAY_MIN_OFFSET => AuctionConstantsFactory.MaxTodayMinOffset;
@@ -60,6 +81,7 @@ namespace Core.Common.Domain.Auctions
         internal Auction(AuctionArgs auctionArgs)
         {
             Create(auctionArgs, true);
+            AggregateId = AuctionId.New();
             AddEvent(new AuctionCreated(AggregateId, auctionArgs));
         }
 

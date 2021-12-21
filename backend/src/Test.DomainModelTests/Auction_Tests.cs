@@ -110,7 +110,7 @@ namespace Core.DomainModelTests
             auction.PendingEvents.Count.Should()
                 .Be(1);
             auction.AggregateId.Should()
-                .NotBeEmpty();
+                .NotBeNull();
             var createdEvent = auction.PendingEvents.First() as AuctionCreated;
             createdEvent.Should()
                 .NotBeNull();
@@ -179,8 +179,8 @@ namespace Core.DomainModelTests
             auction.PendingEvents.Count.Should()
                 .Be(0);
             auction.AggregateId.Should()
-                .NotBeEmpty()
-                .And.Be(id);
+                .NotBeNull()
+                .And.Be(new AuctionId(id));
             auction.BuyNowPrice.Value.Should()
                 .Be(20m);
             auction.Product.Should()

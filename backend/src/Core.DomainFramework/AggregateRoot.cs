@@ -4,7 +4,21 @@ using System.Linq;
 
 namespace Core.Common.Domain
 {
-    public abstract class AggregateRoot<T, U> : AggregateRoot<T> where T : AggregateRoot<T, U>, new() where U : UpdateEventGroup
+    namespace Default
+    {
+        public abstract class AggregateRoot<T, U> : AggregateRoot<T, Guid, U>
+            where T : AggregateRoot<T, Guid, U>, new() where U : UpdateEventGroup<Guid>
+        {
+
+        }
+
+
+        public abstract class AggregateRoot<T> : Domain.AggregateRoot<T, Guid> where T : Domain.AggregateRoot<T, Guid>, new()
+        {
+        }
+    }
+
+    public abstract class AggregateRoot<T, TId, U> : AggregateRoot<T, TId> where T : AggregateRoot<T, TId, U>, new() where U : UpdateEventGroup<TId>
     {
         private U _updateEventGroup = null;
 
@@ -26,9 +40,17 @@ namespace Core.Common.Domain
         protected abstract U CreateUpdateEventGroup();
     }
 
-    public abstract class AggregateRoot<T> : IInternalEventAdd where T : AggregateRoot<T>, new()
+    public abstract class AggregateRoot<T, TId> : IInternalEventAdd where T : AggregateRoot<T, TId>, new()
     {
-        public Guid AggregateId { get; protected set; } = Guid.NewGuid();
+        static AggregateRoot()
+        {
+            if (typeof(TId) == typeof(UpdateEventGroup<>))
+            {
+                throw new InvalidOperationException("Cannot pass UpdateEventGroup<> as type parameter. Use AggregateRoot from Default namespace");
+            }
+        }
+
+        public TId AggregateId { get; protected set; }
 
         protected bool _canAddNewEvents = true;
         protected List<Event> _pendingEvents = new List<Event>();

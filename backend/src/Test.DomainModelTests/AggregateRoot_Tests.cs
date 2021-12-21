@@ -21,14 +21,14 @@ namespace Core.DomainModelTests
         }
     }
 
-    public class TestUpdateEventGroup : UpdateEventGroup
+    public class TestUpdateEventGroup : UpdateEventGroup<Guid>
     {
         public TestUpdateEventGroup() : base("testGroup")
         {
         }
     }
 
-    public class TestAggRoot : AggregateRoot<TestAggRoot, TestUpdateEventGroup>
+    public class TestAggRoot : Common.Domain.Default.AggregateRoot<TestAggRoot, TestUpdateEventGroup>
     {
         public void CallTest()
         {
