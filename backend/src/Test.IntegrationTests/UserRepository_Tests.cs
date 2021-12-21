@@ -21,6 +21,7 @@ namespace IntegrationTests
             userRepository = new MsSqlUserRepository(serverOpt);
             user = new User();
             user.Register("test");
+            user.AddCredits(100);
         }
 
         [Test]

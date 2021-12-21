@@ -47,7 +47,7 @@ namespace Core.Common.Domain.Users
 
 
         public UserIdentity UserIdentity { get; private set; }
-        public decimal Credits { get; private set; } = 0;
+        public decimal Credits { get; private set; }
 
         public User()
         {
