@@ -14,7 +14,7 @@ namespace Core.DomainModelTests
         {
             var args = new AuctionArgs.Builder()
                 .SetBuyNowOnly(false)
-                .SetOwner(UserId.New())
+                .SetOwner(Common.Domain.Auctions.UserId.New())
                 .SetCategory(new Category("", 1))
                 .SetBuyNow(123)
                 .SetStartDate(DateTime.UtcNow.AddDays(1))
@@ -30,7 +30,7 @@ namespace Core.DomainModelTests
         {
             var args = new AuctionArgs.Builder()
                 .SetBuyNowOnly(true)
-                .SetOwner(UserId.New())
+                .SetOwner(Common.Domain.Auctions.UserId.New())
                 .SetCategory(new Category("", 1))
                 .SetBuyNow(123)
                 .SetStartDate(DateTime.UtcNow.AddDays(1))

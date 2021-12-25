@@ -10,6 +10,7 @@ using Core.Command.Handler;
 using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.ApplicationServices;
+using Core.Common.Domain.AuctionBids.Repositories;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Users;
 using Core.Common.RequestStatusService;
@@ -19,52 +20,40 @@ namespace Core.Command.Commands.Bid
 {
     public class BidCommandHandler : DecoratedCommandHandlerBase<BidCommand>
     {
-        private readonly IAuctionRepository _auctionRepository;
-        private readonly IUserRepository _userRepository;
+        private readonly IAuctionBidsRepository _auctionBids;
         private readonly EventBusService _eventBusService;
         private readonly ILogger<BidCommandHandler> _logger;
         private readonly IRequestStatusService _requestStatusService;
 
-        public BidCommandHandler(IAuctionRepository auctionRepository, EventBusService eventBusService,
-            ILogger<BidCommandHandler> logger, IRequestStatusService requestStatusService, IUserRepository userRepository) : base(logger)
+        public BidCommandHandler(EventBusService eventBusService, ILogger<BidCommandHandler> logger, IRequestStatusService requestStatusService) : base(logger)
         {
-            _auctionRepository = auctionRepository;
             _eventBusService = eventBusService;
             _logger = logger;
             _requestStatusService = requestStatusService;
-            _userRepository = userRepository;
             RollbackHandlerRegistry.RegisterCommandRollbackHandler(nameof(BidCommand),
                 provider => new BidRollbackHandler(provider));
         }
 
         protected override Task<RequestStatus> HandleCommand(BidCommand request, CancellationToken cancellationToken)
         {
-            var auction = _auctionRepository.FindAuction(request.AuctionId);
-            if (auction == null)
+            var auctionBids = _auctionBids.WithAuctionId(new Common.Domain.AuctionBids.AuctionId(request.AuctionId));
+            if(auctionBids is null)
             {
-                throw new CommandException("Invalid auction id");
+                throw new CommandException($"AuctionBids {request.AuctionId} could not be found");
             }
 
-            var user = _userRepository.FindUser(request.SignedInUser);
-            if (user == null)
-            {
-                throw new CommandException($"Cannot find user {request.SignedInUser}");
-            }
-            
-            auction.Raise(user, request.Price);
-            var bid = auction.Bids.Last();
+            var bid = auctionBids.TryRaise(new Common.Domain.AuctionBids.UserId(request.SignedInUser), request.Price);
 
             var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.PENDING);
-            _auctionRepository.UpdateAuction(auction);
-            _userRepository.UpdateUser(user);
-            var toSend = auction.PendingEvents.Concat(user.PendingEvents);
-            _eventBusService.Publish(toSend, response.CorrelationId, request);
-            _requestStatusService.TrySendNotificationToAll("AuctionPriceChanged", new Dictionary<string, object>()
+            _eventBusService.Publish(auctionBids.PendingEvents, response.CorrelationId, request);
+            if (bid.Accepted)
             {
-                {"winningBid", bid}
-            });
-            auction.MarkPendingEventsAsHandled();
-            _logger.LogDebug("Bid {@bid} submited for an auction {@auction} by {@user}", bid, auction, request.SignedInUser);
+                _requestStatusService.TrySendNotificationToAll("AuctionPriceChanged", new Dictionary<string, object>()
+                {
+                    {"winningBid", bid}
+                });
+            }
+            _logger.LogDebug("Bid {@bid} submited for an auction {@auction} by {@user}", bid, request.AuctionId, request.SignedInUser);
 
 
             return Task.FromResult(response);

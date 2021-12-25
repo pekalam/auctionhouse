@@ -25,10 +25,7 @@ namespace Core.Command.Commands.EndAuction
 
         protected override Task<RequestStatus> HandleCommand(EndAuctionCommand request, CancellationToken cancellationToken)
         {
-            var auction = _auctionRepository.FindAuction(request.AuctionId);
-            auction.EndAuction();
-            _eventBusService.Publish(auction.PendingEvents, null, request);
-            auction.MarkPendingEventsAsHandled();
+
 
             var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
             return Task.FromResult(response);

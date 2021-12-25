@@ -161,7 +161,7 @@ namespace Core.Command.CreateAuction
             return user;
         }
 
-        private AuctionArgs GetAuctionArgs(CreateAuctionCommand request, UserId owner)
+        private AuctionArgs GetAuctionArgs(CreateAuctionCommand request, Common.Domain.Auctions.UserId owner)
         {
             var category = _deps.categoryBuilder.FromCategoryNamesList(request.Category);
             var builder = new AuctionArgs.Builder()
@@ -184,7 +184,7 @@ namespace Core.Command.CreateAuction
         protected override Task<RequestStatus> HandleCommand(CreateAuctionCommand request, CancellationToken cancellationToken)
         {
             var user = GetSignedInUser(request);
-            var auction = request.AuctionCreateSession.CreateAuction(GetAuctionArgs(request, user.AggregateId));
+            var auction = request.AuctionCreateSession.CreateAuction(GetAuctionArgs(request, new Common.Domain.Auctions.UserId(user.AggregateId)));
 
             var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.PENDING);
             var addAuctionSequence = new AtomicSequence<Auction>()

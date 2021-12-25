@@ -38,7 +38,7 @@ namespace Core.DomainModelTests
         [Test]
         public void StartAuctionCreateSession_if_registered_creates_session()
         {
-            var session = AuctionCreateSession.CreateSession(user.AggregateId);
+            var session = AuctionCreateSession.CreateSession(new Common.Domain.Auctions.UserId(user.AggregateId));
 
             session.Should().NotBeNull();
         }

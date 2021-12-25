@@ -5,7 +5,6 @@ using System.Linq;
 using Core.Common.Domain;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Auctions.Events;
-using Core.Common.Domain.Bids;
 using Core.Common.Domain.Categories;
 using Core.Common.Domain.Products;
 using Core.Common.Domain.Users;
@@ -25,7 +24,7 @@ namespace Core.DomainModelTests
                 .SetBuyNow(90.00m)
                 .SetStartDate(DateTime.UtcNow.AddMinutes(20))
                 .SetEndDate(DateTime.UtcNow.AddDays(5))
-                .SetOwner(UserId.New())
+                .SetOwner(Common.Domain.Auctions.UserId.New())
                 .SetProduct(new Product("test name", "desccription 1111", Condition.New))
                 .SetCategory(new Category("test", 0))
                 .SetBuyNowOnly(false)
@@ -42,7 +41,7 @@ namespace Core.DomainModelTests
                 .SetBuyNow(90.00m)
                 .SetStartDate(DateTime.UtcNow.AddMinutes(20))
                 .SetEndDate(DateTime.UtcNow.AddDays(5))
-                .SetOwner(UserId.New())
+                .SetOwner(Common.Domain.Auctions.UserId.New())
                 .SetProduct(new Product("test name", "desccription 1111", Condition.New))
                 .SetCategory(new Category("test", 0))
                 .SetBuyNowOnly(false)
@@ -63,7 +62,7 @@ namespace Core.DomainModelTests
             var imgs = new AuctionImage[] {image1, image2};
             var start = DateTime.UtcNow.AddMinutes(20);
             var end = DateTime.UtcNow.AddDays(1);
-            var owner = UserId.New();
+            var owner = Common.Domain.Auctions.UserId.New();
 
             var auctionArgs = new AuctionArgs.Builder()
                 .SetBuyNow(90.00m)
@@ -88,8 +87,6 @@ namespace Core.DomainModelTests
             auction.AuctionImages[1]
                 .Should()
                 .Be(imgs[1]);
-            auction.Bids.Count.Should()
-                .Be(0);
             auction.BuyNowPrice.Value.Should()
                 .Be(90.00m);
             auction.StartDate.Value.Should()
@@ -137,7 +134,7 @@ namespace Core.DomainModelTests
                 .SetBuyNow(90.00m)
                 .SetStartDate(date.AddMinutes(minutesStart))
                 .SetEndDate(date.AddMinutes(minutesEnd))
-                .SetOwner(UserId.New())
+                .SetOwner(Common.Domain.Auctions.UserId.New())
                 .SetProduct(new Product("test name", "desccription 1111", Condition.New))
                 .SetCategory(new Category("test", 0))
                 .SetTags(new[] {"t1"})
@@ -163,7 +160,7 @@ namespace Core.DomainModelTests
                 .SetBuyNow(20)
                 .SetStartDate(start)
                 .SetEndDate(end)
-                .SetOwner(UserId.New())
+                .SetOwner(Common.Domain.Auctions.UserId.New())
                 .SetProduct(new Product("test name", "desccription 1111", Condition.New))
                 .SetCategory(new Category("test", 0))
                 .SetTags(new[] {"tag1"})
@@ -186,7 +183,7 @@ namespace Core.DomainModelTests
             auction.Product.Should()
                 .NotBeNull();
             auction.Buyer.Should()
-                .Be(UserId.Empty);
+                .Be(Common.Domain.Auctions.UserId.Empty);
             auction.Completed.Should()
                 .BeFalse();
             auction.ActualPrice.Should()
@@ -208,8 +205,6 @@ namespace Core.DomainModelTests
         public void Auction_FromEvents_builds_auction_from_pending_events()
         {
             var user = AuctionTestUtils.CreateUser();
-            auction.Raise(user, 21);
-            auction.EndAuction();
 
             var built = Auction.FromEvents(auction.PendingEvents);
             auction.MarkPendingEventsAsHandled();
@@ -234,102 +229,6 @@ namespace Core.DomainModelTests
         {
             Assert.Throws<DomainException>(() => auction.UpdateEndDate(auction.StartDate));
             Assert.Throws<DomainException>(() => auction.UpdateEndDate(auction.StartDate.Value.AddDays(-1)));
-        }
-
-        [Test]
-        public void EndAuction_when_no_bids_generates_valid_event_and_state()
-        {
-            auction.MarkPendingEventsAsHandled();
-
-            auction.EndAuction();
-
-            auction.PendingEvents.Count.Should()
-                .Be(1);
-            auction.Buyer.Should()
-                .BeNull();
-            auction.Completed.Should()
-                .BeTrue();
-
-            var ev = auction.PendingEvents.First() as AuctionCompleted;
-
-            ev.AuctionId.Should()
-                .Be(auction.AggregateId);
-            ev.WinningBid.Should()
-                .BeNull();
-        }
-
-        [Test]
-        public void EndAuction_when_has_bids_generates_valid_event_and_state()
-        {
-            var user = AuctionTestUtils.CreateUser();
-            auction.Raise(user, 91);
-            auction.MarkPendingEventsAsHandled();
-
-            auction.EndAuction();
-
-            auction.PendingEvents.Count.Should()
-                .Be(1);
-            auction.Buyer.Should()
-                .Be(user.AggregateId);
-            auction.Completed.Should()
-                .BeTrue();
-
-
-            var ev = auction.PendingEvents.First() as AuctionCompleted;
-
-            ev.AuctionId.Should()
-                .Be(auction.AggregateId);
-            ev.WinningBid.Should()
-                .Be(auction.Bids.Last());
-        }
-
-        [Test]
-        public void CancelAuction_when_incompleted_generates_valid_events_and_state()
-        {
-            auction.MarkPendingEventsAsHandled();
-
-            auction.CancelAuction();
-
-            auction.PendingEvents.Count.Should()
-                .Be(1);
-            var ev = auction.PendingEvents.First() as AuctionCanceled;
-            ev.AuctionId.Should()
-                .Be(auction.AggregateId);
-        }
-
-        [Test]
-        public void CancelAuction_when_completed_throws()
-        {
-            auction.EndAuction();
-            auction.MarkPendingEventsAsHandled();
-
-            Assert.Throws<DomainException>(() => auction.CancelAuction());
-        }
-
-        [Test]
-        public void BuyNow_generates_valid_events_and_state()
-        {
-            var user = AuctionTestUtils.CreateUser();
-            auction.MarkPendingEventsAsHandled();
-
-            auction.BuyNow(user);
-
-            auction.PendingEvents.Count.Should()
-                .Be(1);
-            auction.Buyer.Should()
-                .Be(user.AggregateId);
-            auction.Completed.Should()
-                .BeTrue();
-            var ev = auction.PendingEvents.First() as AuctionBought;
-
-            ev.AuctionId.Should()
-                .Be(auction.AggregateId);
-            ev.UserIdentity.Should()
-                .Be(user.AggregateId);
-
-            user.Credits.Should().Be(1000 - auction.BuyNowPrice);
-            user.PendingEvents.Count.Should().Be(1);
-            user.PendingEvents.First().Should().BeOfType<CreditsWithdrawn>();
         }
 
         [Test]
@@ -391,7 +290,7 @@ namespace Core.DomainModelTests
                 .SetBuyNow(90.00m)
                 .SetStartDate(DateTime.UtcNow)
                 .SetEndDate(DateTime.UtcNow.AddDays(1))
-                .SetOwner(UserId.New())
+                .SetOwner(Common.Domain.Auctions.UserId.New())
                 .SetProduct(new Product("test name", "desccription 1111", Condition.New))
                 .SetCategory(new Category("test", 0))
                 .SetTags(new[] {"t1", "t1"})

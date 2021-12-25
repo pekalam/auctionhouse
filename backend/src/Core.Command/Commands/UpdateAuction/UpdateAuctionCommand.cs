@@ -38,7 +38,7 @@ namespace Core.Command.Commands.UpdateAuction
         public AuctionName Name { get; }
 
         [SignedInUser]
-        public UserId SignedInUser { get; set; }
+        public Core.Common.Domain.Users.UserId SignedInUser { get; set; }
 
 
         public UpdateAuctionCommand(Guid auctionId, 

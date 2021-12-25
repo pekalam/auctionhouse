@@ -22,18 +22,7 @@ namespace Core.Command.Bid
 
         public void Rollback(IAppEvent<Event> commandEvent)
         {
-            var ev = (AuctionRaised)commandEvent.Event;
-            var auction = _auctionRepository.FindAuction(ev.Bid.AuctionId);
-            if (auction != null)
-            {
-                auction.RemoveBid(ev.Bid);
-            }
-            else
-            {
-                _logger.LogDebug("Bid rollback handler error, commandEvent: {@commandEvent}", commandEvent);
-                throw new CommandException($"Cannot find auction with id: {ev.Bid.AuctionId}");
-            }
-            _auctionRepository.UpdateAuction(auction);
+
         }
     }
 }

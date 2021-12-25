@@ -37,7 +37,7 @@ namespace Core.Command.CreateAuction
         public AuctionName Name { get; }
 
         [SignedInUser]
-        public UserId SignedInUser { get; set; }
+        public Common.Domain.Users.UserId SignedInUser { get; set; }
 
         public AuctionCreateSession AuctionCreateSession { get; set; }
 

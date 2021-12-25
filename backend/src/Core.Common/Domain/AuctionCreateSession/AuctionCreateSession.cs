@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Core.Common.Domain.Auctions;
-using Core.Common.Domain.Categories;
-using Core.Common.Domain.Products;
-using Core.Common.Domain.Users;
 using Core.Common.Exceptions;
 
 namespace Core.Common.Domain.AuctionCreateSession

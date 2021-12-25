@@ -1,20 +1,20 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using Core.Common.Domain.Auctions.Events;
 using Core.Common.Domain.Auctions.Events.Update;
-using Core.Common.Domain.Bids;
+using Core.Common.Domain.Auctions.Services;
 using Core.Common.Domain.Categories;
 using Core.Common.Domain.Products;
-using Core.Common.Domain.Users;
 using Core.Common.Exceptions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("Test.IntegrationTests")]
 [assembly: InternalsVisibleTo("Test.DomainModelTests")]
 namespace Core.Common.Domain.Auctions
 {
+
     internal static class AuctionConstantsFactory
     {
         public const int DEFAULT_MAX_IMAGES = 6;
@@ -49,6 +49,29 @@ namespace Core.Common.Domain.Auctions
         public static implicit operator AuctionId(Guid guid) => new AuctionId(guid);
     }
 
+    public class UserId : ValueObject
+    {
+        public static readonly UserId Empty = new UserId(Guid.Empty);
+
+        public Guid Value { get; }
+
+        public UserId(Guid value)
+        {
+            Value = value;
+        }
+
+        public static UserId New() => new UserId(Guid.NewGuid());
+
+        public override string ToString() => Value.ToString();
+        public static implicit operator Guid(UserId id) => id.Value;
+        public static implicit operator UserId(Guid guid) => new UserId(guid);
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return Value;
+        }
+    }
+
     public partial class Auction : AggregateRoot<Auction, AuctionId, AuctionUpdateEventGroup>
     {
         public static int MAX_IMAGES => AuctionConstantsFactory.MaxImages;
@@ -57,12 +80,10 @@ namespace Core.Common.Domain.Auctions
         public static int MIN_TAGS => AuctionConstantsFactory.MinTags;
 
         private List<AuctionImage> _auctionImages = new List<AuctionImage>(new AuctionImage[MAX_IMAGES]);
-        private List<Bid> _bids = new List<Bid>();
         public AuctionName Name { get; private set; }
         public bool BuyNowOnly { get; private set; }
         public BuyNowPrice BuyNowPrice { get; private set; }
         public decimal ActualPrice { get; private set; }
-        public IReadOnlyCollection<Bid> Bids => _bids;
         public AuctionDate StartDate { get; private set; }
         public AuctionDate EndDate { get; private set; }
         public UserId Owner { get; private set; }
@@ -73,6 +94,13 @@ namespace Core.Common.Domain.Auctions
         public bool Canceled { get; private set; }
         public Tag[] Tags { get; private set; }
         public IReadOnlyList<AuctionImage> AuctionImages => _auctionImages;
+
+        /// <summary>
+        /// Locked auction shouldn't be visible in list. It can be only viewed in read-only mode by lock issuer.
+        /// </summary>
+        public bool Locked { get; private set; }
+        public UserId LockIssuer { get; private set; } = UserId.Empty;
+        private Guid? TransactionId { get; set; }
 
         public Auction()
         {
@@ -175,124 +203,83 @@ namespace Core.Common.Domain.Auctions
             }
         }
 
-
-        private void Raise(Bid bid)
+        public async Task Buy(UserId buyerId, string paymentMethod, IAuctionPaymentVerification paymentVerification)
         {
-            ThrowIfBuyNowOnly();
-            ThrowIfCompletedOrCanceled();
-            if (bid.AuctionId != AggregateId)
+            if (!BuyNowOnly && BuyNowPrice is null)
             {
-                throw new DomainException("Invalid auction id");
+                throw new DomainException("Cannot buy auction that is not of buy now type");
             }
-            if (bid.Price <= ActualPrice)
+            if(buyerId == Owner)
             {
-                throw new DomainException("Price is to low");
-            }
-            if (bid.UserId == Owner)
-            {
-                throw new DomainException("Auction cannot be raised by auction creator");
+                throw new DomainException("Cannot be bought by owner");
             }
 
-            _bids.Add(bid);
-            ActualPrice = bid.Price;
-            AddEvent(new AuctionRaised(bid));
+            var paymentPassedVerification = await VerifyPayment(buyerId, paymentMethod, paymentVerification);
+            if (!paymentPassedVerification)
+            {
+                throw new DomainException($"Payment started by buyer {buyerId} didn't pass verification");
+            }
+
+            StartBuyNowTransaction(buyerId, paymentMethod);
         }
 
-        public void Raise(User user, decimal newPrice)
+        private async Task<bool> VerifyPayment(UserId buyerId, string paymentMethod, IAuctionPaymentVerification paymentVerification)
         {
-            if (!user.IsRegistered)
+            try
             {
-                throw new DomainException("User is not registered");
+                return await paymentVerification.Verification(this, buyerId, paymentMethod);
             }
-            var bid = new Bid(AggregateId, user.AggregateId, newPrice, DateTime.UtcNow);
-            Raise(bid);
-
-            user.WithdrawCredits(newPrice);
+            catch (Exception)
+            {
+                //TODO log
+                return false;
+            }
         }
 
-        private void CancelBid(Bid bid, bool fromEvents)
+        private void StartBuyNowTransaction(UserId lockIssuerId, string paymentMethod)
         {
-            ThrowIfBuyNowOnly();
-            ThrowIfCompletedOrCanceled();
-
-            var existingBid = _bids.FirstOrDefault(b => b.BidId.Equals(bid.BidId));
-            if (existingBid == null)
+            if (Locked)
             {
-                throw new DomainException($"Cannot find bid with BidId: {bid.BidId}");
+                throw new DomainException("Auction is already locked");
             }
+            Locked = true;
+            LockIssuer = lockIssuerId;
+            TransactionId = Guid.NewGuid();
 
-            if (!fromEvents && DateTime.UtcNow.Subtract(existingBid.DateCreated)
-                    .Minutes > 10)
-            {
-                throw new DomainException($"Bid ({bid.BidId}) was created more than 10 minutes ago");
-            }
-
-            _bids.Remove(existingBid);
-            Bid newWinningBid = null;
-            if (existingBid.Price.Equals(ActualPrice))
-            {
-                var topBid = Bids.FirstOrDefault(b => b.Price == Bids.Max(mbid => mbid.Price));
-                if (topBid != null)
-                {
-                    ActualPrice = topBid.Price;
-                    newWinningBid = topBid;
-                }
-                else
-                {
-                    ActualPrice = 0;
-                    newWinningBid = existingBid;
-                }
-            }
-            AddEvent(new BidCanceled(existingBid, newWinningBid));
+            AddEvent(new Events.BuyNowTX.Events.V1.BuyNowTXStarted { TransactionId = TransactionId.Value, Price = BuyNowPrice.Value, AuctionId = AggregateId, BuyerId = lockIssuerId, PaymentMethod = paymentMethod, });
         }
 
-        public void CancelBid(User user, Bid bid)
+        /// <summary>
+        /// Confirms buy as a result of buy transaction commit
+        /// </summary>
+        /// <param name="transactionId"></param>
+        /// <exception cref="DomainException"></exception>
+        internal bool ConfirmBuy(Guid transactionId)
         {
-            if (!bid.UserId.Equals(user.AggregateId))
+            //transaction id was supplied in transaction event as a result of distributed transaction. Owner of
+            //transaction id (subscriber of event) should supply valid transaction id and be able to commit it.
+            //In other case failed event should be emitted.
+            if(TransactionId != transactionId)
             {
-                throw new DomainException($"Bid cannot be canceled by user {user.AggregateId}");
+                //transaction failed - auction unlocked and locked by another transaction
+                AddEvent(new Events.BuyNowTX.Events.V1.BuyNowTXFailed{ TransactionId = transactionId, AuctionId = AggregateId });
+                return false;
             }
 
-            CancelBid(bid, false);
-
-            user.ReturnCredits(bid.Price);
-        }
-
-        public void CancelAuction()
-        {
-            ThrowIfCompletedOrCanceled();
-            Canceled = true;
-            AddEvent(new AuctionCanceled(AggregateId));
-        }
-
-        public void EndAuction()
-        {
-            ThrowIfCompletedOrCanceled();
+            Locked = false;
+            Buyer = LockIssuer;
+            LockIssuer = null;
+            EndDate = DateTime.UtcNow;
             Completed = true;
-            var winningBid = Bids.FirstOrDefault(b => b.Price == Bids.Max(bid => bid.Price));
-            Buyer = winningBid?.UserId;
-            AddEvent(new AuctionCompleted(AggregateId, winningBid, Owner));
+            AddEvent(new Events.BuyNowTX.Events.V1.BuyNowTXSuccess { TransactionId = transactionId, AuctionId = AggregateId, BuyerId = Buyer });
+            return true;
         }
 
-        private void BuyNow(UserId buyer)
+        internal void Unlock()
         {
-            Buyer = buyer;
-            Completed = true;
-            AddEvent(new AuctionBought(AggregateId, buyer, Owner));
-        }
-
-        public void BuyNow(User user)
-        {
-            if (BuyNowPrice == 0)
-            {
-                throw new DomainException($"Aution {AggregateId} buy now price has not been set");
-            }
-
-            ThrowIfCompletedOrCanceled();
-
-            user.CheckIsRegistered();
-            user.WithdrawCredits(BuyNowPrice);
-            BuyNow(user.AggregateId);
+            Locked = false;
+            LockIssuer = null;
+            TransactionId = null;
         }
 
         public void AddImage(AuctionImage img)
@@ -333,27 +320,6 @@ namespace Core.Common.Domain.Auctions
             return removed;
         }
 
-        public void RemoveBid(Bid bid)
-        {
-            var existingBid = _bids.FirstOrDefault(b => b.BidId.Equals(bid.BidId));
-            if (existingBid == null)
-            {
-                throw new DomainException($"Cannot find bid with BidId: {bid.BidId}");
-            }
-
-            _bids.Remove(existingBid);
-
-            AddEvent(new BidRemoved(bid));
-            if (existingBid.Price.Equals(ActualPrice))
-            {
-                var topBid = Bids.First(b => b.Price == Bids.Max(mbid => mbid.Price));
-                ActualPrice = topBid.Price;
-            }
-
-        }
-
-
-
 
         public void UpdateBuyNowPrice(BuyNowPrice newPrice)
         {
@@ -372,7 +338,7 @@ namespace Core.Common.Domain.Auctions
             {
                 throw new DomainException("Not enough auction tags");
             }
-            if(tags.Length >= Tags.Length && tags.Except(Tags).Count() == 0) { return;}
+            if (tags.Length >= Tags.Length && tags.Except(Tags).Count() == 0) { return; }
             Tags = tags;
             AddUpdateEvent(new AuctionTagsChanged(AggregateId, tags));
         }
@@ -389,7 +355,7 @@ namespace Core.Common.Domain.Auctions
 
         public void UpdateCategory(Category category)
         {
-            if(category.Equals(Category)) { return; }
+            if (category.Equals(Category)) { return; }
             Category = category;
             AddUpdateEvent(new AuctionCategoryChanged(AggregateId, category));
         }
@@ -403,7 +369,7 @@ namespace Core.Common.Domain.Auctions
 
         public void UpdateDescription(string description)
         {
-            if(Product.Description.Equals(description)) { return; }
+            if (Product.Description.Equals(description)) { return; }
             Product.Description = description;
             AddUpdateEvent(new AuctionDescriptionChanged(AggregateId, description));
         }
