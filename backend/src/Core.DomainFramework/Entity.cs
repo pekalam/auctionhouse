@@ -50,15 +50,16 @@ namespace Core.Common.Domain
         }
 
         /// <summary>
-        /// Called by parent when recreating entity state
+        /// Called by parent when recreating entity state by applying event that was created by command of this entity.
+        /// Event should be not an event indicating construction of object. Subclass should hide it (re-declare) if it supports it.
         /// </summary>
         /// <param name="event"></param>
-        internal void ApplyInternal(Event @event)
+        internal protected void ApplyInternal(Event @event)
         {
             Apply(@event);
             _parentApply?.Apply(@event);
         }
 
-        protected abstract void Apply(Event @event);
+        public abstract void Apply(Event @event);
     }
 }

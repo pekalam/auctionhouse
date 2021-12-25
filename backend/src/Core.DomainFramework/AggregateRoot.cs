@@ -95,6 +95,7 @@ namespace Core.Common.Domain
         {
             if (_canAddNewEvents)
             {
+                @event.AggVersion = ++Version;
                 _pendingEvents.Add(@event);
             }
         }

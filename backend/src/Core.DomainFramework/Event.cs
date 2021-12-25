@@ -6,7 +6,7 @@ namespace Core.Common.Domain
     public class Event
     {
         public string EventName { get; }
-        public long AggVersion { get; set; }
+        public virtual long AggVersion { get; set; }
 
         public Event(string eventName)
         {
@@ -19,9 +19,10 @@ namespace Core.Common.Domain
     /// </summary>
     public class UpdateEvent : Event
     {
+        override public long AggVersion { get => -1; set { } } // agg versions is contained in UpdateEventGroup in which this UpdateEvent is contained
+
         public UpdateEvent(string eventName) : base(eventName)
         {
-            AggVersion = -1; // agg versions is contained in UpdateEventGroup in which this UpdateEvent is contained
         }
     }
 
