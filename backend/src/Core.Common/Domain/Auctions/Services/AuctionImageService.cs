@@ -6,15 +6,15 @@ using Core.Common.Domain.Auctions;
 using Core.Common.Exceptions;
 using Microsoft.Extensions.Logging;
 
-namespace Core.Common.DomainServices
+namespace Core.Common.Domain.Auction.Services
 {
     public class AuctionImageService
     {
         private readonly IAuctionImageRepository _imageRepository;
-        private readonly IAuctionImageConversionService _imageConverterService;
+        private readonly IAuctionImageConversion _imageConverterService;
 
 
-        public AuctionImageService(IAuctionImageRepository imageRepository, IAuctionImageConversionService imageConverterService)
+        public AuctionImageService(IAuctionImageRepository imageRepository, IAuctionImageConversion imageConverterService)
         {
             _imageRepository = imageRepository;
             _imageConverterService = imageConverterService;

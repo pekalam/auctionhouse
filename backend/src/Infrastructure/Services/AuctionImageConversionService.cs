@@ -11,7 +11,7 @@ using SixLabors.ImageSharp.Processing;
 
 namespace Infrastructure.Services
 {
-    public class AuctionImageConversionService : IAuctionImageConversionService
+    public class AuctionImageConversionService : IAuctionImageConversion
     {
         private static readonly List<string[]> _allowedFirstBytes = new List<string[]>();
 

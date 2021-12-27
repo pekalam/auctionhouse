@@ -9,8 +9,8 @@ using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.ApplicationServices;
 using Core.Common.Auth;
+using Core.Common.Domain.Auction.Services;
 using Core.Common.Domain.Auctions;
-using Core.Common.DomainServices;
 using Core.Common.EventBus;
 using Microsoft.Extensions.Logging;
 

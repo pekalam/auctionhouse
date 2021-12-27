@@ -15,7 +15,6 @@ using Core.Common.Domain.Users;
 using Core.Common.EventBus;
 using Core.Common.SchedulerService;
 using Core.Common.Command;
-using Core.Common.DomainServices;
 using Infrastructure.Auth;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.AuctionImage;
@@ -26,6 +25,7 @@ using Infrastructure.Services.SchedulerService;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using RestEase;
+using Core.Common.Domain.Auction.Services;
 
 namespace Infrastructure.Bootstraper
 {
@@ -73,7 +73,7 @@ namespace Infrastructure.Bootstraper
             {
                 serviceCollection.AddSingleton<ImageDbContext>();
                 serviceCollection.AddScoped<IAuctionImageRepository, AuctionImageRepository>();
-                serviceCollection.AddSingleton<IAuctionImageConversionService, AuctionImageConversionService>();
+                serviceCollection.AddSingleton<IAuctionImageConversion, AuctionImageConversionService>();
                 serviceCollection.AddScoped<AuctionImageService>();
             }
 

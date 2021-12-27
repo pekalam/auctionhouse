@@ -16,7 +16,7 @@ namespace Test.IntegrationTests
     [TestFixture]
     public class AuctionImageConversionService_Tests
     {
-        private IAuctionImageConversionService service;
+        private IAuctionImageConversion service;
 
         [SetUp]
         public void SetUp()
