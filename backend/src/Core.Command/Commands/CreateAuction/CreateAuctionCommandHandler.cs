@@ -58,7 +58,7 @@ namespace Core.Command.CreateAuction
         {
             try
             {
-                var scheduledTaskId = _deps.auctionSchedulerService.ScheduleAuctionEndTask(auction)
+                var scheduledTaskId = _deps.auctionSchedulerService.ScheduleAuctionEnd(auction)
                     .Result;
                 context.TransactionContext = scheduledTaskId;
             }
@@ -73,7 +73,7 @@ namespace Core.Command.CreateAuction
             try
             {
                 var scheduledTaskId = (ScheduledTaskId) context.TransactionContext;
-                _deps.auctionSchedulerService.CancelAuctionEndTask(scheduledTaskId);
+                _deps.auctionSchedulerService.CancelAuctionEnd(scheduledTaskId);
             }
             catch (Exception e)
             {

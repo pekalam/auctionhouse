@@ -19,12 +19,12 @@ namespace Core.Command.Commands.UpdateAuction
         private readonly IAuctionRepository _auctionRepository;
         private readonly IUserIdentityService _userIdentityService;
         private readonly ILogger<UpdateAuctionCommandHandler> _logger;
-        private readonly IAuctionSchedulerService _schedulerService;
+        private readonly IAuctionEndScheduler _schedulerService;
         private readonly EventBusService _eventBusService;
         private readonly CategoryBuilder _categoryBuilder;
 
         public UpdateAuctionCommandHandler(IAuctionRepository auctionRepository, IUserIdentityService userIdentityService, 
-            ILogger<UpdateAuctionCommandHandler> logger, IAuctionSchedulerService schedulerService, 
+            ILogger<UpdateAuctionCommandHandler> logger, IAuctionEndScheduler schedulerService, 
             EventBusService eventBusService, CategoryBuilder categoryBuilder) : base(logger)
         {
             _auctionRepository = auctionRepository;

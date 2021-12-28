@@ -4,7 +4,7 @@ using Core.Common.SchedulerService;
 
 namespace Infrastructure.Services.SchedulerService
 {
-    public class AuctionSchedulerService : IAuctionSchedulerService
+    public class AuctionSchedulerService : IAuctionEndScheduler
     {
         private readonly ITimeTaskClient _timeTaskClient;
         private readonly TimeTaskServiceSettings _serviceSettings;
@@ -29,7 +29,7 @@ namespace Infrastructure.Services.SchedulerService
             return sheduleRequest;
         }
 
-        public Task<ScheduledTaskId> ScheduleAuctionEndTask(Auction auction)
+        public Task<ScheduledTaskId> ScheduleAuctionEnd(Auction auction)
         {
             var sheduleRequest = CreateScheduleRequest(auction);
             var infoResponse = _timeTaskClient.ScheduleTask(sheduleRequest).Result;
@@ -37,7 +37,7 @@ namespace Infrastructure.Services.SchedulerService
             return Task.FromResult(new ScheduledTaskId(infoResponse.Id));
         }
 
-        public Task CancelAuctionEndTask(ScheduledTaskId id)
+        public Task CancelAuctionEnd(ScheduledTaskId id)
         {
             return _timeTaskClient.CancelTask(new CancelTaskRequest()
             {

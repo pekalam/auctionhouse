@@ -87,7 +87,7 @@ namespace Infrastructure.Bootstraper
                         return client;
                     }
                 );
-                serviceCollection.AddSingleton<IAuctionSchedulerService, AuctionSchedulerService>();
+                serviceCollection.AddSingleton<IAuctionEndScheduler, AuctionSchedulerService>();
             }
 
             private static void ConfigureDomainRepositories(IServiceCollection serviceCollection)
