@@ -6,9 +6,9 @@ namespace Core.Common.Domain.Categories
 {
     public class CategoryBuilder
     {
-        private readonly ICategoryTreeService _categoryTreeService;
+        private readonly ICategoryTreeStore _categoryTreeService;
 
-        public CategoryBuilder(ICategoryTreeService categoryTreeService)
+        public CategoryBuilder(ICategoryTreeStore categoryTreeService)
         {
             _categoryTreeService = categoryTreeService;
         }

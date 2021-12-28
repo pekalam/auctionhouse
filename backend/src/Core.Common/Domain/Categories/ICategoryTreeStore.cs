@@ -1,6 +1,6 @@
 ﻿namespace Core.Common.Domain.Categories
 {
-    public interface ICategoryTreeService
+    public interface ICategoryTreeStore
     {
         CategoryTreeNode GetCategoriesTree();
     }

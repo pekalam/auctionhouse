@@ -13,7 +13,7 @@ namespace Infrastructure.Services
         public string SchemaFilePath { get; set; }
     }
 
-    public class CategoryTreeService : ICategoryTreeService
+    public class CategoryTreeService : ICategoryTreeStore
     {
         private readonly CategoryNameServiceSettings _categoryNameServiceSettings;
         private readonly CategoryTreeNode _root = new CategoryTreeNode(null, 0, null);

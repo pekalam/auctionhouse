@@ -22,7 +22,7 @@ namespace Infrastructure.Bootstraper
         {
             private static void ConfigureCategoryServices(IServiceCollection serviceCollection)
             {
-                serviceCollection.AddSingleton<ICategoryTreeService, CategoryTreeService>();
+                serviceCollection.AddSingleton<ICategoryTreeStore, CategoryTreeService>();
                 serviceCollection.AddSingleton<CategoryBuilder>();
             }
 
@@ -56,7 +56,7 @@ namespace Infrastructure.Bootstraper
 
             public static void Start(IServiceProvider serviceProvider, Action<EventArgs, ILogger> eventBusDisconnectedCallback)
             {
-                ((CategoryTreeService) (serviceProvider.GetRequiredService<ICategoryTreeService>())).Init();
+                ((CategoryTreeService) (serviceProvider.GetRequiredService<ICategoryTreeStore>())).Init();
                 var implProvider = serviceProvider.GetRequiredService<IImplProvider>();
                 RollbackHandlerRegistry.ImplProvider = implProvider;
                 var rabbitmq = (RabbitMqEventBus)implProvider.Get<IEventBus>();

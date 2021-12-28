@@ -10,9 +10,9 @@ namespace Core.Query.Queries.Auction.Categories
 {
     public class CategoriesQueryHandler : QueryHandlerBase<CategoriesQuery, CategoryTreeNode>
     {
-        private readonly ICategoryTreeService _categoryTreeService;
+        private readonly ICategoryTreeStore _categoryTreeService;
 
-        public CategoriesQueryHandler(ICategoryTreeService categoryTreeService)
+        public CategoriesQueryHandler(ICategoryTreeStore categoryTreeService)
         {
             _categoryTreeService = categoryTreeService;
         }
