@@ -13,7 +13,7 @@ using Core.Common.ApplicationServices;
 using Core.Common.Domain.AuctionBids.Repositories;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Users;
-using Core.Common.RequestStatusService;
+using Core.Common.RequestStatusSender;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Command.Commands.Bid
@@ -23,9 +23,9 @@ namespace Core.Command.Commands.Bid
         private readonly IAuctionBidsRepository _auctionBids;
         private readonly EventBusService _eventBusService;
         private readonly ILogger<BidCommandHandler> _logger;
-        private readonly IRequestStatusService _requestStatusService;
+        private readonly IRequestStatusSender _requestStatusService;
 
-        public BidCommandHandler(EventBusService eventBusService, ILogger<BidCommandHandler> logger, IRequestStatusService requestStatusService) : base(logger)
+        public BidCommandHandler(EventBusService eventBusService, ILogger<BidCommandHandler> logger, IRequestStatusSender requestStatusService) : base(logger)
         {
             _eventBusService = eventBusService;
             _logger = logger;

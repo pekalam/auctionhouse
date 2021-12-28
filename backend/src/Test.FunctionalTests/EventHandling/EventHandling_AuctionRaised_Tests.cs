@@ -10,7 +10,7 @@ using Core.Common.Domain.Categories;
 using Core.Common.Domain.Products;
 using Core.Common.Domain.Users;
 using Core.Common.EventBus;
-using Core.Common.RequestStatusService;
+using Core.Common.RequestStatusSender;
 using Core.Query.EventHandlers;
 using FunctionalTests.Utils;
 using Microsoft.Extensions.Logging;
@@ -46,13 +46,13 @@ namespace FunctionalTests.EventHandling
 
 
             var eventHandler = new Mock<AuctionRaisedHandler>(services.AppEventBuilder,
-                services.DbContext, Mock.Of<IRequestStatusService>(), Mock.Of<ILogger<AuctionRaisedHandler>>());
+                services.DbContext, Mock.Of<IRequestStatusSender>(), Mock.Of<ILogger<AuctionRaisedHandler>>());
             eventHandler.CallBase = true;
             eventHandler.Setup(f => f.Consume(It.IsAny<IAppEvent<AuctionRaised>>()))
                 .Callback(() => sem.Release());
 
 
-            var requestStatusService = new Mock<IRequestStatusService>();
+            var requestStatusService = new Mock<IRequestStatusSender>();
             requestStatusService.Setup(service =>
                 service.TrySendNotificationToAll("AuctionPriceChanged", It.IsAny<Dictionary<string, object>>()));
 

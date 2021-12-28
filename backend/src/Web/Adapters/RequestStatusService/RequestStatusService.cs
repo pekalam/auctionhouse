@@ -5,7 +5,7 @@ using Core.Common;
 using Core.Common.Domain;
 using Core.Common.Domain.Users;
 using Core.Common.EventBus;
-using Core.Common.RequestStatusService;
+using Core.Common.RequestStatusSender;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
@@ -13,7 +13,7 @@ using Web.Dto.Commands;
 
 namespace Web.Adapters.EventSignaling
 {
-    public class RequestStatusService : IRequestStatusService
+    public class RequestStatusService : IRequestStatusSender
     {
         private readonly IHubContext<ApplicationHub> _hubContext;
         private readonly ILogger<RequestStatusService> _logger;

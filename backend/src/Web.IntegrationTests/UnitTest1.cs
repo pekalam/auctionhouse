@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Core.Common.Domain.Users;
 using Core.Common.EventBus;
-using Core.Common.RequestStatusService;
+using Core.Common.RequestStatusSender;
 using FluentAssertions;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -75,18 +75,18 @@ namespace Tests
     {
         private WebApplicationFactory<Startup> _factory;
         private HttpClient client;
-        private Mock<IRequestStatusService> mockRequestStatusService;
+        private Mock<IRequestStatusSender> mockRequestStatusService;
 
         [SetUp]
         public void Setup()
         {
-            mockRequestStatusService = new Mock<IRequestStatusService>();
+            mockRequestStatusService = new Mock<IRequestStatusSender>();
             _factory = new WebApplicationFactory<Startup>()
                 .WithWebHostBuilder(builder =>
                 {
                     builder.ConfigureTestServices(collection =>
                     {
-                        collection.AddScoped<IRequestStatusService>(provider =>
+                        collection.AddScoped<IRequestStatusSender>(provider =>
                             mockRequestStatusService.Object);
                     });
                 });

@@ -5,7 +5,7 @@ using Core.Common.Domain;
 using Core.Common.Domain.Users;
 using Core.Common.Domain.Users.Events;
 using Core.Common.EventBus;
-using Core.Common.RequestStatusService;
+using Core.Common.RequestStatusSender;
 using Core.Query.Exceptions;
 using Core.Query.ReadModel;
 using Microsoft.Extensions.Logging;
@@ -17,7 +17,7 @@ namespace Core.Query.EventHandlers.User
     {
         public static UserRead AddCredits<T>(ReadModelDbContext dbContext, IAppEvent<T> appEvent,
             decimal creditsCount, UserId userId,
-            IRequestStatusService requestStatusService) where T : Event
+            IRequestStatusSender requestStatusService) where T : Event
         {
             var filter = Builders<UserRead>.Filter.Eq(read => read.UserIdentity.UserId,
                 userId.ToString());
@@ -43,10 +43,10 @@ namespace Core.Query.EventHandlers.User
     public class CreditsAddedHandler : EventConsumer<CreditsAdded>
     {
         private readonly ReadModelDbContext _dbContext;
-        private readonly IRequestStatusService _requestStatusService;
+        private readonly IRequestStatusSender _requestStatusService;
 
         public CreditsAddedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext,
-            ILogger<CreditsAddedHandler> logger, IRequestStatusService requestStatusService) : base(appEventBuilder,
+            ILogger<CreditsAddedHandler> logger, IRequestStatusSender requestStatusService) : base(appEventBuilder,
             logger)
         {
             _dbContext = dbContext;
@@ -63,11 +63,11 @@ namespace Core.Query.EventHandlers.User
     public class CreditsReturnedHandler : EventConsumer<CreditsReturned>
     {
         private readonly ReadModelDbContext _dbContext;
-        private readonly IRequestStatusService _requestStatusService;
+        private readonly IRequestStatusSender _requestStatusService;
 
 
         public CreditsReturnedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext,
-            ILogger<CreditsReturnedHandler> logger, IRequestStatusService requestStatusService) : base(appEventBuilder,
+            ILogger<CreditsReturnedHandler> logger, IRequestStatusSender requestStatusService) : base(appEventBuilder,
             logger)
         {
             _dbContext = dbContext;
@@ -84,11 +84,11 @@ namespace Core.Query.EventHandlers.User
     public class CreditsWithdrawnHandler : EventConsumer<CreditsWithdrawn>
     {
         private readonly ReadModelDbContext _dbContext;
-        private readonly IRequestStatusService _requestStatusService;
+        private readonly IRequestStatusSender _requestStatusService;
 
 
         public CreditsWithdrawnHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext,
-            ILogger<CreditsWithdrawnHandler> logger, IRequestStatusService requestStatusService) : base(appEventBuilder,
+            ILogger<CreditsWithdrawnHandler> logger, IRequestStatusSender requestStatusService) : base(appEventBuilder,
             logger)
         {
             _dbContext = dbContext;

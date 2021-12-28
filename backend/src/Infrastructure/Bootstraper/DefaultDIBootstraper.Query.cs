@@ -11,13 +11,13 @@ using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Categories;
 using Core.Common.EventBus;
 using Core.Common.Query;
-using Core.Common.RequestStatusService;
 using Core.Query.EventHandlers;
 using Core.Query.EventHandlers.AuctionUpdateHandlers;
 using Core.Query.ReadModel;
 using Infrastructure.Repositories.AuctionImage;
 using Infrastructure.Services;
 using Infrastructure.Services.EventBus;
+using Core.Common.RequestStatusSender;
 
 namespace Infrastructure.Bootstraper
 {
@@ -53,11 +53,11 @@ namespace Infrastructure.Bootstraper
                 MongoDbSettings mongoDbSettings,
                 CategoryNameServiceSettings categoryNameServiceSettings,
                 ImageDbSettings imageDbSettings,
-                RabbitMqSettings rabbitMqSettings) where RequestStatusServiceImpl : class, IRequestStatusService
+                RabbitMqSettings rabbitMqSettings) where RequestStatusServiceImpl : class, IRequestStatusSender
             {
                 serviceCollection.AddSingleton<ReadModelDbContext>();
                 serviceCollection.AddScoped<RequestStatusServiceImpl>();
-                serviceCollection.AddScoped<IRequestStatusService, RequestStatusServiceProxy>(provider =>
+                serviceCollection.AddScoped<IRequestStatusSender, RequestStatusServiceProxy>(provider =>
                     new RequestStatusServiceProxy(provider.GetRequiredService<RequestStatusServiceImpl>(),
                         provider.GetRequiredService<IHTTPQueuedCommandStatusStorage>()));
 

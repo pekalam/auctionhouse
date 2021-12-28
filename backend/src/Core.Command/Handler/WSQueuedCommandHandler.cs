@@ -3,7 +3,7 @@ using System.Threading;
 using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.Command;
-using Core.Common.RequestStatusService;
+using Core.Common.RequestStatusSender;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -11,11 +11,11 @@ namespace Core.Command.Handler
 {
     public class WSQueuedCommandHandler
     {
-        private readonly IRequestStatusService _requestStatusService;
+        private readonly IRequestStatusSender _requestStatusService;
         private readonly IMediator _mediator;
         private readonly ILogger<WSQueuedCommandHandler> _logger;
 
-        public WSQueuedCommandHandler(IRequestStatusService requestStatusService, IMediator mediator,
+        public WSQueuedCommandHandler(IRequestStatusSender requestStatusService, IMediator mediator,
             ILogger<WSQueuedCommandHandler> logger)
         {
             _requestStatusService = requestStatusService;

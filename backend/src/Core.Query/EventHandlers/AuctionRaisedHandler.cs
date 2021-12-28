@@ -1,7 +1,7 @@
 ﻿using System;
 using Core.Common.Domain.Auctions.Events;
 using Core.Common.EventBus;
-using Core.Common.RequestStatusService;
+using Core.Common.RequestStatusSender;
 using Core.Query.Exceptions;
 using Core.Query.ReadModel;
 using Microsoft.Extensions.Logging;
@@ -12,11 +12,11 @@ namespace Core.Query.EventHandlers
     public class AuctionRaisedHandler : EventConsumer<AuctionRaised>
     {
         private ReadModelDbContext _dbContext;
-        private readonly IRequestStatusService _requestStatusService;
+        private readonly IRequestStatusSender _requestStatusService;
         private readonly ILogger<AuctionRaisedHandler> _logger;
 
         public AuctionRaisedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext,
-            IRequestStatusService requestStatusService, ILogger<AuctionRaisedHandler> logger) : base(appEventBuilder,
+            IRequestStatusSender requestStatusService, ILogger<AuctionRaisedHandler> logger) : base(appEventBuilder,
             logger)
         {
             _dbContext = dbContext;

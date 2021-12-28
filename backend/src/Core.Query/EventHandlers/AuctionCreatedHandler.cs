@@ -6,7 +6,7 @@ using Core.Common.Domain.Auctions.Events;
 using Core.Common.Domain.Bids;
 using Core.Common.Domain.Users;
 using Core.Common.EventBus;
-using Core.Common.RequestStatusService;
+using Core.Common.RequestStatusSender;
 using Core.Query.ReadModel;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
@@ -36,11 +36,11 @@ namespace Core.Query.EventHandlers
     public class AuctionCreatedHandler : EventConsumer<AuctionCreated>
     {
         private readonly ReadModelDbContext _dbContext;
-        private readonly IRequestStatusService _requestStatusService;
+        private readonly IRequestStatusSender _requestStatusService;
         private readonly ILogger<AuctionCreatedHandler> _logger;
 
         public AuctionCreatedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext,
-            IRequestStatusService requestStatusService,
+            IRequestStatusSender requestStatusService,
             ILogger<AuctionCreatedHandler> logger) : base(appEventBuilder, logger)
         {
             _dbContext = dbContext;

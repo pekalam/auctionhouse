@@ -13,7 +13,7 @@ using Core.Common.Domain.Categories;
 using Core.Common.Domain.Products;
 using Core.Common.Domain.Users;
 using Core.Common.EventBus;
-using Core.Common.RequestStatusService;
+using Core.Common.RequestStatusSender;
 using Core.Common.SchedulerService;
 using Core.Query.EventHandlers;
 using Core.Query.ReadModel;
@@ -66,7 +66,7 @@ namespace FunctionalTests.CommandRollback
         public class TestAuctionCreatedHandler : AuctionCreatedHandler
         {
             public TestAuctionCreatedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext,
-                IRequestStatusService requestStatusService) : base(appEventBuilder, dbContext, requestStatusService, Mock.Of<ILogger<TestAuctionCreatedHandler>>())
+                IRequestStatusSender requestStatusService) : base(appEventBuilder, dbContext, requestStatusService, Mock.Of<ILogger<TestAuctionCreatedHandler>>())
             {
             }
 
@@ -114,7 +114,7 @@ namespace FunctionalTests.CommandRollback
             var eventHandler = new Mock<TestAuctionCreatedHandler>(
                 services.AppEventBuilder,
                 services.DbContext,
-                Mock.Of<IRequestStatusService>()
+                Mock.Of<IRequestStatusSender>()
             );
             eventHandler.CallBase = true;
             eventHandler

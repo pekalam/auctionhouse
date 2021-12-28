@@ -12,7 +12,7 @@ using Core.Common.Auth;
 using Core.Common.Command;
 using Core.Common.Domain.Users;
 using Core.Common.EventBus;
-using Core.Common.RequestStatusService;
+using Core.Common.RequestStatusSender;
 using Infrastructure.Services.EventBus;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -72,7 +72,7 @@ namespace IntegrationTests
             var mockUserIdentityService = new Mock<IUserIdentityService>();
             mockUserIdentityService.Setup(service => service.GetSignedInUserIdentity()).Returns(signedInUser);
 
-            var mockRequestStatusService = new Mock<IRequestStatusService>();
+            var mockRequestStatusService = new Mock<IRequestStatusSender>();
 
 
             var mediatrMock = new Mock<IMediator>();

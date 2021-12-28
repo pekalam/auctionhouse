@@ -6,17 +6,17 @@ using Core.Common.Command;
 using Core.Common.Domain;
 using Core.Common.Domain.Users;
 using Core.Common.EventBus;
-using Core.Common.RequestStatusService;
+using Core.Common.RequestStatusSender;
 using Core.Query.Exceptions;
 
 namespace Core.Query.EventHandlers
 {
-    public class RequestStatusServiceProxy : IRequestStatusService
+    public class RequestStatusServiceProxy : IRequestStatusSender
     {
-        private readonly IRequestStatusService _wsRequestStatusService;
+        private readonly IRequestStatusSender _wsRequestStatusService;
         private readonly IHTTPQueuedCommandStatusStorage _httpQueuedCommandStatusStorage;
 
-        public RequestStatusServiceProxy(IRequestStatusService wsRequestStatusService, IHTTPQueuedCommandStatusStorage httpQueuedCommandStatusStorage)
+        public RequestStatusServiceProxy(IRequestStatusSender wsRequestStatusService, IHTTPQueuedCommandStatusStorage httpQueuedCommandStatusStorage)
         {
             _wsRequestStatusService = wsRequestStatusService;
             _httpQueuedCommandStatusStorage = httpQueuedCommandStatusStorage;

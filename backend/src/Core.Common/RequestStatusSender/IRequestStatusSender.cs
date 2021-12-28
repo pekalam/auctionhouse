@@ -4,9 +4,9 @@ using Core.Common.Domain;
 using Core.Common.Domain.Users;
 using Core.Common.EventBus;
 
-namespace Core.Common.RequestStatusService
+namespace Core.Common.RequestStatusSender
 {
-    public interface IRequestStatusService
+    public interface IRequestStatusSender
     {
         void SendRequestCompletionToUser<T>(IAppEvent<T> appEvent, Guid user, Dictionary<string, object> values = null) where T : Event;
         void SendRequestCompletionToAll<T>(IAppEvent<T> appEvent, Dictionary<string, object> values = null) where T : Event;

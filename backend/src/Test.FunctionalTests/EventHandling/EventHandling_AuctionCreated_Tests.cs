@@ -11,7 +11,7 @@ using Core.Common.Domain.Categories;
 using Core.Common.Domain.Products;
 using Core.Common.Domain.Users;
 using Core.Common.EventBus;
-using Core.Common.RequestStatusService;
+using Core.Common.RequestStatusSender;
 using Core.Query.EventHandlers;
 using Core.Query.ReadModel;
 using FluentAssertions;
@@ -29,7 +29,7 @@ namespace FunctionalTests.EventHandling
         public Action<IAppEvent<AuctionCreated>> OnConsumeCalled { get; set; }
 
         public TestAuctionCreatedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext,
-            IRequestStatusService requestStatusService) : base(appEventBuilder, dbContext, requestStatusService, Mock.Of<ILogger<TestAuctionCreatedHandler>>())
+            IRequestStatusSender requestStatusService) : base(appEventBuilder, dbContext, requestStatusService, Mock.Of<ILogger<TestAuctionCreatedHandler>>())
         {
         }
 
@@ -134,7 +134,7 @@ namespace FunctionalTests.EventHandling
             CorrelationId correlationIdFromHandler = null;
 
 
-            var eventHandler = new TestAuctionCreatedHandler(services.AppEventBuilder, services.DbContext, Mock.Of<IRequestStatusService>());
+            var eventHandler = new TestAuctionCreatedHandler(services.AppEventBuilder, services.DbContext, Mock.Of<IRequestStatusSender>());
             eventHandler.OnConsumeCalled = ev =>
             {
                 Assert.True(VerifyEvent(ev.Event, command));
