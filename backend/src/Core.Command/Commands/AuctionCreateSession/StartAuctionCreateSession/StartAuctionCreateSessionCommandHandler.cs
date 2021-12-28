@@ -10,10 +10,10 @@ namespace Core.Command.Commands.AuctionCreateSession.StartAuctionCreateSession
 {
     public class StartAuctionCreateSessionCommandHandler : CommandHandlerBase<StartAuctionCreateSessionCommand>
     {
-        private readonly IAuctionCreateSessionService _auctionCreateSessionService;
+        private readonly IAuctionCreateSessionStore _auctionCreateSessionService;
         private readonly ILogger<StartAuctionCreateSessionCommandHandler> _logger;
 
-        public StartAuctionCreateSessionCommandHandler(IAuctionCreateSessionService auctionCreateSessionService, ILogger<StartAuctionCreateSessionCommandHandler> logger) : base(logger)
+        public StartAuctionCreateSessionCommandHandler(IAuctionCreateSessionStore auctionCreateSessionService, ILogger<StartAuctionCreateSessionCommandHandler> logger) : base(logger)
         {
             _auctionCreateSessionService = auctionCreateSessionService;
             _logger = logger;
@@ -31,7 +31,8 @@ namespace Core.Command.Commands.AuctionCreateSession.StartAuctionCreateSession
             }
             else
             {
-                session = _auctionCreateSessionService.StartAndSaveNewSession();
+                session = Common.Domain.AuctionCreateSession.AuctionCreateSession.CreateSession(request.CommandContext.User);
+                _auctionCreateSessionService.SaveSession(session);
             }
 
             return Task.FromResult(RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED));

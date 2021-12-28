@@ -10,10 +10,10 @@ namespace Core.Command.Commands.AuctionCreateSession.RemoveImage
 {
     public class RemoveImageCommandHandler : CommandHandlerBase<RemoveImageCommand>
     {
-        private readonly IAuctionCreateSessionService _auctionCreateSessionService;
+        private readonly IAuctionCreateSessionStore _auctionCreateSessionService;
         private readonly ILogger<RemoveImageCommandHandler> _logger;
 
-        public RemoveImageCommandHandler(IAuctionCreateSessionService auctionCreateSessionService, ILogger<RemoveImageCommandHandler> logger) : base(logger)
+        public RemoveImageCommandHandler(IAuctionCreateSessionStore auctionCreateSessionService, ILogger<RemoveImageCommandHandler> logger) : base(logger)
         {
             _auctionCreateSessionService = auctionCreateSessionService;
             _logger = logger;

@@ -16,7 +16,7 @@ using Web.Exceptions;
 
 namespace Web.Adapters
 {
-    public class AuctionCreateSessionService : IAuctionCreateSessionService
+    public class AuctionCreateSessionService : IAuctionCreateSessionStore
     {
         private string GetSessionKey(UserId userIdentity) => $"user-{userIdentity}";
 
@@ -77,15 +77,6 @@ namespace Web.Adapters
                 var session = DeserializeSession(auctionCreateSessionBytes);
                 return session;
             }
-        }
-
-        public AuctionCreateSession StartAndSaveNewSession()
-        {
-            var user = GetSignedInUserIdentity();
-            _logger.LogDebug("Creating new AuctionCreateSession for {@user}", user);
-            var newSession = AuctionCreateSession.CreateSession(user);
-            SaveSession(newSession);
-            return newSession;
         }
 
         public void SaveSession(AuctionCreateSession session)

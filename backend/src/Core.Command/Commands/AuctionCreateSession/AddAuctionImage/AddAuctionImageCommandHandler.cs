@@ -8,7 +8,6 @@ using Core.Common;
 using Core.Common.Domain.Auction.Services;
 using Core.Common.Domain.AuctionCreateSession;
 using Core.Common.Domain.Auctions;
-using Core.Common.RequestStatusService;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Command.Commands.AuctionCreateSession.AddAuctionImage

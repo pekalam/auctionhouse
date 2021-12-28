@@ -44,10 +44,10 @@ namespace UnitTests.AuctionCreateSessionAttributeTests
 
             var testSession = AuctionCreateSession.CreateSession(UserId.New());
             var mockImplProvider = new Mock<IImplProvider>();
-            var mockAuctionCreateSessionService = new Mock<IAuctionCreateSessionService>();
+            var mockAuctionCreateSessionService = new Mock<IAuctionCreateSessionStore>();
             mockAuctionCreateSessionService.Setup(service => service.GetExistingSession())
                 .Returns(testSession);
-            mockImplProvider.Setup(provider => provider.Get<IAuctionCreateSessionService>())
+            mockImplProvider.Setup(provider => provider.Get<IAuctionCreateSessionStore>())
                 .Returns(mockAuctionCreateSessionService.Object);
 
             var cmd = new TestCommandBase(){Param = 1};

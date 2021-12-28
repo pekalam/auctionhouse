@@ -18,7 +18,7 @@ namespace Core.Common.Domain.AuctionCreateSession
 
         public AuctionCreateSession(AuctionImage[] sessionAuctionImages, DateTime dateCreated, UserId creator)
         {
-            if (sessionAuctionImages.Length < Auction.MAX_IMAGES)
+            if (sessionAuctionImages.Length < Auctions.Auction.MAX_IMAGES)
             {
                 throw new DomainException("");
             }
@@ -31,7 +31,7 @@ namespace Core.Common.Domain.AuctionCreateSession
         {
             Creator = creator;
             DateCreated = DateTime.UtcNow;
-            SessionAuctionImages = new AuctionImage[Auction.MAX_IMAGES];
+            SessionAuctionImages = new AuctionImage[Auctions.Auction.MAX_IMAGES];
         }
 
         public static AuctionCreateSession CreateSession(UserId creator)
@@ -80,7 +80,7 @@ namespace Core.Common.Domain.AuctionCreateSession
             SessionAuctionImages[imgNum] = img;
         }
 
-        public Auction CreateAuction(AuctionArgs auctionArgs)
+        public Auctions.Auction CreateAuction(AuctionArgs auctionArgs)
         {
             CheckIsSessionValid();
             if (Creator == null)
@@ -92,7 +92,7 @@ namespace Core.Common.Domain.AuctionCreateSession
                 .SetImages(SessionAuctionImages)
                 .SetOwner(Creator)
                 .Build();
-            var auction = new Auction(args);
+            var auction = new Auctions.Auction(args);
             return auction;
         }
 

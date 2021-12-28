@@ -125,7 +125,7 @@ namespace Core.Common.Attributes
         {
             if (_auctionCreateSessionCommandProperties.ContainsKey(commandBase.GetType()))
             {
-                var auctionCreateSessionService = implProvider.Get<IAuctionCreateSessionService>();
+                var auctionCreateSessionService = implProvider.Get<IAuctionCreateSessionStore>();
                 auctionCreateSessionService.RemoveSession();
             }
         }
@@ -181,7 +181,7 @@ namespace Core.Common.Attributes
         {
             if (_auctionCreateSessionCommandProperties.ContainsKey(commandBase.GetType()))
             {
-                var auctionCreateSessionService = implProvider.Get<IAuctionCreateSessionService>();
+                var auctionCreateSessionService = implProvider.Get<IAuctionCreateSessionStore>();
                 var session = auctionCreateSessionService.GetExistingSession();
                 _auctionCreateSessionCommandProperties[commandBase.GetType()].SetValue(commandBase, session);
             }
@@ -191,7 +191,7 @@ namespace Core.Common.Attributes
         {
             if (_auctionCreateSessionCommandProperties.ContainsKey(commandBase.GetType()))
             {
-                var auctionCreateSessionService = implProvider.Get<IAuctionCreateSessionService>();
+                var auctionCreateSessionService = implProvider.Get<IAuctionCreateSessionStore>();
                 var session =
                     _auctionCreateSessionCommandProperties[commandBase.GetType()].GetValue(commandBase) as AuctionCreateSession;
                 auctionCreateSessionService.SaveSession(session);

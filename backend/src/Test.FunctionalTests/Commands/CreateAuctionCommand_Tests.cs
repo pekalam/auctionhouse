@@ -76,7 +76,7 @@ namespace FunctionalTests.Commands
             userRepository.Setup(f => f.FindUser(It.IsAny<UserId>()))
                 .Returns(user);
 
-            var auctionCreateSessionService = new Mock<IAuctionCreateSessionService>();
+            var auctionCreateSessionService = new Mock<IAuctionCreateSessionStore>();
             auctionCreateSessionService.Setup(f => f.GetExistingSession())
                 .Returns(AuctionCreateSession.CreateSession(user.AggregateId));
             auctionCreateSessionService.Setup(f => f.RemoveSession());

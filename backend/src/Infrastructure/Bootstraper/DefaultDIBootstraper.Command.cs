@@ -51,9 +51,9 @@ namespace Infrastructure.Bootstraper
             private static void
                 ConfigureAuctionCreateSessionService<AuctionCreateSessionServiceT>(
                     IServiceCollection serviceCollection)
-                where AuctionCreateSessionServiceT : class, IAuctionCreateSessionService
+                where AuctionCreateSessionServiceT : class, IAuctionCreateSessionStore
             {
-                serviceCollection.AddTransient<IAuctionCreateSessionService, AuctionCreateSessionServiceT>();
+                serviceCollection.AddTransient<IAuctionCreateSessionStore, AuctionCreateSessionServiceT>();
             }
 
             private static void
@@ -126,7 +126,7 @@ namespace Infrastructure.Bootstraper
                 CategoryNameServiceSettings categoryNameServiceSettings
             )
                 where UserIdentityServiceImplT : class, IUserIdentityService
-                where AuctionCreateSessionServiceImplT : class, IAuctionCreateSessionService
+                where AuctionCreateSessionServiceImplT : class, IAuctionCreateSessionStore
                 where ResetLinkSenderServiceImplT : class, IResetLinkSenderService
             {
                 ConfigureServiceSettings(serviceCollection, eventStoreConnectionSettings, rabbitMqSettings,

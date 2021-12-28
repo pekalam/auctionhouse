@@ -46,9 +46,9 @@ namespace FunctionalTests.Utils
 
 		private RabbitMqEventBus _rabbitMqEventBus;
 
-		public IAuctionCreateSessionService GetAuctionCreateSessionService(AuctionCreateSession session)
+		public IAuctionCreateSessionStore GetAuctionCreateSessionService(AuctionCreateSession session)
 		{
-			var service = new Mock<IAuctionCreateSessionService>();
+			var service = new Mock<IAuctionCreateSessionStore>();
 			service.Setup(f => f.GetExistingSession())
 				.Returns(session);
 			service.Setup(f => f.RemoveSession());
