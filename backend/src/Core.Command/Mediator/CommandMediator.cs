@@ -16,8 +16,8 @@ namespace Core.Command.Mediator
         private const string CommandsAssemblyName = "Core.Command";
 
         private readonly IImplProvider _implProvider;
-        internal static Dictionary<Type, IEnumerable<Action<IImplProvider, ICommand>>> PreHandleCommandAttributeStrategies;
-        internal static Dictionary<Type, IEnumerable<Action<IImplProvider, ICommand>>> PostHandleCommandAttributeStrategies;
+        internal static Dictionary<Type, List<Action<IImplProvider, ICommand>>> PreHandleCommandAttributeStrategies;
+        internal static Dictionary<Type, List<Action<IImplProvider, ICommand>>> PostHandleCommandAttributeStrategies;
 
         static CommandMediator()
         {
@@ -26,8 +26,8 @@ namespace Core.Command.Mediator
 
         internal static void LoadCommandAttributeStrategies(string commandsAssemblyName)
         {
-            PreHandleCommandAttributeStrategies = new Dictionary<Type, IEnumerable<Action<IImplProvider, ICommand>>>();
-            PostHandleCommandAttributeStrategies = new Dictionary<Type, IEnumerable<Action<IImplProvider, ICommand>>>();
+            PreHandleCommandAttributeStrategies = new Dictionary<Type, List<Action<IImplProvider, ICommand>>>();
+            PostHandleCommandAttributeStrategies = new Dictionary<Type, List<Action<IImplProvider, ICommand>>>();
             var commandAttributes = Assembly.Load(commandsAssemblyName)
                 .GetTypes()
                 .Where(type => type.BaseType == typeof(ICommand))
@@ -44,21 +44,21 @@ namespace Core.Command.Mediator
                 PreHandleCommandAttributeStrategies[commandAttribute.CommandType] =
                     commandAttribute.CommandAttributes.OrderBy(attribute => attribute.Order)
                         .Select(attribute => attribute.PreHandleAttributeStrategy)
-                        .AsEnumerable();
+                        .ToList();
                 PostHandleCommandAttributeStrategies[commandAttribute.CommandType] =
                     commandAttribute.CommandAttributes.OrderBy(attribute => attribute.Order)
                         .Select(attribute => attribute.PostHandleAttributeStrategy)
-                        .AsEnumerable();
+                        .ToList();
             }
         }
 
-        internal static void InvokePostCommandAttributeStrategies(IImplProvider implProvider, ICommand commandBase)
+        internal static void InvokePostCommandAttributeStrategies(IImplProvider implProvider, ICommand command)
         {
-            if (PostHandleCommandAttributeStrategies.ContainsKey(commandBase.GetType()))
+            if (PostHandleCommandAttributeStrategies.ContainsKey(command.GetType()))
             {
-                foreach (var strategy in PostHandleCommandAttributeStrategies[commandBase.GetType()])
+                foreach (var strategy in PostHandleCommandAttributeStrategies[command.GetType()])
                 {
-                    strategy?.Invoke(implProvider, commandBase);
+                    strategy?.Invoke(implProvider, command);
                 }
             }
         }
