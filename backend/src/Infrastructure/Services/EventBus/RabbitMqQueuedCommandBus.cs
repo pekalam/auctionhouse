@@ -14,7 +14,7 @@ namespace Infrastructure.Services.EventBus
 {
     public class RabbitMqQueuedCommandBus : IQueuedCommandBus
     {
-        private List<ISubscriptionResult> _cmdSubscriptions = new List<ISubscriptionResult>();
+        private Dictionary<Type,ISubscriptionResult> _cmdSubscriptions = new();
         private readonly ILogger<RabbitMqQueuedCommandBus> _logger;
         private IBus _bus;
 
@@ -31,20 +31,11 @@ namespace Infrastructure.Services.EventBus
             };
         }
 
-
-        internal void InitQueuedCommandSubscribers(string assemblyName, IImplProvider implProvider)
+        public void PreparePublish(IImplProvider implProvider, ICommand command)
         {
-            var commandHandlerTypes = Assembly.Load(assemblyName)
-                .GetTypes()
-                .Where(type =>
-                    type.BaseType != null && type.BaseType.IsGenericType &&
-                    type.BaseType.GetGenericTypeDefinition() == typeof(CommandHandlerBase<>)) //TODO choose by attribute presence
-                .ToArray();
-            _logger.LogDebug("Found commandHandlers {list} in assembly: {assemblyName}", commandHandlerTypes.Select(f => f.Name).ToArray(), assemblyName);
-
-            foreach (var handlerType in commandHandlerTypes)
+            var cmdType = command.GetType();
+            if (!_cmdSubscriptions.ContainsKey(cmdType))
             {
-                var cmdType = handlerType.BaseType.GetGenericArguments()[0];
                 Subscribe(cmdType, implProvider);
             }
         }
@@ -75,12 +66,12 @@ namespace Infrastructure.Services.EventBus
                     configuration.WithTopic(cmdName);
                     configuration.WithQueueName(queueName);
                 });
-            _cmdSubscriptions.Add(subscription);
+            _cmdSubscriptions.Add(cmdType, subscription);
         }
 
         internal void CancelCommandSubscriptions()
         {
-            foreach (var subscription in _cmdSubscriptions)
+            foreach (var subscription in _cmdSubscriptions.Values)
             {
                 subscription.Dispose();
             }

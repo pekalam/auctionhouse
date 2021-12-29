@@ -62,8 +62,8 @@ namespace IntegrationTests
             var mockImplProvider = MockWSImplProvider(mockUserIdentityService, mockWSQueuedCommandHandler);
 
             RabbitMqEventBusTestUtils.QueuedCommandBus.Value.CancelCommandSubscriptions();
-            RabbitMqEventBusTestUtils.QueuedCommandBus.Value.InitQueuedCommandSubscribers("Test.IntegrationTests", mockImplProvider.Object);
 
+            RabbitMqEventBusTestUtils.QueuedCommandBus.Value.PreparePublish(mockImplProvider.Object, cmd);
             RabbitMqEventBusTestUtils.QueuedCommandBus.Value.Publish<TestQueuedCommand>(queuedCmd);
 
             if (!sem.Wait(TimeSpan.FromSeconds(60))) { Assert.Fail(); };
@@ -100,9 +100,8 @@ namespace IntegrationTests
             var mockImplProvider = MockImplProvider(mockUserIdentityService, mockQueuedCommandHandler);
 
             RabbitMqEventBusTestUtils.QueuedCommandBus.Value.CancelCommandSubscriptions();
-            RabbitMqEventBusTestUtils.QueuedCommandBus.Value.InitQueuedCommandSubscribers("Test.IntegrationTests", mockImplProvider.Object);
 
-
+            RabbitMqEventBusTestUtils.QueuedCommandBus.Value.PreparePublish(mockImplProvider.Object, cmd);
             RabbitMqEventBusTestUtils.QueuedCommandBus.Value.Publish<TestQueuedCommand>(queuedCmd);
 
 

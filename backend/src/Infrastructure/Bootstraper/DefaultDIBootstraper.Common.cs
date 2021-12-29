@@ -65,7 +65,6 @@ namespace Infrastructure.Bootstraper
                 rabbitmq.InitSubscribers("Core.Query", implProvider);
 
                 var queuedCommandBus = (RabbitMqQueuedCommandBus)implProvider.Get<IQueuedCommandBus>();
-                queuedCommandBus.InitQueuedCommandSubscribers("Core.Command", implProvider);
                 queuedCommandBus.Disconnected += eventBusDisconnectedCallback;
             }
         }
