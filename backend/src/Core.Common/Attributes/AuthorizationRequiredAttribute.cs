@@ -28,7 +28,7 @@ namespace Core.Common.Attributes
             var commandMembers = assemblyNames.Select(s => Assembly.Load((string) s))
                 .Select(assembly =>
                     assembly.GetTypes()
-                        .Where(type => type.BaseType == typeof(CommandBase) || type.GetInterfaces().Contains(typeof(IQuery)))
+                        .Where(type => type.BaseType == typeof(ICommand) || type.GetInterfaces().Contains(typeof(IQuery)))
                         .Select(type => type.GetProperties())
                         .SelectMany(infos => infos)
                         .Where(info =>
@@ -50,11 +50,11 @@ namespace Core.Common.Attributes
             {
                 var interfaces = member.CmdOrQueryType.GetInterfaces();
 
-                if (member.CmdOrQueryType.BaseType == typeof(CommandBase) && !interfaces.Contains(typeof(IQuery)))
+                if (member.CmdOrQueryType.BaseType == typeof(ICommand) && !interfaces.Contains(typeof(IQuery)))
                 {
                     _signedInUserCommandProperties[member.CmdOrQueryType] = member.PropertyInfo;
                 }
-                else if (interfaces.Contains(typeof(IQuery)) && member.CmdOrQueryType.BaseType != typeof(CommandBase))
+                else if (interfaces.Contains(typeof(IQuery)) && member.CmdOrQueryType.BaseType != typeof(ICommand))
                 {
                     _signedInUserQueryProperties[member.CmdOrQueryType] = member.PropertyInfo;
                 }
@@ -66,8 +66,8 @@ namespace Core.Common.Attributes
             }
         }
 
-        public Action<IImplProvider, CommandBase> PreHandleAttributeStrategy { get; } = new Action<IImplProvider, CommandBase>(CheckCmdIsAuthorized);
-        public Action<IImplProvider, CommandBase> PostHandleAttributeStrategy { get; }
+        public Action<IImplProvider, ICommand> PreHandleAttributeStrategy { get; } = new Action<IImplProvider, ICommand>(CheckCmdIsAuthorized);
+        public Action<IImplProvider, ICommand> PostHandleAttributeStrategy { get; }
         Action<IImplProvider, IQuery> IQueryAttribute.AttributeStrategy { get; } = new Action<IImplProvider, IQuery>(CheckQueryIsAuthorized);
 
         public int Order => 0;
@@ -84,7 +84,7 @@ namespace Core.Common.Attributes
             return userIdentity;
         }
 
-        private static void CheckCmdIsAuthorized(IImplProvider implProvider, CommandBase commandBase)
+        private static void CheckCmdIsAuthorized(IImplProvider implProvider, ICommand commandBase)
         {
             var userIdentity = GetSignedInUser(implProvider);
             if (_signedInUserCommandProperties.ContainsKey(commandBase.GetType()))

@@ -7,8 +7,8 @@ namespace Core.Common.Attributes
 {
     internal interface ICommandAttribute
     {
-        Action<IImplProvider, CommandBase> PreHandleAttributeStrategy { get; }
-        Action<IImplProvider, CommandBase> PostHandleAttributeStrategy { get; }
+        Action<IImplProvider, ICommand> PreHandleAttributeStrategy { get; }
+        Action<IImplProvider, ICommand> PostHandleAttributeStrategy { get; }
         int Order { get; }
     }
 }

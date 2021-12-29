@@ -145,9 +145,6 @@ namespace Infrastructure.Bootstraper
                 serviceCollection.AddSingleton<IHTTPQueuedCommandStatusStorage, HTTPMemQueuedCommandStatusStorage>();
                 serviceCollection.AddScoped<WSQueuedCommandHandler>();
                 serviceCollection.AddScoped<HTTPQueuedCommandHandler>();
-                serviceCollection.AddScoped<MediatRCommandHandlerMediator>();
-                serviceCollection.AddScoped<EventBusCommandHandlerMediator>();
-                serviceCollection.AddScoped<HTTPQueuedCommandHandlerMediator>();
                 serviceCollection.AddScoped<ImmediateCommandMediator>();
                 serviceCollection.AddScoped<WSQueuedCommandMediator>();
                 serviceCollection.AddScoped<HTTPQueuedCommandMediator>();

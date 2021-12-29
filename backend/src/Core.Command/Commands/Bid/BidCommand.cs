@@ -7,7 +7,7 @@ using Core.Common.Domain.Users;
 namespace Core.Command.Bid
 {
     [AuthorizationRequired]
-    public class BidCommand : CommandBase
+    public class BidCommand : ICommand
     {
         public Guid AuctionId { get; set; }
         public decimal Price { get; set; }

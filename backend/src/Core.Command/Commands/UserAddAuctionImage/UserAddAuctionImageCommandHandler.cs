@@ -9,6 +9,7 @@ using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.ApplicationServices;
 using Core.Common.Auth;
+using Core.Common.Command;
 using Core.Common.Domain.Auction.Services;
 using Core.Common.Domain.Auctions;
 using Core.Common.EventBus;
@@ -34,24 +35,24 @@ namespace Core.Command.Commands.UserAddAuctionImage
             _logger = logger;
         }
 
-        private void AddImage(UserAddAuctionImageCommand request, CancellationToken cancellationToken, CorrelationId correlationId)
+        private void AddImage(AppCommand<UserAddAuctionImageCommand> request, CancellationToken cancellationToken)
         {
-            var auction = _auctionRepository.FindAuction(request.AuctionId);
+            var auction = _auctionRepository.FindAuction(request.Command.AuctionId);
             if (auction == null)
             {
-                throw new CommandException($"Cannot find auction {request.AuctionId}");
+                throw new CommandException($"Cannot find auction {request.Command.AuctionId}");
             }
 
-            if (!auction.Owner.Equals(request.SignedInUser))
+            if (!auction.Owner.Equals(request.Command.SignedInUser))
             {
                 throw new CommandException(
-                    $"User {request.SignedInUser} cannot modify auction ${auction.AggregateId}");
+                    $"User {request.Command.SignedInUser} cannot modify auction ${auction.AggregateId}");
             }
 
-            var file = File.ReadAllBytes(request.TempPath);
-            File.Delete(request.TempPath);
+            var file = File.ReadAllBytes(request.Command.TempPath);
+            File.Delete(request.Command.TempPath);
 
-            var img = new AuctionImageRepresentation(new AuctionImageMetadata(request.Extension), file);
+            var img = new AuctionImageRepresentation(new AuctionImageMetadata(request.Command.Extension), file);
 
             var newImg = _auctionImageService.AddAuctionImage(img);
 
@@ -60,7 +61,7 @@ namespace Core.Command.Commands.UserAddAuctionImage
             _auctionRepository.UpdateAuction(auction);
             try
             {
-                _eventBusService.Publish(auction.PendingEvents, correlationId, request);
+                _eventBusService.Publish(auction.PendingEvents, request.CommandContext);
             }
             catch (Exception e)
             {
@@ -70,18 +71,18 @@ namespace Core.Command.Commands.UserAddAuctionImage
             }
         }
 
-        protected override Task<RequestStatus> HandleCommand(UserAddAuctionImageCommand request,
+        protected override Task<RequestStatus> HandleCommand(AppCommand<UserAddAuctionImageCommand> request,
             CancellationToken cancellationToken)
         {
-            AuctionLock.Lock(request.AuctionId);
+            AuctionLock.Lock(request.Command.AuctionId);
             var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
             try
             {
-                AddImage(request, cancellationToken, response.CorrelationId);
+                AddImage(request, cancellationToken);
             }
             finally
             {
-                AuctionLock.ReleaseLock(request.AuctionId);
+                AuctionLock.ReleaseLock(request.Command.AuctionId);
             }
 
 

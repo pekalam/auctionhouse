@@ -22,36 +22,37 @@ namespace Core.Command.Handler
             _logger = logger;
         }
 
-        private void TryUpdateCommandStatus(CommandBase commandBase, RequestStatus status)
+        private void TryUpdateCommandStatus(CommandContext commandContext, RequestStatus status)
         {
             try
             {
-                _commandStatusStorage.UpdateCommandStatus(status, commandBase);
+                _commandStatusStorage.UpdateCommandStatus(status, commandContext.CommandId);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Cannot save http queued command {@command} status to status storage", commandBase);
+                _logger.LogError(e, "Cannot save http queued command {@command} status to status storage", commandContext);
             }
         }
 
-        public virtual void Handle(CommandBase commandBase)
+        public virtual void Handle(QueuedCommand command)
         {
             RequestStatus result = null;
+            ICommandContextOwner commandContextOwner = (ICommandContextOwner)command.AppCommand;
             try
             {
-                result = _mediator.Send(commandBase).Result;
+                result = _mediator.Send((IRequest<RequestStatus>)command.AppCommand).Result;
             }
             catch (Exception e)
             {
-                _logger.LogDebug(e, "HTTPQueued command error {@command}", commandBase);
-                var failedStatus = RequestStatus.CreateFromCommandContext(commandBase.CommandContext, Status.FAILED, exception: e);
-                TryUpdateCommandStatus(commandBase, failedStatus);
+                _logger.LogDebug(e, "HTTPQueued command error {@command}", command);
+                var failedStatus = RequestStatus.CreateFromCommandContext(commandContextOwner.CommandContext, Status.FAILED, exception: e);
+                TryUpdateCommandStatus(commandContextOwner.CommandContext, failedStatus);
                 return;
             }
 
             if (result.Status != Status.PENDING)
             {
-                TryUpdateCommandStatus(commandBase, result);
+                TryUpdateCommandStatus(commandContextOwner.CommandContext, result);
             }
         }
     }

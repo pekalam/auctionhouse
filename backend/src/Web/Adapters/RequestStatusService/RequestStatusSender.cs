@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Security.Claims;
 using Core.Common;
+using Core.Common.Command;
 using Core.Common.Domain;
 using Core.Common.Domain.Users;
 using Core.Common.EventBus;
@@ -13,12 +14,12 @@ using Web.Dto.Commands;
 
 namespace Web.Adapters.EventSignaling
 {
-    public class RequestStatusService : IRequestStatusSender
+    public class RequestStatusSender : IRequestStatusSender
     {
         private readonly IHubContext<ApplicationHub> _hubContext;
-        private readonly ILogger<RequestStatusService> _logger;
+        private readonly ILogger<RequestStatusSender> _logger;
 
-        public RequestStatusService(IHubContext<ApplicationHub> hubContext, ILogger<RequestStatusService> logger)
+        public RequestStatusSender(IHubContext<ApplicationHub> hubContext, ILogger<RequestStatusSender> logger)
         {
             _hubContext = hubContext;
             _logger = logger;
@@ -26,9 +27,9 @@ namespace Web.Adapters.EventSignaling
 
         public void SendRequestCompletionToUser<T>(IAppEvent<T> appEvent, Guid user, Dictionary<string, object> values = null) where T : Event
         {
-            _logger.LogDebug($"Sending completion event {appEvent.Event.EventName} to {user} with correlationId {appEvent.CorrelationId.Value}");
+            _logger.LogDebug($"Sending completion event {appEvent.Event.EventName} to {user} with commandId {appEvent.CommandContext.CorrelationId.Value}");
             _hubContext.Clients.User(user.ToString())
-                .SendAsync("completed", (RequestStatusDto)new RequestStatus(appEvent.CorrelationId, Status.COMPLETED, values));
+                .SendAsync("completed", (RequestStatusDto)new RequestStatus(appEvent.CommandContext.CommandId, Status.COMPLETED, values));
         }
 
         public void SendRequestCompletionToAll<T>(IAppEvent<T> appEvent, Dictionary<string, object> values = null) where T : Event
@@ -38,9 +39,9 @@ namespace Web.Adapters.EventSignaling
 
         public void SendRequestFailureToUser<T>(IAppEvent<T> appEvent, Guid user, Dictionary<string, object> values = null) where T : Event
         {
-            _logger.LogDebug($"Sending failure event {appEvent.Event.EventName} to {user} with correlationId {appEvent.CorrelationId.Value}");
+            _logger.LogDebug($"Sending failure event {appEvent.Event.EventName} to {user} with commandId {appEvent.CommandContext.CorrelationId.Value}");
             _hubContext.Clients.User(user.ToString())
-                .SendAsync("failed", (RequestStatusDto)new RequestStatus(appEvent.CorrelationId, Status.FAILED, values));
+                .SendAsync("failed", (RequestStatusDto)new RequestStatus(appEvent.CommandContext.CommandId, Status.FAILED, values));
         }
 
         public void TrySendReqestCompletionToUser<T>(IAppEvent<T> appEvent, Guid user, Dictionary<string, object> values = null) where T : Event
@@ -67,13 +68,13 @@ namespace Web.Adapters.EventSignaling
             }
         }
 
-        public void TrySendRequestCompletionToUser(string signalName, CorrelationId correlationId, Guid user, Dictionary<string, object> values = null)
+        public void TrySendRequestCompletionToUser(string signalName, CommandId commandId, Guid user, Dictionary<string, object> values = null)
         {
             try
             {
-                _logger.LogDebug($"Sending completed signal {signalName} to {user} with correlationId {correlationId.Value}");
+                _logger.LogDebug($"Sending completed signal {signalName} to {user} with commandId {commandId.Id}");
                 _hubContext.Clients.User(user.ToString())
-                    .SendAsync("completed", (RequestStatusDto)new RequestStatus(correlationId, Status.COMPLETED, values));
+                    .SendAsync("completed", (RequestStatusDto)new RequestStatus(commandId, Status.COMPLETED, values));
             }
             catch (Exception e)
             {
@@ -81,14 +82,14 @@ namespace Web.Adapters.EventSignaling
             }
         }
 
-        public void TrySendRequestFailureToUser(string signalName, CorrelationId correlationId, Guid user,
+        public void TrySendRequestFailureToUser(string signalName, CommandId commandId, Guid user,
             Dictionary<string, object> values = null)
         {
             try
             {
-                _logger.LogDebug($"Sending completed signal {signalName} to {user} with correlationId {correlationId.Value}");
+                _logger.LogDebug($"Sending completed signal {signalName} to {user} with commandId {commandId.Id}");
                 _hubContext.Clients.User(user.ToString())
-                    .SendAsync("failed", (RequestStatusDto)new RequestStatus(correlationId, Status.FAILED, values));
+                    .SendAsync("failed", (RequestStatusDto)new RequestStatus(commandId, Status.FAILED, values));
             }
             catch (Exception e)
             {

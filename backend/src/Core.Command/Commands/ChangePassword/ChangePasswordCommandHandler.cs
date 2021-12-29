@@ -4,6 +4,7 @@ using Core.Command.Exceptions;
 using Core.Command.Handler;
 using Core.Common;
 using Core.Common.Auth;
+using Core.Common.Command;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Command.Commands.ChangePassword
@@ -19,19 +20,19 @@ namespace Core.Command.Commands.ChangePassword
             _authenticationDataRepository = authenticationDataRepository;
         }
 
-        protected override Task<RequestStatus> HandleCommand(ChangePasswordCommand request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(AppCommand<ChangePasswordCommand> request, CancellationToken cancellationToken)
         {
-            var userAuthData = _authenticationDataRepository.FindUserAuthById(request.SignedInUser);
+            var userAuthData = _authenticationDataRepository.FindUserAuthById(request.Command.SignedInUser);
             if (userAuthData == null)
             {
-                throw new UserNotFoundException($"Cannot find {request.SignedInUser} user");
+                throw new UserNotFoundException($"Cannot find {request.Command.SignedInUser} user");
             }
 
-            userAuthData.Password = request.NewPassword;
+            userAuthData.Password = request.Command.NewPassword;
 
             _authenticationDataRepository.UpdateUserAuth(userAuthData);
 
-            _logger.LogDebug("User {user} has changed password", request.SignedInUser);
+            _logger.LogDebug("User {user} has changed password", request.Command.SignedInUser);
             var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
             return Task.FromResult(response);
         }

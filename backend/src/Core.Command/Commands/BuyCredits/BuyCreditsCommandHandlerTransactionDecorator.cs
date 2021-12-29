@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Transactions;
 using Core.Command.Handler;
 using Core.Common;
+using Core.Common.Command;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Command.Commands.BuyCredits
@@ -19,7 +20,7 @@ namespace Core.Command.Commands.BuyCredits
             _buyCreditsCommandHandler = buyCreditsCommandHandler;
         }
 
-        protected override Task<RequestStatus> HandleCommand(BuyCreditsCommand request,
+        protected override Task<RequestStatus> HandleCommand(AppCommand<BuyCreditsCommand> request,
             CancellationToken cancellationToken)
         {
             var transactionOpt = new TransactionOptions()

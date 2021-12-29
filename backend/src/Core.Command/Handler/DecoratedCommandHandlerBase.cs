@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Core.Command.Handler
 {
-    public abstract class DecoratedCommandHandlerBase<T> where T : CommandBase
+    public abstract class DecoratedCommandHandlerBase<T> where T : ICommand
     {
         private readonly ILogger _logger;
 
@@ -15,11 +15,11 @@ namespace Core.Command.Handler
             _logger = logger;
         }
 
-        public Task<RequestStatus> Handle(T request, CancellationToken cancellationToken)
+        public Task<RequestStatus> Handle(AppCommand<T> request, CancellationToken cancellationToken)
         {
             return HandleCommand(request, cancellationToken);
         }
 
-        protected abstract Task<RequestStatus> HandleCommand(T request, CancellationToken cancellationToken);
+        protected abstract Task<RequestStatus> HandleCommand(AppCommand<T> request, CancellationToken cancellationToken);
     }
 }

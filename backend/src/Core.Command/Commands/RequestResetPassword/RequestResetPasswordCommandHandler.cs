@@ -7,6 +7,7 @@ using Core.Command.Handler;
 using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.Auth;
+using Core.Common.Command;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Command.Commands.ResetPassword
@@ -30,18 +31,18 @@ namespace Core.Command.Commands.ResetPassword
             _linkSenderService = linkSenderService;
         }
 
-        private UserAuthenticationData FindUserAuthenticationData(RequestResetPasswordCommand request)
+        private UserAuthenticationData FindUserAuthenticationData(AppCommand<RequestResetPasswordCommand> request)
         {
-            var userAuthData = _userAuthenticationDataRepository.FindUserAuthByEmail(request.Email);
+            var userAuthData = _userAuthenticationDataRepository.FindUserAuthByEmail(request.Command.Email);
             if (userAuthData == null)
             {
-                throw new InvalidCommandException($"Cannot find user with email: {request.Email}");
+                throw new InvalidCommandException($"Cannot find user with email: {request.Command.Email}");
             }
 
             return userAuthData;
         }
 
-        protected override Task<RequestStatus> HandleCommand(RequestResetPasswordCommand request,
+        protected override Task<RequestStatus> HandleCommand(AppCommand<RequestResetPasswordCommand> request,
             CancellationToken cancellationToken)
         {
             var userAuthData = FindUserAuthenticationData(request);

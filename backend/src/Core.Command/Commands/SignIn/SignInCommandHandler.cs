@@ -6,6 +6,7 @@ using Core.Command.Handler;
 using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.Auth;
+using Core.Common.Command;
 using Core.Common.Domain.Users;
 using Microsoft.Extensions.Logging;
 
@@ -23,14 +24,14 @@ namespace Core.Command.Commands.SignIn
             _logger = logger;
         }
 
-        protected override Task<RequestStatus> HandleCommand(SignInCommand command, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(AppCommand<SignInCommand> request, CancellationToken cancellationToken)
         {
-            var authData = _userAuthenticationDataRepository.FindUserAuth(command.Username);
+            var authData = _userAuthenticationDataRepository.FindUserAuth(request.Command.Username);
             if (authData != null)
             {
-                if (authData.Password.Equals(command.Password))
+                if (authData.Password.Equals(request.Command.Password))
                 {
-                    var response = RequestStatus.CreateFromCommandContext(command.CommandContext, Status.COMPLETED, new Dictionary<string, object>()
+                    var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED, new Dictionary<string, object>()
                     {
                         {"UserId", authData.UserId},
                         {"Username", authData.UserName}
@@ -43,7 +44,7 @@ namespace Core.Command.Commands.SignIn
                 }
             }
 
-            throw new UserNotFoundException($"Cannot find user {command.Username}");
+            throw new UserNotFoundException($"Cannot find user {request.Command.Username}");
         }
     }
 }

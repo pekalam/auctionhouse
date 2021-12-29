@@ -14,8 +14,7 @@ using NUnit.Framework;
 namespace UnitTests.AuctionCreateSessionAttributeTests
 {
     [InAuctionCreateSession]
-    public class TestCommandBase : CommandBase
-    {
+    public class TestCommandBase : ICommand    {
         public AuctionCreateSession CreateSession { get; set; }
         public int Param { get; set; }
     }

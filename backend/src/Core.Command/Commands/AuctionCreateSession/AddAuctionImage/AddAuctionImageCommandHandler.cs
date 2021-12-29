@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Core.Command.Handler;
 using Core.Command.Mediator;
 using Core.Common;
+using Core.Common.Command;
 using Core.Common.Domain.Auction.Services;
 using Core.Common.Domain.AuctionCreateSession;
 using Core.Common.Domain.Auctions;
@@ -26,16 +27,16 @@ namespace Core.Command.Commands.AuctionCreateSession.AddAuctionImage
             _auctionImageService = auctionImageService;
         }
 
-        protected override Task<RequestStatus> HandleCommand(AddAuctionImageCommand request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(AppCommand<AddAuctionImageCommand> request, CancellationToken cancellationToken)
         {
-            var file = File.ReadAllBytes(request.TempPath);
-            File.Delete(request.TempPath);
+            var file = File.ReadAllBytes(request.Command.TempPath);
+            File.Delete(request.Command.TempPath);
 
-            var img = new AuctionImageRepresentation(new AuctionImageMetadata(request.Extension), file);
+            var img = new AuctionImageRepresentation(new AuctionImageMetadata(request.Command.Extension), file);
 
             var added = _auctionImageService.AddAuctionImage(img);
 
-            request.AuctionCreateSession.AddOrReplaceImage(added, request.ImgNum);
+            request.Command.AuctionCreateSession.AddOrReplaceImage(added, request.Command.ImgNum);
 
             var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED, new Dictionary<string, object>()
             {

@@ -6,6 +6,7 @@ using Core.Command.Commands.Bid;
 using Core.Command.Handler;
 using Core.Command.Mediator;
 using Core.Common;
+using Core.Common.Command;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Command.Bid
@@ -19,7 +20,7 @@ namespace Core.Command.Bid
             _bidCommandHandler = bidCommandHandler;
         }
 
-        protected override Task<RequestStatus> HandleCommand(BidCommand request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(AppCommand<BidCommand> request, CancellationToken cancellationToken)
         {
             var transactionOpt = new TransactionOptions()
             {

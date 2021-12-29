@@ -1,6 +1,5 @@
 using System;
 using Core.Common.Domain.Auctions;
-using Core.Common.Domain.Bids;
 using Core.Common.Domain.Categories;
 using Core.Common.Domain.Products;
 using Core.Common.Domain.Users;
@@ -21,7 +20,7 @@ namespace IntegrationTests
                 .SetBuyNow(20.0m)
                 .SetStartDate(DateTime.UtcNow.AddMinutes(10))
                 .SetEndDate(DateTime.UtcNow.AddDays(1))
-                .SetOwner(UserId.New())
+                .SetOwner(Core.Common.Domain.Auctions.UserId.New())
                 .SetProduct(new Product("product name", "description 1111", Condition.New))
                 .SetCategory(new Category("test", 0))
                 .SetTags(new []{"tag1", "tag2"})
@@ -50,7 +49,7 @@ namespace IntegrationTests
         {
             var auction = CreateFakeAuction();
 
-            auction.Raise(user, 10);
+            //auction.Raise(user, 10); //TODO
 
             auctionRepository.AddAuction(auction);
             auction.MarkPendingEventsAsHandled();
@@ -64,7 +63,7 @@ namespace IntegrationTests
         public void AddAuction_adds_auction_UpdateAuction_updates_and_FindAuction_finds_it_by_version()
         {
             var auction = CreateFakeAuction();
-            auction.Raise(user, 10);
+            //auction.Raise(user, 10); //TODO
 
             auctionRepository.AddAuction(auction);
             auction.MarkPendingEventsAsHandled();

@@ -75,10 +75,10 @@ namespace UnitTests
             var mockEventBusService = new Mock<EventBusService>(Mock.Of<IEventBus>(), Mock.Of<IAppEventBuilder>());
             mockEventBusService.Setup(f => f.Publish(
                     It.Is<IEnumerable<Event>>(ev => verifyRegisteredEvent(ev)),
-                    It.IsAny<CorrelationId>(),
+                    It.IsAny<Core.Common.EventBus.CorrelationId>(),
                     command)
                 )
-                .Callback((IEnumerable<Event> evs, CorrelationId id, CommandBase cmd) =>
+                .Callback((IEnumerable<Event> evs, Core.Common.EventBus.CorrelationId id, CommandBase cmd) =>
                 {
                     userIdentity = (evs.First() as UserRegistered).UserId;
                 })
@@ -92,7 +92,7 @@ namespace UnitTests
 
 
             mockEventBusService.Verify(
-                f => f.Publish(It.IsAny<IEnumerable<Event>>(), It.IsAny<CorrelationId>(), command), Times.Once);
+                f => f.Publish(It.IsAny<IEnumerable<Event>>(), It.IsAny<Core.Common.EventBus.CorrelationId>(), command), Times.Once);
             userIdentity.Should()
                 .NotBe(UserId.Empty);
         }
@@ -120,7 +120,7 @@ namespace UnitTests
             mockEventBusService
                 .Setup(f => f.Publish(
                     It.Is<IEnumerable<Event>>(ev => verifyRegisteredEvent(ev)),
-                    It.IsAny<CorrelationId>(), command)
+                    It.IsAny<Core.Common.EventBus.CorrelationId>(), command)
                 )
                 .Verifiable();
 
@@ -136,7 +136,7 @@ namespace UnitTests
 
             mockEventBusService.Verify(f => f.Publish(
                     It.Is<IEnumerable<Event>>(ev => verifyRegisteredEvent(ev)),
-                    It.IsAny<CorrelationId>(), command)
+                    It.IsAny<Core.Common.EventBus.CorrelationId>(), command)
                 , Times.Never);
         }
     }

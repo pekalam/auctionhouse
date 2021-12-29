@@ -8,8 +8,7 @@ using Core.Common.Domain.Users;
 namespace Core.Command.Commands.ChangePassword
 {
     [AuthorizationRequired]
-    public class ChangePasswordCommand : CommandBase
-    {
+    public class ChangePasswordCommand : ICommand    {
         [Required]
         public string NewPassword { get; set; }
 

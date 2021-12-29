@@ -10,6 +10,7 @@ using Core.Command.Handler;
 using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.ApplicationServices;
+using Core.Common.Command;
 using Core.Common.Domain.AuctionBids.Repositories;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Users;
@@ -34,18 +35,18 @@ namespace Core.Command.Commands.Bid
                 provider => new BidRollbackHandler(provider));
         }
 
-        protected override Task<RequestStatus> HandleCommand(BidCommand request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(AppCommand<BidCommand> request, CancellationToken cancellationToken)
         {
-            var auctionBids = _auctionBids.WithAuctionId(new Common.Domain.AuctionBids.AuctionId(request.AuctionId));
+            var auctionBids = _auctionBids.WithAuctionId(new Common.Domain.AuctionBids.AuctionId(request.Command.AuctionId));
             if(auctionBids is null)
             {
-                throw new CommandException($"AuctionBids {request.AuctionId} could not be found");
+                throw new CommandException($"AuctionBids {request.Command.AuctionId} could not be found");
             }
 
-            var bid = auctionBids.TryRaise(new Common.Domain.AuctionBids.UserId(request.SignedInUser), request.Price);
+            var bid = auctionBids.TryRaise(new Common.Domain.AuctionBids.UserId(request.Command.SignedInUser), request.Command.Price);
 
             var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.PENDING);
-            _eventBusService.Publish(auctionBids.PendingEvents, response.CorrelationId, request);
+            _eventBusService.Publish(auctionBids.PendingEvents, request.CommandContext);
             if (bid.Accepted)
             {
                 _requestStatusService.TrySendNotificationToAll("AuctionPriceChanged", new Dictionary<string, object>()
@@ -53,7 +54,7 @@ namespace Core.Command.Commands.Bid
                     {"winningBid", bid}
                 });
             }
-            _logger.LogDebug("Bid {@bid} submited for an auction {@auction} by {@user}", bid, request.AuctionId, request.SignedInUser);
+            _logger.LogDebug("Bid {@bid} submited for an auction {@auction} by {@user}", bid, request.Command.AuctionId, request.Command.SignedInUser);
 
 
             return Task.FromResult(response);

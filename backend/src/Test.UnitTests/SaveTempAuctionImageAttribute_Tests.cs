@@ -14,8 +14,7 @@ using NUnit.Framework;
 namespace Test.UnitTests.SaveTempAuctionImageAttributeTests
 {
     [SaveTempAuctionImage]
-    public class TestCommandBase : CommandBase
-    {
+    public class TestCommandBase : ICommand    {
         [AuctionImage] public IFileStreamAccessor Img { get; set; }
 
         [SaveTempPath] public string Path { get; set; }

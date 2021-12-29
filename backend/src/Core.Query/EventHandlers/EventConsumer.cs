@@ -23,9 +23,8 @@ namespace Core.Query.EventHandlers
             IAppEvent<Event> appEventBase = (IAppEvent<Event>) message;
 
             this.Consume(_appEventBuilder
-                .WithCorrelationId(appEventBase.CorrelationId)
                 .WithEvent(appEventBase.Event)
-                .WithCommand(appEventBase.CommandBase)
+                .WithCommandContext(appEventBase.CommandContext)
                 .Build<T>());
         }
 

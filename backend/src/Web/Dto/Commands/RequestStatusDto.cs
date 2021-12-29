@@ -10,7 +10,7 @@ namespace Web.Dto.Commands
 {
     public class RequestStatusDto
     {
-        public string CorrelationId { get; set; }
+        public string CommandId { get; set; }
         public string Status { get; set; }
         public Dictionary<string, object> ExtraData { get; set; }
 
@@ -18,7 +18,7 @@ namespace Web.Dto.Commands
         {
             return new RequestStatusDto()
             {
-                CorrelationId = response.CorrelationId.Value,
+                CommandId = response.CommandId.Id,
                 Status = response.Status.ToString(),
                 ExtraData = response.ExtraData
             };

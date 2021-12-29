@@ -3,8 +3,7 @@ using Core.Common.Command;
 
 namespace Core.Command.Commands.SignIn
 {
-    public class SignInCommand : CommandBase
-    {
+    public class SignInCommand : ICommand    {
         [Required]
         public string Username { get; }
         [Required]

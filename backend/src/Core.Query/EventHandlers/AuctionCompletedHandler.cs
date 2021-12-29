@@ -1,7 +1,7 @@
 ﻿using System;
+using Core.Common.Domain.AuctionBids;
 using Core.Common.Domain.Auctions.Events;
 using Core.Common.EventBus;
-using Core.Common.RequestStatusService;
 using Core.Query.Exceptions;
 using Core.Query.ReadModel;
 using Microsoft.Extensions.Logging;
@@ -39,8 +39,8 @@ namespace Core.Query.EventHandlers
             var auctionFilter = Builders<AuctionRead>.Filter.Eq(field => field.AuctionId, ev.AuctionId.ToString());
             var auctionUpdate = Builders<AuctionRead>.Update
                 .Set(field => field.Completed, true)
-                .Set(field => field.Buyer, new UserIdentityRead(ev.WinningBid.UserId, ev.WinningBid.UserId.ToString())) //TODO
-                .Set(field => field.WinningBid, new BidRead(ev.WinningBid))
+                .Set(field => field.Buyer, new UserIdentityRead(ev.WinnerId, ev.WinnerId.ToString())) //TODO
+                //.Set(field => field.WinningBid, new BidRead(ev.AuctionBidsId)) //TODO
                 .Set(read => read.Archived, true);
 
             _dbContext.AuctionsReadModel.UpdateMany(session, auctionFilter, auctionUpdate);

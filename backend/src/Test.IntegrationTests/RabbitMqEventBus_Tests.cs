@@ -27,16 +27,14 @@ namespace IntegrationTests
 
     public class TestAppEvent : IAppEvent<Event>
     {
-        public CommandBase CommandBase { get; } = null;
-        public CorrelationId CorrelationId { get; }
         public Event Event { get; }
 
+        public CommandContext CommandContext { get; set; }
 
-        public TestAppEvent(CorrelationId correlationId, Event @event, CommandBase cmd = null)
+        public TestAppEvent(Event @event, CommandContext commandContext)
         {
-            CorrelationId = correlationId;
             Event = @event;
-            CommandBase = cmd;
+            CommandContext = commandContext;
         }
     }
 
@@ -73,7 +71,7 @@ namespace IntegrationTests
         }
     }
 
-    public class TestCommandBase : CommandBase { }
+    public class TestCommandBase : ICommand { }
 
     public class TestCommandRollbackHandler : ICommandRollbackHandler
     {
@@ -99,21 +97,31 @@ namespace IntegrationTests
     public class RabbitMqEventBus_Tests
     {
         [Test]
+        [Sequential]
         public void Published_event_gets_handled()
         {
             RollbackHandlerRegistry.ImplProvider = new TestImplProv();
 
+            var failed = false;
             var sem = new SemaphoreSlim(0, 1);
             var bus = new RabbitMqEventBus(new RabbitMqSettings()
             {
                 ConnectionString = TestContextUtils.GetParameterOrDefault("rabbitmq-connection-string", "host=localhost"),
             }, Mock.Of<ILogger<RabbitMqEventBus>>());
 
-            var toPublish = new TestAppEvent(new CorrelationId("111"), new TestEvent());
+            var ctx = CommandContext.CreateNew(Guid.NewGuid(), "test");
+            var toPublish = new TestAppEvent(new TestEvent(), ctx);
 
             var handler = new TestHandler(new AppEventRabbitMQBuilder(), (ev) =>
             {
-                ev.Should().BeEquivalentTo(toPublish);
+                try
+                {
+                    ev.Should().BeEquivalentTo(toPublish);
+                }
+                catch (Exception ex)
+                {
+                    failed = true;
+                }
                 sem.Release();
             });
 
@@ -126,28 +134,32 @@ namespace IntegrationTests
             bus.Publish(toPublish);
 
             if (!sem.Wait(TimeSpan.FromSeconds(60)))
-            {
                 Assert.Fail();
-            }
+            Assert.False(failed);
         }
 
         private bool CheckRollbackAppEvent(IAppEvent<Event> ev)
         {
-            return ev.CommandBase.GetType()
-                       .Equals(typeof(TestCommandBase)) && ev.CorrelationId.Value.Equals("123") && ev.Event.GetType()
+            return ev.CommandContext.Name
+                       .Equals(nameof(TestCommandBase)) && ev.CommandContext.CorrelationId.Value.Equals("123") && ev.Event.GetType()
                        .Equals(typeof(TestEvent));
         }
 
         [Test]
+        [Sequential]
         public void RollbackHandler_gets_called_once()
         {
             int called = 0;
             var sem = new SemaphoreSlim(0, 1);
-            var toPublish = new TestAppEvent(new CorrelationId("123"), new TestEvent(), new TestCommandBase());
+            var ctx = CommandContext.CreateNew(Guid.NewGuid(), nameof(TestCommandBase));
+            ctx.CorrelationId = new CorrelationId("123");
+            var cmd = new AppCommand<TestCommandBase> { Command = new TestCommandBase(), CommandContext = ctx };
+            var toPublish = new TestAppEvent(new TestEvent(), ctx);
+            var checkSuccess = false;
             var rollbackHandler = new TestCommandRollbackHandler(new Action<IAppEvent<Event>>(ev =>
             {
                 called++;
-                Assert.IsTrue(CheckRollbackAppEvent(ev));
+                checkSuccess = CheckRollbackAppEvent(ev);
                 sem.Release();
             }));
             rollbackHandler.Throws = true;
@@ -165,16 +177,17 @@ namespace IntegrationTests
 
             bus.InitSubscribers(new[]
             {
-                new RabbitMqEventConsumerFactory(() => handler, "test"),
+                new RabbitMqEventConsumerFactory(() => handler, "testEvent"),
             });
 
             bus.Publish(toPublish);
 
-            if(!sem.Wait(TimeSpan.FromSeconds(60))){Assert.Fail();};
-            Thread.Sleep(10);
+            if(!sem.Wait(TimeSpan.FromSeconds(60)))
+                Assert.Fail();
 
             called.Should()
                 .Be(1);
+            checkSuccess.Should().BeTrue();
         }
 
     }

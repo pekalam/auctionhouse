@@ -4,8 +4,7 @@ using Core.Common.Command;
 
 namespace Core.Command.Commands.EndAuction
 {
-    public class EndAuctionCommand : CommandBase
-    {
+    public class EndAuctionCommand : ICommand    {
         public Guid AuctionId { get; }
 
         public EndAuctionCommand(Guid auctionId)

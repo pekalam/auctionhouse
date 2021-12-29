@@ -10,8 +10,7 @@ using NUnit.Framework;
 
 namespace UnitTests.HTTPMemQueuedStorage
 {
-    public class TestCommandBase : CommandBase
-    {
+    public class TestCommandBase : ICommand    {
         public int Param { get; set; }
     }
 
@@ -35,9 +34,9 @@ namespace UnitTests.HTTPMemQueuedStorage
             _commandStatusStorage.SaveStatus(requestStatus1, cmd);
             _commandStatusStorage.SaveStatus(requestStatus2, cmd);
 
-            _commandStatusStorage.GetCommandStatus(requestStatus1.CorrelationId).Item1.Should()
+            _commandStatusStorage.GetCommandStatus(requestStatus1.CommandId).Item1.Should()
                 .BeEquivalentTo(requestStatus1);
-            _commandStatusStorage.GetCommandStatus(requestStatus2.CorrelationId).Item1.Should()
+            _commandStatusStorage.GetCommandStatus(requestStatus2.CommandId).Item1.Should()
                 .BeEquivalentTo(requestStatus2);
         }
 
@@ -48,11 +47,11 @@ namespace UnitTests.HTTPMemQueuedStorage
             var requestStatus1 = new RequestStatus(Status.PENDING);
             _commandStatusStorage.SaveStatus(requestStatus1, cmd);
 
-            var upd = new RequestStatus(requestStatus1.CorrelationId, Status.COMPLETED);
+            var upd = new RequestStatus(requestStatus1.CommandId, Status.COMPLETED);
             cmd.Param = 100;
             _commandStatusStorage.UpdateCommandStatus(upd, cmd);
 
-            var updated = _commandStatusStorage.GetCommandStatus(upd.CorrelationId);
+            var updated = _commandStatusStorage.GetCommandStatus(upd.CommandId);
 
             updated.Item1.Should().BeEquivalentTo(upd);
         }
@@ -60,7 +59,7 @@ namespace UnitTests.HTTPMemQueuedStorage
         [Test]
         public void GetStatus_when_status_does_not_exist_returns_null()
         {
-            var result = _commandStatusStorage.GetCommandStatus(new CorrelationId("123"));
+            var result = _commandStatusStorage.GetCommandStatus(new Core.Common.EventBus.CorrelationId("123"));
             result.Item1.Should().BeNull();
             result.Item2.Should().BeNull();
         }
@@ -72,9 +71,9 @@ namespace UnitTests.HTTPMemQueuedStorage
             var requestStatus1 = new RequestStatus(Status.COMPLETED);
             _commandStatusStorage.SaveStatus(requestStatus1, cmd);
 
-            _commandStatusStorage.GetCommandStatus(requestStatus1.CorrelationId).Item1.Should()
+            _commandStatusStorage.GetCommandStatus(requestStatus1.CommandId).Item1.Should()
                 .BeEquivalentTo(requestStatus1);
-            _commandStatusStorage.GetCommandStatus(requestStatus1.CorrelationId).Item1.Should().BeNull();
+            _commandStatusStorage.GetCommandStatus(requestStatus1.CommandId).Item1.Should().BeNull();
         }
 
         [Test]
@@ -84,9 +83,9 @@ namespace UnitTests.HTTPMemQueuedStorage
             var requestStatus1 = new RequestStatus(Status.FAILED);
             _commandStatusStorage.SaveStatus(requestStatus1, cmd);
 
-            _commandStatusStorage.GetCommandStatus(requestStatus1.CorrelationId).Item1.Should()
+            _commandStatusStorage.GetCommandStatus(requestStatus1.CommandId).Item1.Should()
                 .BeEquivalentTo(requestStatus1);
-            _commandStatusStorage.GetCommandStatus(requestStatus1.CorrelationId).Item1.Should().BeNull();
+            _commandStatusStorage.GetCommandStatus(requestStatus1.CommandId).Item1.Should().BeNull();
         }
     }
 }

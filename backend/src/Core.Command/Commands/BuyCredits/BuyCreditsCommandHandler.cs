@@ -53,25 +53,25 @@ namespace Core.Command.Commands.BuyCredits
             });
         }
 
-        protected override Task<RequestStatus> HandleCommand(BuyCreditsCommand request,
+        protected override Task<RequestStatus> HandleCommand(AppCommand<BuyCreditsCommand> request,
             CancellationToken cancellationToken)
         {
             //DEMO
-            if (request.Ammount != 15 && request.Ammount != 40 && request.Ammount != 100)
+            if (request.Command.Ammount != 15 && request.Command.Ammount != 40 && request.Command.Ammount != 100)
             {
-                throw new InvalidCommandException($"Invalid amount value: {request.Ammount}");
+                throw new InvalidCommandException($"Invalid amount value: {request.Command.Ammount}");
             }
 
-            var user = _userRepository.FindUser(request.SignedInUser);
+            var user = _userRepository.FindUser(request.Command.SignedInUser);
 
             if (user == null)
             {
                 throw new CommandException("Cannot find user");
             }
 
-            user.AddCredits(request.Ammount);
+            user.AddCredits(request.Command.Ammount);
             _userRepository.UpdateUser(user);
-            _eventBusService.Publish(user.PendingEvents, request.CommandContext.CorrelationId, request);
+            _eventBusService.Publish(user.PendingEvents, request.CommandContext);
             user.MarkPendingEventsAsHandled();
 
             var status = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.PENDING);

@@ -8,8 +8,7 @@ using Core.Common.Domain.Users;
 namespace Core.Command.Commands.CancelBid
 {
     [AuthorizationRequired]
-    public class CancelBidCommand : CommandBase
-    {
+    public class CancelBidCommand : ICommand    {
         public Guid BidId { get; }
         public Guid AuctionId { get; }
 

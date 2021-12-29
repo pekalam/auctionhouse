@@ -10,8 +10,7 @@ using Core.Common.Domain.Users;
 namespace Core.Command.Commands.BuyNow
 {
     [AuthorizationRequired]
-    public class BuyNowCommand : CommandBase
-    {
+    public class BuyNowCommand : ICommand    {
         public Guid AuctionId { get; }
 
         [SignedInUser]

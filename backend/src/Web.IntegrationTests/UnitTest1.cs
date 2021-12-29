@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using Core.Common.Command;
 using Core.Common.Domain.Users;
 using Core.Common.EventBus;
 using Core.Common.RequestStatusSender;
@@ -105,10 +106,10 @@ namespace Tests
 
             var sem = new SemaphoreSlim(0, 1);
             mockRequestStatusService.Setup(service => service.TrySendRequestFailureToUser(It.IsAny<string>(),
-                    It.IsAny<CorrelationId>(), It.IsAny<Guid>(), null))
+                    It.IsAny<CommandId>(), It.IsAny<Guid>(), null))
                 .Callback(() => sem.Release());
             mockRequestStatusService.Verify(service => service.TrySendRequestCompletionToUser(It.IsAny<string>(),
-                It.IsAny<CorrelationId>(), It.IsAny<Guid>(), null), Times.Never());
+                It.IsAny<CommandId>(), It.IsAny<Guid>(), null), Times.Never());
 
 
             var cmdReq = new HttpRequestMessage(HttpMethod.Post, "/api/bid")
@@ -139,9 +140,9 @@ namespace Tests
 
             var sem = new SemaphoreSlim(0, 1);
             mockRequestStatusService.Verify(service => service.TrySendRequestFailureToUser(It.IsAny<string>(),
-                It.IsAny<CorrelationId>(), It.IsAny<Guid>(), null), Times.Never());
+                It.IsAny<CommandId>(), It.IsAny<Guid>(), null), Times.Never());
             mockRequestStatusService.Setup(service => service.TrySendRequestCompletionToUser(It.IsAny<string>(),
-                    It.IsAny<CorrelationId>(), It.IsAny<Guid>(), null))
+                    It.IsAny<CommandId>(), It.IsAny<Guid>(), null))
                 .Callback(() => sem.Release());
 
 
@@ -202,7 +203,7 @@ namespace Tests
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var requestStatus = await response.GetRequestStatus();
-            requestStatus.CorrelationId.Should().NotBeEmpty();
+            requestStatus.CommandId.Should().NotBeEmpty();
             requestStatus.Status.Should().Be("COMPLETED");
         }
     }

@@ -4,8 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Core.Command;
-using Core.Command.Handler;
-using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.ApplicationServices;
 using Core.Common.Command;
@@ -44,7 +42,6 @@ namespace Infrastructure.Services.EventBus
         private readonly ILogger<RabbitMqEventBus> _logger;
         private IBus _bus;
         private List<ISubscriptionResult> _subscriptions = new List<ISubscriptionResult>();
-        private List<ISubscriptionResult> _cmdSubscriptions = new List<ISubscriptionResult>();
 
 
         public RabbitMqEventBus(RabbitMqSettings settings, ILogger<RabbitMqEventBus> logger)
@@ -89,59 +86,8 @@ namespace Infrastructure.Services.EventBus
             }
         }
 
-        internal void InitCommandSubscribers(string assemblyName, IImplProvider implProvider)
-        {
-            var commandHandlerTypes = Assembly.Load(assemblyName)
-                .GetTypes()
-                .Where(type =>
-                    type.BaseType != null && type.BaseType.IsGenericType &&
-                    type.BaseType.GetGenericTypeDefinition() == typeof(CommandHandlerBase<>))
-                .ToArray();
-            _logger.LogDebug("Found commandHandlers {list} in assembly: {assemblyName}", commandHandlerTypes.Select(f => f.Name).ToArray(), assemblyName);
 
-            foreach (var handlerType in commandHandlerTypes)
-            {
-                var cmdType = handlerType.BaseType.GetGenericArguments()[0];
-                CommandSubscribe(cmdType, implProvider);
-            }
-        }
-
-        //tests
-        internal void CancelCommandSubscriptions()
-        {
-            foreach (var subscription in _cmdSubscriptions)
-            {
-                subscription.Dispose();
-            }
-            _cmdSubscriptions.Clear();
-        }
-
-        private void CommandSubscribe(Type cmdType, IImplProvider implProvider)
-        {
-            var cmdName = cmdType.Name;
-            var subscription = _bus.Subscribe(typeof(CommandBase), cmdName,
-                obj =>
-                {
-                    var cmd = (CommandBase)obj;
-                    _logger.LogDebug("Reveived command message from MQ: {@command}", cmd);
-                    if (cmd.WSQueued)
-                    {
-                        var handler = implProvider.Get<WSQueuedCommandHandler>();
-                        handler.Handle(cmd);
-                    }
-                    else if (cmd.HttpQueued)
-                    {
-                        var handler = implProvider.Get<HTTPQueuedCommandHandler>();
-                        handler.Handle(cmd);
-                    }
-                },
-                configuration =>
-                {
-                    configuration.WithTopic(cmdName);
-                    configuration.WithQueueName(cmdName);
-                });
-            _cmdSubscriptions.Add(subscription);
-        }
+  
 
         internal void CancelSubscriptions()
         {
@@ -192,8 +138,7 @@ namespace Infrastructure.Services.EventBus
                 IAppEvent<Event> commandEvent = ParseEventFromMessage(message);
                 if (commandEvent != null)
                 {
-                    var commandName = commandEvent.CommandBase?.GetType()
-                        .Name;
+                    var commandName = commandEvent.CommandContext.Name;
                     var handler = RollbackHandlerRegistry.GetCommandRollbackHandler(commandName);
                     TryExecuteCommandRollback(handler, commandEvent);
                 }
@@ -251,12 +196,6 @@ namespace Infrastructure.Services.EventBus
             {
                 Publish(@event);
             }
-        }
-
-        public void Send<T>(T command) where T : CommandBase
-        {
-            _logger.LogDebug("Publishing command {@command}", command);
-            _bus.Publish(typeof(CommandBase), command, command.GetType().Name);
         }
 
         public event Action<EventArgs, ILogger> Disconnected;

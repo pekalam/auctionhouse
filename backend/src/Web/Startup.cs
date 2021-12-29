@@ -10,7 +10,6 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using ConfigCat.Client;
-using Core.Common.RequestStatusService;
 using Core.Query.ReadModel;
 using Infrastructure.Auth;
 using Infrastructure.Repositories.AuctionImage;
@@ -118,7 +117,7 @@ namespace Web
                     SchemaFilePath = $"{categoriesXmlDirLocation}/categories.xsd"
                 }
             );
-            DefaultDIBootstraper.Query.Configure<RequestStatusService>(services, mongoDbSettings, new CategoryNameServiceSettings()
+            DefaultDIBootstraper.Query.Configure<RequestStatusSender>(services, mongoDbSettings, new CategoryNameServiceSettings()
             {
                 CategoriesFilePath = $"{categoriesXmlDirLocation}/categories.xml",
                 SchemaFilePath = $"{categoriesXmlDirLocation}/categories.xsd"

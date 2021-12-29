@@ -8,8 +8,7 @@ using Core.Common.Domain.Users;
 namespace Core.Command.Commands.BuyCredits
 {
     [AuthorizationRequired]
-    public class BuyCreditsCommand : CommandBase
-    {
+    public class BuyCreditsCommand : ICommand    {
         [Required]
         public decimal Ammount { get; }
 

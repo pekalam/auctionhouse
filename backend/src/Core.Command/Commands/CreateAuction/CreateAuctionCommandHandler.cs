@@ -7,6 +7,7 @@ using Core.Command.Handler;
 using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.ApplicationServices;
+using Core.Common.Command;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Users;
 using Core.Common.EventBus;
@@ -129,11 +130,11 @@ namespace Core.Command.CreateAuction
             }
         }
 
-        protected virtual void PublishEvents(Auction auction, User user, CreateAuctionCommand command, CorrelationId correlationId)
+        protected virtual void PublishEvents(Auction auction, User user, AppCommand<CreateAuctionCommand> appCommand)
         {
             try
             {
-                _deps.eventBusService.Publish(auction.PendingEvents, correlationId, command);
+                _deps.eventBusService.Publish(auction.PendingEvents, appCommand.CommandContext);
                 //_deps.eventBusService.Publish(user.PendingEvents, command.CorrelationId, command);
                 auction.MarkPendingEventsAsHandled();
             }
@@ -181,17 +182,17 @@ namespace Core.Command.CreateAuction
             return builder.Build();
         }
 
-        protected override Task<RequestStatus> HandleCommand(CreateAuctionCommand request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(AppCommand<CreateAuctionCommand> request, CancellationToken cancellationToken)
         {
-            var user = GetSignedInUser(request);
-            var auction = request.AuctionCreateSession.CreateAuction(GetAuctionArgs(request, new Common.Domain.Auctions.UserId(user.AggregateId)));
+            var user = GetSignedInUser(request.Command);
+            var auction = request.Command.AuctionCreateSession.CreateAuction(GetAuctionArgs(request.Command, new Common.Domain.Auctions.UserId(user.AggregateId)));
 
             var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.PENDING);
             var addAuctionSequence = new AtomicSequence<Auction>()
                 .AddTask(AddToRepository, AddToRepository_Rollback)
                 .AddTask(SheduleAuctionEndTask, ScheduleAuctionEndTask_Rollback)
                 .AddTask(ChangeImagesMetadata, ChangeImagesMetadata_Rollback)
-                .AddTask((param, _) => PublishEvents(auction, user, request, response.CorrelationId), null);
+                .AddTask((param, _) => PublishEvents(auction, user, request), null);
 
             addAuctionSequence.ExecuteSequence(auction);
 

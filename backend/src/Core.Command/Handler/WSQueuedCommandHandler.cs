@@ -23,37 +23,38 @@ namespace Core.Command.Handler
             _logger = logger;
         }
 
-        public virtual void Handle(CommandBase commandBase)
+        public virtual void Handle(QueuedCommand command)
         {
             RequestStatus requestStatus;
+            ICommandContextOwner commandContextOwner = (ICommandContextOwner)command.AppCommand;
             try
             {
-                requestStatus = _mediator.Send(commandBase, CancellationToken.None).Result;
+                requestStatus = _mediator.Send((IRequest<RequestStatus>)command.AppCommand, CancellationToken.None).Result;
             }
             catch (Exception e)
             {
-                _logger.LogDebug(e, "WSQueued command error {@command}", commandBase);
-                _requestStatusService.TrySendRequestFailureToUser(commandBase.GetType().Name,
-                    commandBase.CommandContext.CorrelationId, commandBase.CommandContext.User);
+                _logger.LogDebug(e, "WSQueued command error {@command}", command);
+                _requestStatusService.TrySendRequestFailureToUser(commandContextOwner.CommandContext.Name,
+                    commandContextOwner.CommandContext.CommandId, commandContextOwner.CommandContext.User);
                 return;
             }
 
-            if (commandBase.CommandContext.User != null)
+            if (commandContextOwner.CommandContext.User != Guid.Empty)
             {
                 if (requestStatus.Status == Status.FAILED)
                 {
-                    _requestStatusService.TrySendRequestFailureToUser(commandBase.GetType().Name,
-                        commandBase.CommandContext.CorrelationId, commandBase.CommandContext.User, requestStatus.ExtraData);
+                    _requestStatusService.TrySendRequestFailureToUser(commandContextOwner.CommandContext.Name,
+                        commandContextOwner.CommandContext.CommandId, commandContextOwner.CommandContext.User, requestStatus.ExtraData);
                 }
                 else if (requestStatus.Status == Status.COMPLETED)
                 {
-                    _requestStatusService.TrySendRequestCompletionToUser(commandBase.GetType().Name,
-                        commandBase.CommandContext.CorrelationId, commandBase.CommandContext.User, requestStatus.ExtraData);
+                    _requestStatusService.TrySendRequestCompletionToUser(commandContextOwner.CommandContext.Name,
+                        commandContextOwner.CommandContext.CommandId, commandContextOwner.CommandContext.User, requestStatus.ExtraData);
                 }
             }
             else
             {
-                _logger.LogWarning("Cannot send request status to null user, command: {@command}", commandBase);
+                _logger.LogWarning("Cannot send request status to null user, command: {@command}", command);
             }
         }
     }

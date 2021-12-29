@@ -4,6 +4,7 @@ using Core.Command.Handler;
 using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.ApplicationServices;
+using Core.Common.Command;
 using Core.Common.Domain.Auctions;
 using Microsoft.Extensions.Logging;
 
@@ -23,7 +24,7 @@ namespace Core.Command.Commands.EndAuction
             _logger = logger;
         }
 
-        protected override Task<RequestStatus> HandleCommand(EndAuctionCommand request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(AppCommand<EndAuctionCommand> request, CancellationToken cancellationToken)
         {
 
 

@@ -16,8 +16,7 @@ using NUnit.Framework;
 namespace UnitTests.AuthorizationRequiredAttribute_Tests
 {
     [AuthorizationRequired]
-    public class TestCommandBase : CommandBase
-    {
+    public class TestCommandBase : ICommand    {
         public int Prop { get; set; }
 
         [SignedInUser]
@@ -34,8 +33,7 @@ namespace UnitTests.AuthorizationRequiredAttribute_Tests
     }
 
     [AuthorizationRequired]
-    public class TestCommandBaseNoUser : CommandBase
-    {
+    public class TestCommandBaseNoUser : ICommand    {
         public int Prop { get; set; }
     }
 

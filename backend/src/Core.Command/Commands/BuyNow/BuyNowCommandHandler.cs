@@ -6,10 +6,10 @@ using Core.Command.Exceptions;
 using Core.Command.Handler;
 using Core.Common;
 using Core.Common.ApplicationServices;
+using Core.Common.Command;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Auctions.Services;
 using Core.Common.Domain.Users;
-using Core.Common.DomainServices;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Command.Commands.BuyNow
@@ -23,7 +23,7 @@ namespace Core.Command.Commands.BuyNow
             _buyNowCommandHandler = buyNowCommandHandler;
         }
 
-        protected override Task<RequestStatus> HandleCommand(BuyNowCommand request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(AppCommand<BuyNowCommand> request, CancellationToken cancellationToken)
         {
             var transactionOpt = new TransactionOptions()
             {
@@ -56,18 +56,18 @@ namespace Core.Command.Commands.BuyNow
             _auctionPaymentVerification = auctionPaymentVerification;
         }
 
-        protected override async Task<RequestStatus> HandleCommand(BuyNowCommand request, CancellationToken cancellationToken)
+        protected override async Task<RequestStatus> HandleCommand(AppCommand<BuyNowCommand> request, CancellationToken cancellationToken)
         {
-            var auction = _auctionRepository.FindAuction(request.AuctionId);
+            var auction = _auctionRepository.FindAuction(request.Command.AuctionId);
             if (auction == null)
             {
-                throw new CommandException($"Invalid auction id: {request.AuctionId}");
+                throw new CommandException($"Invalid auction id: {request.Command.AuctionId}");
             }
 
-            _logger.LogDebug($"User {request.SignedInUser} is buying auction {request.AuctionId}");
+            _logger.LogDebug($"User {request.Command.SignedInUser} is buying auction {request.Command.AuctionId}");
 
-            await auction.Buy(new Common.Domain.Auctions.UserId(request.SignedInUser.Value), "test", _auctionPaymentVerification);
-            _eventBusService.Publish(auction.PendingEvents, request.CommandContext.CorrelationId, request);
+            await auction.Buy(new Common.Domain.Auctions.UserId(request.Command.SignedInUser.Value), "test", _auctionPaymentVerification);
+            _eventBusService.Publish(auction.PendingEvents, request.CommandContext);
 
             return RequestStatus.CreateFromCommandContext(request.CommandContext, Status.PENDING);
         }

@@ -7,6 +7,7 @@ using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.ApplicationServices;
 using Core.Common.Auth;
+using Core.Common.Command;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Categories;
 using Core.Common.SchedulerService;
@@ -35,37 +36,37 @@ namespace Core.Command.Commands.UpdateAuction
             _categoryBuilder = categoryBuilder;
         }
 
-        private Auction GetAuction(UpdateAuctionCommand request)
+        private Auction GetAuction(AppCommand<UpdateAuctionCommand> request)
         {
-            var auction = _auctionRepository.FindAuction(request.AuctionId);
-            return auction ?? throw new CommandException($"Cannot find auction {request.AuctionId}");
+            var auction = _auctionRepository.FindAuction(request.Command.AuctionId);
+            return auction ?? throw new CommandException($"Cannot find auction {request.Command.AuctionId}");
         }
 
 
-        protected override Task<RequestStatus> HandleCommand(UpdateAuctionCommand request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(AppCommand<UpdateAuctionCommand> request, CancellationToken cancellationToken)
         {
             var auction = GetAuction(request);
 
-            if (!auction.Owner.Equals(request.SignedInUser))
+            if (!auction.Owner.Equals(request.Command.SignedInUser))
             {
                 throw new UnauthorizedAccessException($"User is not owner of an auction {auction.AggregateId}");
             }
 
             
-            auction.UpdateTags(request.Tags.Select(s => new Tag(s)).ToArray());
-            auction.UpdateName(request.Name);
-            auction.UpdateBuyNowPrice(request.BuyNowPrice);
-            auction.UpdateDescription(request.Description);
-            if (request.EndDate != null)
+            auction.UpdateTags(request.Command.Tags.Select(s => new Tag(s)).ToArray());
+            auction.UpdateName(request.Command.Name);
+            auction.UpdateBuyNowPrice(request.Command.BuyNowPrice);
+            auction.UpdateDescription(request.Command.Description);
+            if (request.Command.EndDate != null)
             {
-                auction.UpdateEndDate(request.EndDate);
+                auction.UpdateEndDate(request.Command.EndDate);
             }
-            var newCategory = _categoryBuilder.FromCategoryNamesList(request.Category);
+            var newCategory = _categoryBuilder.FromCategoryNamesList(request.Command.Category);
             auction.UpdateCategory(newCategory);
 
             var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.PENDING);
             _auctionRepository.UpdateAuction(auction);
-            _eventBusService.Publish(auction.PendingEvents, response.CorrelationId, request);
+            _eventBusService.Publish(auction.PendingEvents, request.CommandContext);
 
             return Task.FromResult(response);
         }

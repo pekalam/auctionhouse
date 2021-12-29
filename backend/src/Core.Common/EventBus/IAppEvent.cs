@@ -5,8 +5,7 @@ namespace Core.Common.EventBus
 {
     public interface IAppEvent<out T> where T : Event
     {
-        CommandBase CommandBase { get; }
-        CorrelationId CorrelationId { get; }
+        CommandContext CommandContext { get; }
         T Event { get; }
     }
 }

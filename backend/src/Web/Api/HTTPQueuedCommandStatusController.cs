@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Core.Command.Mediator;
 using Core.Common;
+using Core.Common.Command;
 using Core.Common.EventBus;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
@@ -23,11 +24,11 @@ namespace Web.Api
             _commandStatusService = commandStatusService;
         }
 
-        [HttpGet("{correlationId}")]
-        public ActionResult<RequestStatusDto> GetCommandStatus(string correlationId)
+        [HttpGet("{commandId}")]
+        public ActionResult<RequestStatusDto> GetCommandStatus(string commandId)
         {
-            var correlationIdObj = new CorrelationId(correlationId);
-            var status = _commandStatusService.GetCommandStatus(correlationIdObj);
+            var commandIdObj = CommandId.From(commandId);
+            var status = _commandStatusService.GetCommandStatus(commandIdObj);
 
             if (status != null)
             {

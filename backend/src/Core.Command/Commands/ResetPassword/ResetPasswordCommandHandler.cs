@@ -5,6 +5,7 @@ using Core.Command.Handler;
 using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.Auth;
+using Core.Common.Command;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Command.Commands.ResetPassword
@@ -24,29 +25,29 @@ namespace Core.Command.Commands.ResetPassword
             _logger = logger;
         }
 
-        private ResetCodeRepresentation FindResetCode(ResetPasswordCommand request)
+        private ResetCodeRepresentation FindResetCode(AppCommand<ResetPasswordCommand> request)
         {
-            var resetCode = _resetPasswordCodeRepository.FindResetPasswordCode(request.ResetCode, request.Email);
+            var resetCode = _resetPasswordCodeRepository.FindResetPasswordCode(request.Command.ResetCode, request.Command.Email);
             if (resetCode == null)
             {
-                throw new InvalidCommandException($"Cannot find resetCode {request.ResetCode}");
+                throw new InvalidCommandException($"Cannot find resetCode {request.Command.ResetCode}");
             }
 
             return resetCode;
         }
 
-        private UserAuthenticationData FindUserAuthenticationData(ResetCodeRepresentation resetCode, ResetPasswordCommand request)
+        private UserAuthenticationData FindUserAuthenticationData(ResetCodeRepresentation resetCode, AppCommand<ResetPasswordCommand> request)
         {
             var user = _userAuthenticationDataRepository.FindUserAuthByEmail(resetCode.Email);
             if (user == null)
             {
-                throw new InvalidCommandException($"Cannot find user with email {resetCode.Email} and with reset code {request.ResetCode.Value}");
+                throw new InvalidCommandException($"Cannot find user with email {resetCode.Email} and with reset code {request.Command.ResetCode.Value}");
             }
 
             return user;
         }
 
-        protected override Task<RequestStatus> HandleCommand(ResetPasswordCommand request,
+        protected override Task<RequestStatus> HandleCommand(AppCommand<ResetPasswordCommand> request,
             CancellationToken cancellationToken)
         {
             var resetCode = FindResetCode(request);
@@ -63,10 +64,10 @@ namespace Core.Command.Commands.ResetPassword
                 throw new InvalidCommandException("ResetCode must be checked first");
             }
 
-            user.Password = request.NewPassword;
+            user.Password = request.Command.NewPassword;
             _userAuthenticationDataRepository.UpdateUserAuth(user);
 
-            _logger.LogInformation("User with email {email} and reset code {@resetCode} has changed password", request.Email, resetCode);
+            _logger.LogInformation("User with email {email} and reset code {@resetCode} has changed password", request.Command.Email, resetCode);
             return Task.FromResult(RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED));
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Core.Common.Command;
 using Core.Common.Domain;
@@ -17,27 +18,21 @@ namespace Core.Common.ApplicationServices
             _appEventBuilder = appEventBuilder;
         }
 
-        public virtual void Publish<T>(T @event, CorrelationId correlationId, CommandBase commandBase) where T : Event
+        public virtual void Publish<T>(T @event, CommandContext commandContext) where T : Event
         {
             var appEvent = _appEventBuilder
-                .WithCommand(commandBase)
+                .WithCommandContext(commandContext)
                 .WithEvent(@event)
-                .WithCorrelationId(correlationId)
                 .Build<T>();
             _eventBus.Publish(appEvent);
         }
 
-        public virtual void Publish(IEnumerable<Event> events, CorrelationId correlationId, CommandBase commandBase)
+        public virtual void Publish(IEnumerable<Event> events, CommandContext commandContext)
         {
             foreach (var @event in events)
             {
-                Publish(@event, correlationId, commandBase);
+                Publish(@event, commandContext);
             }
-        }
-
-        public virtual void SendQueuedCommand(CommandBase commandBase)
-        {
-            _eventBus.Send(commandBase);
         }
     }
 }

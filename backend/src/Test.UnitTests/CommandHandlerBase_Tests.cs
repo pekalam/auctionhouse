@@ -18,8 +18,7 @@ using NUnit.Framework.Internal;
 
 namespace UnitTests
 {
-    public class TestCommandBase : CommandBase
-    {
+    public class TestCommandBase : ICommand    {
         [Required] public string Param1 { get; }
 
         [MinLength(5)] public string Param2 { get; }
@@ -38,7 +37,7 @@ namespace UnitTests
         {
         }
 
-        protected override Task<RequestStatus> HandleCommand(TestCommandBase request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(AppCommand<TestCommandBase> request, CancellationToken cancellationToken)
         {
             Assert.Fail("Should not be called");
             return Task.FromResult(new RequestStatus(Status.FAILED));

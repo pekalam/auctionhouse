@@ -6,8 +6,7 @@ using Core.Common.Command;
 
 namespace Core.Command.Commands.RequestResetPassword
 {
-    public class RequestResetPasswordCommand : CommandBase
-    {
+    public class RequestResetPasswordCommand : ICommand    {
         [Required] [EmailAddress] public string Email { get; }
 
         public RequestResetPasswordCommand(string email)

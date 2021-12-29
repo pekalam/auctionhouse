@@ -18,19 +18,16 @@ using NUnit.Framework;
 
 namespace UnitTests.CommandMediator_Tests
 {
-    public class TestCommandBase : CommandBase
-    {
+    public class TestCommandBase : ICommand    {
     }
 
     [AuthorizationRequired]
-    public class TestCommandBaseAuth : CommandBase
-    {
+    public class TestCommandBaseAuth : ICommand    {
 
     }
 
     [AuthorizationRequired]
-    public class TestCommandBaseAuthWithSignedUser : CommandBase
-    {
+    public class TestCommandBaseAuthWithSignedUser : ICommand    {
         public int AnotherProp { get; }
         [SignedInUser]
         public UserId SignedInUser { get; set; }
@@ -54,26 +51,25 @@ namespace UnitTests.CommandMediator_Tests
         [Test]
         public async Task Send_when_valid_command_passed_returns_response()
         {
-            var expectedResponse = new RequestStatus(Status.COMPLETED);
+            var expectedResponse = new RequestStatus(CommandId.CreateNew(), Status.COMPLETED);
             var mockMediatr = new Mock<IMediator>();
             mockMediatr
                 .Setup(f => f.Send(It.IsAny<TestCommandBase>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedResponse);
-            var mediatrHandlerMediator = new MediatRCommandHandlerMediator(mockMediatr.Object);
 
-            var mediator = new CommandMediator(mediatrHandlerMediator, Mock.Of<IImplProvider>());
+            var mediator = new ImmediateCommandMediator(Mock.Of<IImplProvider>(), mockMediatr.Object);
 
             var response = await mediator.Send(new TestCommandBase());
 
             response.Status.Should()
                 .Be(Status.COMPLETED);
-            response.CorrelationId.Should().BeEquivalentTo(expectedResponse.CorrelationId);
+            response.CommandId.Should().BeEquivalentTo(expectedResponse.CommandId);
         }
 
         [Test]
         public void Send_when_command_with_authorization_required_attribute_and_not_signed_in_throws()
         {
-            var expectedResponse = new RequestStatus(Status.COMPLETED);
+            var expectedResponse = new RequestStatus(CommandId.CreateNew(), Status.COMPLETED);
             var mockMediatr = new Mock<IMediator>();
 
             var stubUserIdentityService = new Mock<IUserIdentityService>();
@@ -82,9 +78,7 @@ namespace UnitTests.CommandMediator_Tests
             stubImplProvider.Setup(f => f.Get<IUserIdentityService>())
                 .Returns(stubUserIdentityService.Object);
 
-            var mediatrHandlerMediator = new MediatRCommandHandlerMediator(mockMediatr.Object);
-            var mediator = new CommandMediator(mediatrHandlerMediator, stubImplProvider.Object);
-
+            var mediator = new ImmediateCommandMediator(stubImplProvider.Object, mockMediatr.Object);
 
             Assert.ThrowsAsync<NotSignedInException>(async () => await mediator.Send(new TestCommandBaseAuth()));
         }
@@ -100,7 +94,7 @@ namespace UnitTests.CommandMediator_Tests
         public void Send_when_command_with_authorization_required_attribute_and_signed_in_sets_user_prop()
         {
             var userId = UserId.New();
-            var expectedResponse = new RequestStatus(Status.COMPLETED);
+            var expectedResponse = new RequestStatus(CommandId.CreateNew(), Status.COMPLETED);
             var mockMediatr = new Mock<IMediator>();
             mockMediatr.Setup(f => f.Send(It.Is<IRequest<RequestStatus>>(
                     request => VerifyTestCommand(request, userId)
@@ -115,8 +109,7 @@ namespace UnitTests.CommandMediator_Tests
             stubImplProvider.Setup(f => f.Get<IUserIdentityService>())
                 .Returns(stubUserIdentityService.Object);
 
-            var mediatrHandlerMediator = new MediatRCommandHandlerMediator(mockMediatr.Object);
-            var mediator = new CommandMediator(mediatrHandlerMediator, stubImplProvider.Object);
+            var mediator = new ImmediateCommandMediator(stubImplProvider.Object, mockMediatr.Object);
 
 
             Assert.DoesNotThrowAsync(async () => await mediator.Send(new TestCommandBaseAuthWithSignedUser(12)));

@@ -3,7 +3,6 @@ using System.Linq;
 using AutoMapper;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Auctions.Events;
-using Core.Common.Domain.Bids;
 using Core.Common.Domain.Users;
 using Core.Common.EventBus;
 using Core.Common.RequestStatusSender;
@@ -18,10 +17,10 @@ namespace Core.Query.EventHandlers
     {
         public AuctionReadProfile()
         {
-            CreateMap<UserId, UserIdentityRead>() //TODO
-                .ForMember(read => read.UserId, opt => opt.MapFrom(identity => identity.ToString()));
-            CreateMap<Bid, BidRead>()
-                .ForMember(read => read.AuctionId, opt => opt.MapFrom(bid => bid.AuctionId.ToString()));
+            //CreateMap<UserId, UserIdentityRead>() //TODO
+            //    .ForMember(read => read.UserId, opt => opt.MapFrom(identity => identity.ToString()));
+            //CreateMap<Bid, BidRead>() //TODO
+            //    .ForMember(read => read.AuctionId, opt => opt.MapFrom(bid => bid.AuctionId.ToString()));
             CreateMap<AuctionArgs, AuctionRead>();
             CreateMap<AuctionCreated, AuctionRead>()
                 .ForMember(read => read.AuctionId, opt => opt.MapFrom(created => created.AuctionId.ToString()))

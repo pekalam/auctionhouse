@@ -6,6 +6,7 @@ using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.ApplicationServices;
 using Core.Common.Auth;
+using Core.Common.Command;
 using Core.Common.Domain.Users;
 using Microsoft.Extensions.Logging;
 
@@ -26,28 +27,28 @@ namespace Core.Command.SignUp
             _logger = logger;
         }
 
-        protected override async Task<RequestStatus> HandleCommand(SignUpCommand request, CancellationToken cancellationToken)
+        protected override async Task<RequestStatus> HandleCommand(AppCommand<SignUpCommand> request, CancellationToken cancellationToken)
         {
-            var existing = _userAuthenticationDataRepository.FindUserAuth(request.Username);
+            var existing = _userAuthenticationDataRepository.FindUserAuth(request.Command.Username);
             if (existing != null)
             {
-                throw new UsernameConflictException($"User {request.Username} already exists");
+                throw new UsernameConflictException($"User {request.Command.Username} already exists");
             }
 
-            var username = await Username.Create(request.Username);
+            var username = await Username.Create(request.Command.Username);
             var user = User.Create(username);
 
             var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
             var userAuth = new UserAuthenticationData()
             {
-                Password = request.Password,
+                Password = request.Command.Password,
                 UserId = user.AggregateId,
                 UserName = user.Username,
-                Email = request.Email
+                Email = request.Command.Email
             };
             _userAuthenticationDataRepository.AddUserAuth(userAuth);
             _userRepository.AddUser(user);
-            _eventBusService.Publish(user.PendingEvents, response.CorrelationId, request);
+            _eventBusService.Publish(user.PendingEvents, request.CommandContext);
             user.MarkPendingEventsAsHandled();
 
             return response;

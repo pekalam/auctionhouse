@@ -1,6 +1,6 @@
 ﻿using System;
+using Core.Common.Domain.AuctionBids;
 using Core.Common.Domain.Auctions;
-using Core.Common.Domain.Bids;
 using Core.Common.Domain.Categories;
 using Core.Common.Domain.Products;
 using Core.Common.Domain.Users;
@@ -41,11 +41,11 @@ namespace Core.Query.ReadModel
 
         public BidRead(Bid bid)
         {
-            BidId = bid.BidId.ToString();
-            AuctionId = bid.AuctionId.ToString();
+            BidId = bid.Id.ToString();
+            //AuctionId = bid.AuctionId.ToString(); //TODO add id
             UserIdentity = new UserIdentityRead(bid.UserId, bid.UserId.ToString()); //TODO
             Price = bid.Price;
-            DateCreated = bid.DateCreated;
+            DateCreated = bid.Date; //TODO rename
         }
     }
 

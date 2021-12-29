@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Core.Command.Handler;
 using Core.Command.Mediator;
 using Core.Common;
+using Core.Common.Command;
 using Core.Common.Domain.AuctionCreateSession;
 using Microsoft.Extensions.Logging;
 
@@ -19,7 +20,7 @@ namespace Core.Command.Commands.AuctionCreateSession.StartAuctionCreateSession
             _logger = logger;
         }
 
-        protected override Task<RequestStatus> HandleCommand(StartAuctionCreateSessionCommand request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(AppCommand<StartAuctionCreateSessionCommand> request, CancellationToken cancellationToken)
         {
             Common.Domain.AuctionCreateSession.AuctionCreateSession session;
             if (_auctionCreateSessionService.SessionExists())

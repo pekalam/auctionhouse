@@ -9,7 +9,6 @@ using Core.Command.SignUp;
 using Core.Common.Auth;
 using Core.Common.Domain.Users;
 using Core.Common.Exceptions;
-using Core.Common.RequestStatusService;
 using Core.Query;
 using Core.Query.Exceptions;
 using Microsoft.AspNetCore.Http;

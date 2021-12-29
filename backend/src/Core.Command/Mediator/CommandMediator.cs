@@ -11,14 +11,13 @@ using Core.Common.Command;
 [assembly: InternalsVisibleTo("Test.UnitTests")]
 namespace Core.Command.Mediator
 {
-    public class CommandMediator
+    public abstract class CommandMediator
     {
         private const string CommandsAssemblyName = "Core.Command";
 
-        private readonly ICommandHandlerMediator _mediator;
         private readonly IImplProvider _implProvider;
-        internal static Dictionary<Type, IEnumerable<Action<IImplProvider, CommandBase>>> PreHandleCommandAttributeStrategies;
-        internal static Dictionary<Type, IEnumerable<Action<IImplProvider, CommandBase>>> PostHandleCommandAttributeStrategies;
+        internal static Dictionary<Type, IEnumerable<Action<IImplProvider, ICommand>>> PreHandleCommandAttributeStrategies;
+        internal static Dictionary<Type, IEnumerable<Action<IImplProvider, ICommand>>> PostHandleCommandAttributeStrategies;
 
         static CommandMediator()
         {
@@ -27,11 +26,11 @@ namespace Core.Command.Mediator
 
         internal static void LoadCommandAttributeStrategies(string commandsAssemblyName)
         {
-            PreHandleCommandAttributeStrategies = new Dictionary<Type, IEnumerable<Action<IImplProvider, CommandBase>>>();
-            PostHandleCommandAttributeStrategies = new Dictionary<Type, IEnumerable<Action<IImplProvider, CommandBase>>>();
+            PreHandleCommandAttributeStrategies = new Dictionary<Type, IEnumerable<Action<IImplProvider, ICommand>>>();
+            PostHandleCommandAttributeStrategies = new Dictionary<Type, IEnumerable<Action<IImplProvider, ICommand>>>();
             var commandAttributes = Assembly.Load(commandsAssemblyName)
                 .GetTypes()
-                .Where(type => type.BaseType == typeof(CommandBase))
+                .Where(type => type.BaseType == typeof(ICommand))
                 .Where(type => type.GetCustomAttributes(typeof(ICommandAttribute), false).Length > 0)
                 .Select(type => new
                 {
@@ -53,7 +52,7 @@ namespace Core.Command.Mediator
             }
         }
 
-        internal static void InvokePostCommandAttributeStrategies(IImplProvider implProvider, CommandBase commandBase)
+        internal static void InvokePostCommandAttributeStrategies(IImplProvider implProvider, ICommand commandBase)
         {
             if (PostHandleCommandAttributeStrategies.ContainsKey(commandBase.GetType()))
             {
@@ -64,30 +63,33 @@ namespace Core.Command.Mediator
             }
         }
 
-        public CommandMediator(ICommandHandlerMediator mediator, IImplProvider implProvider)
+        protected CommandMediator(IImplProvider implProvider)
         {
-            _mediator = mediator;
             _implProvider = implProvider;
         }
 
-        public virtual async Task<RequestStatus> Send(CommandBase commandBase)
+        public virtual async Task<RequestStatus> Send<T>(T command) where T : ICommand
         {
-            if (PreHandleCommandAttributeStrategies.ContainsKey(commandBase.GetType()))
+            if (PreHandleCommandAttributeStrategies.ContainsKey(command.GetType()))
             {
-                foreach (var strategy in PreHandleCommandAttributeStrategies[commandBase.GetType()])
+                foreach (var strategy in PreHandleCommandAttributeStrategies[command.GetType()])
                 {
-                    strategy?.Invoke(_implProvider, commandBase);
+                    strategy?.Invoke(_implProvider, command);
                 }
             }
 
-            var requestStatus = await _mediator.Send(commandBase);
+            var (requestStatus, callPostActions) = await SendAppCommand(command);
 
-            if (!commandBase.HttpQueued && !commandBase.WSQueued)
+            if (callPostActions)
             {
-                InvokePostCommandAttributeStrategies(_implProvider, commandBase);
+                InvokePostCommandAttributeStrategies(_implProvider, command);
             }
 
             return requestStatus;
         }
+
+        protected abstract Task<(RequestStatus, bool)> SendAppCommand<T>(T command) where T : ICommand;
+
+ 
     }
 }

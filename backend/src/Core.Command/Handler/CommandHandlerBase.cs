@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Core.Command.Handler
 {
-    public abstract class CommandHandlerBase<T> : IRequestHandler<T, RequestStatus> where T : CommandBase
+    public abstract class CommandHandlerBase<T> : IRequestHandler<AppCommand<T>, RequestStatus> where T : ICommand
     {
         private readonly ILogger _logger;
 
@@ -21,11 +21,11 @@ namespace Core.Command.Handler
             _logger = logger;
         }
 
-        private Task<RequestStatus> TryHandleCommand(T request, CancellationToken cancellationToken)
+        private async Task<RequestStatus> TryHandleCommand(AppCommand<T> request, CancellationToken cancellationToken)
         {
             try
             {
-                return HandleCommand(request, cancellationToken);
+                return await HandleCommand(request, cancellationToken);
             }
             catch (Exception e)
             {
@@ -34,7 +34,7 @@ namespace Core.Command.Handler
             }
         }
 
-        public Task<RequestStatus> Handle(T request, CancellationToken cancellationToken)
+        public virtual Task<RequestStatus> Handle(AppCommand<T> request, CancellationToken cancellationToken)
         {
             var validationContext = new ValidationContext(request);
             var validationResults = new Collection<ValidationResult>();
@@ -51,6 +51,6 @@ namespace Core.Command.Handler
             }
         }
 
-        protected abstract Task<RequestStatus> HandleCommand(T request, CancellationToken cancellationToken);
+        protected abstract Task<RequestStatus> HandleCommand(AppCommand<T> request, CancellationToken cancellationToken);
     }
 }

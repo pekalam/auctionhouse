@@ -7,6 +7,7 @@ using Core.Command.Exceptions;
 using Core.Command.Handler;
 using Core.Common;
 using Core.Common.ApplicationServices;
+using Core.Common.Command;
 using Core.Common.Domain.AuctionBids.Repositories;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Users;
@@ -27,7 +28,7 @@ namespace Core.Command.Commands.CancelBid
             _auctionBids = auctionBids;
         }
 
-        protected override Task<RequestStatus> HandleCommand(CancelBidCommand request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(AppCommand<CancelBidCommand> request, CancellationToken cancellationToken)
         {
             //TODO
 

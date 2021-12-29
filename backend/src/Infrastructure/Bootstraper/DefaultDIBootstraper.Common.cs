@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.ApplicationServices;
 using Core.Common.Command;
@@ -62,7 +63,10 @@ namespace Infrastructure.Bootstraper
                 var rabbitmq = (RabbitMqEventBus)implProvider.Get<IEventBus>();
                 rabbitmq.Disconnected += eventBusDisconnectedCallback;
                 rabbitmq.InitSubscribers("Core.Query", implProvider);
-                rabbitmq.InitCommandSubscribers("Core.Command", implProvider);
+
+                var queuedCommandBus = (RabbitMqQueuedCommandBus)implProvider.Get<IQueuedCommandBus>();
+                queuedCommandBus.InitQueuedCommandSubscribers("Core.Command", implProvider);
+                queuedCommandBus.Disconnected += eventBusDisconnectedCallback;
             }
         }
     }

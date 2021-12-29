@@ -6,6 +6,7 @@ using Core.Command.Handler;
 using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.Auth;
+using Core.Common.Command;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Command.Commands.CheckResetCode
@@ -25,12 +26,12 @@ namespace Core.Command.Commands.CheckResetCode
             _logger = logger;
         }
 
-        private ResetCodeRepresentation FindResetPasswordCode(CheckResetCodeCommand request)
+        private ResetCodeRepresentation FindResetPasswordCode(AppCommand<CheckResetCodeCommand> request)
         {
-            var resetCode = _resetPasswordCodeRepository.FindResetPasswordCode(request.ResetCode, request.Email);
+            var resetCode = _resetPasswordCodeRepository.FindResetPasswordCode(request.Command.ResetCode, request.Command.Email);
             if (resetCode == null)
             {
-                throw new InvalidCommandException($"Cannot find resetCode {request.ResetCode}");
+                throw new InvalidCommandException($"Cannot find resetCode {request.Command.ResetCode}");
             }
 
             return resetCode;
@@ -46,7 +47,7 @@ namespace Core.Command.Commands.CheckResetCode
             }
         }
 
-        protected override Task<RequestStatus> HandleCommand(CheckResetCodeCommand request,
+        protected override Task<RequestStatus> HandleCommand(AppCommand<CheckResetCodeCommand> request,
             CancellationToken cancellationToken)
         {
             var resetCode = FindResetPasswordCode(request);

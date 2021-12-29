@@ -5,6 +5,7 @@ using Core.Command.Handler;
 using Core.Command.Mediator;
 using Core.Common;
 using Core.Common.ApplicationServices;
+using Core.Common.Command;
 using Core.Common.Domain.Auctions;
 using Core.Common.EventBus;
 using Microsoft.Extensions.Logging;
@@ -26,33 +27,33 @@ namespace Core.Command.Commands.UserRemoveAuctionImage
             _logger = logger;
         }
 
-        private void RemoveAuctionImage(UserRemoveAuctionImageCommand request, CancellationToken cancellationToken, CorrelationId correlationId)
+        private void RemoveAuctionImage(AppCommand<UserRemoveAuctionImageCommand> request, CancellationToken cancellationToken)
         {
-            var auction = _auctionRepository.FindAuction(request.AuctionId);
+            var auction = _auctionRepository.FindAuction(request.Command.AuctionId);
             if (auction == null)
             {
-                throw new CommandException($"Cannot find auction {request.AuctionId}");
+                throw new CommandException($"Cannot find auction {request.Command.AuctionId}");
             }
 
-            auction.RemoveImage(request.ImgNum);
+            auction.RemoveImage(request.Command.ImgNum);
 
 
             _auctionRepository.UpdateAuction(auction);
-            _eventBusService.Publish(auction.PendingEvents, correlationId, request);
+            _eventBusService.Publish(auction.PendingEvents, request.CommandContext);
         }
 
-        protected override Task<RequestStatus> HandleCommand(UserRemoveAuctionImageCommand request,
+        protected override Task<RequestStatus> HandleCommand(AppCommand<UserRemoveAuctionImageCommand> request,
             CancellationToken cancellationToken)
         {
-            AuctionLock.Lock(request.AuctionId);
+            AuctionLock.Lock(request.Command.AuctionId);
             var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
             try
             {
-                RemoveAuctionImage(request, cancellationToken, response.CorrelationId);
+                RemoveAuctionImage(request, cancellationToken);
             }
             finally
             {
-                AuctionLock.ReleaseLock(request.AuctionId);
+                AuctionLock.ReleaseLock(request.Command.AuctionId);
             }
 
 

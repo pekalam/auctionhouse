@@ -18,9 +18,9 @@ namespace Core.Command.Mediator
             _implProvider = implProvider;
         }
 
-        public RequestStatus GetCommandStatus(CorrelationId correlationId)
+        public RequestStatus GetCommandStatus(CommandId commandId)
         {
-            var (requestStatus, command) = _commandStatusStorage.GetCommandStatus(correlationId);
+            var (requestStatus, command) = _commandStatusStorage.GetCommandStatus(commandId);
 
             if (requestStatus != null && requestStatus.Status == Status.COMPLETED)
             {
