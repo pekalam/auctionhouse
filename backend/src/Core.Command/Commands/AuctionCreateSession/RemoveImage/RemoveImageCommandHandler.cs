@@ -29,8 +29,9 @@ namespace Core.Command.Commands.AuctionCreateSession.RemoveImage
             _auctionCreateSessionService.SaveSession(auctionCreateSession);
             _logger.LogDebug("Removed image {num} from auctionCreateSession user: {@user}", request.Command.ImgNum, auctionCreateSession.Creator);
 
-            var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
-            return Task.FromResult(response);
+            var requestStatus = RequestStatus.CreatePending(request.CommandContext);
+            requestStatus.MarkAsCompleted();
+            return Task.FromResult(requestStatus);
         }
     }
 }

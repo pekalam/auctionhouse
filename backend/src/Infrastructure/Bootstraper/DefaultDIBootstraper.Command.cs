@@ -142,14 +142,12 @@ namespace Infrastructure.Bootstraper
                 serviceCollection.AddScoped<CreateAuctionCommandHandlerDepedencies>();
 
 
-                serviceCollection.AddSingleton<IHTTPQueuedCommandStatusStorage, HTTPMemQueuedCommandStatusStorage>();
                 serviceCollection.AddScoped<WSQueuedCommandHandler>();
                 serviceCollection.AddScoped<HTTPQueuedCommandHandler>();
                 serviceCollection.AddScoped<ImmediateCommandMediator>();
                 serviceCollection.AddScoped<WSQueuedCommandMediator>();
                 serviceCollection.AddScoped<HTTPQueuedCommandMediator>();
 
-                serviceCollection.AddScoped<HTTPQueuedCommandStatusService>();
             }
 
 

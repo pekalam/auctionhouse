@@ -38,7 +38,8 @@ namespace Core.Command.SignUp
             var username = await Username.Create(request.Command.Username);
             var user = User.Create(username);
 
-            var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
+            var response = RequestStatus.CreatePending(request.CommandContext);
+            response.MarkAsCompleted();
             var userAuth = new UserAuthenticationData()
             {
                 Password = request.Command.Password,
@@ -48,7 +49,7 @@ namespace Core.Command.SignUp
             };
             _userAuthenticationDataRepository.AddUserAuth(userAuth);
             _userRepository.AddUser(user);
-            _eventBusService.Publish(user.PendingEvents, request.CommandContext);
+            _eventBusService.Publish(user.PendingEvents, request.CommandContext, Common.EventBus.ReadModelNotificationsMode.Disabled);
             user.MarkPendingEventsAsHandled();
 
             return response;

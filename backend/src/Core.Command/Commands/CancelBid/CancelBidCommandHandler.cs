@@ -31,8 +31,9 @@ namespace Core.Command.Commands.CancelBid
         protected override Task<RequestStatus> HandleCommand(AppCommand<CancelBidCommand> request, CancellationToken cancellationToken)
         {
             //TODO
-
-            return Task.FromResult(RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED));
+            var requestStatus = RequestStatus.CreatePending(request.CommandContext);
+            requestStatus.MarkAsCompleted();
+            return Task.FromResult(requestStatus);
         }
 
     }

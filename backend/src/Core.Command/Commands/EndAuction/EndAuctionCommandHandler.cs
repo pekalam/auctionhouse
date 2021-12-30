@@ -28,7 +28,8 @@ namespace Core.Command.Commands.EndAuction
         {
 
 
-            var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
+            var response = RequestStatus.CreatePending(request.CommandContext);
+            response.MarkAsCompleted();
             return Task.FromResult(response);
         }
     }

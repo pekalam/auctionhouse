@@ -10,6 +10,7 @@ namespace Infrastructure.Services.EventBus
     {
         private Event _event;
         private CommandContext _commandContext;
+        private ReadModelNotificationsMode _consistencyMode;
 
         public IAppEventBuilder WithCommandContext(CommandContext commandContext)
         {
@@ -23,9 +24,15 @@ namespace Infrastructure.Services.EventBus
             return this;
         }
 
+        public IAppEventBuilder WithReadModelNotificationsMode(ReadModelNotificationsMode consistencyMode)
+        {
+            _consistencyMode = consistencyMode;
+            return this;
+        }
+
         public IAppEvent<TEvent> Build<TEvent>() where TEvent : Event
         {
-            return new AppEventRabbitMQ<TEvent>((TEvent)_event, _commandContext);
+            return new AppEventRabbitMQ<TEvent>(_commandContext, (TEvent)_event, _consistencyMode);
         }
     }
 }

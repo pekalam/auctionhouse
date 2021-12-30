@@ -38,15 +38,17 @@ namespace Core.Command.Commands.AuctionCreateSession.AddAuctionImage
 
             request.Command.AuctionCreateSession.AddOrReplaceImage(added, request.Command.ImgNum);
 
-            var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED, new Dictionary<string, object>()
+            var requestStatus = RequestStatus.CreatePending(request.CommandContext);
+            requestStatus.SetExtraData(new Dictionary<string, object>()
             {
                 {"imgSz1", added.Size1Id},
                 {"imgSz2", added.Size2Id},
                 {"imgSz3", added.Size3Id}
             });
+            requestStatus.MarkAsCompleted();
             _logger.LogDebug("Image added: {@img}", added);
 
-            return Task.FromResult(response);
+            return Task.FromResult(requestStatus);
         }
     }
 }

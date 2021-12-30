@@ -64,9 +64,9 @@ namespace Core.Command.Commands.UpdateAuction
             var newCategory = _categoryBuilder.FromCategoryNamesList(request.Command.Category);
             auction.UpdateCategory(newCategory);
 
-            var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.PENDING);
+            var response = RequestStatus.CreatePending(request.CommandContext);
             _auctionRepository.UpdateAuction(auction);
-            _eventBusService.Publish(auction.PendingEvents, request.CommandContext);
+            _eventBusService.Publish(auction.PendingEvents, request.CommandContext, Common.EventBus.ReadModelNotificationsMode.Immediate);
 
             return Task.FromResult(response);
         }

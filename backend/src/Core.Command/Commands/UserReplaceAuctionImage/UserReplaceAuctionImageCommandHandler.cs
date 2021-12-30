@@ -52,7 +52,7 @@ namespace Core.Command.Commands.UserReplaceAuctionImage
             _auctionRepository.UpdateAuction(auction);
             try
             {
-                _eventBusService.Publish(auction.PendingEvents, request.CommandContext);
+                _eventBusService.Publish(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
             }
             catch (Exception)
             {
@@ -65,7 +65,7 @@ namespace Core.Command.Commands.UserReplaceAuctionImage
             CancellationToken cancellationToken)
         {
             AuctionLock.Lock(request.Command.AuctionId);
-            var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
+            var response = RequestStatus.CreatePending(request.CommandContext);
             try
             {
                 ReplaceAuctionImage(request);

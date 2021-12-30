@@ -134,7 +134,7 @@ namespace Core.Command.CreateAuction
         {
             try
             {
-                _deps.eventBusService.Publish(auction.PendingEvents, appCommand.CommandContext);
+                _deps.eventBusService.Publish(auction.PendingEvents, appCommand.CommandContext, ReadModelNotificationsMode.Immediate);
                 //_deps.eventBusService.Publish(user.PendingEvents, command.CorrelationId, command);
                 auction.MarkPendingEventsAsHandled();
             }
@@ -187,7 +187,7 @@ namespace Core.Command.CreateAuction
             var user = GetSignedInUser(request.Command);
             var auction = request.Command.AuctionCreateSession.CreateAuction(GetAuctionArgs(request.Command, new Common.Domain.Auctions.UserId(user.AggregateId)));
 
-            var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.PENDING);
+            var response = RequestStatus.CreatePending(request.CommandContext);
             var addAuctionSequence = new AtomicSequence<Auction>()
                 .AddTask(AddToRepository, AddToRepository_Rollback)
                 .AddTask(SheduleAuctionEndTask, ScheduleAuctionEndTask_Rollback)

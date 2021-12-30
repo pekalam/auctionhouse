@@ -24,18 +24,16 @@ namespace Core.Command.Commands.Bid
         private readonly IAuctionBidsRepository _auctionBids;
         private readonly EventBusService _eventBusService;
         private readonly ILogger<BidCommandHandler> _logger;
-        private readonly IRequestStatusSender _requestStatusService;
 
-        public BidCommandHandler(EventBusService eventBusService, ILogger<BidCommandHandler> logger, IRequestStatusSender requestStatusService) : base(logger)
+        public BidCommandHandler(EventBusService eventBusService, ILogger<BidCommandHandler> logger) : base(logger)
         {
             _eventBusService = eventBusService;
             _logger = logger;
-            _requestStatusService = requestStatusService;
             RollbackHandlerRegistry.RegisterCommandRollbackHandler(nameof(BidCommand),
                 provider => new BidRollbackHandler(provider));
         }
 
-        protected override Task<RequestStatus> HandleCommand(AppCommand<BidCommand> request, CancellationToken cancellationToken)
+        protected override async Task<RequestStatus> HandleCommand(AppCommand<BidCommand> request, CancellationToken cancellationToken)
         {
             var auctionBids = _auctionBids.WithAuctionId(new Common.Domain.AuctionBids.AuctionId(request.Command.AuctionId));
             if(auctionBids is null)
@@ -43,21 +41,21 @@ namespace Core.Command.Commands.Bid
                 throw new CommandException($"AuctionBids {request.Command.AuctionId} could not be found");
             }
 
+
             var bid = auctionBids.TryRaise(new Common.Domain.AuctionBids.UserId(request.Command.SignedInUser), request.Command.Price);
 
-            var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.PENDING);
-            _eventBusService.Publish(auctionBids.PendingEvents, request.CommandContext);
-            if (bid.Accepted)
-            {
-                _requestStatusService.TrySendNotificationToAll("AuctionPriceChanged", new Dictionary<string, object>()
-                {
-                    {"winningBid", bid}
-                });
-            }
+            _eventBusService.Publish(auctionBids.PendingEvents, request.CommandContext, Common.EventBus.ReadModelNotificationsMode.Immediate);
+            //if (bid.Accepted)
+            //{
+            //    _requestStatusService.TrySendNotificationToAll("AuctionPriceChanged", new Dictionary<string, object>()
+            //    {
+            //        {"winningBid", bid}
+            //    });
+            //}
             _logger.LogDebug("Bid {@bid} submited for an auction {@auction} by {@user}", bid, request.Command.AuctionId, request.Command.SignedInUser);
 
 
-            return Task.FromResult(response);
+            return RequestStatus.CreatePending(request.CommandContext);
         }
     }
 }

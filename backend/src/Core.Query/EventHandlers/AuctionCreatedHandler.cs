@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using AutoMapper;
+using Core.Common;
 using Core.Common.Domain.Auctions;
 using Core.Common.Domain.Auctions.Events;
 using Core.Common.Domain.Users;
@@ -34,16 +35,18 @@ namespace Core.Query.EventHandlers
 
     public class AuctionCreatedHandler : EventConsumer<AuctionCreated>
     {
+        
         private readonly ReadModelDbContext _dbContext;
-        private readonly IRequestStatusSender _requestStatusService;
         private readonly ILogger<AuctionCreatedHandler> _logger;
 
-        public AuctionCreatedHandler(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext,
-            IRequestStatusSender requestStatusService,
-            ILogger<AuctionCreatedHandler> logger) : base(appEventBuilder, logger)
+        public AuctionCreatedHandler(
+            IAppEventBuilder appEventBuilder, 
+            ReadModelDbContext dbContext,
+            ILogger<AuctionCreatedHandler> logger, 
+            Func<ISagaNotifications> sagaNotificationsFactory, 
+            Func<IReadModelNotifications> readModelNotificationsFactory) : base(appEventBuilder, logger, sagaNotificationsFactory, readModelNotificationsFactory)
         {
             _dbContext = dbContext;
-            _requestStatusService = requestStatusService;
             _logger = logger;
         }
 
@@ -65,11 +68,9 @@ namespace Core.Query.EventHandlers
             catch (Exception e)
             {
                 _logger.LogWarning(e, "Cannot create an auction");
-                _requestStatusService.TrySendRequestFailureToUser(message, ev.AuctionArgs.Owner);
                 throw;
             }
 
-            _requestStatusService.TrySendReqestCompletionToUser(message, ev.AuctionArgs.Owner);
         }
     }
 }

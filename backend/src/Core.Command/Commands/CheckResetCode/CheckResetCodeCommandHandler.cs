@@ -59,11 +59,12 @@ namespace Core.Command.Commands.CheckResetCode
                 _resetPasswordCodeRepository.UpdateResetPasswordCode(resetCode);
             }
 
-            var result = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED,
-                new Dictionary<string, object>()
+            var result = RequestStatus.CreatePending(request.CommandContext);
+            result.SetExtraData(new Dictionary<string, object>()
                 {
                     {"expired", resetCode.IsExpired}
                 });
+            result.MarkAsCompleted();
             _logger.LogDebug("Reset code: {@resetCode} checked", resetCode);
 
             return Task.FromResult(result);

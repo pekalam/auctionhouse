@@ -52,11 +52,13 @@ namespace Core.Command.Commands.ResetPassword
         {
             var resetCode = FindResetCode(request);
             var user = FindUserAuthenticationData(resetCode, request);
+            var requestStatus = RequestStatus.CreatePending(request.CommandContext);
 
             if (resetCode.IsExpired)
             {
                 _resetPasswordCodeRepository.RemoveResetPasswordCode(resetCode.ResetCode, resetCode.Email);
-                return Task.FromResult(RequestStatus.CreateFromCommandContext(request.CommandContext, Status.FAILED));
+                requestStatus.MarkAsFailed();
+                return Task.FromResult(requestStatus);
             }
 
             if (!resetCode.Checked)
@@ -68,7 +70,8 @@ namespace Core.Command.Commands.ResetPassword
             _userAuthenticationDataRepository.UpdateUserAuth(user);
 
             _logger.LogInformation("User with email {email} and reset code {@resetCode} has changed password", request.Command.Email, resetCode);
-            return Task.FromResult(RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED));
+            requestStatus.MarkAsCompleted();
+            return Task.FromResult(requestStatus);
         }
     }
 }

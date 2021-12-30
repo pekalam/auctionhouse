@@ -53,13 +53,10 @@ namespace Infrastructure.Bootstraper
                 MongoDbSettings mongoDbSettings,
                 CategoryNameServiceSettings categoryNameServiceSettings,
                 ImageDbSettings imageDbSettings,
-                RabbitMqSettings rabbitMqSettings) where RequestStatusServiceImpl : class, IRequestStatusSender
+                RabbitMqSettings rabbitMqSettings) where RequestStatusServiceImpl : class
             {
                 serviceCollection.AddSingleton<ReadModelDbContext>();
                 serviceCollection.AddScoped<RequestStatusServiceImpl>();
-                serviceCollection.AddScoped<IRequestStatusSender, RequestStatusServiceProxy>(provider =>
-                    new RequestStatusServiceProxy(provider.GetRequiredService<RequestStatusServiceImpl>(),
-                        provider.GetRequiredService<IHTTPQueuedCommandStatusStorage>()));
 
                 ConfigureSettings(serviceCollection, mongoDbSettings, categoryNameServiceSettings, imageDbSettings,
                     rabbitMqSettings);

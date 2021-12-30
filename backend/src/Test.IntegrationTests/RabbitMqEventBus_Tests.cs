@@ -8,6 +8,7 @@ using Core.Common.ApplicationServices;
 using Core.Common.Command;
 using Core.Common.Domain;
 using Core.Common.EventBus;
+using Core.Common.RequestStatusSender;
 using Core.Query.EventHandlers;
 using FluentAssertions;
 using Infrastructure;
@@ -31,10 +32,13 @@ namespace IntegrationTests
 
         public CommandContext CommandContext { get; set; }
 
-        public TestAppEvent(Event @event, CommandContext commandContext)
+        public ReadModelNotificationsMode ReadModelNotifications { get; set; }
+
+        public TestAppEvent(Event @event, CommandContext commandContext, ReadModelNotificationsMode consistencyMode)
         {
             Event = @event;
             CommandContext = commandContext;
+            ReadModelNotifications = consistencyMode;
         }
     }
 
@@ -43,7 +47,7 @@ namespace IntegrationTests
         private Action<IAppEvent<TestEvent>> OnConsume;
         public bool Throws { get; set; }
 
-        public TestHandler(IAppEventBuilder appEventBuilder, Action<IAppEvent<TestEvent>> onConsume) : base(appEventBuilder, Mock.Of<ILogger<TestHandler>>())
+        public TestHandler(IAppEventBuilder appEventBuilder, Action<IAppEvent<TestEvent>> onConsume) : base(appEventBuilder, Mock.Of<ILogger<TestHandler>>(), () => Mock.Of<ISagaNotifications>(), () => Mock.Of<IReadModelNotifications>())
         {
             OnConsume = onConsume;
         }
@@ -110,7 +114,7 @@ namespace IntegrationTests
             }, Mock.Of<ILogger<RabbitMqEventBus>>());
 
             var ctx = CommandContext.CreateNew(Guid.NewGuid(), "test");
-            var toPublish = new TestAppEvent(new TestEvent(), ctx);
+            var toPublish = new TestAppEvent(new TestEvent(), ctx, ReadModelNotificationsMode.Immediate);
 
             var handler = new TestHandler(new AppEventRabbitMQBuilder(), (ev) =>
             {
@@ -154,7 +158,7 @@ namespace IntegrationTests
             var ctx = CommandContext.CreateNew(Guid.NewGuid(), nameof(TestCommandBase));
             ctx.CorrelationId = new CorrelationId("123");
             var cmd = new AppCommand<TestCommandBase> { Command = new TestCommandBase(), CommandContext = ctx };
-            var toPublish = new TestAppEvent(new TestEvent(), ctx);
+            var toPublish = new TestAppEvent(new TestEvent(), ctx, ReadModelNotificationsMode.Immediate);
             var checkSuccess = false;
             var rollbackHandler = new TestCommandRollbackHandler(new Action<IAppEvent<Event>>(ev =>
             {

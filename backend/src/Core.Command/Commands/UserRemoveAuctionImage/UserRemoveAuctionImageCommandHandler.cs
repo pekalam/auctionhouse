@@ -39,14 +39,15 @@ namespace Core.Command.Commands.UserRemoveAuctionImage
 
 
             _auctionRepository.UpdateAuction(auction);
-            _eventBusService.Publish(auction.PendingEvents, request.CommandContext);
+            _eventBusService.Publish(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
         }
 
         protected override Task<RequestStatus> HandleCommand(AppCommand<UserRemoveAuctionImageCommand> request,
             CancellationToken cancellationToken)
         {
             AuctionLock.Lock(request.Command.AuctionId);
-            var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
+            var response = RequestStatus.CreatePending(request.CommandContext);
+            response.MarkAsCompleted();
             try
             {
                 RemoveAuctionImage(request, cancellationToken);

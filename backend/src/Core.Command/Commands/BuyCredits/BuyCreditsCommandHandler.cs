@@ -71,11 +71,10 @@ namespace Core.Command.Commands.BuyCredits
 
             user.AddCredits(request.Command.Ammount);
             _userRepository.UpdateUser(user);
-            _eventBusService.Publish(user.PendingEvents, request.CommandContext);
+            _eventBusService.Publish(user.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
             user.MarkPendingEventsAsHandled();
 
-            var status = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.PENDING);
-            return Task.FromResult(status);
+            return Task.FromResult(RequestStatus.CreatePending(request.CommandContext));
         }
     }
 }

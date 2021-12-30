@@ -31,11 +31,13 @@ namespace Core.Command.Commands.SignIn
             {
                 if (authData.Password.Equals(request.Command.Password))
                 {
-                    var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED, new Dictionary<string, object>()
+                    var response = RequestStatus.CreatePending(request.CommandContext);
+                    response.SetExtraData(new Dictionary<string, object>()
                     {
                         {"UserId", authData.UserId},
                         {"Username", authData.UserName}
                     });
+                    response.MarkAsCompleted();
                     return Task.FromResult(response);
                 }
                 else

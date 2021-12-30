@@ -47,7 +47,7 @@ namespace UnitTests.HTTPMemQueuedStorage
             var requestStatus1 = new RequestStatus(Status.PENDING);
             _commandStatusStorage.SaveStatus(requestStatus1, cmd);
 
-            var upd = new RequestStatus(requestStatus1.CommandId, Status.COMPLETED);
+            var upd = new RequestStatus((CommandId)requestStatus1.CommandId, Status.COMPLETED);
             cmd.Param = 100;
             _commandStatusStorage.UpdateCommandStatus(upd, cmd);
 

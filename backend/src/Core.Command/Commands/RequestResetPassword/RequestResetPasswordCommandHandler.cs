@@ -59,7 +59,8 @@ namespace Core.Command.Commands.ResetPassword
 
             _linkSenderService.SendResetLink(resetCode.ResetCode, userAuthData.UserName, userAuthData.Email);
 
-            var requestStatus = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
+            var requestStatus = RequestStatus.CreatePending(request.CommandContext);
+            requestStatus.MarkAsCompleted();
             return Task.FromResult(requestStatus);
         }
     }

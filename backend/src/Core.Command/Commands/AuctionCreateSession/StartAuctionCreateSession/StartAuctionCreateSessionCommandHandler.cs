@@ -35,8 +35,9 @@ namespace Core.Command.Commands.AuctionCreateSession.StartAuctionCreateSession
                 session = Common.Domain.AuctionCreateSession.AuctionCreateSession.CreateSession(request.CommandContext.User);
                 _auctionCreateSessionService.SaveSession(session);
             }
-
-            return Task.FromResult(RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED));
+            var requestStatus = RequestStatus.CreatePending(request.CommandContext);
+            requestStatus.MarkAsCompleted();
+            return Task.FromResult(requestStatus);
         }
     }
 }

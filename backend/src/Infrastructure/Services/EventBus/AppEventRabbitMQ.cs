@@ -10,11 +10,13 @@ namespace Infrastructure.Services.EventBus
     {
         public CommandContext CommandContext { get; }
         public T Event { get; }
+        public ReadModelNotificationsMode ReadModelNotifications { get; }
 
-        public AppEventRabbitMQ(T @event, CommandContext commandContext)
+        public AppEventRabbitMQ(CommandContext commandContext, T @event, ReadModelNotificationsMode consistencyMode)
         {
-            Event = @event;
             CommandContext = commandContext;
+            Event = @event;
+            ReadModelNotifications = consistencyMode;
         }
     }
 }

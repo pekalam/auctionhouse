@@ -33,7 +33,8 @@ namespace Core.Command.Commands.ChangePassword
             _authenticationDataRepository.UpdateUserAuth(userAuthData);
 
             _logger.LogDebug("User {user} has changed password", request.Command.SignedInUser);
-            var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
+            var response = RequestStatus.CreatePending(request.CommandContext);
+            response.MarkAsCompleted();
             return Task.FromResult(response);
         }
     }

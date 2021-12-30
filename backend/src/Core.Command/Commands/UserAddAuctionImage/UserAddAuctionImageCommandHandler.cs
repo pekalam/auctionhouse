@@ -61,7 +61,7 @@ namespace Core.Command.Commands.UserAddAuctionImage
             _auctionRepository.UpdateAuction(auction);
             try
             {
-                _eventBusService.Publish(auction.PendingEvents, request.CommandContext);
+                _eventBusService.Publish(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
             }
             catch (Exception e)
             {
@@ -75,7 +75,8 @@ namespace Core.Command.Commands.UserAddAuctionImage
             CancellationToken cancellationToken)
         {
             AuctionLock.Lock(request.Command.AuctionId);
-            var response = RequestStatus.CreateFromCommandContext(request.CommandContext, Status.COMPLETED);
+            var response = RequestStatus.CreatePending(request.CommandContext);
+            response.MarkAsCompleted();
             try
             {
                 AddImage(request, cancellationToken);

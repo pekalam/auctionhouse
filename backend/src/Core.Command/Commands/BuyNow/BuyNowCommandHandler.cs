@@ -67,9 +67,9 @@ namespace Core.Command.Commands.BuyNow
             _logger.LogDebug($"User {request.Command.SignedInUser} is buying auction {request.Command.AuctionId}");
 
             await auction.Buy(new Common.Domain.Auctions.UserId(request.Command.SignedInUser.Value), "test", _auctionPaymentVerification);
-            _eventBusService.Publish(auction.PendingEvents, request.CommandContext);
+            _eventBusService.Publish(auction.PendingEvents, request.CommandContext, Common.EventBus.ReadModelNotificationsMode.Immediate);
 
-            return RequestStatus.CreateFromCommandContext(request.CommandContext, Status.PENDING);
+            return RequestStatus.CreatePending(request.CommandContext);
         }
     }
 }

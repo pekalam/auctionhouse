@@ -53,9 +53,8 @@ namespace IntegrationTests
 
             var mockUserIdentityService = MockUserIdentityService(signedInUser);
             var mockMediatr = MockMediatR(queuedCmd);
-            var mockRequestStatusService = new Mock<IRequestStatusSender>();
 
-            var mockWSQueuedCommandHandler = new Mock<WSQueuedCommandHandler>(mockRequestStatusService.Object, mockMediatr.Object, Mock.Of<ILogger<WSQueuedCommandHandler>>());
+            var mockWSQueuedCommandHandler = new Mock<WSQueuedCommandHandler>(mockMediatr.Object, Mock.Of<ILogger<WSQueuedCommandHandler>>());
             mockWSQueuedCommandHandler.Setup(handler => handler.Handle(It.IsAny<QueuedCommand>()))
                 .Callback(() => sem.Release())
                 .CallBase();
@@ -67,10 +66,6 @@ namespace IntegrationTests
             RabbitMqEventBusTestUtils.QueuedCommandBus.Value.Publish<TestQueuedCommand>(queuedCmd);
 
             if (!sem.Wait(TimeSpan.FromSeconds(60))) { Assert.Fail(); };
-
-            mockRequestStatusService.Verify(service => service.TrySendRequestCompletionToUser(
-                appCmd.CommandContext.Name, It.Is<CommandId>(c => c.Id == appCmd.CommandContext.CommandId.Id), appCmd.CommandContext.User, null
-            ), Times.Once());
         }
 
         private static Mock<IImplProvider> MockWSImplProvider(Mock<IUserIdentityService> mockUserIdentityService, Mock<WSQueuedCommandHandler> testQueuedCommandHandler)
@@ -94,9 +89,8 @@ namespace IntegrationTests
             var sem = new SemaphoreSlim(0, 2);
 
             var mockUserIdentityService = MockUserIdentityService(signedInUser);
-            var mockQueuedCommandStatusStorage = MockQueuedCommandStatusStorage(sem);
             var mockMediatr = MockMediatR(queuedCmd);
-            Mock<HTTPQueuedCommandHandler> mockQueuedCommandHandler = MockQueuedCommandHandler(sem, mockQueuedCommandStatusStorage, mockMediatr);
+            Mock<HTTPQueuedCommandHandler> mockQueuedCommandHandler = MockQueuedCommandHandler(sem, mockMediatr);
             var mockImplProvider = MockImplProvider(mockUserIdentityService, mockQueuedCommandHandler);
 
             RabbitMqEventBusTestUtils.QueuedCommandBus.Value.CancelCommandSubscriptions();
@@ -113,8 +107,6 @@ namespace IntegrationTests
             {
                 Assert.Fail();
             }
-            mockQueuedCommandStatusStorage
-                .Verify(storage => storage.UpdateCommandStatus(It.IsAny<RequestStatus>(), It.IsAny<CommandId>()), Times.Once());
             mockMediatr.Verify(m => m.Send(It.IsAny<IRequest<RequestStatus>>(), It.IsAny<CancellationToken>()), Times.Once());
             mockQueuedCommandHandler.Verify(m => m.Handle(It.IsAny<QueuedCommand>()), Times.Once());
             Assert.AreEqual(0, sem.CurrentCount);
@@ -138,10 +130,9 @@ namespace IntegrationTests
             return UserId.New();
         }
 
-        private static Mock<HTTPQueuedCommandHandler> MockQueuedCommandHandler(SemaphoreSlim sem, Mock<IHTTPQueuedCommandStatusStorage> mockQueuedCommandStatusStorage, Mock<IMediator> mediatrMock)
+        private static Mock<HTTPQueuedCommandHandler> MockQueuedCommandHandler(SemaphoreSlim sem, Mock<IMediator> mediatrMock)
         {
             var testQueuedCommandHandler = new Mock<HTTPQueuedCommandHandler>(
-                            mockQueuedCommandStatusStorage.Object,
                             mediatrMock.Object,
                             Mock.Of<ILogger<HTTPQueuedCommandHandler>>()
                         );
@@ -176,15 +167,6 @@ namespace IntegrationTests
             var mockUserIdentityService = new Mock<IUserIdentityService>();
             mockUserIdentityService.Setup(service => service.GetSignedInUserIdentity()).Returns(signedInUser);
             return mockUserIdentityService;
-        }
-
-        private static Mock<IHTTPQueuedCommandStatusStorage> MockQueuedCommandStatusStorage(SemaphoreSlim sem)
-        {
-            var mockQueuedCommandStatusStorage = new Mock<IHTTPQueuedCommandStatusStorage>();
-            mockQueuedCommandStatusStorage
-                .Setup(storage => storage.UpdateCommandStatus(It.IsAny<RequestStatus>(), It.IsAny<CommandId>()))
-                .Callback(() => sem.Release());
-            return mockQueuedCommandStatusStorage;
         }
     }
 }
