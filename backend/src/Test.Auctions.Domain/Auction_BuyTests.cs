@@ -1,13 +1,12 @@
-using Core.Common.Domain.Auctions;
-using Core.Common.Domain.Auctions.Services;
-using Core.Common.Domain.Categories;
-using Core.Common.Domain.Products;
-using Core.Common.Exceptions;
+using Auctions.Domain;
+using Auctions.Domain.Services;
+using Core.DomainFramework;
 using FluentAssertions;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
+using static Auctions.DomainEvents.Events.V1;
 using static Test.Auctions.Domain.AuctionTestConstants;
 
 namespace Test.Auctions.Domain
@@ -60,7 +59,7 @@ namespace Test.Auctions.Domain
                 .SetEndDate(DateTime.UtcNow.AddDays(5))
                 .SetOwner(UserId.New())
                 .SetProduct(new Product(PRODUCT_NAME, PRODUCT_DESCRIPTION, Condition.New))
-                .SetCategory(new Category(CATEGORY_NAME, CATEGORY_ID))
+                .SetCategory(CATEGORY_ID)
                 .SetBuyNowOnly(false)
                 .SetTags(new[] { TAG_1 })
                 .SetName(NAME)
@@ -100,7 +99,7 @@ namespace Test.Auctions.Domain
             var (auction, auctionPaymentVerificationScenario, buyerId) = await CreateAndBuyAuction();
 
             auction.PendingEvents.Count.Should().Be(1);
-            var txStartedEvent = auction.PendingEvents.First() as Core.Common.Domain.Auctions.Events.BuyNowTX.Events.V1.BuyNowTXStarted;
+            var txStartedEvent = auction.PendingEvents.First() as BuyNowTXStarted;
             txStartedEvent.Should().NotBeNull();
             auction.LockIssuer.Should().Be(buyerId);
             txStartedEvent.AuctionId.Should().Be(auction.AggregateId);
@@ -114,13 +113,13 @@ namespace Test.Auctions.Domain
         public async Task Can_confirm_buy_and_emits_tx_success()
         {
             var (auction, auctionPaymentVerificationScenario, buyerId) = await CreateAndBuyAuction();
-            var txStartedEvent = auction.PendingEvents.First() as Core.Common.Domain.Auctions.Events.BuyNowTX.Events.V1.BuyNowTXStarted;
+            var txStartedEvent = auction.PendingEvents.First() as BuyNowTXStarted;
 
             auction.MarkPendingEventsAsHandled();
             auction.ConfirmBuy(txStartedEvent.TransactionId).Should().BeTrue();
 
             auction.PendingEvents.Count.Should().Be(1);
-            auction.PendingEvents.First().Should().BeOfType<Core.Common.Domain.Auctions.Events.BuyNowTX.Events.V1.BuyNowTXSuccess>();
+            auction.PendingEvents.First().Should().BeOfType<BuyNowTXSuccess>();
             auction.Completed.Should().BeTrue();
         }
 
@@ -133,7 +132,7 @@ namespace Test.Auctions.Domain
             auction.ConfirmBuy(Guid.NewGuid()).Should().BeFalse();
 
             auction.PendingEvents.Count.Should().Be(1);
-            auction.PendingEvents.First().Should().BeOfType<Core.Common.Domain.Auctions.Events.BuyNowTX.Events.V1.BuyNowTXFailed>();
+            auction.PendingEvents.First().Should().BeOfType<BuyNowTXFailed>();
             auction.Completed.Should().BeFalse();
         }
     }

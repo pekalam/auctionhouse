@@ -142,9 +142,9 @@ namespace Auctions.Domain
                 ProductName = auctionArgs.Product.Name,
                 ProductDescription = auctionArgs.Product.Description,
                 StartDate = auctionArgs.StartDate,
-                AuctionImagesSize1Id = auctionArgs.AuctionImages.Select(i => i.Size1Id).ToArray(),
-                AuctionImagesSize2Id = auctionArgs.AuctionImages.Select(i => i.Size2Id).ToArray(),
-                AuctionImagesSize3Id = auctionArgs.AuctionImages.Select(i => i.Size3Id).ToArray(),
+                AuctionImagesSize1Id = auctionArgs.AuctionImages.Select(i => i?.Size1Id).ToArray(),
+                AuctionImagesSize2Id = auctionArgs.AuctionImages.Select(i => i?.Size2Id).ToArray(),
+                AuctionImagesSize3Id = auctionArgs.AuctionImages.Select(i => i?.Size3Id).ToArray(),
             });
         }
 
@@ -182,7 +182,7 @@ namespace Auctions.Domain
                 var i = 0;
                 foreach (var img in auctionArgs.AuctionImages)
                 {
-                    if (img != null)
+                    if (img is not null)
                     {
                         _auctionImages[i++] = img;
                     }

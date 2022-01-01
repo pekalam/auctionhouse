@@ -6,7 +6,7 @@ namespace Auctions.Domain
     {
         public BuyNowPrice BuyNowPrice { get; set; } = null!;
         public bool BuyNowOnly { get; set; }
-        public AuctionImage?[] AuctionImages { get; set; } = null!;
+        public AuctionImage?[] AuctionImages { get; set; } = new AuctionImage[0]; //passing is not required
         public AuctionDate StartDate { get; set; } = null!;
         public AuctionDate EndDate { get; set; } = null!;
         public UserId Owner { get; set; } = null!;
@@ -28,7 +28,8 @@ namespace Auctions.Domain
                     args.Owner == null ||
                     args.Category == null ||
                     args.Tags == null ||
-                    args.Name == null
+                    args.Name == null ||
+                    args.AuctionImages == null
                 )
                 {
                     throw new DomainException("Invalid auctionArgs");
