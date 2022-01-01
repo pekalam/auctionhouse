@@ -103,7 +103,7 @@ namespace Auctions.Domain
         public UserId Owner { get; private set; }
         public Product Product { get; private set; }
         public UserId Buyer { get; private set; } = UserId.Empty;
-        public CategoryId Category { get; private set; }
+        public CategoryId[] Categories { get; private set; }
         public bool Completed { get; private set; }
         public bool Canceled { get; private set; }
         public Tag[] Tags { get; private set; }
@@ -135,7 +135,7 @@ namespace Auctions.Domain
                 Name = auctionArgs.Name,
                 BuyNowOnly = auctionArgs.BuyNowOnly,
                 BuyNowPrice = auctionArgs.BuyNowPrice,
-                Category = auctionArgs.Category,
+                Category = auctionArgs.Categories.Select(i => (int)i).ToArray(),
                 EndDate = auctionArgs.EndDate,
                 Owner = auctionArgs.Owner,
                 ProductCondition = (int)auctionArgs.Product.Condition,
@@ -160,7 +160,7 @@ namespace Auctions.Domain
             EndDate = auctionArgs.EndDate;
             Owner = auctionArgs.Owner;
             Product = auctionArgs.Product;
-            Category = auctionArgs.Category;
+            Categories = auctionArgs.Categories;
             BuyNowOnly = auctionArgs.BuyNowOnly;
             Name = auctionArgs.Name;
             if (auctionArgs.Tags.Length < MIN_TAGS)
@@ -388,11 +388,11 @@ namespace Auctions.Domain
             AddUpdateEvent(new AuctionEndDateChanged(AggregateId, newEndDate));
         }
 
-        public void UpdateCategory(CategoryId category)
+        public void UpdateCategories(CategoryId[] category)
         {
-            if (category.Equals(Category)) { return; }
-            Category = category;
-            AddUpdateEvent(new AuctionCategoryChanged(AggregateId, category));
+            if (category.Equals(Categories)) { return; }
+            Categories = category;
+            AddUpdateEvent(new AuctionCategoriesChanged(AggregateId, category.Select(c => (int)c).ToArray()));
         }
 
         public void UpdateName(AuctionName name)

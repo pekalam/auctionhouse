@@ -34,7 +34,7 @@ namespace Auctions.Domain
                 @event.AuctionImagesSize2Id[i], @event.AuctionImagesSize3Id[i])).ToArray(),
                 BuyNowOnly = @event.BuyNowOnly,
                 BuyNowPrice = @event.BuyNowPrice,
-                Category = @event.Category,
+                Categories = @event.Category.Select(c => new CategoryId(c)).ToArray(),
                 EndDate = @event.EndDate,
                 Name = @event.Name,
                 Owner = @event.Owner,
@@ -53,7 +53,7 @@ namespace Auctions.Domain
         private void ApplyEvent(AuctionUpdateEventGroup group) => group.UpdateEvents.ForEach(ev => Apply(ev));
         private void ApplyEvent(AuctionEndDateChanged ev) => UpdateEndDate(ev.Date);
         private void ApplyEvent(AuctionTagsChanged ev) => UpdateTags(ev.Tags.Select(t => new Tag(t)).ToArray());
-        private void ApplyEvent(AuctionCategoryChanged ev) => UpdateCategory(ev.Category);
+        private void ApplyEvent(AuctionCategoriesChanged ev) => UpdateCategories(ev.Categories.Select(c => new CategoryId(c)).ToArray());
         private void ApplyEvent(AuctionNameChanged ev) => UpdateName(ev.AuctionName);
         private void ApplyEvent(AuctionDescriptionChanged ev) => UpdateDescription(ev.Description);
 

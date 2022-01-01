@@ -43,28 +43,35 @@ namespace Test.Auctions.Domain
         public const string PRODUCT_NAME = "test_name";
         public const string PRODUCT_DESCRIPTION = "desccription 1111";
         public const string CATEGORY_NAME = "test";
-        public const int CATEGORY_ID = 0;
+        public static readonly string[] CATEGORY_IDS = new string[3] {"1","2","3"};
         public const string TAG_1 = "tag1";
         public const string NAME = "Test name";
         public const decimal BUY_NOW_PRICE = 90.0m;
+    }
+
+    internal class TestConvertCategoryNamesToRootToLeafIds : IConvertCategoryNamesToRootToLeafIds
+    {
+        public Task<CategoryId[]> ConvertNames(string[] categoryNames)
+        {
+            return Task.FromResult(CATEGORY_IDS.Select(c => new CategoryId(Convert.ToInt32(c))).ToArray());
+        }
     }
 
     public class GivenAuction
     {
         public Auction ValidOfTypeBuyNowAndBid()
         {
-            var auctionArgs = new AuctionArgs.Builder()
+            var auctionArgsBuilder = new AuctionArgs.Builder()
                 .SetBuyNow(BUY_NOW_PRICE)
                 .SetStartDate(DateTime.UtcNow.AddMinutes(20))
                 .SetEndDate(DateTime.UtcNow.AddDays(5))
                 .SetOwner(UserId.New())
                 .SetProduct(new Product(PRODUCT_NAME, PRODUCT_DESCRIPTION, Condition.New))
-                .SetCategory(CATEGORY_ID)
                 .SetBuyNowOnly(false)
                 .SetTags(new[] { TAG_1 })
-                .SetName(NAME)
-                .Build();
-            return new Auction(auctionArgs);
+                .SetName(NAME);
+            auctionArgsBuilder.SetCategories(CATEGORY_IDS, new TestConvertCategoryNamesToRootToLeafIds()).GetAwaiter().GetResult();
+            return new Auction(auctionArgsBuilder.Build());
         }
     }
 

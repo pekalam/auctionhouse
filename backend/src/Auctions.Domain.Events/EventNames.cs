@@ -17,7 +17,7 @@
         public const string AuctionBuyNowPriceChanged = "auctionBuyNowPriceChanged";
         public const string AuctionTagsChanged = "auctionTagsChanged";
         public const string AuctionEndDateChanged = "auctionEndDateChanged";
-        public const string AuctionCategoryChanged = "auctionCategoryChanged";
+        public const string AuctionCategoriesChanged = "auctionCategoriesChanged";
         public const string AuctionNameChanged = "auctionNameChanged";
         public const string AuctionUpdated = "auctionUpdateEventGroup";
         public const string AuctionDescriptionChanged = "auctionDescriptionChanged";

@@ -1,4 +1,5 @@
-﻿using Core.DomainFramework;
+﻿using Auctions.Domain.Services;
+using Core.DomainFramework;
 
 namespace Auctions.Domain
 {
@@ -11,7 +12,7 @@ namespace Auctions.Domain
         public AuctionDate EndDate { get; set; } = null!;
         public UserId Owner { get; set; } = null!;
         public Product Product { get; set; } = null!;
-        public CategoryId Category { get; set; } = null!;
+        public CategoryId[] Categories { get; set; } = null!;
         public Tag[] Tags { get; set; } = null!;
         public AuctionName Name { get; set; } = null!;
 
@@ -26,10 +27,10 @@ namespace Auctions.Domain
                     args.StartDate == null ||
                     args.EndDate == null ||
                     args.Owner == null ||
-                    args.Category == null ||
                     args.Tags == null ||
                     args.Name == null ||
-                    args.AuctionImages == null
+                    args.AuctionImages == null ||
+                    args.Categories == null || args.Categories.Length != 3
                 )
                 {
                     throw new DomainException("Invalid auctionArgs");
@@ -88,9 +89,9 @@ namespace Auctions.Domain
                 return this;
             }
 
-            public Builder SetCategory(CategoryId category)
+            public async Task<Builder> SetCategories(string[] categoryNames, IConvertCategoryNamesToRootToLeafIds convertCategoryNamesToIds)
             {
-                args.Category = category;
+                args.Categories = await convertCategoryNamesToIds.ConvertNames(categoryNames);
                 return this;
             }
 

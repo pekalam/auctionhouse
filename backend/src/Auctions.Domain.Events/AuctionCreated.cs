@@ -16,7 +16,7 @@ namespace Auctions.DomainEvents
         public string ProductName { get; set; } 
         public string ProductDescription { get; set; } 
         public int ProductCondition { get; set; } 
-        public int Category { get; set; } 
+        public int[] Category { get; set; } 
         public string[] Tags { get; set; } 
         public string Name { get; set; } 
 
