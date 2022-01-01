@@ -1,4 +1,7 @@
-﻿using Common.Application.Commands;
+﻿using Auctions.Domain.Repositories;
+using Auctions.Domain.Services;
+using Common.Application;
+using Common.Application.Commands;
 using Common.Application.Events;
 using Microsoft.Extensions.Logging;
 
@@ -24,54 +27,48 @@ namespace Auctions.Application.Commands.UserAddAuctionImage
 
         private void AddImage(AppCommand<UserAddAuctionImageCommand> request, CancellationToken cancellationToken)
         {
-            var auction = _auctionRepository.FindAuction(request.Command.AuctionId);
-            if (auction == null)
-            {
-                throw new CommandException($"Cannot find auction {request.Command.AuctionId}");
-            }
+            //var auction = _auctionRepository.FindAuction(request.Command.AuctionId);
+            //if (auction == null)
+            //{
+            //    throw new InvalidOperationException($"Cannot find auction {request.Command.AuctionId}");
+            //}
 
-            if (!auction.Owner.Equals(request.Command.SignedInUser))
-            {
-                throw new CommandException(
-                    $"User {request.Command.SignedInUser} cannot modify auction ${auction.AggregateId}");
-            }
+            //if (!auction.Owner.Equals(request.Command.SignedInUser))
+            //{
+            //    throw new CommandException(
+            //        $"User {request.Command.SignedInUser} cannot modify auction ${auction.AggregateId}");
+            //}
 
-            var file = File.ReadAllBytes(request.Command.TempPath);
-            File.Delete(request.Command.TempPath);
+            //var file = File.ReadAllBytes(request.Command.TempPath);
+            //File.Delete(request.Command.TempPath);
 
-            var img = new AuctionImageRepresentation(new AuctionImageMetadata(request.Command.Extension), file);
+            //var img = new AuctionImageRepresentation(new AuctionImageMetadata(request.Command.Extension), file);
 
-            var newImg = _auctionImageService.AddAuctionImage(img);
+            //var newImg = _auctionImageService.AddAuctionImage(img);
 
-            auction.AddImage(newImg);
+            //auction.AddImage(newImg);
 
-            _auctionRepository.UpdateAuction(auction);
-            try
-            {
-                _eventBusService.Publish(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
-            }
-            catch (Exception e)
-            {
-                _logger.LogWarning(e, "Error while trying to publish events");
-                _auctionImageService.RemoveAuctionImage(newImg);
-                throw;
-            }
+            //_auctionRepository.UpdateAuction(auction);
+            //try
+            //{
+            //    _eventBusService.Publish(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
+            //}
+            //catch (Exception e)
+            //{
+            //    _logger.LogWarning(e, "Error while trying to publish events");
+            //    _auctionImageService.RemoveAuctionImage(newImg);
+            //    throw;
+            //}
         }
 
         protected override Task<RequestStatus> HandleCommand(AppCommand<UserAddAuctionImageCommand> request,
             CancellationToken cancellationToken)
         {
-            AuctionLock.Lock(request.Command.AuctionId);
             var response = RequestStatus.CreatePending(request.CommandContext);
             response.MarkAsCompleted();
-            try
-            {
-                AddImage(request, cancellationToken);
-            }
-            finally
-            {
-                AuctionLock.ReleaseLock(request.Command.AuctionId);
-            }
+            AddImage(request, cancellationToken);
+
+
 
 
             return Task.FromResult(response);

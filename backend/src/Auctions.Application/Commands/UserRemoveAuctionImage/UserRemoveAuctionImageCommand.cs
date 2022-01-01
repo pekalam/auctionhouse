@@ -1,4 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Auctions.Domain;
+using Common.Application.Commands;
+using Common.Application.Commands.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace Auctions.Application.Commands.UserRemoveAuctionImage
 {

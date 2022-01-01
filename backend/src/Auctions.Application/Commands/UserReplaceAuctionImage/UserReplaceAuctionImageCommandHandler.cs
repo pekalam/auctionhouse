@@ -1,4 +1,8 @@
-﻿using Common.Application.Commands;
+﻿using Auctions.Domain;
+using Auctions.Domain.Repositories;
+using Auctions.Domain.Services;
+using Common.Application;
+using Common.Application.Commands;
 using Common.Application.Events;
 using Microsoft.Extensions.Logging;
 
@@ -26,7 +30,7 @@ namespace Auctions.Application.Commands.UserReplaceAuctionImage
             var auction = _auctionRepository.FindAuction(request.Command.AuctionId);
             if (auction == null)
             {
-                throw new CommandException($"Cannot find auction {request.Command.AuctionId}");
+                throw new InvalidOperationException($"Cannot find auction {request.Command.AuctionId}");
             }
 
             var file = File.ReadAllBytes(request.Command.TempPath);
@@ -53,16 +57,9 @@ namespace Auctions.Application.Commands.UserReplaceAuctionImage
         protected override Task<RequestStatus> HandleCommand(AppCommand<UserReplaceAuctionImageCommand> request,
             CancellationToken cancellationToken)
         {
-            AuctionLock.Lock(request.Command.AuctionId);
             var response = RequestStatus.CreatePending(request.CommandContext);
-            try
-            {
-                ReplaceAuctionImage(request);
-            }
-            finally
-            {
-                AuctionLock.ReleaseLock(request.Command.AuctionId);
-            }
+            ReplaceAuctionImage(request);
+
 
 
             return Task.FromResult(response);

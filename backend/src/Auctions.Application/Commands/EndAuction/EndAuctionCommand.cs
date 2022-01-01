@@ -1,10 +1,9 @@
-﻿using System;
-using Core.Command.Exceptions;
-using Core.Common.Command;
+﻿using Common.Application.Commands;
 
 namespace Core.Command.Commands.EndAuction
 {
-    public class EndAuctionCommand : ICommand    {
+    public class EndAuctionCommand : ICommand
+    {
         public Guid AuctionId { get; }
 
         public EndAuctionCommand(Guid auctionId)

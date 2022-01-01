@@ -1,11 +1,6 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Core.Command.Handler;
-using Core.Command.Mediator;
-using Core.Common;
-using Core.Common.ApplicationServices;
-using Core.Common.Command;
-using Core.Common.Domain.Auctions;
+﻿using Auctions.Domain.Repositories;
+using Common.Application;
+using Common.Application.Commands;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Command.Commands.EndAuction
@@ -13,14 +8,11 @@ namespace Core.Command.Commands.EndAuction
     public class EndAuctionCommandHandler : CommandHandlerBase<EndAuctionCommand>
     {
         private readonly IAuctionRepository _auctionRepository;
-        private readonly EventBusService _eventBusService;
         private readonly ILogger<EndAuctionCommandHandler> _logger;
 
-        public EndAuctionCommandHandler(IAuctionRepository auctionRepository, EventBusService eventBusService,
-            ILogger<EndAuctionCommandHandler> logger) : base(logger)
+        public EndAuctionCommandHandler(IAuctionRepository auctionRepository, ILogger<EndAuctionCommandHandler> logger) : base(logger)
         {
             _auctionRepository = auctionRepository;
-            _eventBusService = eventBusService;
             _logger = logger;
         }
 

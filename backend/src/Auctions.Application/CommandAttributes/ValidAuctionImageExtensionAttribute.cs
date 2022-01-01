@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Auctions.Domain;
+using System.ComponentModel.DataAnnotations;
 
 namespace Auctions.Application.CommandAttributes
 {

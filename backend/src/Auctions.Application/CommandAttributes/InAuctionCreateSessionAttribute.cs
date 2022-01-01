@@ -20,17 +20,12 @@ namespace Auctions.Application.CommandAttributes
 
         public int Order => 1;
 
-        static InAuctionCreateSessionAttribute()
-        {
-            LoadAuctionCreateSessionCommandMembers("Core.Command");
-        }
-
-        internal static void LoadAuctionCreateSessionCommandMembers(params string[] assemblyNames)
+        public static void LoadAuctionCreateSessionCommandMembers(params string[] assemblyNames)
         {
             var commandMembers = assemblyNames.Select(s => Assembly.Load(s))
                 .Select(assembly =>
                     assembly.GetTypes()
-                        .Where(type => type.BaseType == typeof(ICommand))
+                        .Where(type => type.GetInterfaces().Contains(typeof(ICommand)))
                         .Select(type => type.GetProperties())
                         .SelectMany(infos => infos)
                         .Where(info =>

@@ -1,4 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Auctions.Application.CommandAttributes;
+using Common.Application.Commands;
+using Common.Application.Commands.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace Auctions.Application.Commands.UserAddAuctionImage
 {
@@ -20,7 +23,7 @@ namespace Auctions.Application.Commands.UserAddAuctionImage
         public string Extension { get; }
 
         [SignedInUser]
-        public Core.Common.Domain.Users.UserId SignedInUser { get; set; }
+        public Guid SignedInUser { get; set; }
 
         public UserAddAuctionImageCommand(Guid auctionId, IFileStreamAccessor img, string extension)
         {
