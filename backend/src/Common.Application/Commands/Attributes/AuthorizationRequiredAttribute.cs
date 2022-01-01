@@ -1,9 +1,6 @@
-﻿using Common.Application.Commands;
-using Common.Application.Queries;
+﻿using Common.Application.Queries;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Test.UnitTests")]
 namespace Common.Application.Commands.Attributes
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
@@ -12,17 +9,12 @@ namespace Common.Application.Commands.Attributes
         internal static Dictionary<Type, PropertyInfo> _signedInUserCommandProperties;
         internal static Dictionary<Type, PropertyInfo> _signedInUserQueryProperties;
 
-        static AuthorizationRequiredAttribute()
-        {
-            LoadSignedInUserCmdAndQueryMembers("Core.Command", "Core.Query");
-        }
-
-        internal static void LoadSignedInUserCmdAndQueryMembers(params string[] assemblyNames)
+        public static void LoadSignedInUserCmdAndQueryMembers(params string[] assemblyNames)
         {
             var commandMembers = assemblyNames.Select(s => Assembly.Load(s))
                 .Select(assembly =>
                     assembly.GetTypes()
-                        .Where(type => type.BaseType == typeof(ICommand) || type.GetInterfaces().Contains(typeof(IQuery)))
+                        .Where(type => type.GetInterfaces().Contains(typeof(ICommand)) || type.GetInterfaces().Contains(typeof(IQuery)))
                         .Select(type => type.GetProperties())
                         .SelectMany(infos => infos)
                         .Where(info =>
@@ -44,11 +36,11 @@ namespace Common.Application.Commands.Attributes
             {
                 var interfaces = member.CmdOrQueryType.GetInterfaces();
 
-                if (member.CmdOrQueryType.BaseType == typeof(ICommand) && !interfaces.Contains(typeof(IQuery)))
+                if (interfaces.Contains(typeof(ICommand)) && !interfaces.Contains(typeof(IQuery)))
                 {
                     _signedInUserCommandProperties[member.CmdOrQueryType] = member.PropertyInfo;
                 }
-                else if (interfaces.Contains(typeof(IQuery)) && member.CmdOrQueryType.BaseType != typeof(ICommand))
+                else if (interfaces.Contains(typeof(IQuery)) && !interfaces.Contains(typeof(ICommand)))
                 {
                     _signedInUserQueryProperties[member.CmdOrQueryType] = member.PropertyInfo;
                 }
