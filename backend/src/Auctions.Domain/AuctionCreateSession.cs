@@ -1,7 +1,6 @@
-﻿using Core.Common.Domain.Auctions;
-using Core.DomainFramework;
+﻿using Core.DomainFramework;
 
-namespace Auctions.Domain.AuctionCreateSession
+namespace Auctions.Domain
 {
     public class AuctionCreateSession
     {

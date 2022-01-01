@@ -7,7 +7,7 @@ namespace Core.Common.Domain
     namespace Default
     {
         public abstract class AggregateRoot<T, U> : AggregateRoot<T, Guid, U>
-            where T : AggregateRoot<T, Guid, U>, new() where U : UpdateEventGroup<Guid>
+            where T : AggregateRoot<T, Guid, U>, new() where U : UpdateEventGroup
         {
 
         }
@@ -18,7 +18,7 @@ namespace Core.Common.Domain
         }
     }
 
-    public abstract class AggregateRoot<T, TId, U> : AggregateRoot<T, TId> where T : AggregateRoot<T, TId, U>, new() where U : UpdateEventGroup<TId>
+    public abstract class AggregateRoot<T, TId, U> : AggregateRoot<T, TId> where T : AggregateRoot<T, TId, U>, new() where U : UpdateEventGroup
     {
         private U _updateEventGroup = null;
 
@@ -30,7 +30,7 @@ namespace Core.Common.Domain
                 {
                     _updateEventGroup = CreateUpdateEventGroup();
                     _updateEventGroup.AggVersion = ++Version;
-                    _updateEventGroup.AggregateId = AggregateId;
+                    _updateEventGroup.AggregateId = Guid.Parse(AggregateId.ToString()); //TODO
                     _pendingEvents.Add(_updateEventGroup);
                 }
                 _updateEventGroup.Add(@event);
@@ -44,9 +44,9 @@ namespace Core.Common.Domain
     {
         static AggregateRoot()
         {
-            if (typeof(TId) == typeof(UpdateEventGroup<>))
+            if (typeof(TId) == typeof(UpdateEventGroup))
             {
-                throw new InvalidOperationException("Cannot pass UpdateEventGroup<> as type parameter. Use AggregateRoot from Default namespace");
+                throw new InvalidOperationException("Cannot pass UpdateEventGroup as type parameter. Use AggregateRoot from Default namespace");
             }
         }
 

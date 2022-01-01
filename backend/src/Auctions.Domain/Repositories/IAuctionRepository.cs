@@ -1,5 +1,4 @@
-﻿using Core.Common.Domain.Auctions;
-
+﻿
 namespace Auctions.Domain.Repositories
 {
     public interface IAuctionRepository

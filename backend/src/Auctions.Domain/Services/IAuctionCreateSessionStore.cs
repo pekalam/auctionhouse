@@ -1,4 +1,4 @@
-﻿namespace Auctions.Domain.AuctionCreateSession
+﻿namespace Auctions.Domain.Services
 {
     public interface IAuctionCreateSessionStore
     {

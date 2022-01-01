@@ -1,16 +1,16 @@
-using Auctions.Domain;
-using Auctions.Domain.Events;
-using Auctions.Domain.Events.Update;
 using Auctions.Domain.Services;
+using Auctions.DomainEvents;
+using Auctions.DomainEvents.Update;
+using Core.Common.Domain;
 using Core.DomainFramework;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Test.IntegrationTests")]
 [assembly: InternalsVisibleTo("Test.DomainModelTests")]
-namespace Core.Common.Domain.Auctions
+namespace Auctions.Domain
 {
 
-    internal static class AuctionConstantsFactory
+    public static class AuctionConstantsFactory
     {
         public const int DEFAULT_MAX_IMAGES = 6;
         public const int DEFAULT_MAX_TODAY_MIN_OFFSET = 15;
@@ -128,7 +128,24 @@ namespace Core.Common.Domain.Auctions
         {
             Create(auctionArgs, true);
             AggregateId = AuctionId.New();
-            AddEvent(new AuctionCreated(AggregateId, auctionArgs));
+            AddEvent(new AuctionCreated(AggregateId)
+            {
+                Tags = auctionArgs.Tags.Select(t => t.Value).ToArray(),
+                AggVersion = Version,
+                Name = auctionArgs.Name,
+                BuyNowOnly = auctionArgs.BuyNowOnly,
+                BuyNowPrice = auctionArgs.BuyNowPrice,
+                Category = auctionArgs.Category,
+                EndDate = auctionArgs.EndDate,
+                Owner = auctionArgs.Owner,
+                ProductCondition = (int)auctionArgs.Product.Condition,
+                ProductName = auctionArgs.Product.Name,
+                ProductDescription = auctionArgs.Product.Description,
+                StartDate = auctionArgs.StartDate,
+                AuctionImagesSize1Id = auctionArgs.AuctionImages.Select(i => i.Size1Id).ToArray(),
+                AuctionImagesSize2Id = auctionArgs.AuctionImages.Select(i => i.Size2Id).ToArray(),
+                AuctionImagesSize3Id = auctionArgs.AuctionImages.Select(i => i.Size3Id).ToArray(),
+            });
         }
 
         private void Create(AuctionArgs auctionArgs, bool compareToNow)
@@ -309,7 +326,7 @@ namespace Core.Common.Domain.Auctions
 
             var ind = _auctionImages.IndexOf(null);
             _auctionImages[ind] = img;
-            AddEvent(new AuctionImageAdded(img, ind, AggregateId, Owner));
+            AddEvent(new AuctionImageAdded(ind, AggregateId, Owner, img.Size1Id, img.Size2Id, img.Size3Id));
         }
 
         public AuctionImage? ReplaceImage(AuctionImage img, int imgNum)
@@ -321,7 +338,7 @@ namespace Core.Common.Domain.Auctions
 
             var replaced = _auctionImages[imgNum];
             _auctionImages[imgNum] = img;
-            AddEvent(new AuctionImageReplaced(AggregateId, imgNum, img, Owner));
+            AddEvent(new AuctionImageReplaced(AggregateId, imgNum, Owner, img.Size1Id, img.Size2Id, img.Size3Id));
             return replaced;
         }
 
@@ -358,7 +375,7 @@ namespace Core.Common.Domain.Auctions
             }
             if (tags.Length >= Tags.Length && tags.Except(Tags).Count() == 0) { return; }
             Tags = tags;
-            AddUpdateEvent(new AuctionTagsChanged(AggregateId, tags));
+            AddUpdateEvent(new AuctionTagsChanged(AggregateId, tags.Select(t => t.Value).ToArray()));
         }
 
         public void UpdateEndDate(AuctionDate newEndDate)

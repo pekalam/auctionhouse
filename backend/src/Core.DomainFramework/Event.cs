@@ -30,9 +30,9 @@ namespace Core.Common.Domain
     /// Represents list of update events from aggregate. These are events which can be sent together as single <see cref="UpdateEventGroup"/>
     /// instead of being sent separately.
     /// </summary>
-    public class UpdateEventGroup<TId> : Event
+    public class UpdateEventGroup : Event
     {
-        public TId AggregateId { get; set; }
+        public Guid AggregateId { get; set; }
         public List<UpdateEvent> UpdateEvents { get; set; }
 
         public UpdateEventGroup(string eventName) : base(eventName)

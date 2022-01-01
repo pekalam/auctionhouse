@@ -1,5 +1,4 @@
-﻿using Core.Common.Domain.Auctions;
-using Core.DomainFramework;
+﻿using Core.DomainFramework;
 
 namespace Auctions.Domain
 {

@@ -1,5 +1,4 @@
 ﻿using Auctions.Domain.Repositories;
-using Core.Common.Domain.Auctions;
 using Core.DomainFramework;
 
 namespace Auctions.Domain.Services
