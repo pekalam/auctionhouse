@@ -1,6 +1,6 @@
 ﻿using Core.Common.Domain;
 
-namespace AuctionBids.Domain.DomainEvents
+namespace AuctionBids.DomainEvents
 {
     public partial class Events
     {

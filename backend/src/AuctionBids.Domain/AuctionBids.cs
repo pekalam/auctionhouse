@@ -1,4 +1,4 @@
-﻿using AuctionBids.Domain.DomainEvents;
+﻿using AuctionBids.DomainEvents;
 using AuctionBids.Domain.Shared;
 using Core.Common.Domain;
 using Core.DomainFramework;

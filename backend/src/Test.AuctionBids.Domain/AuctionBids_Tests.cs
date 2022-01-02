@@ -1,11 +1,14 @@
 using System;
 using Xunit;
 using FluentAssertions;
+using System.Linq;
 
-namespace Test.AuctionBids.Domain
+
+namespace Test.AuctionBids_.Domain
 {
-    using Core.Common.Domain.AuctionBids;
-    using System.Linq;
+    using AuctionBids.Domain;
+    using AuctionBids.Domain.Shared;
+    using AuctionBids.DomainEvents;
 
     public class AuctionBids_Tests
     {
@@ -75,7 +78,7 @@ namespace Test.AuctionBids.Domain
             auctionBids.PendingEvents.First().Should().BeOfType<BidCancelled>();
             auctionBids.PendingEvents.ElementAt(1).Should().BeOfType<AuctionHaveNoParticipants>();
             auctionBids.WinnerId.Should().BeNull();
-            auctionBids.CurrentPrice.Should().Be(default(decimal));
+            auctionBids.CurrentPrice.Should().Be(default);
         }
 
         private Bid GivenAcceptedBid(UserId newWinner)
@@ -96,7 +99,7 @@ namespace Test.AuctionBids.Domain
         public void Subsequent_bids_raise_price()
         {
             auctionBids.MarkPendingEventsAsHandled();
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 var newWinner = GivenValidUserId();
                 var lastBid = auctionBids.TryRaise(newWinner, auctionBids.CurrentPrice + 1m);
