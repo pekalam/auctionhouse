@@ -22,6 +22,7 @@ using static FunctionalTests.Builders.CreateAuctionCommandBuilder;
 
 namespace FunctionalTests.Commands
 {
+    using AuctionBids.Application;
     using AuctionBids.Domain;
     using FunctionalTests.Mocks;
 
@@ -42,6 +43,7 @@ namespace FunctionalTests.Commands
         {
             var serviceProvider = BuildConfiguredServiceProvider();
 
+            
             RabbitMqInstaller.InitializeEventSubscriptions(serviceProvider, Assembly.Load("AuctionBids.Application"),
                  Assembly.Load("Auctions.Application"));
 
@@ -68,6 +70,8 @@ namespace FunctionalTests.Commands
             return DiTestUtils.CreateServiceProvider((services) =>
             {
                 services.AddAuctionsModule();
+                services.AddAuctionBidsModule();
+
                 services.AddSingleton<IAuctionRepository, InMemoryAuctionRepository>();
                 services.AddSingleton<IAuctionBidsRepository, InMemoryAuctionBidsRepository>();
                 services.AddTransient(s => () => s.GetRequiredService<IAuctionRepository>());
@@ -88,8 +92,6 @@ namespace FunctionalTests.Commands
                 services.AddTransient<IImplProvider>((p) => new ImplProviderMock(p));
 
                 services.AddTransient<CreateAuctionCommandHandler>();
-                services.AddTransient<AuctionCreatedSubscriber>();
-                services.AddTransient<AuctionBidsCreatedSubscriber>();
             });
         }
     }

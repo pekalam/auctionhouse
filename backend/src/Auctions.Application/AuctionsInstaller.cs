@@ -1,8 +1,9 @@
-﻿using Auctions.Application.Commands.CreateAuction;
-using Auctions.DomainEvents;
-using Chronicle;
+﻿using Chronicle;
+using Common.Application;
+using Common.Application.Commands;
+using Common.Application.Events;
 using Microsoft.Extensions.DependencyInjection;
-using static AuctionBids.DomainEvents.Events.V1;
+using System.Reflection;
 
 namespace Auctions.Application
 {
@@ -10,6 +11,7 @@ namespace Auctions.Application
     {
         public static void AddAuctionsModule(this IServiceCollection services)
         {
+            services.AddEventSubscribers(typeof(AuctionsInstaller));
             services.AddChronicle(build =>
             {
                 build.UseInMemoryPersistence();
