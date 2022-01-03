@@ -18,10 +18,12 @@ namespace Auctions.Application.Commands.CreateAuction
         private readonly ISagaCoordinator _sagaCoordinator;
         private readonly CreateAuctionService _createAuctionService;
         private readonly EventBusFacade _eventBusFacade;
+        private readonly IAuctionEndScheduler _auctionEndScheduler;
+
 
         public CreateAuctionCommandHandler(ILogger<CreateAuctionCommandHandler> logger, IAuctionRepository auctions,
             IConvertCategoryNamesToRootToLeafIds convertCategoryNames, ISagaCoordinator sagaCoordinator,
-            CreateAuctionService createAuctionService, EventBusFacade eventBusFacade) : base(logger)
+            CreateAuctionService createAuctionService, EventBusFacade eventBusFacade, IAuctionEndScheduler auctionEndScheduler) : base(logger)
         {
             _logger = logger;
             _auctions = auctions;
@@ -29,6 +31,7 @@ namespace Auctions.Application.Commands.CreateAuction
             _sagaCoordinator = sagaCoordinator;
             _createAuctionService = createAuctionService;
             _eventBusFacade = eventBusFacade;
+            _auctionEndScheduler = auctionEndScheduler;
         }
 
         private async Task<AuctionArgs> CreateAuctionArgs(CreateAuctionCommand request, UserId owner)
@@ -54,6 +57,9 @@ namespace Auctions.Application.Commands.CreateAuction
         {
             var auctionArgs = await CreateAuctionArgs(request.Command, new UserId(request.CommandContext.User));
             var auction = _createAuctionService.StartCreate(auctionArgs);
+
+            // if further instructions will fail then request from a schedule service can be ignored
+            await _auctionEndScheduler.ScheduleAuctionEnd(auction);
 
             _auctions.AddAuction(auction);
             var context = SagaContext

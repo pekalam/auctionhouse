@@ -74,6 +74,7 @@ namespace FunctionalTests.Commands
                 services.AddTransient<IConvertCategoryNamesToRootToLeafIds, ConvertCategoryNamesToRootToLeafIdsMock>();
                 services.AddTransient(s => Mock.Of<ILogger<CreateAuctionCommandHandler>>());
                 services.AddTransient<CreateAuctionService>();
+                services.AddTransient<IAuctionEndScheduler, AuctionEndSchedulerMock>();
 
                 services.AddTransient<Func<ISagaNotifications>>(p => () => new InMemorySagaNotifications());
 
