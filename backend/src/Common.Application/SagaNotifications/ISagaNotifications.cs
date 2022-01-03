@@ -13,38 +13,42 @@ namespace Common.Application.SagaNotifications
         Task AddUnhandledEvents<T>(CorrelationId correlationId, IEnumerable<T> @event) where T : Event;
     }
 
-    internal class InMemorySagaNotifications : ISagaNotifications
+    public class InMemorySagaNotifications : ISagaNotifications
     {
         private readonly InMemorySagaEventsConfirmationStore _sagaEventsConfirmationStore = new();
 
         public Task AddUnhandledEvent<T>(CorrelationId correlationId, T @event) where T : Event
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
+
         }
 
         public Task AddUnhandledEvents<T>(CorrelationId correlationId, IEnumerable<T> @event) where T : Event
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
+
         }
 
         public Task MarkEventAsHandled<T>(CorrelationId correlationId, T @event) where T : Event
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
+
         }
 
         public Task MarkSagaAsCompleted(CorrelationId correlationId)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
+
         }
 
         public Task MarkSagaAsFailed(CorrelationId correlationId)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
         public Task RegisterNewSaga(CorrelationId correlationId)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
     }
 

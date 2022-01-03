@@ -1,8 +1,5 @@
-﻿using System;
-using Core.Command.Exceptions;
-using Core.Common.Attributes;
-using Core.Common.Command;
-using Core.Common.Domain.Users;
+﻿using Common.Application.Commands;
+using Common.Application.Commands.Attributes;
 
 namespace Core.Command.Bid
 {
@@ -13,11 +10,11 @@ namespace Core.Command.Bid
         public decimal Price { get; set; }
 
         [SignedInUser]
-        public UserId SignedInUser { get; set; }
+        public Guid SignedInUser { get; set; }
 
         public BidCommand(Guid auctionId, decimal price)
         {
-            if (auctionId.Equals(Guid.Empty)) { throw new InvalidCommandException($"Invalid field AuctionId = {auctionId}");}
+            if (auctionId.Equals(Guid.Empty)) { throw new InvalidCommandException($"Invalid field AuctionId = {auctionId}"); }
             AuctionId = auctionId;
             Price = price;
         }

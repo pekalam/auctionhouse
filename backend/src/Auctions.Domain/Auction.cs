@@ -113,7 +113,7 @@ namespace Auctions.Domain
         /// Locked auction shouldn't be visible in list. It can be only viewed in read-only mode by lock issuer.
         /// </summary>
         public bool Locked { get; private set; }
-        public UserId LockIssuer { get; private set; } = UserId.Empty;
+        internal UserId LockIssuer { get; private set; } = UserId.Empty;
         private Guid? TransactionId { get; set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -273,12 +273,7 @@ namespace Auctions.Domain
 
         private void StartBuyNowTransaction(UserId lockIssuerId, string paymentMethod)
         {
-            if (Locked)
-            {
-                throw new DomainException("Auction is already locked");
-            }
-            Locked = true;
-            LockIssuer = lockIssuerId;
+            Lock(lockIssuerId);
             TransactionId = Guid.NewGuid();
 
             AddEvent(new Events.V1.BuyNowTXStarted { TransactionId = TransactionId.Value, Price = BuyNowPrice.Value, AuctionId = AggregateId, BuyerId = lockIssuerId, PaymentMethod = paymentMethod, });
@@ -301,20 +296,32 @@ namespace Auctions.Domain
                 return false;
             }
 
-            Locked = false;
             Buyer = LockIssuer;
-            LockIssuer = UserId.Empty;
+            Unlock(LockIssuer);
             EndDate = DateTime.UtcNow;
+            TransactionId = null;
             Completed = true;
             AddEvent(new Events.V1.BuyNowTXSuccess { TransactionId = transactionId, AuctionId = AggregateId, BuyerId = Buyer });
             return true;
         }
 
-        internal void Unlock()
+        internal void Lock(UserId lockIssuerId)
         {
+            if (Locked)
+            {
+                throw new DomainException("Auction is already locked");
+            }
+            Locked = true;
+            LockIssuer = lockIssuerId;
+        }
+
+
+        internal void Unlock(UserId lockIssuerId)
+        {
+            if (!Locked) throw new DomainException("Auction is not locked");
+            if (LockIssuer != lockIssuerId) throw new DomainException($"Invalid {nameof(lockIssuerId)}");
             Locked = false;
             LockIssuer = UserId.Empty;
-            TransactionId = null;
         }
 
         public void AddImage(AuctionImage img)

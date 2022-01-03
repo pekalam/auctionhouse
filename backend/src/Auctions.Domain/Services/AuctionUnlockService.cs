@@ -20,7 +20,7 @@ namespace Auctions.Domain.Services
                 throw new DomainException("Could not find auction");
             }
 
-            auction.Unlock();
+            auction.Unlock(auction.LockIssuer);
         }
     }
 }

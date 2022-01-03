@@ -1,34 +1,47 @@
 using Auctions.Domain;
+using Auctions.Domain.Repositories;
+using Auctions.Domain.Services;
+using Auctions.DomainEvents;
+using Chronicle;
 using Common.Application;
 using Common.Application.Commands;
-using Core.DomainFramework;
+using Common.Application.Events;
 using Microsoft.Extensions.Logging;
 
 namespace Auctions.Application.Commands.CreateAuction
 {
     public class CreateAuctionCommandHandler : CommandHandlerBase<CreateAuctionCommand>
     {
-        private readonly CreateAuctionCommandHandlerDepedencies _deps;
+        public readonly ILogger<CreateAuctionCommandHandler> _logger;
+        private readonly IAuctionRepository _auctions;
+        private readonly IConvertCategoryNamesToRootToLeafIds _convertCategoryNames;
+        private readonly ISagaCoordinator _sagaCoordinator;
+        private readonly CreateAuctionService _createAuctionService;
+        private readonly EventBusFacade _eventBusFacade;
 
-        public CreateAuctionCommandHandler(CreateAuctionCommandHandlerDepedencies depedencies) : base(depedencies.logger)
+        public CreateAuctionCommandHandler(ILogger<CreateAuctionCommandHandler> logger, IAuctionRepository auctions,
+            IConvertCategoryNamesToRootToLeafIds convertCategoryNames, ISagaCoordinator sagaCoordinator,
+            CreateAuctionService createAuctionService, EventBusFacade eventBusFacade) : base(logger)
         {
-            _deps = depedencies;
+            _logger = logger;
+            _auctions = auctions;
+            _convertCategoryNames = convertCategoryNames;
+            _sagaCoordinator = sagaCoordinator;
+            _createAuctionService = createAuctionService;
+            _eventBusFacade = eventBusFacade;
         }
 
-
-
-        private AuctionArgs GetAuctionArgs(CreateAuctionCommand request, UserId owner)
+        private async Task<AuctionArgs> CreateAuctionArgs(CreateAuctionCommand request, UserId owner)
         {
-            //var category = _deps.categoryBuilder.FromCategoryNamesList(request.Category);
             var builder = new AuctionArgs.Builder()
                 .SetStartDate(request.StartDate)
                 .SetEndDate(request.EndDate)
-                //.SetCategory(category)
                 .SetProduct(request.Product)
                 .SetTags(request.Tags)
                 .SetName(request.Name)
-                .SetBuyNowOnly(request.BuyNowOnly.Value)
+                .SetBuyNowOnly(request.BuyNowOnly)
                 .SetOwner(owner);
+            builder = await builder.SetCategories(request.Category.ToArray(), _convertCategoryNames);
             if (request.BuyNowPrice != null)
             {
                 builder.SetBuyNow(request.BuyNowPrice.Value);
@@ -37,18 +50,22 @@ namespace Auctions.Application.Commands.CreateAuction
             return builder.Build();
         }
 
-        protected override Task<RequestStatus> HandleCommand(AppCommand<CreateAuctionCommand> request, CancellationToken cancellationToken)
+        protected override async Task<RequestStatus> HandleCommand(AppCommand<CreateAuctionCommand> request, CancellationToken cancellationToken)
         {
-            //var auction = request.Command.AuctionCreateSession.CreateAuction(GetAuctionArgs(request.Command, new Common.Domain.Auctions.UserId(user.AggregateId)));
+            var auctionArgs = await CreateAuctionArgs(request.Command, new UserId(request.CommandContext.User));
+            var auction = _createAuctionService.StartCreate(auctionArgs);
 
-            var response = RequestStatus.CreatePending(request.CommandContext);
-            //var addAuctionSequence = new AtomicSequence<Auction>()
-            //    .AddTask(AddToRepository, AddToRepository_Rollback)
-            //    .AddTask(SheduleAuctionEndTask, ScheduleAuctionEndTask_Rollback)
-            //    .AddTask(ChangeImagesMetadata, ChangeImagesMetadata_Rollback)
-            //    .AddTask((param, _) => PublishEvents(auction, user, request), null);
+            _auctions.AddAuction(auction);
+            var context = SagaContext
+                .Create()
+                .WithSagaId(request.CommandContext.CorrelationId.Value)
+                .WithMetadata(CreateAuctionSaga.ServiceDataKey, _createAuctionService.ServiceData)
+                .Build();
+            await _sagaCoordinator.ProcessAsync((AuctionCreated)auction.PendingEvents.First(), context);
 
-            return Task.FromResult(response);
+            _eventBusFacade.Publish(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Saga);
+
+            return RequestStatus.CreatePending(request.CommandContext);
         }
     }
 }

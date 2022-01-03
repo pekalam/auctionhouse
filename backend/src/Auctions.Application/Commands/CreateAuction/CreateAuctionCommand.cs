@@ -23,7 +23,7 @@ namespace Auctions.Application.Commands.CreateAuction
         public List<string> Category { get; }
 
         [Required]
-        public bool? BuyNowOnly { get; }
+        public bool BuyNowOnly { get; }
 
         [Required]
         [MinLength(AuctionConstantsFactory.DEFAULT_MIN_TAGS)]
@@ -39,7 +39,7 @@ namespace Auctions.Application.Commands.CreateAuction
 
         public CreateAuctionCommand(BuyNowPrice buyNowPrice, Product product,
             AuctionDate startDate, AuctionDate endDate, List<string> category,
-            Tag[] tags, AuctionName name, bool? buyNowOnly)
+            Tag[] tags, AuctionName name, bool buyNowOnly)
         {
             BuyNowPrice = buyNowPrice;
             Product = product;
