@@ -16,31 +16,7 @@ namespace Dapper.AuctionhouseDatabase
 
         public User AddUser(User user)
         {
-            var sp = "dbo.insert_event";
-
-            using (var connection = new SqlConnection(_connectionSettings.ConnectionString))
-            {
-                connection.Open();
-                foreach (var pendingEvent in user.PendingEvents)
-                {
-                    var json = JsonConvert.SerializeObject(pendingEvent, new JsonSerializerSettings()
-                    {
-                        TypeNameHandling = TypeNameHandling.All
-                    });
-                    connection.Execute(sp, new
-                    {
-                        AggId = user.AggregateId.ToString(),
-                        AggName = "User",
-                        pendingEvent.EventName,
-                        Date = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(1)),
-                        Data = json,
-                        ExpectedVersion = -1,
-                        NewVersion = user.Version
-                    }, commandType: CommandType.StoredProcedure);
-                }
-
-            }
-
+            AddAggregate(user.PendingEvents, user.AggregateId.ToString(), user.Version, "User");
             return user;
         }
 
@@ -53,31 +29,7 @@ namespace Dapper.AuctionhouseDatabase
 
         public void UpdateUser(User user)
         {
-            var sp = "dbo.insert_event";
-
-            using (var connection = new SqlConnection(_connectionSettings.ConnectionString))
-            {
-                connection.Open();
-                var sent = 0;
-                foreach (var pendingEvent in user.PendingEvents)
-                {
-                    var json = JsonConvert.SerializeObject(pendingEvent, new JsonSerializerSettings()
-                    {
-                        TypeNameHandling = TypeNameHandling.All
-                    });
-                    connection.Execute(sp, new
-                    {
-                        AggId = user.AggregateId.ToString(),
-                        AggName = "User",
-                        pendingEvent.EventName,
-                        Date = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(1)),
-                        Data = json,
-                        ExpectedVersion = user.Version - user.PendingEvents.Count + sent++,
-                        NewVersion = user.Version - user.PendingEvents.Count + sent
-                    }, commandType: CommandType.StoredProcedure);
-                }
-
-            }
+            UpdateAggregate(user.PendingEvents, user.AggregateId.ToString(), user.Version, "User");
         }
     }
 }

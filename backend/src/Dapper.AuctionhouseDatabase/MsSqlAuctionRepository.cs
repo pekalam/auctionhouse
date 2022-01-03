@@ -34,72 +34,18 @@ namespace Dapper.AuctionhouseDatabase
 
         public Auction AddAuction(Auction auction)
         {
-            var sp = "dbo.insert_event";
-
-            using (var connection = new SqlConnection(_connectionSettings.ConnectionString))
-            {
-                connection.Open();
-                foreach (var pendingEvent in auction.PendingEvents)
-                {
-                    var json = JsonConvert.SerializeObject(pendingEvent, new JsonSerializerSettings()
-                    {
-                        TypeNameHandling = TypeNameHandling.All
-                    });
-                    connection.Execute(sp, new
-                    {
-                        AggId = auction.AggregateId.ToString(),
-                        AggName = "Auction",
-                        pendingEvent.EventName,
-                        Date = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(1)),
-                        Data = json,
-                        ExpectedVersion = -1,
-                        NewVersion = auction.Version
-                    }, commandType: CommandType.StoredProcedure);
-                }
-
-            }
-
+            AddAggregate(auction.PendingEvents, auction.AggregateId.ToString(), auction.Version, "Auction");
             return auction;
         }
 
         public void RemoveAuction(Guid auctionId)
         {
-            var sp = "drop_events";
-
-            using (var connection = new SqlConnection(_connectionSettings.ConnectionString))
-            {
-                connection.Open();
-                connection.Execute(sp, new { AggId = auctionId }, commandType: CommandType.StoredProcedure);
-            }
+            RemoveAggregate(auctionId.ToString());
         }
 
         public void UpdateAuction(Auction auction)
         {
-            var sp = "dbo.insert_event";
-
-            using (var connection = new SqlConnection(_connectionSettings.ConnectionString))
-            {
-                connection.Open();
-                var sent = 0;
-                foreach (var pendingEvent in auction.PendingEvents)
-                {
-                    var json = JsonConvert.SerializeObject(pendingEvent, new JsonSerializerSettings()
-                    {
-                        TypeNameHandling = TypeNameHandling.All
-                    });
-                    connection.Execute(sp, new
-                    {
-                        AggId = auction.AggregateId.ToString(),
-                        AggName = "Auction",
-                        pendingEvent.EventName,
-                        Date = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(1)),
-                        Data = json,
-                        ExpectedVersion = auction.Version - auction.PendingEvents.Count() + sent++,
-                        NewVersion = auction.Version - auction.PendingEvents.Count + sent
-                    }, commandType: CommandType.StoredProcedure);
-                }
-
-            }
+            UpdateAggregate(auction.PendingEvents, auction.AggregateId.ToString(), auction.Version, "Auction");
         }
     }
 }
