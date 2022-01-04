@@ -10,6 +10,7 @@ namespace Common.Application
         {
             services.AddTransient(typeof(Lazy<>), typeof(LazyInstance<>));
             services.AddTransient<ISagaNotifications, InMemorySagaNotifications>();
+            services.AddTransient<IImplProvider, DefaultDIImplProvider>();
             services.AddTransient<EventBusFacade>();
         }
     }

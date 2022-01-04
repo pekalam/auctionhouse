@@ -9,17 +9,27 @@ using System.Threading.Tasks;
 namespace Dapper.AuctionhouseDatabase
 {
     using AuctionBids.Domain;
+    using Core.Common.Domain;
 
-    internal class MsSqlAuctionBidsRepository : IAuctionBidsRepository
+    internal class MsSqlAuctionBidsRepository : MsSqlESRepositoryBase, IAuctionBidsRepository
     {
-        public void Add(AuctionBids auctionBids)
+        public MsSqlAuctionBidsRepository(MsSqlConnectionSettings connectionSettings) : base(connectionSettings)
         {
-            throw new NotImplementedException();
         }
 
-        public AuctionBids WithAuctionId(AuctionId auctionId)
+        public void Add(AuctionBids auctionBids)
         {
-            throw new NotImplementedException();
+            AddAggregate(auctionBids.PendingEvents, auctionBids.AggregateId.ToString()!, auctionBids.Version, "AuctionBids");
+        }
+
+        public AuctionBids? WithAuctionId(AuctionId auctionId)
+        {
+            List<Event>? events = ReadEvents(auctionId.Value);
+            if(events == null)
+            {
+                return null;
+            }
+            return AuctionBids.FromEvents(events);
         }
     }
 }
