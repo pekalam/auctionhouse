@@ -26,7 +26,6 @@ namespace Common.Application.Mediator
     public class HTTPQueuedCommandMediator : CommandMediator
     {
         private readonly IQueuedCommandBus _queuedCommandBus;
-        private readonly IUserIdentityService _userIdentityService;
         private readonly IImplProvider _implProvider;
 
         public HTTPQueuedCommandMediator(IImplProvider implProvider, IQueuedCommandBus queuedCommandBus) : base(implProvider)
@@ -41,17 +40,15 @@ namespace Common.Application.Mediator
             return base.Send(command);
         }
 
-        protected override async Task<(RequestStatus, bool)> SendAppCommand<T>(T command)
+        protected override Task<(RequestStatus, bool)> SendAppCommand<T>(AppCommand<T> appCommand)
         {
-            var appCommand = new AppCommand<T> { Command = command, CommandContext = CommandContext.CreateHttpQueued(_userIdentityService.GetSignedInUserIdentity(), nameof(T)) };
+            appCommand.CommandContext.HttpQueued = true;
             var requestStatus = new RequestStatus(appCommand.CommandContext.CommandId, Status.PENDING);
-
             var queuedCommand = new QueuedCommand { AppCommand = appCommand, };
 
             _queuedCommandBus.Publish<T>(queuedCommand);
 
-            return (requestStatus, false);
+            return Task.FromResult((requestStatus, false));
         }
-
     }
 }

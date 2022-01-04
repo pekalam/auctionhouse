@@ -7,23 +7,16 @@ namespace Common.Application.Mediator
 {
     public abstract class CommandMediator
     {
-        private const string CommandsAssemblyName = "Core.Command";
 
         private readonly IImplProvider _implProvider;
-        internal static Dictionary<Type, List<Action<IImplProvider, ICommand>>> PreHandleCommandAttributeStrategies;
-        internal static Dictionary<Type, List<Action<IImplProvider, ICommand>>> PostHandleCommandAttributeStrategies;
+        internal static Dictionary<Type, List<Action<IImplProvider, CommandContext, ICommand>>> PreHandleCommandAttributeStrategies = null!;
+        internal static Dictionary<Type, List<Action<IImplProvider, CommandContext, ICommand>>> PostHandleCommandAttributeStrategies = null!;
 
-        static CommandMediator()
+        internal static void LoadCommandAttributeStrategies(params string[] commandsAssemblyNames)
         {
-            LoadCommandAttributeStrategies(CommandsAssemblyName);
-        }
-
-        internal static void LoadCommandAttributeStrategies(string commandsAssemblyName)
-        {
-            PreHandleCommandAttributeStrategies = new Dictionary<Type, List<Action<IImplProvider, ICommand>>>();
-            PostHandleCommandAttributeStrategies = new Dictionary<Type, List<Action<IImplProvider, ICommand>>>();
-            var commandAttributes = Assembly.Load(commandsAssemblyName)
-                .GetTypes()
+            PreHandleCommandAttributeStrategies = new Dictionary<Type, List<Action<IImplProvider, CommandContext, ICommand>>>();
+            PostHandleCommandAttributeStrategies = new Dictionary<Type, List<Action<IImplProvider, CommandContext, ICommand>>>();
+            var commandAttributes = commandsAssemblyNames.SelectMany(n => Assembly.Load(n).GetTypes()) 
                 .Where(type => type.BaseType == typeof(ICommand))
                 .Where(type => type.GetCustomAttributes(typeof(ICommandAttribute), false).Length > 0)
                 .Select(type => new
@@ -46,13 +39,13 @@ namespace Common.Application.Mediator
             }
         }
 
-        internal static void InvokePostCommandAttributeStrategies(IImplProvider implProvider, ICommand command)
+        internal static void InvokePostCommandAttributeStrategies(IImplProvider implProvider, CommandContext commandContext, ICommand command)
         {
             if (PostHandleCommandAttributeStrategies.ContainsKey(command.GetType()))
             {
                 foreach (var strategy in PostHandleCommandAttributeStrategies[command.GetType()])
                 {
-                    strategy?.Invoke(implProvider, command);
+                    strategy?.Invoke(implProvider, commandContext, command);
                 }
             }
         }
@@ -64,26 +57,30 @@ namespace Common.Application.Mediator
 
         public virtual async Task<RequestStatus> Send<T>(T command) where T : ICommand
         {
+            var appCommand = new AppCommand<T>
+            {
+                Command = command,
+                CommandContext = CommandContext.CreateNew(typeof(T).Name),
+            };
+
             if (PreHandleCommandAttributeStrategies.ContainsKey(command.GetType()))
             {
                 foreach (var strategy in PreHandleCommandAttributeStrategies[command.GetType()])
                 {
-                    strategy?.Invoke(_implProvider, command);
+                    strategy?.Invoke(_implProvider, appCommand.CommandContext, command);
                 }
             }
 
-            var (requestStatus, callPostActions) = await SendAppCommand(command);
+            var (requestStatus, callPostActions) = await SendAppCommand(appCommand);
 
             if (callPostActions)
             {
-                InvokePostCommandAttributeStrategies(_implProvider, command);
+                InvokePostCommandAttributeStrategies(_implProvider, appCommand.CommandContext, command);
             }
 
             return requestStatus;
         }
 
-        protected abstract Task<(RequestStatus, bool)> SendAppCommand<T>(T command) where T : ICommand;
-
-
+        protected abstract Task<(RequestStatus, bool)> SendAppCommand<T>(AppCommand<T> command) where T : ICommand;
     }
 }

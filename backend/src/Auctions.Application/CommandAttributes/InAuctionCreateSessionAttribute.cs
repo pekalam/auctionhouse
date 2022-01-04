@@ -12,11 +12,11 @@ namespace Auctions.Application.CommandAttributes
     {
         internal static Dictionary<Type, PropertyInfo> _auctionCreateSessionCommandProperties;
 
-        public Action<IImplProvider, ICommand> PreHandleAttributeStrategy =>
-            new Action<IImplProvider, ICommand>(AddAuctionCreateSessionToCommand);
+        public Action<IImplProvider, CommandContext, ICommand> PreHandleAttributeStrategy =>
+            new Action<IImplProvider, CommandContext, ICommand>(AddAuctionCreateSessionToCommand);
 
-        public Action<IImplProvider, ICommand> PostHandleAttributeStrategy =>
-            new Action<IImplProvider, ICommand>(SaveAuctionCreateSession);
+        public Action<IImplProvider, CommandContext, ICommand> PostHandleAttributeStrategy =>
+            new Action<IImplProvider, CommandContext, ICommand>(SaveAuctionCreateSession);
 
         public int Order => 1;
 
@@ -47,7 +47,7 @@ namespace Auctions.Application.CommandAttributes
             }
         }
 
-        private static void AddAuctionCreateSessionToCommand(IImplProvider implProvider, ICommand commandBase)
+        private static void AddAuctionCreateSessionToCommand(IImplProvider implProvider, CommandContext ctx, ICommand commandBase)
         {
             if (_auctionCreateSessionCommandProperties.ContainsKey(commandBase.GetType()))
             {
@@ -57,7 +57,7 @@ namespace Auctions.Application.CommandAttributes
             }
         }
 
-        private static void SaveAuctionCreateSession(IImplProvider implProvider, ICommand commandBase)
+        private static void SaveAuctionCreateSession(IImplProvider implProvider, CommandContext ctx, ICommand commandBase)
         {
             if (_auctionCreateSessionCommandProperties.ContainsKey(commandBase.GetType()))
             {

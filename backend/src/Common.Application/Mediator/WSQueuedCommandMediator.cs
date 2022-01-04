@@ -5,13 +5,11 @@ namespace Common.Application.Mediator
     public class WSQueuedCommandMediator : CommandMediator
     {
         private readonly IQueuedCommandBus _queuedCommandBus;
-        private readonly IUserIdentityService _userIdentityService;
         private readonly IImplProvider _implProvider;
 
-        public WSQueuedCommandMediator(IUserIdentityService userIdentityService, IImplProvider implProvider, IQueuedCommandBus queuedCommandBus) : base(implProvider)
+        public WSQueuedCommandMediator(IImplProvider implProvider, IQueuedCommandBus queuedCommandBus) : base(implProvider)
         {
             _implProvider = implProvider;
-            _userIdentityService = userIdentityService;
             _queuedCommandBus = queuedCommandBus;
         }
 
@@ -21,9 +19,9 @@ namespace Common.Application.Mediator
             return base.Send(command);
         }
 
-        protected override Task<(RequestStatus, bool)> SendAppCommand<T>(T command)
+        protected override Task<(RequestStatus, bool)> SendAppCommand<T>(AppCommand<T> appCommand)
         {
-            var appCommand = new AppCommand<T> { Command = command, CommandContext = CommandContext.CreateWSQueued(_userIdentityService.GetSignedInUserIdentity(), nameof(T)) };
+            appCommand.CommandContext.WSQueued = true;
             var requestStatus = new RequestStatus(appCommand.CommandContext.CommandId, Status.PENDING);
             var queuedCommand = new QueuedCommand { AppCommand = appCommand, };
 

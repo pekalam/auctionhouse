@@ -19,11 +19,13 @@ namespace Auctions.Application.Commands.CreateAuction
         private readonly CreateAuctionService _createAuctionService;
         private readonly EventBusFacade _eventBusFacade;
         private readonly IAuctionEndScheduler _auctionEndScheduler;
+        private readonly IAuctionImageRepository _auctionImages;
 
 
         public CreateAuctionCommandHandler(ILogger<CreateAuctionCommandHandler> logger, IAuctionRepository auctions,
             IConvertCategoryNamesToRootToLeafIds convertCategoryNames, ISagaCoordinator sagaCoordinator,
-            CreateAuctionService createAuctionService, EventBusFacade eventBusFacade, IAuctionEndScheduler auctionEndScheduler) : base(logger)
+            CreateAuctionService createAuctionService, EventBusFacade eventBusFacade, IAuctionEndScheduler auctionEndScheduler, 
+            IAuctionImageRepository auctionImages) : base(logger)
         {
             _logger = logger;
             _auctions = auctions;
@@ -32,6 +34,7 @@ namespace Auctions.Application.Commands.CreateAuction
             _createAuctionService = createAuctionService;
             _eventBusFacade = eventBusFacade;
             _auctionEndScheduler = auctionEndScheduler;
+            _auctionImages = auctionImages;
         }
 
         private async Task<AuctionArgs> CreateAuctionArgs(CreateAuctionCommand request, UserId owner)
@@ -55,8 +58,16 @@ namespace Auctions.Application.Commands.CreateAuction
 
         protected override async Task<RequestStatus> HandleCommand(AppCommand<CreateAuctionCommand> request, CancellationToken cancellationToken)
         {
-            var auctionArgs = await CreateAuctionArgs(request.Command, new UserId(request.CommandContext.User));
-            var auction = _createAuctionService.StartCreate(auctionArgs);
+            var auctionArgs = await CreateAuctionArgs(request.Command, new UserId(request.CommandContext.User!.Value));
+            var auction = _createAuctionService.StartCreate(request.Command.AuctionCreateSession, auctionArgs);
+
+            _auctionImages.UpdateManyMetadata(auction.AuctionImages //TODO move to auction session
+                    .Where(image => image != null)
+                    .SelectMany(img => new string[3] { img.Size1Id, img.Size2Id, img.Size3Id }.AsEnumerable())
+                    .ToArray(), new AuctionImageMetadata(null)
+                    {
+                        IsAssignedToAuction = true
+                    });
 
             // if further instructions will fail then request from a schedule service can be ignored
             await _auctionEndScheduler.ScheduleAuctionEnd(auction);

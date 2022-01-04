@@ -19,7 +19,7 @@ namespace AuctionBids.Application.EventSubscriptions
 
         public override Task Handle(IAppEvent<AuctionCreated> appEvent)
         {
-            var auctionBids = AuctionBids.CreateNew(new(appEvent.Event.AuctionId), new(appEvent.CommandContext.User));
+            var auctionBids = AuctionBids.CreateNew(new(appEvent.Event.AuctionId), new(appEvent.CommandContext.User!.Value));
             _allAuctionBids.Add(auctionBids);
             _eventBusFacade.Publish(auctionBids.PendingEvents, appEvent.CommandContext, ReadModelNotificationsMode.Saga);
             return Task.CompletedTask;

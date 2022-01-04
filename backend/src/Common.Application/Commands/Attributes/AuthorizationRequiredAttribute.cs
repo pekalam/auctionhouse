@@ -52,9 +52,9 @@ namespace Common.Application.Commands.Attributes
             }
         }
 
-        public Action<IImplProvider, ICommand> PreHandleAttributeStrategy { get; } = new Action<IImplProvider, ICommand>(CheckCmdIsAuthorized);
-        public Action<IImplProvider, ICommand> PostHandleAttributeStrategy { get; }
-        Action<IImplProvider, IQuery> IQueryAttribute.AttributeStrategy { get; } = new Action<IImplProvider, IQuery>(CheckQueryIsAuthorized);
+        public Action<IImplProvider, CommandContext, ICommand> PreHandleAttributeStrategy { get; } = new Action<IImplProvider, CommandContext, ICommand>(CheckCmdIsAuthorized);
+        public Action<IImplProvider, CommandContext, ICommand> PostHandleAttributeStrategy { get; }
+        Action<IImplProvider, CommandContext, IQuery> IQueryAttribute.AttributeStrategy { get; } = new Action<IImplProvider, CommandContext, IQuery>(CheckQueryIsAuthorized);
 
         public int Order => 0;
 
@@ -70,20 +70,22 @@ namespace Common.Application.Commands.Attributes
             return userIdentity;
         }
 
-        private static void CheckCmdIsAuthorized(IImplProvider implProvider, ICommand commandBase)
+        private static void CheckCmdIsAuthorized(IImplProvider implProvider, CommandContext ctx, ICommand commandBase)
         {
-            var userIdentity = GetSignedInUser(implProvider);
             if (_signedInUserCommandProperties.ContainsKey(commandBase.GetType()))
             {
+                var userIdentity = GetSignedInUser(implProvider);
+                ctx.User = userIdentity;
                 _signedInUserCommandProperties[commandBase.GetType()].SetValue(commandBase, userIdentity);
             }
         }
 
-        private static void CheckQueryIsAuthorized(IImplProvider implProvider, IQuery query)
+        private static void CheckQueryIsAuthorized(IImplProvider implProvider, CommandContext ctx, IQuery query)
         {
-            var userIdentity = GetSignedInUser(implProvider);
             if (_signedInUserQueryProperties.ContainsKey(query.GetType()))
             {
+                var userIdentity = GetSignedInUser(implProvider);
+                ctx.User = userIdentity;
                 _signedInUserQueryProperties[query.GetType()].SetValue(query, userIdentity);
             }
         }

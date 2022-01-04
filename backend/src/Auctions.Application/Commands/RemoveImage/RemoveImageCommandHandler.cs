@@ -23,7 +23,7 @@ namespace Auctions.Application.Commands.RemoveImage
             auctionCreateSession.AddOrReplaceImage(null, request.Command.ImgNum);
 
             _auctionCreateSessionService.SaveSession(auctionCreateSession);
-            _logger.LogDebug("Removed image {num} from auctionCreateSession user: {@user}", request.Command.ImgNum, auctionCreateSession.Creator);
+            _logger.LogDebug("Removed image {num} from auctionCreateSession user: {@user}", request.Command.ImgNum, auctionCreateSession.OnwerId);
 
             var requestStatus = RequestStatus.CreatePending(request.CommandContext);
             requestStatus.MarkAsCompleted();

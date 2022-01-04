@@ -9,33 +9,6 @@ using System.Transactions;
 
 namespace Auctions.Application.Commands.BuyNow
 {
-    public class BuyNowCommandHandlerTransactionDecorator : CommandHandlerBase<BuyNowCommand>
-    {
-        private readonly BuyNowCommandHandler _buyNowCommandHandler;
-
-        public BuyNowCommandHandlerTransactionDecorator(ILogger<BuyNowCommandHandlerTransactionDecorator> logger, BuyNowCommandHandler buyNowCommandHandler) : base(logger)
-        {
-            _buyNowCommandHandler = buyNowCommandHandler;
-        }
-
-        protected override Task<RequestStatus> HandleCommand(AppCommand<BuyNowCommand> request, CancellationToken cancellationToken)
-        {
-            var transactionOpt = new TransactionOptions()
-            {
-                IsolationLevel = IsolationLevel.Serializable,
-                Timeout = TimeSpan.FromSeconds(15)
-            };
-
-            using (var scope = new TransactionScope(TransactionScopeOption.Required, transactionOpt))
-            {
-                var status = _buyNowCommandHandler.Handle(request, cancellationToken);
-                scope.Complete();
-
-                return status;
-            }
-        }
-    }
-
     public class BuyNowCommandHandler : CommandHandlerBase<BuyNowCommand>
     {
         private readonly IAuctionPaymentVerification _auctionPaymentVerification;

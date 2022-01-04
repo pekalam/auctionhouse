@@ -34,9 +34,9 @@ namespace Auctions.Domain.Services
             _auctions = auctions;
         }
 
-        public Auction StartCreate(AuctionArgs auctionArgs)
+        public Auction StartCreate(AuctionCreateSession auctionCreateSession, AuctionArgs auctionArgs)
         {
-            var auction = new Auction(auctionArgs);
+            var auction = auctionCreateSession.CreateAuction(auctionArgs);
             var lockIssuer = Guid.NewGuid();
             auction.Lock(lockIssuer);
             ServiceData = new(lockIssuer, auction.AggregateId);

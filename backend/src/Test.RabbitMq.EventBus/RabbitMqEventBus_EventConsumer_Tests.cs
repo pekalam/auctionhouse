@@ -71,7 +71,7 @@ namespace Test.RabbitMq.EventBus
                 ConnectionString = "host=localhost",
             }, Mock.Of<ILogger<RabbitMqEventBus>>());
 
-            var ctx = CommandContext.CreateNew(Guid.NewGuid(), "test");
+            var ctx = CommandContext.CreateNew("test", Guid.NewGuid());
             var toPublish = new TestAppEvent(new TestEvent(), ctx, ReadModelNotificationsMode.Immediate);
 
             var handler = new TestHandler(new AppEventRabbitMQBuilder(), (ev) =>

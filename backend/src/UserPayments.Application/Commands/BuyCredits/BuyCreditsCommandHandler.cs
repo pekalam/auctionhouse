@@ -7,7 +7,7 @@ namespace Core.Command.Commands.BuyCredits
 {
     public class BuyCreditsCommandHandler : CommandHandlerBase<BuyCreditsCommand>
     {
-        public BuyCreditsCommandHandler(ILogger logger) : base(logger)
+        public BuyCreditsCommandHandler(ILogger<BuyCreditsCommandHandler> logger) : base(logger)
         {
         }
 

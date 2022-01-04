@@ -11,8 +11,8 @@ namespace Auctions.Application.CommandAttributes
         internal static Dictionary<Type, PropertyInfo> _auctionImagePathCommandProperties;
         internal static Dictionary<Type, PropertyInfo> _auctionImageAccessorCommandProperties;
 
-        public Action<IImplProvider, ICommand> PreHandleAttributeStrategy => SaveImage;
-        public Action<IImplProvider, ICommand> PostHandleAttributeStrategy => null;
+        public Action<IImplProvider, CommandContext, ICommand> PreHandleAttributeStrategy => SaveImage;
+        public Action<IImplProvider, CommandContext, ICommand> PostHandleAttributeStrategy => null;
         public int Order => 1;
 
         public static void LoadImagePathCommandMembers(string cmdAssembly)
@@ -73,7 +73,7 @@ namespace Auctions.Application.CommandAttributes
             }
         }
 
-        internal static void SaveImage(IImplProvider implProvider, ICommand commandBase)
+        internal static void SaveImage(IImplProvider implProvider, CommandContext ctx, ICommand commandBase)
         {
             if (_auctionImagePathCommandProperties.ContainsKey(commandBase.GetType()))
             {

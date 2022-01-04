@@ -10,9 +10,9 @@ namespace Auctions.Domain
         public AuctionImage?[] SessionAuctionImages { get; }
         public DateTime DateCreated { get; private set; }
 
-        public UserId Creator { get; }
+        public UserId OnwerId { get; }
 
-        public AuctionCreateSession(AuctionImage[] sessionAuctionImages, DateTime dateCreated, UserId creator)
+        public AuctionCreateSession(AuctionImage[] sessionAuctionImages, DateTime dateCreated, UserId ownerId)
         {
             if (sessionAuctionImages.Length < Auction.MAX_IMAGES)
             {
@@ -20,19 +20,19 @@ namespace Auctions.Domain
             }
             SessionAuctionImages = sessionAuctionImages;
             DateCreated = dateCreated;
-            Creator = creator;
+            OnwerId = ownerId;
         }
 
-        private AuctionCreateSession(UserId creator)
+        private AuctionCreateSession(UserId owner)
         {
-            Creator = creator;
+            OnwerId = owner;
             DateCreated = DateTime.UtcNow;
             SessionAuctionImages = new AuctionImage[Auction.MAX_IMAGES];
         }
 
-        public static AuctionCreateSession CreateSession(UserId creator)
+        public static AuctionCreateSession CreateSession(UserId ownerId)
         {
-            return new AuctionCreateSession(creator);
+            return new AuctionCreateSession(ownerId);
         }
 
         private void CheckIsSessionValid()
@@ -79,14 +79,14 @@ namespace Auctions.Domain
         public Auction CreateAuction(AuctionArgs auctionArgs)
         {
             CheckIsSessionValid();
-            if (Creator == null)
+            if (OnwerId == null)
             {
                 throw new DomainException("User must be registered to create auction");
             }
             var args = new AuctionArgs.Builder()
                 .From(auctionArgs)
                 .SetImages(SessionAuctionImages)
-                .SetOwner(Creator)
+                .SetOwner(OnwerId)
                 .Build();
             var auction = new Auction(args);
             return auction;

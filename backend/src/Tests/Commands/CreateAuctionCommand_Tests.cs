@@ -1,8 +1,6 @@
-using AuctionBids.Application.EventSubscriptions;
 using AuctionBids.Domain.Repositories;
 using Auctions.Application;
 using Auctions.Application.Commands.CreateAuction;
-using Auctions.Application.EventSubscriptions;
 using Auctions.Domain.Repositories;
 using Auctions.Domain.Services;
 using Common.Application;
@@ -24,6 +22,8 @@ namespace FunctionalTests.Commands
 {
     using AuctionBids.Application;
     using AuctionBids.Domain;
+    using AuctionBids.Domain.Shared;
+    using Auctions.Domain;
     using FunctionalTests.Mocks;
 
     public static class DiTestUtils
@@ -43,16 +43,22 @@ namespace FunctionalTests.Commands
         {
             var serviceProvider = BuildConfiguredServiceProvider();
 
-            
+
             RabbitMqInstaller.InitializeEventSubscriptions(serviceProvider, Assembly.Load("AuctionBids.Application"),
                  Assembly.Load("Auctions.Application"));
 
             var commandHandler = serviceProvider.GetRequiredService<CreateAuctionCommandHandler>();
+            var userId = new Auctions.Domain.UserId(Guid.NewGuid());
+            var cmd = GivenCreateAuctionCommand().Build();
+            cmd.AuctionCreateSession = AuctionCreateSession.CreateSession(userId);
+            var ctx = CommandContext.CreateNew("test");
+            ctx.User = Guid.NewGuid();
             await commandHandler.Handle(new AppCommand<CreateAuctionCommand>
             {
-                Command = GivenCreateAuctionCommand().Build(),
-                CommandContext = CommandContext.CreateNew(Guid.NewGuid(), "test"),
+                Command = cmd,
+                CommandContext = ctx,
             }, CancellationToken.None);
+            
 
             var auctions = (InMemoryAuctionRepository)serviceProvider.GetRequiredService<IAuctionRepository>();
             var auctionBids = (InMemoryAuctionBidsRepository)serviceProvider.GetRequiredService<IAuctionBidsRepository>();
@@ -69,7 +75,8 @@ namespace FunctionalTests.Commands
         {
             return DiTestUtils.CreateServiceProvider((services) =>
             {
-                services.AddCommon();
+                services.AddCommon(Assembly.Load("AuctionBids.Application"),
+                 Assembly.Load("Auctions.Application"));
                 services.AddAuctionsModule();
                 services.AddAuctionBidsModule();
 
@@ -80,8 +87,9 @@ namespace FunctionalTests.Commands
                 services.AddTransient(s => Mock.Of<ILogger<CreateAuctionCommandHandler>>());
                 services.AddTransient<CreateAuctionService>();
                 services.AddTransient<IAuctionEndScheduler, AuctionEndSchedulerMock>();
+                services.AddTransient(s => Mock.Of<IAuctionImageRepository>());
 
-                services.AddTransient<ISagaNotifications,InMemorySagaNotifications>();
+                services.AddTransient<ISagaNotifications, InMemorySagaNotifications>();
 
                 services.AddLogging();
 
