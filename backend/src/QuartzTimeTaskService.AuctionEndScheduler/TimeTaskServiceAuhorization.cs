@@ -1,6 +1,9 @@
-﻿namespace QuartzTimeTaskService.AuctionEndScheduler
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
+
+namespace QuartzTimeTaskService.AuctionEndScheduler
 {
-    public class TimeTaskServiceAuhorization
+    public static class TimeTaskServiceAuhorization
     {
         public static bool Authorize(StringValues xApiKeyValues, TimeTaskServiceSettings serviceSettings, ILogger logger)
         {

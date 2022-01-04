@@ -1,4 +1,6 @@
-﻿namespace QuartzTimeTaskService.AuctionEndScheduler
+﻿using RestEase;
+
+namespace QuartzTimeTaskService.AuctionEndScheduler
 {
     public class CancelTaskRequest
     {

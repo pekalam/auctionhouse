@@ -1,4 +1,7 @@
-﻿namespace QuartzTimeTaskService.AuctionEndScheduler
+﻿using Common.Application.Commands;
+using Core.Command.Commands.EndAuction;
+
+namespace QuartzTimeTaskService.AuctionEndScheduler
 {
     public class ScheduledTaskDispatcher
     {
