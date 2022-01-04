@@ -3,10 +3,11 @@ using Xunit;
 using FluentAssertions;
 using System.Linq;
 
-namespace Test.UserPayments.Domain
+namespace Test.UserPayments_.Domain
 {
-    using Core.Common.Domain.UserPayments;
-
+    using UserPayments.Domain;
+    using UserPayments.Domain.Events;
+    using UserPayments.Domain.Shared;
 
     public class UnitTest1
     {
