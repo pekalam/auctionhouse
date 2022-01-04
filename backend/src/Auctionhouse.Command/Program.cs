@@ -10,7 +10,6 @@ using Auctions.Application;
 using Categories.Domain;
 using Common.Application;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using QuartzTimeTaskService.AuctionEndScheduler;
 using RabbitMq.EventBus;
@@ -30,7 +29,7 @@ builder.Services.AddSingleton(builder.Configuration.GetSection("JWT").Get<JwtSet
 // Add services to the container
 builder.Services.AddCommon(modules);
 builder.Services.AddAuctionBidsModule();
-builder.Services.AddAuctionsModule();
+builder.Services.AddAuctionsModule(moduleNames);
 builder.Services.AddCategoriesModule();
 builder.Services.AddWebApiAdapters();
 builder.Services.AddAuctionImageConversion();

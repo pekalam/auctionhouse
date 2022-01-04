@@ -17,7 +17,7 @@ namespace Common.Application.Mediator
             PreHandleCommandAttributeStrategies = new Dictionary<Type, List<Action<IImplProvider, CommandContext, ICommand>>>();
             PostHandleCommandAttributeStrategies = new Dictionary<Type, List<Action<IImplProvider, CommandContext, ICommand>>>();
             var commandAttributes = commandsAssemblyNames.SelectMany(n => Assembly.Load(n).GetTypes()) 
-                .Where(type => type.BaseType == typeof(ICommand))
+                .Where(type => type.GetInterfaces().Contains(typeof(ICommand)))
                 .Where(type => type.GetCustomAttributes(typeof(ICommandAttribute), false).Length > 0)
                 .Select(type => new
                 {

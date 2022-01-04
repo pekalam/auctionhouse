@@ -1,4 +1,5 @@
-﻿using Common.Application.Events;
+﻿using Common.Application.Commands.Attributes;
+using Common.Application.Events;
 using Common.Application.Mediator;
 using Common.Application.SagaNotifications;
 using MediatR;
@@ -36,6 +37,7 @@ namespace Common.Application
             }
 
             CommandMediator.LoadCommandAttributeStrategies(commandAssemblyNames);
+            AuthorizationRequiredAttribute.LoadSignedInUserCmdAndQueryMembers(commandAssemblyNames);
         }
     }
 }
