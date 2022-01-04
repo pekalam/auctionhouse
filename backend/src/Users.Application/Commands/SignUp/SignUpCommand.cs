@@ -1,15 +1,14 @@
-﻿using System;
+﻿using Common.Application.Commands;
+using Core.Common.Domain.Users;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using Core.Common.Command;
-using Core.Common.Domain.Users;
 
 namespace Core.Command.SignUp
 {
     public class RegexAttribute : ValidationAttribute
     {
-        private Regex _regex;
+        private readonly Regex _regex;
 
         public RegexAttribute(string pattern)
         {
@@ -24,7 +23,8 @@ namespace Core.Command.SignUp
         }
     }
 
-    public class SignUpCommand : ICommand    {
+    public class SignUpCommand : ICommand
+    {
         [Required]
         [MinLength(User.MIN_USERNAME_LENGTH)]
         public string Username { get; }

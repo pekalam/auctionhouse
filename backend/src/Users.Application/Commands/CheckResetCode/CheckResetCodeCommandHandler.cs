@@ -1,21 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Core.Command.Exceptions;
-using Core.Command.Handler;
-using Core.Command.Mediator;
-using Core.Common;
-using Core.Common.Auth;
-using Core.Common.Command;
+﻿using Common.Application;
+using Common.Application.Commands;
 using Microsoft.Extensions.Logging;
+using Users.Domain.Auth;
+using Users.Domain.Repositories;
 
 namespace Core.Command.Commands.CheckResetCode
 {
     public class CheckResetCodeCommandHandler : CommandHandlerBase<CheckResetCodeCommand>
     {
-        private IResetPasswordCodeRepository _resetPasswordCodeRepository;
-        private IUserAuthenticationDataRepository _userAuthenticationDataRepository;
-        private ILogger<CheckResetCodeCommandHandler> _logger;
+        private readonly IResetPasswordCodeRepository _resetPasswordCodeRepository;
+        private readonly IUserAuthenticationDataRepository _userAuthenticationDataRepository;
+        private readonly ILogger<CheckResetCodeCommandHandler> _logger;
 
         public CheckResetCodeCommandHandler(IResetPasswordCodeRepository resetPasswordCodeRepository,
             IUserAuthenticationDataRepository userAuthenticationDataRepository,

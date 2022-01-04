@@ -1,14 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Core.Command.Exceptions;
-using Core.Command.Handler;
-using Core.Command.Mediator;
-using Core.Common;
-using Core.Common.Auth;
-using Core.Common.Command;
-using Core.Common.Domain.Users;
+﻿using Common.Application;
+using Common.Application.Commands;
 using Microsoft.Extensions.Logging;
+using Users.Domain.Exceptions;
+using Users.Domain.Repositories;
 
 namespace Core.Command.Commands.SignIn
 {
@@ -18,7 +12,7 @@ namespace Core.Command.Commands.SignIn
         private readonly ILogger<SignInCommandHandler> _logger;
 
         public SignInCommandHandler(IUserAuthenticationDataRepository userAuthenticationDataRepository, ILogger<SignInCommandHandler> logger)
-        :base(logger)
+        : base(logger)
         {
             _userAuthenticationDataRepository = userAuthenticationDataRepository;
             _logger = logger;

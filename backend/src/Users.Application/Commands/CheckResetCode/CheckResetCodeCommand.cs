@@ -1,12 +1,11 @@
-﻿using System;
+﻿using Common.Application.Commands;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
-using Core.Common.Auth;
-using Core.Common.Command;
+using Users.Domain.Auth;
 
 namespace Core.Command.Commands.CheckResetCode
 {
-    public class CheckResetCodeCommand : ICommand    {
+    public class CheckResetCodeCommand : ICommand
+    {
         [Required] public ResetCode ResetCode { get; }
         [Required] public string Email { get; }
 

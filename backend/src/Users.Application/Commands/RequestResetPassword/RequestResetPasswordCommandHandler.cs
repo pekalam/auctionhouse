@@ -1,23 +1,19 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using Common.Application;
+using Common.Application.Commands;
 using Core.Command.Commands.RequestResetPassword;
-using Core.Command.Exceptions;
-using Core.Command.Handler;
-using Core.Command.Mediator;
-using Core.Common;
-using Core.Common.Auth;
-using Core.Common.Command;
 using Microsoft.Extensions.Logging;
+using Users.Domain.Auth;
+using Users.Domain.Repositories;
+using Users.Domain.Services;
 
 namespace Core.Command.Commands.ResetPassword
 {
     public class RequestResetPasswordCommandHandler : CommandHandlerBase<RequestResetPasswordCommand>
     {
-        private ILogger<RequestResetPasswordCommandHandler> _logger;
-        private IResetPasswordCodeRepository _resetPasswordCodeRepository;
-        private IUserAuthenticationDataRepository _userAuthenticationDataRepository;
-        private IResetLinkSenderService _linkSenderService;
+        private readonly ILogger<RequestResetPasswordCommandHandler> _logger;
+        private readonly IResetPasswordCodeRepository _resetPasswordCodeRepository;
+        private readonly IUserAuthenticationDataRepository _userAuthenticationDataRepository;
+        private readonly IResetLinkSenderService _linkSenderService;
 
 
         public RequestResetPasswordCommandHandler(ILogger<RequestResetPasswordCommandHandler> logger,

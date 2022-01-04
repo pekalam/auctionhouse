@@ -1,12 +1,8 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Core.Command.Exceptions;
-using Core.Command.Handler;
-using Core.Command.Mediator;
-using Core.Common;
-using Core.Common.Auth;
-using Core.Common.Command;
+﻿using Common.Application;
+using Common.Application.Commands;
 using Microsoft.Extensions.Logging;
+using Users.Domain.Auth;
+using Users.Domain.Repositories;
 
 namespace Core.Command.Commands.ResetPassword
 {

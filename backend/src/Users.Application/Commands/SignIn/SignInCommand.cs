@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Core.Common.Command;
+﻿using Common.Application.Commands;
+using System.ComponentModel.DataAnnotations;
 
 namespace Core.Command.Commands.SignIn
 {
-    public class SignInCommand : ICommand    {
+    public class SignInCommand : ICommand
+    {
         [Required]
         public string Username { get; }
         [Required]

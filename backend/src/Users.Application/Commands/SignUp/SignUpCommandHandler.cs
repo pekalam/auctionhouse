@@ -1,27 +1,25 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Core.Command.Exceptions;
-using Core.Command.Handler;
-using Core.Command.Mediator;
-using Core.Common;
-using Core.Common.ApplicationServices;
-using Core.Common.Auth;
-using Core.Common.Command;
+﻿using Common.Application;
+using Common.Application.Commands;
+using Common.Application.Events;
 using Core.Common.Domain.Users;
 using Microsoft.Extensions.Logging;
+using Users.Domain;
+using Users.Domain.Auth;
+using Users.Domain.Exceptions;
+using Users.Domain.Repositories;
 
 namespace Core.Command.SignUp
 {
     public class SignUpCommandHandler : CommandHandlerBase<SignUpCommand>
     {
-        private readonly EventBusService _eventBusService;
+        private readonly EventBusFacade _eventBus;
         private readonly IUserAuthenticationDataRepository _userAuthenticationDataRepository;
         private readonly IUserRepository _userRepository;
         private readonly ILogger<SignUpCommandHandler> _logger;
 
-        public SignUpCommandHandler(EventBusService eventBusService, IUserAuthenticationDataRepository userAuthenticationDataRepository, IUserRepository userRepository, ILogger<SignUpCommandHandler> logger) : base(logger)
+        public SignUpCommandHandler(EventBusFacade eventBusFacade, IUserAuthenticationDataRepository userAuthenticationDataRepository, IUserRepository userRepository, ILogger<SignUpCommandHandler> logger) : base(logger)
         {
-            _eventBusService = eventBusService;
+            _eventBus = eventBusFacade;
             _userAuthenticationDataRepository = userAuthenticationDataRepository;
             _userRepository = userRepository;
             _logger = logger;
@@ -49,7 +47,7 @@ namespace Core.Command.SignUp
             };
             _userAuthenticationDataRepository.AddUserAuth(userAuth);
             _userRepository.AddUser(user);
-            _eventBusService.Publish(user.PendingEvents, request.CommandContext, Common.EventBus.ReadModelNotificationsMode.Disabled);
+            _eventBus.Publish(user.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
             user.MarkPendingEventsAsHandled();
 
             return response;

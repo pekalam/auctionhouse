@@ -1,18 +1,15 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Core.Command.Exceptions;
-using Core.Command.Handler;
-using Core.Common;
-using Core.Common.Auth;
-using Core.Common.Command;
+﻿using Common.Application;
+using Common.Application.Commands;
 using Microsoft.Extensions.Logging;
+using Users.Domain.Exceptions;
+using Users.Domain.Repositories;
 
 namespace Core.Command.Commands.ChangePassword
 {
     public class ChangePasswordCommandHandler : CommandHandlerBase<ChangePasswordCommand>
     {
-        private ILogger<ChangePasswordCommandHandler> _logger;
-        private IUserAuthenticationDataRepository _authenticationDataRepository;
+        private readonly ILogger<ChangePasswordCommandHandler> _logger;
+        private readonly IUserAuthenticationDataRepository _authenticationDataRepository;
 
         public ChangePasswordCommandHandler(ILogger<ChangePasswordCommandHandler> logger, IUserAuthenticationDataRepository authenticationDataRepository) : base(logger)
         {

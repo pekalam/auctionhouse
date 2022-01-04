@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Common.Application.Commands;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
-using Core.Common.Auth;
-using Core.Common.Command;
+using Users.Domain.Auth;
 
 namespace Core.Command.Commands.ResetPassword
 {
-    public class ResetPasswordCommand : ICommand    {
+    public class ResetPasswordCommand : ICommand
+    {
         [Required] public string NewPassword { get; }
         [Required] public ResetCode ResetCode { get; }
         [Required] public string Email { get; }

@@ -1,18 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using Common.Application.Commands;
+using Common.Application.Commands.Attributes;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
-using Core.Common.Attributes;
-using Core.Common.Command;
-using Core.Common.Domain.Users;
+
 
 namespace Core.Command.Commands.BuyCredits
 {
     [AuthorizationRequired]
-    public class BuyCreditsCommand : ICommand    {
+    public class BuyCreditsCommand : ICommand
+    {
         [Required]
         public decimal Ammount { get; }
 
-        [SignedInUser] public UserId SignedInUser { get; set; }
+        [SignedInUser] 
+        public Guid SignedInUser { get; set; }
 
         public BuyCreditsCommand(decimal ammount)
         {

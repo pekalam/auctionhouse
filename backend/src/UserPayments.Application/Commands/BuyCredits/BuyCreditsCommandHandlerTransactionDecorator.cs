@@ -1,17 +1,13 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Transactions;
-using Core.Command.Handler;
-using Core.Common;
-using Core.Common.Command;
+﻿using Common.Application;
+using Common.Application.Commands;
 using Microsoft.Extensions.Logging;
+using System.Transactions;
 
 namespace Core.Command.Commands.BuyCredits
 {
     public class BuyCreditsCommandHandlerTransactionDecorator : CommandHandlerBase<BuyCreditsCommand>
     {
-        private BuyCreditsCommandHandler _buyCreditsCommandHandler;
+        private readonly BuyCreditsCommandHandler _buyCreditsCommandHandler;
 
         public BuyCreditsCommandHandlerTransactionDecorator(
             ILogger<BuyCreditsCommandHandlerTransactionDecorator> logger,

@@ -1,18 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Core.Command.Commands.SignIn;
-using Core.Command.Mediator;
-using Core.Common.Attributes;
-using Core.Common.Command;
-using Core.Common.Domain.Users;
+﻿using Common.Application.Commands;
+using Common.Application.Commands.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace Core.Command.Commands.ChangePassword
 {
     [AuthorizationRequired]
-    public class ChangePasswordCommand : ICommand    {
+    public class ChangePasswordCommand : ICommand
+    {
         [Required]
         public string NewPassword { get; set; }
 
         [SignedInUser]
-        public UserId SignedInUser { get; set; }
+        public Guid SignedInUser { get; set; }
     }
 }
