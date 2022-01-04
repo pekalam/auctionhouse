@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Users.Domain.Auth;
 
-namespace Core.Command.Commands.ResetPassword
+namespace Users.Application.Commands.ResetPassword
 {
     public class ResetPasswordCommand : ICommand
     {

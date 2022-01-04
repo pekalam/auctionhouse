@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Users.Domain.Auth;
 
-namespace Core.Command.Commands.CheckResetCode
+namespace Users.Application.Commands.CheckResetCode
 {
     public class CheckResetCodeCommand : ICommand
     {

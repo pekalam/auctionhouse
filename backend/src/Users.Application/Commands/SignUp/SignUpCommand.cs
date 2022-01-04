@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace Core.Command.SignUp
+namespace Users.Application.Commands.SignUp
 {
     public class RegexAttribute : ValidationAttribute
     {

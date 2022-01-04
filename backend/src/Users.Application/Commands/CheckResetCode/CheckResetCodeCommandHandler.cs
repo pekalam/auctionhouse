@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Users.Domain.Auth;
 using Users.Domain.Repositories;
 
-namespace Core.Command.Commands.CheckResetCode
+namespace Users.Application.Commands.CheckResetCode
 {
     public class CheckResetCodeCommandHandler : CommandHandlerBase<CheckResetCodeCommand>
     {

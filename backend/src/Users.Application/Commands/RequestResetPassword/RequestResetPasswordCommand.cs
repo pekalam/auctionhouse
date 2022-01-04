@@ -1,7 +1,7 @@
 ﻿using Common.Application.Commands;
 using System.ComponentModel.DataAnnotations;
 
-namespace Core.Command.Commands.RequestResetPassword
+namespace Users.Application.Commands.RequestResetPassword
 {
     public class RequestResetPasswordCommand : ICommand
     {

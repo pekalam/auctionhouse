@@ -1,7 +1,7 @@
 ﻿using Common.Application.Commands;
 using System.ComponentModel.DataAnnotations;
 
-namespace Core.Command.Commands.SignIn
+namespace Users.Application.Commands.SignIn
 {
     public class SignInCommand : ICommand
     {

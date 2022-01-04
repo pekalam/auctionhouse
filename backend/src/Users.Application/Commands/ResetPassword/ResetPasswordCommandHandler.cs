@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Users.Domain.Auth;
 using Users.Domain.Repositories;
 
-namespace Core.Command.Commands.ResetPassword
+namespace Users.Application.Commands.ResetPassword
 {
     class ResetPasswordCommandHandler : CommandHandlerBase<ResetPasswordCommand>
     {

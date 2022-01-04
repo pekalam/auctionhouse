@@ -1,12 +1,11 @@
 ﻿using Common.Application;
 using Common.Application.Commands;
-using Core.Command.Commands.RequestResetPassword;
 using Microsoft.Extensions.Logging;
 using Users.Domain.Auth;
 using Users.Domain.Repositories;
 using Users.Domain.Services;
 
-namespace Core.Command.Commands.ResetPassword
+namespace Users.Application.Commands.RequestResetPassword
 {
     public class RequestResetPasswordCommandHandler : CommandHandlerBase<RequestResetPasswordCommand>
     {

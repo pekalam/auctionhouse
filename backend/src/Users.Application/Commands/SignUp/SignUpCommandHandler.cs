@@ -3,12 +3,12 @@ using Common.Application.Commands;
 using Common.Application.Events;
 using Core.Common.Domain.Users;
 using Microsoft.Extensions.Logging;
+using Users.Application.Exceptions;
 using Users.Domain;
 using Users.Domain.Auth;
-using Users.Domain.Exceptions;
 using Users.Domain.Repositories;
 
-namespace Core.Command.SignUp
+namespace Users.Application.Commands.SignUp
 {
     public class SignUpCommandHandler : CommandHandlerBase<SignUpCommand>
     {

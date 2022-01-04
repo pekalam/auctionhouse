@@ -2,7 +2,7 @@
 using Common.Application.Commands.Attributes;
 using System.ComponentModel.DataAnnotations;
 
-namespace Core.Command.Commands.ChangePassword
+namespace Users.Application.Commands.ChangePassword
 {
     [AuthorizationRequired]
     public class ChangePasswordCommand : ICommand

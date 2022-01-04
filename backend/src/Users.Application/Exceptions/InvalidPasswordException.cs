@@ -1,4 +1,4 @@
-﻿namespace Users.Domain.Exceptions
+﻿namespace Users.Application.Exceptions
 {
     public class InvalidPasswordException : Exception
     {

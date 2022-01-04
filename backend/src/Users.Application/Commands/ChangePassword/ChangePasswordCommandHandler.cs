@@ -1,10 +1,10 @@
 ﻿using Common.Application;
 using Common.Application.Commands;
 using Microsoft.Extensions.Logging;
-using Users.Domain.Exceptions;
+using Users.Application.Exceptions;
 using Users.Domain.Repositories;
 
-namespace Core.Command.Commands.ChangePassword
+namespace Users.Application.Commands.ChangePassword
 {
     public class ChangePasswordCommandHandler : CommandHandlerBase<ChangePasswordCommand>
     {
