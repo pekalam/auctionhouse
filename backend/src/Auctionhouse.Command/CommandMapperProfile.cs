@@ -1,5 +1,6 @@
 ﻿using Auctionhouse.Command.Dto;
 using Auctions.Application.Commands.CreateAuction;
+using Auctions.Domain;
 using AutoMapper;
 using Users.Application.Commands.ChangePassword;
 using Users.Application.Commands.CheckResetCode;
@@ -14,13 +15,15 @@ namespace Auctionhouse.Command
     {
         public CommandMapperProfile()
         {
-            CreateMap<CreateAuctionCommandDto, CreateAuctionCommand>();
+            CreateMap<ProductDto, Product>(MemberList.Source)
+                .ConstructUsing((dto) => new Product(dto.Name, dto.Description, (Condition)dto.Condition));
+            CreateMap<CreateAuctionCommandDto, CreateAuctionCommand>(MemberList.Source);
 
 
             CreateMap<SignInCommandDto, SignInCommand>();
             CreateMap<SignUpCommandDto, SignUpCommand>();
-            CreateMap<ChangePasswordCommandDto, ChangePasswordCommand>();
-            CreateMap<ResetPasswordCommandDto, ResetPasswordCommand>();
+            CreateMap<ChangePasswordCommandDto, ChangePasswordCommand>(MemberList.Source);
+            CreateMap<ResetPasswordCommandDto, ResetPasswordCommand>(MemberList.Source);
             CreateMap<RequestResetPasswordCommandDto, RequestResetPasswordCommand>();
             CreateMap<CheckResetCodeCommandDto, CheckResetCodeCommand>();
         }

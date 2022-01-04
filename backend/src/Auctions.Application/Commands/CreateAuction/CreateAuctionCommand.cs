@@ -12,43 +12,29 @@ namespace Auctions.Application.Commands.CreateAuction
     {
         public BuyNowPrice BuyNowPrice { get; set; }
         [Required]
-        public Product Product { get; }
+        public Product Product { get; set; }
         [Required]
-        public AuctionDate StartDate { get; }
+        public AuctionDate StartDate { get; set; }
         [Required]
-        public AuctionDate EndDate { get; }
+        public AuctionDate EndDate { get; set; }
         [Required]
         [MinCount(3)]
         [MaxCount(3)]
-        public List<string> Category { get; }
+        public List<string> Category { get; set; }
 
         [Required]
-        public bool BuyNowOnly { get; }
+        public bool BuyNowOnly { get; set; }
 
         [Required]
         [MinLength(AuctionConstantsFactory.DEFAULT_MIN_TAGS)]
-        public Tag[] Tags { get; }
+        public Tag[] Tags { get; set; }
 
         [Required]
-        public AuctionName Name { get; }
+        public AuctionName Name { get; set; }
 
         [SignedInUser]
         public Guid SignedInUser { get; set; }
 
         public AuctionCreateSession AuctionCreateSession { get; set; }
-
-        public CreateAuctionCommand(BuyNowPrice buyNowPrice, Product product,
-            AuctionDate startDate, AuctionDate endDate, List<string> category,
-            Tag[] tags, AuctionName name, bool buyNowOnly)
-        {
-            BuyNowPrice = buyNowPrice;
-            Product = product;
-            StartDate = startDate;
-            EndDate = endDate;
-            Category = category;
-            Tags = tags;
-            Name = name;
-            BuyNowOnly = buyNowOnly;
-        }
     }
 }
