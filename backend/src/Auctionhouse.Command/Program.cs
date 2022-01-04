@@ -9,6 +9,9 @@ using Auctionhouse.Command.Auth;
 using Auctions.Application;
 using Categories.Domain;
 using Common.Application;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using QuartzTimeTaskService.AuctionEndScheduler;
 using RabbitMq.EventBus;
 using System.Reflection;
@@ -37,10 +40,53 @@ builder.Services.AddXmlCategoryTreeStore(builder.Configuration.GetSection("XmlCa
 builder.Services.AddDapperAuctionhouse(builder.Configuration.GetSection("MSSql").Get<MsSqlConnectionSettings>());
 builder.Services.AddQuartzTimeTaskServiceAuctionEndScheduler(builder.Configuration.GetSection("TimeTaskService").Get<TimeTaskServiceSettings>());
 
+
+var jwtConfig = builder.Configuration.GetSection("JWT").Get<JwtSettings>();
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(jwtConfig.ConfigureJwt);
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
+                      Enter 'Bearer' [space] and then your token in the text input below.
+                      \r\n\r\nExample: 'Bearer 12345abcdef'",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+      {
+        {
+          new OpenApiSecurityScheme
+          {
+            Reference = new OpenApiReference
+              {
+                Type = ReferenceType.SecurityScheme,
+                Id = "Bearer"
+              },
+              Scheme = "oauth2",
+              Name = "Bearer",
+              In = ParameterLocation.Header,
+
+            },
+            new List<string>()
+          }
+        });
+});
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.IsEssential = true;
+});
 builder.Services.AddLogging(cfg => cfg.AddConsole());
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -50,6 +96,10 @@ var app = builder.Build();
 
 RabbitMqInstaller.InitializeEventSubscriptions(app.Services, modules);
 CommonInstaller.InitAttributeStrategies(moduleNames);
+
+app.UseAuthentication();
+app.UseStaticFiles();
+app.UseSession();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
