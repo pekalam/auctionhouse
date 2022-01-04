@@ -3,7 +3,7 @@ using Auctions.Domain.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Users.Domain.Repositories;
 
-namespace Dapper.AuctionhouseDatabase
+namespace Adapter.Dapper.AuctionhouseDatabase
 {
     public static class DapperAuctionhouseInstaller
     {
@@ -13,6 +13,8 @@ namespace Dapper.AuctionhouseDatabase
             services.AddTransient<IAuctionRepository, MsSqlAuctionRepository>();
             services.AddTransient<IUserRepository, MsSqlUserRepository>();
             services.AddTransient<IAuctionBidsRepository, MsSqlAuctionBidsRepository>();
+            services.AddTransient<IUserAuthenticationDataRepository, UserAuthenticationDataRepository>();
+            services.AddTransient<IResetPasswordCodeRepository, ResetPasswordCodeRepository>();
         }
     }
 }

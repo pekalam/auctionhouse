@@ -5,7 +5,7 @@ using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 using System.Data;
 
-namespace Dapper.AuctionhouseDatabase
+namespace Adapter.Dapper.AuctionhouseDatabase
 {
     public class MsSqlConnectionSettings
     {

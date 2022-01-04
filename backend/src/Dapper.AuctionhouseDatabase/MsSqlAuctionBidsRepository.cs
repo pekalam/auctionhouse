@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dapper.AuctionhouseDatabase
+namespace Adapter.Dapper.AuctionhouseDatabase
 {
     using AuctionBids.Domain;
     using Core.Common.Domain;
@@ -25,7 +25,7 @@ namespace Dapper.AuctionhouseDatabase
         public AuctionBids? WithAuctionId(AuctionId auctionId)
         {
             List<Event>? events = ReadEvents(auctionId.Value);
-            if(events == null)
+            if (events == null)
             {
                 return null;
             }

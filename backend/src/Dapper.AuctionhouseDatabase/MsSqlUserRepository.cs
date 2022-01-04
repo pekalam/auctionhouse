@@ -6,7 +6,7 @@ using System.Data;
 using Users.Domain;
 using Users.Domain.Repositories;
 
-namespace Dapper.AuctionhouseDatabase
+namespace Adapter.Dapper.AuctionhouseDatabase
 {
     internal class MsSqlUserRepository : MsSqlESRepositoryBase, IUserRepository
     {

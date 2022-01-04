@@ -1,9 +1,10 @@
 using Core.Common.Domain;
+using Dapper;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 using System.Data;
 
-namespace Dapper.AuctionhouseDatabase
+namespace Adapter.Dapper.AuctionhouseDatabase
 {
     internal class MsSqlESRepositoryBase
     {
