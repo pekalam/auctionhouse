@@ -69,6 +69,7 @@ namespace FunctionalTests.Commands
         {
             return DiTestUtils.CreateServiceProvider((services) =>
             {
+                services.AddCommon();
                 services.AddAuctionsModule();
                 services.AddAuctionBidsModule();
 
@@ -80,7 +81,7 @@ namespace FunctionalTests.Commands
                 services.AddTransient<CreateAuctionService>();
                 services.AddTransient<IAuctionEndScheduler, AuctionEndSchedulerMock>();
 
-                services.AddTransient<Func<ISagaNotifications>>(p => () => new InMemorySagaNotifications());
+                services.AddTransient<ISagaNotifications,InMemorySagaNotifications>();
 
                 services.AddLogging();
 

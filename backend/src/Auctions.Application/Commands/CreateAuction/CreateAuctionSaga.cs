@@ -14,9 +14,9 @@ namespace Auctions.Application.Commands.CreateAuction
     public class CreateAuctionSaga : Saga<CreateAuctionSagaData>, ISagaStartAction<AuctionCreated>, ISagaAction<AuctionBidsEvents.V1.AuctionBidsCreated>
     {
         public const string ServiceDataKey = "ServiceData";
-        private readonly Func<IAuctionRepository> _auctionRepositoryFactory;
+        private readonly Lazy<IAuctionRepository> _auctionRepositoryFactory;
 
-        public CreateAuctionSaga(Func<IAuctionRepository> auctionRepositoryFactory)
+        public CreateAuctionSaga(Lazy<IAuctionRepository> auctionRepositoryFactory)
         {
             _auctionRepositoryFactory = auctionRepositoryFactory;
         }
@@ -43,7 +43,7 @@ namespace Auctions.Application.Commands.CreateAuction
 
         public Task HandleAsync(AuctionBidsEvents.V1.AuctionBidsCreated message, ISagaContext context)
         {
-            var createAuctionService = new CreateAuctionService(_auctionRepositoryFactory(), Data.CreateAuctionServiceData);
+            var createAuctionService = new CreateAuctionService(_auctionRepositoryFactory.Value, Data.CreateAuctionServiceData);
             createAuctionService.EndCreate();
             return CompleteAsync();
         }

@@ -9,9 +9,9 @@ namespace Core.Query.EventHandlers
     {
         private readonly IAppEventBuilder _appEventBuilder;
         private readonly ILogger _logger;
-        private readonly Func<ISagaNotifications> _sagaNotificationsFactory;
+        private readonly Lazy<ISagaNotifications> _sagaNotificationsFactory;
 
-        protected EventConsumer(IAppEventBuilder appEventBuilder, ILogger logger, Func<ISagaNotifications> sagaNotificationsFactory)
+        protected EventConsumer(IAppEventBuilder appEventBuilder, ILogger logger, Lazy<ISagaNotifications> sagaNotificationsFactory)
         {
             _appEventBuilder = appEventBuilder;
             _logger = logger;

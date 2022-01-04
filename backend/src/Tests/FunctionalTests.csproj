@@ -26,7 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AuctionBids.Application\AuctionBids.Application.csproj" />
     <ProjectReference Include="..\Auctions.Application\Auctions.Application.csproj" />
-    <ProjectReference Include="..\RabbitMq\RabbitMq.EventBus.csproj" />
+    <ProjectReference Include="..\RabbitMq\Adatper.RabbitMq.EventBus.csproj" />
   </ItemGroup>
 
 </Project>

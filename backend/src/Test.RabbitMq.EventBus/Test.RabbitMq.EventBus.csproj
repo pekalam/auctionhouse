@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RabbitMq\RabbitMq.EventBus.csproj" />
+    <ProjectReference Include="..\RabbitMq\Adatper.RabbitMq.EventBus.csproj" />
   </ItemGroup>
 
 </Project>

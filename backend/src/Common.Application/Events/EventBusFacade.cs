@@ -8,9 +8,9 @@ namespace Common.Application.Events
     {
         private readonly IEventBus _eventBus;
         private readonly IAppEventBuilder _appEventBuilder;
-        private readonly Func<ISagaNotifications> _sagaNotificationsFactory;
+        private readonly Lazy<ISagaNotifications> _sagaNotificationsFactory;
 
-        public EventBusFacade(IEventBus eventBus, IAppEventBuilder appEventBuilder, Func<ISagaNotifications> sagaNotificationsFactory)
+        public EventBusFacade(IEventBus eventBus, IAppEventBuilder appEventBuilder, Lazy<ISagaNotifications> sagaNotificationsFactory)
         {
             _eventBus = eventBus;
             _appEventBuilder = appEventBuilder;
@@ -21,7 +21,7 @@ namespace Common.Application.Events
         {
             if (consistencyMode == ReadModelNotificationsMode.Saga)
             {
-                await _sagaNotificationsFactory().AddUnhandledEvent(commandContext.CorrelationId, @event);
+                await _sagaNotificationsFactory.Value.AddUnhandledEvent(commandContext.CorrelationId, @event);
             }
             PublishEvent(@event, commandContext, consistencyMode);
         }
@@ -30,7 +30,7 @@ namespace Common.Application.Events
         {
             if (consistencyMode == ReadModelNotificationsMode.Saga)
             {
-                await _sagaNotificationsFactory().AddUnhandledEvents(commandContext.CorrelationId, events);
+                await _sagaNotificationsFactory.Value.AddUnhandledEvents(commandContext.CorrelationId, events);
             }
             foreach (var @event in events)
             {
