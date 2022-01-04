@@ -47,7 +47,8 @@ namespace Test.Auctions.Application.InAuctionCreateSessionAttr
                 .Returns(mockAuctionCreateSessionService.Object);
 
             var cmd = new TestCommandBase() { Param = 1 };
-            attr.PreHandleAttributeStrategy.Invoke(mockImplProvider.Object, cmd);
+            var ctx = CommandContext.CreateNew("test");
+            attr.PreHandleAttributeStrategy.Invoke(mockImplProvider.Object, ctx, cmd);
 
             cmd.CreateSession.Should().BeEquivalentTo(testSession);
             cmd.Param.Should().Be(1);

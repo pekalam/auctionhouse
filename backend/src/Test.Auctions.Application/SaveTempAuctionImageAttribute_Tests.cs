@@ -58,8 +58,9 @@ namespace Test.Auctions.Application.SaveTempAuctionImageAttr
             {
                 Img = stubStreamAccessor.Object
             };
+            var ctx = CommandContext.CreateNew(nameof(TestCommandBase));
 
-            SaveTempAuctionImageAttribute.SaveImage(stubImplProvider.Object, cmd);
+            SaveTempAuctionImageAttribute.SaveImage(stubImplProvider.Object, ctx, cmd);
 
             cmd.Img.Should().BeNull();
             cmd.Path.Should().Be("TempFile");
