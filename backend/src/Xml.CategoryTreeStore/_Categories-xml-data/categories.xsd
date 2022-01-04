@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:c="categories-ns" targetNamespace="categories-ns">
+  <xs:simpleType name="category-id">
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="category-name">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="2"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+
+  <xs:element name="categories">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" minOccurs="1" name="category">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" minOccurs="1" name="sub-category">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="1" name="sub-sub-category">
+                      <xs:complexType>
+                        <xs:attribute name="id" type="c:category-id" use="required" />
+                        <xs:attribute name="name" type="c:category-name" use="required" />
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="id" type="c:category-id" use="required" />
+                  <xs:attribute name="name" type="c:category-name" use="required" />
+                </xs:complexType>
+                <xs:unique name="uniqueSubSubCategoryId">
+                  <xs:selector xpath="c:sub-sub-category"/>
+                  <xs:field xpath="@id"/>
+                </xs:unique>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="id" type="c:category-id" use="required" />
+            <xs:attribute name="name" type="c:category-name" use="required" />
+          </xs:complexType>
+          <xs:unique name="uniqueSubCategoryId">
+            <xs:selector xpath="c:sub-category"/>
+            <xs:field xpath="@id"/>
+          </xs:unique>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:unique name="uniqueCategoryId">
+      <xs:selector xpath="c:category"/>
+      <xs:field xpath="@id"/>
+    </xs:unique>
+  </xs:element>
+</xs:schema>

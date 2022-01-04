@@ -102,11 +102,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.RabbitMq.EventBus", "T
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dapper", "Dapper", "{94E22CD1-B1B9-44DF-8240-85E518B2CD5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapper.AuctionhouseDatabase", "Dapper.AuctionhouseDatabase\Dapper.AuctionhouseDatabase.csproj", "{EBDE7CFF-E774-4BFD-B9BD-9C51B0DBA569}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dapper.AuctionhouseDatabase", "Dapper.AuctionhouseDatabase\Dapper.AuctionhouseDatabase.csproj", "{EBDE7CFF-E774-4BFD-B9BD-9C51B0DBA569}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Dapper.AuctionhouseDatabase", "Test.Dapper.AuctionhouseDatabase\Test.Dapper.AuctionhouseDatabase.csproj", "{12CB7343-A060-4ADD-B6C4-DAE3347B7743}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Dapper.AuctionhouseDatabase", "Test.Dapper.AuctionhouseDatabase\Test.Dapper.AuctionhouseDatabase.csproj", "{12CB7343-A060-4ADD-B6C4-DAE3347B7743}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Auctions.Base", "Test.Auctions.Base\Test.Auctions.Base.csproj", "{6842B227-754B-46CB-A4B3-8E93BE6C0BB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Auctions.Base", "Test.Auctions.Base\Test.Auctions.Base.csproj", "{6842B227-754B-46CB-A4B3-8E93BE6C0BB5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReadModel", "ReadModel", "{00AB0266-0388-4EC1-BDE5-0EC6206F28E2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadModel.Core", "ReadModel.Core\ReadModel.Core.csproj", "{3E25A583-5EB5-4044-A257-CDDB426DD7AF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XmlCategories", "XmlCategories", "{B032A588-F375-46B8-8678-994B7EFD0FE1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmlCategoryTreeStore", "Xml.CategoryTreeStore\XmlCategoryTreeStore.csproj", "{26446E27-D315-4D68-959F-62A47D3426E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.XmlCategoryTreeStore", "Test.XmlCategoryTreeStore\Test.XmlCategoryTreeStore.csproj", "{EAC2A518-3F82-4B29-A847-A33979A1F6D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -266,6 +276,18 @@ Global
 		{6842B227-754B-46CB-A4B3-8E93BE6C0BB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6842B227-754B-46CB-A4B3-8E93BE6C0BB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6842B227-754B-46CB-A4B3-8E93BE6C0BB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E25A583-5EB5-4044-A257-CDDB426DD7AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E25A583-5EB5-4044-A257-CDDB426DD7AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E25A583-5EB5-4044-A257-CDDB426DD7AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E25A583-5EB5-4044-A257-CDDB426DD7AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26446E27-D315-4D68-959F-62A47D3426E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26446E27-D315-4D68-959F-62A47D3426E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26446E27-D315-4D68-959F-62A47D3426E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26446E27-D315-4D68-959F-62A47D3426E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAC2A518-3F82-4B29-A847-A33979A1F6D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAC2A518-3F82-4B29-A847-A33979A1F6D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAC2A518-3F82-4B29-A847-A33979A1F6D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAC2A518-3F82-4B29-A847-A33979A1F6D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -312,6 +334,10 @@ Global
 		{EBDE7CFF-E774-4BFD-B9BD-9C51B0DBA569} = {94E22CD1-B1B9-44DF-8240-85E518B2CD5B}
 		{12CB7343-A060-4ADD-B6C4-DAE3347B7743} = {94E22CD1-B1B9-44DF-8240-85E518B2CD5B}
 		{6842B227-754B-46CB-A4B3-8E93BE6C0BB5} = {042D36E8-EBEF-43FB-8B69-BF1169CCC1B3}
+		{3E25A583-5EB5-4044-A257-CDDB426DD7AF} = {00AB0266-0388-4EC1-BDE5-0EC6206F28E2}
+		{B032A588-F375-46B8-8678-994B7EFD0FE1} = {2C7F9FB2-0106-45A8-8185-8B58DF359DE2}
+		{26446E27-D315-4D68-959F-62A47D3426E1} = {B032A588-F375-46B8-8678-994B7EFD0FE1}
+		{EAC2A518-3F82-4B29-A847-A33979A1F6D9} = {B032A588-F375-46B8-8678-994B7EFD0FE1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F4E77E2A-13ED-428A-962C-F0BDF00E9A14}
