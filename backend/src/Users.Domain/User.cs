@@ -4,6 +4,8 @@ using Users.Domain.Events;
 
 namespace Core.Common.Domain.Users
 {
+    using static UserConstants;
+
     public class InvalidUsernameException : DomainException
     {
         public InvalidUsernameException(string message) : base(message)
@@ -11,9 +13,13 @@ namespace Core.Common.Domain.Users
         }
     }
 
-    public partial class User : AggregateRoot<User, UserId, UserUpdateEventGroup>
+    public class UserConstants
     {
         public const int MIN_USERNAME_LENGTH = 4;
+    }
+
+    public partial class User : AggregateRoot<User, UserId, UserUpdateEventGroup>
+    {
 
 
         public decimal Credits { get; private set; }

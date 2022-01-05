@@ -15,6 +15,7 @@ namespace Auctions.Application
                 throw new ArgumentException(nameof(commandAssemblyNames));
             }
             InAuctionCreateSessionAttribute.LoadAuctionCreateSessionCommandMembers(commandAssemblyNames);
+            SaveTempAuctionImageAttribute.LoadImagePathCommandMembers(commandAssemblyNames);
             services.AddTransient<AuctionImageService>();
             services.AddTransient<CreateAuctionService>();
             services.AddTransient<AuctionUnlockService>();

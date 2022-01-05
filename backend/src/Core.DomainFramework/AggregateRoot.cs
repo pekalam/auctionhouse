@@ -80,13 +80,14 @@ namespace Core.Common.Domain
             _pendingEvents.Clear();
         }
 
-        protected void AddEvent(Event @event)
+        protected T AddEvent<T>(T @event) where T : Event
         {
             if (_canAddNewEvents)
             {
                 @event.AggVersion = ++Version;
                 _pendingEvents.Add(@event);
             }
+            return @event;
         }
 
         protected abstract void Apply(Event @event);

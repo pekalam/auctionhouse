@@ -3,11 +3,16 @@ using Core.DomainFramework;
 
 namespace Auctions.Domain
 {
-    public class Tag : ValueObject
+    using static TagConstants;
+
+    public static class TagConstants
     {
         public const int MAX_LENGTH = 30;
         public const int MIN_LENGTH = 1;
+    }
 
+    public class Tag : ValueObject
+    {
         public string Value { get; }
 
         public Tag(string value)

@@ -28,7 +28,7 @@ namespace Auctions.Domain
     {
         public static readonly string[] AllowedExtensions = { "jpg", "png" };
 
-        public static string GenerateImageId(AuctionImageSize size) => $"auction-img-{Guid.NewGuid().ToString()}-{size.W}";
+        public static string GenerateImageId(AuctionImageSize size) => $"auction-img-{Guid.NewGuid()}-{size.W}";
 
 
         public string Size1Id { get; }

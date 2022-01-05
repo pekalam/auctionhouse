@@ -8,6 +8,8 @@ namespace Common.Application.Commands.Attributes
     {
         internal static Dictionary<Type, PropertyInfo> _signedInUserCommandProperties;
         internal static Dictionary<Type, PropertyInfo> _signedInUserQueryProperties;
+        internal static HashSet<Type> _commandsWithAttr;
+        internal static HashSet<Type> _queriesWithAttr;
 
         public static void LoadSignedInUserCmdAndQueryMembers(params string[] assemblyNames)
         {
@@ -27,7 +29,7 @@ namespace Common.Application.Commands.Attributes
                             PropertyInfo = info
                         })
                 )
-                .SelectMany(enumerable => enumerable);
+                .SelectMany(enumerable => enumerable).ToArray();
 
             _signedInUserCommandProperties = new Dictionary<Type, PropertyInfo>();
             _signedInUserQueryProperties = new Dictionary<Type, PropertyInfo>();
@@ -48,8 +50,18 @@ namespace Common.Application.Commands.Attributes
                 {
                     throw new ArgumentException($"Invalid cmd/query of type: {member.CmdOrQueryType.FullName}");
                 }
-
             }
+
+            _commandsWithAttr =new(assemblyNames.Select(s => Assembly.Load(s))
+                .SelectMany(assembly => assembly.GetTypes()
+                    .Where(type => type.GetInterfaces().Contains(typeof(ICommand))
+                            && type.GetCustomAttribute<AuthorizationRequiredAttribute>() != null
+                    )));
+            _queriesWithAttr = new(assemblyNames.Select(s => Assembly.Load(s))
+                .SelectMany(assembly => assembly.GetTypes()
+                    .Where(type => type.GetInterfaces().Contains(typeof(IQuery))
+                            && type.GetCustomAttribute<AuthorizationRequiredAttribute>() != null
+                    )));
         }
 
         public Action<IImplProvider, CommandContext, ICommand> PreHandleAttributeStrategy { get; } = new Action<IImplProvider, CommandContext, ICommand>(CheckCmdIsAuthorized);
@@ -72,21 +84,25 @@ namespace Common.Application.Commands.Attributes
 
         private static void CheckCmdIsAuthorized(IImplProvider implProvider, CommandContext ctx, ICommand commandBase)
         {
-            if (_signedInUserCommandProperties.ContainsKey(commandBase.GetType()))
+            var cmdType = commandBase.GetType();
+            if (_commandsWithAttr.Contains(cmdType))
             {
                 var userIdentity = GetSignedInUser(implProvider);
                 ctx.User = userIdentity;
-                _signedInUserCommandProperties[commandBase.GetType()].SetValue(commandBase, userIdentity);
+                if(_signedInUserCommandProperties.ContainsKey(cmdType))
+                    _signedInUserCommandProperties[cmdType].SetValue(commandBase, userIdentity);
             }
         }
 
         private static void CheckQueryIsAuthorized(IImplProvider implProvider, CommandContext ctx, IQuery query)
         {
-            if (_signedInUserQueryProperties.ContainsKey(query.GetType()))
+            var queryType = query.GetType();
+            if (_queriesWithAttr.Contains(queryType))
             {
                 var userIdentity = GetSignedInUser(implProvider);
                 ctx.User = userIdentity;
-                _signedInUserQueryProperties[query.GetType()].SetValue(query, userIdentity);
+                if(_signedInUserQueryProperties.ContainsKey(queryType))
+                    _signedInUserQueryProperties[queryType].SetValue(query, userIdentity);
             }
         }
     }

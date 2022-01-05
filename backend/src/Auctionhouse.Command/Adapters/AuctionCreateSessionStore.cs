@@ -29,6 +29,7 @@ namespace Auctionhouse.Command.Adapters
         {
             var json = JsonConvert.SerializeObject(session, new JsonSerializerSettings()
             {
+                TypeNameHandling = TypeNameHandling.All,
             });
             return Encoding.UTF8.GetBytes(json);
         }
@@ -39,7 +40,7 @@ namespace Auctionhouse.Command.Adapters
             var deserialized = JsonConvert.DeserializeObject<AuctionCreateSession>(json, new JsonSerializerSettings()
             {
                 NullValueHandling = NullValueHandling.Include,
-                DateTimeZoneHandling = DateTimeZoneHandling.Utc
+                DateTimeZoneHandling = DateTimeZoneHandling.Utc,
             });
             return deserialized;
         }

@@ -6,6 +6,8 @@ using System.Text.RegularExpressions;
 
 namespace Users.Application.Commands.SignUp
 {
+    using static UserConstants;
+
     public class RegexAttribute : ValidationAttribute
     {
         private readonly Regex _regex;
@@ -26,7 +28,7 @@ namespace Users.Application.Commands.SignUp
     public class SignUpCommand : ICommand
     {
         [Required]
-        [MinLength(User.MIN_USERNAME_LENGTH)]
+        [MinLength(MIN_USERNAME_LENGTH)]
         public string Username { get; }
         [Required]
         [Regex(@"(?=.*[a-z])(?!.*[\!\@\#\$\%\^\&\*\+\=\)\(_\`\~\'\""\,\.\|])(?=.{4,})")]

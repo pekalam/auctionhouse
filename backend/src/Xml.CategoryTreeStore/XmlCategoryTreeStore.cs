@@ -17,6 +17,7 @@ namespace XmlCategoryTreeStore
 
         public XmlCategoryTreeStore(XmlCategoryNameStoreSettings categoryNameServiceSettings)
         {
+            var cwd = Directory.GetCurrentDirectory();
             _categoryNameServiceSettings = categoryNameServiceSettings;
         }
 

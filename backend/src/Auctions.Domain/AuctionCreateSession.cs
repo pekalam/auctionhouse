@@ -7,10 +7,10 @@ namespace Auctions.Domain
         public const int DEFAULT_SESSION_MAX_TIME = 1000 * 60 * 10;
         public static int SESSION_MAX_TIME { get; internal set; } = DEFAULT_SESSION_MAX_TIME;
 
-        public AuctionImage?[] SessionAuctionImages { get; }
+        public AuctionImage?[] SessionAuctionImages { get; private set; }
         public DateTime DateCreated { get; private set; }
 
-        public UserId OnwerId { get; }
+        public UserId OwnerId { get; private set; }
 
         public AuctionCreateSession(AuctionImage[] sessionAuctionImages, DateTime dateCreated, UserId ownerId)
         {
@@ -20,12 +20,12 @@ namespace Auctions.Domain
             }
             SessionAuctionImages = sessionAuctionImages;
             DateCreated = dateCreated;
-            OnwerId = ownerId;
+            OwnerId = ownerId;
         }
 
         private AuctionCreateSession(UserId owner)
         {
-            OnwerId = owner;
+            OwnerId = owner;
             DateCreated = DateTime.UtcNow;
             SessionAuctionImages = new AuctionImage[Auction.MAX_IMAGES];
         }
@@ -79,14 +79,14 @@ namespace Auctions.Domain
         public Auction CreateAuction(AuctionArgs auctionArgs)
         {
             CheckIsSessionValid();
-            if (OnwerId == null)
+            if (OwnerId == null)
             {
                 throw new DomainException("User must be registered to create auction");
             }
             var args = new AuctionArgs.Builder()
                 .From(auctionArgs)
                 .SetImages(SessionAuctionImages)
-                .SetOwner(OnwerId)
+                .SetOwner(OwnerId)
                 .Build();
             var auction = new Auction(args);
             return auction;

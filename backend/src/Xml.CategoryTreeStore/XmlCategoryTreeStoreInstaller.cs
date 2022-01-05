@@ -10,5 +10,11 @@ namespace XmlCategoryTreeStore
             services.AddSingleton(settings);
             services.AddSingleton<ICategoryTreeStore, XmlCategoryTreeStore>();
         }
+
+        public static void Init(IServiceProvider serviceProvider)
+        {
+            var store = (XmlCategoryTreeStore)serviceProvider.GetRequiredService<ICategoryTreeStore>();
+            store.Init();
+        }
     }
 }

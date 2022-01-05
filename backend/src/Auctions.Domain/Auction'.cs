@@ -48,6 +48,17 @@ namespace Auctions.Domain
         private void ApplyEvent(AuctionImageRemoved @event) => RemoveImage(@event.ImgNum);
         private void ApplyEvent(AuctionImageReplaced @event) => ReplaceImage(new AuctionImage(@event.ImageSize1Id, @event.ImageSize2Id, @event.ImageSize3Id), @event.ImgNum);
 
+        private void ApplyEvent(AuctionLocked @event)
+        {
+            Locked = true;
+            LockIssuer = @event.LockIssuer;
+        }
+
+        private void ApplyEvent(AuctionUnlocked @event)
+        {
+            Locked = true;
+            LockIssuer = UserId.Empty;
+        }
 
         private void ApplyEvent(AuctionBuyNowPriceChanged ev) => UpdateBuyNowPrice(ev.BuyNowPrice);
         private void ApplyEvent(AuctionUpdateEventGroup group) => group.UpdateEvents.ForEach(ev => Apply(ev));

@@ -95,6 +95,7 @@ var app = builder.Build();
 
 RabbitMqInstaller.InitializeEventSubscriptions(app.Services, modules);
 CommonInstaller.InitAttributeStrategies(moduleNames);
+XmlCategoryTreeStoreInstaller.Init(app.Services);
 
 app.UseAuthentication();
 app.UseStaticFiles();

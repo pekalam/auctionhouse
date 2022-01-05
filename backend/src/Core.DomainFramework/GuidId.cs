@@ -18,6 +18,7 @@ namespace Core.DomainFramework
 
         public static implicit operator Guid(GuidId<T> id) => id.Value;
         // not defininng impliicit Guid->GuidId by purpose. User should use factory method
+        public override string ToString() => Value.ToString();
 
         protected override IEnumerable<object> GetEqualityComponents()
         {

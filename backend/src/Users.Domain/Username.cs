@@ -4,6 +4,8 @@ using Users.Domain.Services.UsernameProfanity;
 
 namespace Users.Domain
 {
+    using static UserConstants;
+
     public class Username : ValueObject
     {
         public string Value { get; private set; }
@@ -18,7 +20,7 @@ namespace Users.Domain
             if (profanityCheck == null) profanityCheck = new NullUsernameProfanityCheck();
 
 
-            if (username.Length < User.MIN_USERNAME_LENGTH)
+            if (username.Length < MIN_USERNAME_LENGTH)
             {
                 throw new InvalidUsernameException("Too short username");
             }

@@ -17,21 +17,14 @@ namespace Auctions.Application.Commands.AddAuctionImage
         [Required]
         [MaxLength(5)]
         [ValidAuctionImageExtension]
-        public string Extension { get; }
+        public string Extension { get; set; }
 
         [SaveTempPath]
         public string TempPath { get; set; }
 
         [Range(0, AuctionConstantsFactory.DEFAULT_MAX_IMAGES - 1)]
-        public int ImgNum { get; }
+        public int ImgNum { get; set; }
 
         public AuctionCreateSession AuctionCreateSession { get; set; }
-
-        public AddAuctionImageCommand(IFileStreamAccessor img, int imgNum, string extension)
-        {
-            Img = img;
-            ImgNum = imgNum;
-            Extension = extension;
-        }
     }
 }

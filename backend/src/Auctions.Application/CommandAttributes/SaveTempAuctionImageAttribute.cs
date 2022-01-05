@@ -15,10 +15,10 @@ namespace Auctions.Application.CommandAttributes
         public Action<IImplProvider, CommandContext, ICommand> PostHandleAttributeStrategy => null;
         public int Order => 1;
 
-        public static void LoadImagePathCommandMembers(string cmdAssembly)
+        public static void LoadImagePathCommandMembers(params string[] cmdAssemblies)
         {
-            var imgPathMembers = Assembly.Load(cmdAssembly)
-                .GetTypes()
+            var imgPathMembers = cmdAssemblies.SelectMany(n => Assembly.Load(n)
+                .GetTypes())
                 .Where(type => type.GetInterfaces().Contains(typeof(ICommand)))
                 .Where(type => type.GetCustomAttributes()
                                    .Count(attribute => attribute.GetType() == typeof(SaveTempAuctionImageAttribute)) >
@@ -33,8 +33,8 @@ namespace Auctions.Application.CommandAttributes
                     PropertyInfo = info
                 });
 
-            var imgAccessorMembers = Assembly.Load(cmdAssembly)
-                .GetTypes()
+            var imgAccessorMembers = cmdAssemblies.SelectMany(n => Assembly.Load(n)
+                .GetTypes())
                 .Where(type => type.GetInterfaces().Contains(typeof(ICommand)))
                 .Where(type => type.GetCustomAttributes()
                                    .Count(attribute => attribute.GetType() == typeof(SaveTempAuctionImageAttribute)) >

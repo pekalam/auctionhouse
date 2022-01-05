@@ -25,7 +25,7 @@ namespace Auctionhouse.Command.Adapters
                 categoryIds.Add(new CategoryId(current.Id));
                 current = current.SubCategory;
             }
-            while (current.SubCategory != null);
+            while (current is not null);
 
             return Task.FromResult(categoryIds.ToArray());
         }

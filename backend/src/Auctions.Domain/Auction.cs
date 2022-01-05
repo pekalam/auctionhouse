@@ -311,8 +311,7 @@ namespace Auctions.Domain
             {
                 throw new DomainException("Auction is already locked");
             }
-            Locked = true;
-            LockIssuer = lockIssuerId;
+            ApplyEvent(AddEvent(new AuctionLocked() { AuctionId = AggregateId, LockIssuer = lockIssuerId }));
         }
 
 
@@ -320,8 +319,7 @@ namespace Auctions.Domain
         {
             if (!Locked) throw new DomainException("Auction is not locked");
             if (LockIssuer != lockIssuerId) throw new DomainException($"Invalid {nameof(lockIssuerId)}");
-            Locked = false;
-            LockIssuer = UserId.Empty;
+            ApplyEvent(AddEvent(new AuctionUnlocked() { AuctionId = AggregateId }));
         }
 
         public void AddImage(AuctionImage img)
