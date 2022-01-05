@@ -1,0 +1,38 @@
+﻿using Common.Application.Commands;
+using System.Reflection;
+
+namespace Common.Application.Mediator
+{
+    public static class AttributeStrategies
+    {
+        internal static Dictionary<Type, List<Action<IImplProvider, CommandContext, ICommand>>> PreHandleCommandAttributeStrategies = null!;
+        internal static Dictionary<Type, List<Action<IImplProvider, CommandContext, ICommand>>> PostHandleCommandAttributeStrategies = null!;
+
+        public static void LoadCommandAttributeStrategies(params string[] commandsAssemblyNames)
+        {
+            PreHandleCommandAttributeStrategies = new Dictionary<Type, List<Action<IImplProvider, CommandContext, ICommand>>>();
+            PostHandleCommandAttributeStrategies = new Dictionary<Type, List<Action<IImplProvider, CommandContext, ICommand>>>();
+            var commandAttributes = commandsAssemblyNames.SelectMany(n => Assembly.Load(n).GetTypes())
+                .Where(type => type.GetInterfaces().Contains(typeof(ICommand)))
+                .Where(type => type.GetCustomAttributes(typeof(ICommandAttribute), false).Length > 0)
+                .Select(type => new
+                {
+                    CommandType = type,
+                    CommandAttributes = (ICommandAttribute[])type.GetCustomAttributes(typeof(ICommandAttribute), false)
+                })
+                .ToArray();
+
+            foreach (var commandAttribute in commandAttributes)
+            {
+                PreHandleCommandAttributeStrategies[commandAttribute.CommandType] =
+                    commandAttribute.CommandAttributes.OrderBy(attribute => attribute.Order)
+                        .Select(attribute => attribute.PreHandleAttributeStrategy)
+                        .ToList();
+                PostHandleCommandAttributeStrategies[commandAttribute.CommandType] =
+                    commandAttribute.CommandAttributes.OrderBy(attribute => attribute.Order)
+                        .Select(attribute => attribute.PostHandleAttributeStrategy)
+                        .ToList();
+            }
+        }
+    }
+}

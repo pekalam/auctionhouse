@@ -36,7 +36,7 @@ namespace Common.Application
                 throw new ArgumentException(nameof(commandAssemblyNames));
             }
 
-            CommandMediator.LoadCommandAttributeStrategies(commandAssemblyNames);
+            AttributeStrategies.LoadCommandAttributeStrategies(commandAssemblyNames);
             AuthorizationRequiredAttribute.LoadSignedInUserCmdAndQueryMembers(commandAssemblyNames);
         }
     }
