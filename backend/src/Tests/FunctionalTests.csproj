@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
     <PackageReference Include="Moq" Version="4.16.1" />
+    <PackageReference Include="Polly" Version="7.2.2" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -27,6 +28,27 @@
     <ProjectReference Include="..\AuctionBids.Application\AuctionBids.Application.csproj" />
     <ProjectReference Include="..\Auctions.Application\Auctions.Application.csproj" />
     <ProjectReference Include="..\RabbitMq\Adatper.RabbitMq.EventBus.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="imageData\1200x600.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="imageData\1200x600.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="imageData\500x900.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="imageData\500x900.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="imageData\500x900.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="imageData\500x900.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

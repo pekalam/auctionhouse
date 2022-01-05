@@ -20,9 +20,17 @@ namespace FunctionalTests.Builders
 
         public CreateAuctionCommand Build()
         {
-            return new CreateAuctionCommand(
-                buyNowPrice, product, startDate, endDate, CategoryNames, tags, name, buyNowOnly
-                );
+            return new CreateAuctionCommand
+            {
+                BuyNowPrice = buyNowPrice,
+                Product = product,
+                StartDate = startDate,
+                EndDate = endDate,
+                Category = CategoryNames,
+                Tags = tags,
+                Name = name,
+                BuyNowOnly = buyNowOnly,
+            };
         }
     }
 }
