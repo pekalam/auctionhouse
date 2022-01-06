@@ -1,7 +1,8 @@
 ﻿using Auctions.Domain.Services;
 using System.Threading.Tasks;
+using Test.Auctions.Base.ServiceContracts;
 
-namespace Test.Auctions.Domain
+namespace Test.Auctions.Base.Builders
 {
     public class GivenAuctionPaymentVerification
     {

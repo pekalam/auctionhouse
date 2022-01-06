@@ -56,8 +56,13 @@ namespace Auctions.Domain
 
         private void ApplyEvent(AuctionUnlocked @event)
         {
-            Locked = true;
+            Locked = false;
             LockIssuer = UserId.Empty;
+        }
+
+        private void ApplyEvent(AuctionBidsAdded @event)
+        {
+            AuctionBidsId = new AuctionBidsId(@event.AuctionBidsId);
         }
 
         private void ApplyEvent(AuctionBuyNowPriceChanged ev) => UpdateBuyNowPrice(ev.BuyNowPrice);

@@ -6,6 +6,6 @@
         void Add(string imageId, AuctionImageRepresentation imageRepresentation);
         void Remove(string imageId);
         void UpdateMetadata(string imageId, AuctionImageMetadata metadata);
-        void UpdateManyMetadata(string[] imageIds, AuctionImageMetadata Metadata);
+        int UpdateManyMetadata(string[] imageIds, AuctionImageMetadata Metadata);
     }
 }

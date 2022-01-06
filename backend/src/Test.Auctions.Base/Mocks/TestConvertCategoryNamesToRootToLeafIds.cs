@@ -3,9 +3,9 @@ using Auctions.Domain.Services;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using static Test.Auctions.Domain.AuctionTestConstants;
+using static Test.Auctions.Base.Builders.AuctionTestConstants;
 
-namespace Test.Auctions.Domain
+namespace Test.Auctions.Base.Mocks
 {
     internal class TestConvertCategoryNamesToRootToLeafIds : IConvertCategoryNamesToRootToLeafIds
     {

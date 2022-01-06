@@ -32,7 +32,7 @@ namespace AuctionBids.Domain
 
         public AuctionBids(AuctionBidsId aggregateId, Bid[] bids, AuctionId auctionId, UserId ownerId, UserId? winnerId, decimal currentPrice, bool cancelled, bool completed)
         {
-            AggregateId = new AuctionBidsId(auctionId.Value); //temporary solution TODO
+            AggregateId = aggregateId;
             _bids = bids.ToList();
             AuctionId = auctionId;
             OwnerId = ownerId;

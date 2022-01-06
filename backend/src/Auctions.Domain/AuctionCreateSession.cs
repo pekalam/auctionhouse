@@ -2,6 +2,10 @@
 
 namespace Auctions.Domain
 {
+    /// <summary>
+    /// Holds images added to auction when user creates new auction. 
+    /// It also contains logic to handle how long it can be used until it expires and should be deleted.
+    /// </summary>
     public class AuctionCreateSession
     {
         public const int DEFAULT_SESSION_MAX_TIME = 1000 * 60 * 10;
@@ -76,7 +80,7 @@ namespace Auctions.Domain
             SessionAuctionImages[imgNum] = img;
         }
 
-        public Auction CreateAuction(AuctionArgs auctionArgs)
+        internal Auction CreateAuction(AuctionArgs auctionArgs)
         {
             CheckIsSessionValid();
             if (OwnerId == null)

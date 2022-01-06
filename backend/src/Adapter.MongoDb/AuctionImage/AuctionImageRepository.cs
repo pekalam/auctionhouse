@@ -76,7 +76,7 @@ namespace Adapter.MongoDb.AuctionImage
             }
         }
 
-        public void UpdateManyMetadata(string[] imageIds, AuctionImageMetadata metadata)
+        public int UpdateManyMetadata(string[] imageIds, AuctionImageMetadata metadata)
         {
             var filter = Builders<BsonDocument>.Filter.In("filename", imageIds);
             var update = Builders<BsonDocument>.Update.Set("metadata.IsAssignedToAuction", metadata.IsAssignedToAuction);
@@ -89,10 +89,7 @@ namespace Adapter.MongoDb.AuctionImage
                 throw new Exception($"Matched count {result.MatchedCount}");
             }
 
-            if (result.ModifiedCount <= 0)
-            {
-                throw new Exception($"Modified count {result.ModifiedCount}");
-            }
+            return (int)result.ModifiedCount;
         }
 
         public void Add(string imageId, AuctionImageRepresentation imageRepresentation)

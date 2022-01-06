@@ -58,5 +58,54 @@ namespace Core.Common.Domain.Categories
 
             return category;
         }
+
+
+        private List<CategoryTreeNode> GetCategoryTreeNodesIdList(List<int> categoryIds)
+        {
+            var origTree = _categoryTreeService.GetCategoriesTree();
+            List<CategoryTreeNode> categories = origTree.SubCategories;
+            var toReturn = new List<CategoryTreeNode>();
+            int i = 0;
+            int currentId = categoryIds[i];
+            while (categories.Count > 0)
+            {
+                var matchingCategory = categories.FirstOrDefault(node => node.CategoryId == currentId);
+                if (matchingCategory == null)
+                {
+                    throw new DomainException($"Invalid category name: {currentId}");
+                }
+                else
+                {
+                    categories = matchingCategory.SubCategories;
+                    currentId = categoryIds[++i % categoryIds.Count];
+                    toReturn.Add(matchingCategory);
+                }
+            }
+
+            if (i < categoryIds.Count)
+            {
+                throw new DomainException("Invalid category names");
+            }
+
+            return toReturn;
+        }
+
+        public Category FromCategoryIdList(List<int> categoryIds)
+        {
+            if (categoryIds.Count == Category.MAX_CATEGORIES_DEPTH)
+            {
+                throw new DomainException($"");
+            }
+            var treeNodes = GetCategoryTreeNodesIdList(categoryIds);
+            var category = new Category(treeNodes[0].CategoryName, treeNodes[0].CategoryId);
+            Category next = category;
+            for (int i = 1; i < treeNodes.Count; i++)
+            {
+                next.SubCategory = new Category(treeNodes[i].CategoryName, treeNodes[i].CategoryId);
+                next = next.SubCategory;
+            }
+
+            return category;
+        }
     }
 }

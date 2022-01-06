@@ -24,8 +24,8 @@ namespace Auctions.Application.EventSubscriptions
                 .WithSagaId(appEvent.CommandContext.CorrelationId.Value)
                 .WithMetadata(CreateAuctionSaga.ServiceDataKey, _createAuctionService.ServiceData)
                 .Build();
-            await _sagaCoordinator.ProcessAsync(appEvent.Event, context);
 
+            await _sagaCoordinator.ProcessAsync(appEvent.Event, context);
         }
     }
 }

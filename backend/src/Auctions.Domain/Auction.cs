@@ -86,6 +86,13 @@ namespace Auctions.Domain
         public static implicit operator int(CategoryId id) => id.Value;
     }
 
+    public class AuctionBidsId : GuidId<AuctionBidsId>
+    {
+        public AuctionBidsId(Guid value) : base(value)
+        {
+        }
+    }
+
     public partial class Auction : AggregateRoot<Auction, AuctionId, AuctionUpdateEventGroup>
     {
         public static int MAX_IMAGES => AuctionConstantsFactory.MaxImages;
@@ -108,6 +115,8 @@ namespace Auctions.Domain
         public bool Canceled { get; private set; }
         public Tag[] Tags { get; private set; }
         public IReadOnlyList<AuctionImage?> AuctionImages => _auctionImages;
+
+        public AuctionBidsId? AuctionBidsId { get; private set; }
 
         /// <summary>
         /// Locked auction shouldn't be visible in list. It can be only viewed in read-only mode by lock issuer.
@@ -146,6 +155,10 @@ namespace Auctions.Domain
                 AuctionImagesSize2Id = auctionArgs.AuctionImages.Select(i => i?.Size2Id).ToArray(),
                 AuctionImagesSize3Id = auctionArgs.AuctionImages.Select(i => i?.Size3Id).ToArray(),
             });
+            if (!BuyNowOnly)
+            {
+                Lock(UserId.New());
+            }
         }
 
         private void Create(AuctionArgs auctionArgs, bool compareToNow)
@@ -309,6 +322,7 @@ namespace Auctions.Domain
         {
             if (Locked)
             {
+                return;
                 throw new DomainException("Auction is already locked");
             }
             ApplyEvent(AddEvent(new AuctionLocked() { AuctionId = AggregateId, LockIssuer = lockIssuerId }));
@@ -321,6 +335,14 @@ namespace Auctions.Domain
             if (LockIssuer != lockIssuerId) throw new DomainException($"Invalid {nameof(lockIssuerId)}");
             ApplyEvent(AddEvent(new AuctionUnlocked() { AuctionId = AggregateId }));
         }
+
+        internal void AddAuctionBids(AuctionBidsId auctionBidsId)
+        {
+            if (BuyNowOnly) throw new DomainException($"Cannot add AuctionBidsId to auction when {nameof(BuyNowOnly)}=true");
+            if (Locked) Unlock(LockIssuer);
+            ApplyEvent(AddEvent(new AuctionBidsAdded() { AuctionId = AggregateId, AuctionBidsId = auctionBidsId.Value }));
+        }
+
 
         public void AddImage(AuctionImage img)
         {

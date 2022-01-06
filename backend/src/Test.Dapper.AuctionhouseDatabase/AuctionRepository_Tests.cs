@@ -1,27 +1,26 @@
-using Auctions.Domain;
+using Adapter.Dapper.AuctionhouseDatabase;
 using Auctions.Domain.Repositories;
 using Core.Common.Domain.Users;
-using Dapper.AuctionhouseDatabase;
 using FluentAssertions;
 using System;
-using Test.Auctions.Domain;
+using Test.Auctions.Base.Builders;
 using Users.Domain;
 using Xunit;
 
-namespace IntegrationTests
+namespace Test.Dapper.AuctionhouseDatabase
 {
     public class AuctionRepository_Tests
     {
-        private IAuctionRepository auctionRepository;
-        private User user;
+        private readonly IAuctionRepository auctionRepository;
+        private readonly User user;
 
         public AuctionRepository_Tests()
         {
             var serverOpt = new MsSqlConnectionSettings()
             {
                 //ConnectionString = TestContextUtils.GetParameterOrDefault("sqlserver",
-           //"Data Source=.;Initial Catalog=AuctionhouseDatabase;Integrated Security=False;User ID=sa;PWD=Qwerty1234;")
-                ConnectionString= "Server=DESKTOP-69UIJIF\\SQLEXPRESS;Database=AuctionhouseDatabase;TrustServerCertificate=True;User ID=sa;Password=qwerty;"
+                //"Data Source=.;Initial Catalog=AuctionhouseDatabase;Integrated Security=False;User ID=sa;PWD=Qwerty1234;")
+                ConnectionString = "Server=DESKTOP-69UIJIF\\SQLEXPRESS;Database=AuctionhouseDatabase;TrustServerCertificate=True;User ID=sa;Password=qwerty;"
             };
             auctionRepository = new MsSqlAuctionRepository(serverOpt);
             user = User.Create(Username.Create("Test username").Result);
