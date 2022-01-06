@@ -5,13 +5,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Core.Query.EventHandlers
 {
-    public abstract class EventConsumer<T> : IEventDispatcher where T : Event
+    public abstract class EventConsumer<T, TImpl> : IEventDispatcher where T : Event where TImpl : EventConsumer<T, TImpl>
     {
         private readonly IAppEventBuilder _appEventBuilder;
-        private readonly ILogger _logger;
+        private readonly ILogger<TImpl> _logger;
         private readonly Lazy<ISagaNotifications> _sagaNotificationsFactory;
 
-        protected EventConsumer(IAppEventBuilder appEventBuilder, ILogger logger, Lazy<ISagaNotifications> sagaNotificationsFactory)
+        protected EventConsumer(IAppEventBuilder appEventBuilder, ILogger<TImpl> logger, Lazy<ISagaNotifications> sagaNotificationsFactory)
         {
             _appEventBuilder = appEventBuilder;
             _logger = logger;

@@ -26,7 +26,7 @@ namespace Common.Application
                     {
                         cfg.AsTransient();
                     });
-            services.AddTransient<ImmediateCommandMediator>();
+            services.AddTransient<ImmediateCommandQueryMediator>();
         }
 
         public static void InitAttributeStrategies(params string[] commandAssemblyNames)

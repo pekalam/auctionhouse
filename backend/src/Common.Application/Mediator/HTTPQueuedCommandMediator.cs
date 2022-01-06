@@ -1,4 +1,5 @@
 ﻿using Common.Application.Commands;
+using Common.Application.Queries;
 using Microsoft.Extensions.Logging;
 using System.Runtime.CompilerServices;
 
@@ -23,7 +24,7 @@ namespace Common.Application.Mediator
         public object AppCommand { get; set; }
     }
 
-    public class HTTPQueuedCommandMediator : CommandMediator
+    public class HTTPQueuedCommandMediator : CommandQueryMediator
     {
         private readonly IQueuedCommandBus _queuedCommandBus;
         private readonly IImplProvider _implProvider;
@@ -38,6 +39,11 @@ namespace Common.Application.Mediator
         {
             _queuedCommandBus.PreparePublish(_implProvider, command);
             return base.Send(command);
+        }
+
+        public override Task<T> Send<T>(IQuery<T> query)
+        {
+            throw new NotImplementedException();
         }
 
         protected override Task<(RequestStatus, bool)> SendAppCommand<T>(AppCommand<T> appCommand)

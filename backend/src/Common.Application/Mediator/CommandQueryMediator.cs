@@ -1,14 +1,15 @@
 ﻿using Common.Application.Commands;
+using Common.Application.Queries;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Test.UnitTests")]
 namespace Common.Application.Mediator
 {
-    public abstract class CommandMediator
+    public abstract class CommandQueryMediator
     {
         private readonly IImplProvider _implProvider;
 
-        protected CommandMediator(IImplProvider implProvider)
+        protected CommandQueryMediator(IImplProvider implProvider)
         {
             _implProvider = implProvider;
         }
@@ -49,6 +50,8 @@ namespace Common.Application.Mediator
 
             return requestStatus;
         }
+
+        public abstract Task<T> Send<T>(IQuery<T> query);
 
         protected abstract Task<(RequestStatus, bool)> SendAppCommand<T>(AppCommand<T> command) where T : ICommand;
     }

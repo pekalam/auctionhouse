@@ -66,7 +66,7 @@ namespace Common.Application.Commands.Attributes
 
         public Action<IImplProvider, CommandContext, ICommand> PreHandleAttributeStrategy { get; } = new Action<IImplProvider, CommandContext, ICommand>(CheckCmdIsAuthorized);
         public Action<IImplProvider, CommandContext, ICommand> PostHandleAttributeStrategy { get; }
-        Action<IImplProvider, CommandContext, IQuery> IQueryAttribute.AttributeStrategy { get; } = new Action<IImplProvider, CommandContext, IQuery>(CheckQueryIsAuthorized);
+        Action<IImplProvider, IQuery> IQueryAttribute.AttributeStrategy { get; } = new Action<IImplProvider, IQuery>(CheckQueryIsAuthorized);
 
         public int Order => 0;
 
@@ -87,22 +87,21 @@ namespace Common.Application.Commands.Attributes
             var cmdType = commandBase.GetType();
             if (_commandsWithAttr.Contains(cmdType))
             {
-                var userIdentity = GetSignedInUser(implProvider);
-                ctx.User = userIdentity;
+                var userId = GetSignedInUser(implProvider);
+                ctx.User = userId;
                 if(_signedInUserCommandProperties.ContainsKey(cmdType))
-                    _signedInUserCommandProperties[cmdType].SetValue(commandBase, userIdentity);
+                    _signedInUserCommandProperties[cmdType].SetValue(commandBase, userId);
             }
         }
 
-        private static void CheckQueryIsAuthorized(IImplProvider implProvider, CommandContext ctx, IQuery query)
+        private static void CheckQueryIsAuthorized(IImplProvider implProvider, IQuery query)
         {
             var queryType = query.GetType();
             if (_queriesWithAttr.Contains(queryType))
             {
-                var userIdentity = GetSignedInUser(implProvider);
-                ctx.User = userIdentity;
+                var userId = GetSignedInUser(implProvider);
                 if(_signedInUserQueryProperties.ContainsKey(queryType))
-                    _signedInUserQueryProperties[queryType].SetValue(query, userIdentity);
+                    _signedInUserQueryProperties[queryType].SetValue(query, userId);
             }
         }
     }

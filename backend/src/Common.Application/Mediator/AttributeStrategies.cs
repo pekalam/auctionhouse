@@ -1,4 +1,5 @@
 ﻿using Common.Application.Commands;
+using Common.Application.Queries;
 using System.Reflection;
 
 namespace Common.Application.Mediator
@@ -31,6 +32,33 @@ namespace Common.Application.Mediator
                 PostHandleCommandAttributeStrategies[commandAttribute.CommandType] =
                     commandAttribute.CommandAttributes.OrderBy(attribute => attribute.Order)
                         .Select(attribute => attribute.PostHandleAttributeStrategy)
+                        .ToList();
+            }
+        }
+
+
+        internal static Dictionary<Type, List<Action<IImplProvider, IQuery>>> PreHandleQueryAttributeStrategies = null!;
+        internal static Dictionary<Type, List<Action<IImplProvider, IQuery>>> PostHandleQueryAttributeStrategies = null!;
+
+        public static void LoadQueryAttributeStrategies(params string[] commandsAssemblyNames)
+        {
+            PreHandleQueryAttributeStrategies = new();
+            PostHandleQueryAttributeStrategies = new();
+            var queryAttributes = commandsAssemblyNames.SelectMany(n => Assembly.Load(n).GetTypes())
+                .Where(type => type.GetInterfaces().Contains(typeof(IQuery)))
+                .Where(type => type.GetCustomAttributes(typeof(IQueryAttribute), false).Length > 0)
+                .Select(type => new
+                {
+                    CommandType = type,
+                    CommandAttributes = (IQueryAttribute[])type.GetCustomAttributes(typeof(IQueryAttribute), false)
+                })
+                .ToArray();
+
+            foreach (var queryAttribute in queryAttributes)
+            {
+                PreHandleQueryAttributeStrategies[queryAttribute.CommandType] =
+                    queryAttribute.CommandAttributes.OrderBy(attribute => attribute.Order)
+                        .Select(attribute => attribute.AttributeStrategy)
                         .ToList();
             }
         }
