@@ -76,6 +76,7 @@ namespace Auctions.Application.Commands.CreateAuction
             {
                 _eventBusFacade.Publish(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
             }
+            auction.MarkPendingEventsAsHandled();
 
 
             return RequestStatus.CreatePending(request.CommandContext);

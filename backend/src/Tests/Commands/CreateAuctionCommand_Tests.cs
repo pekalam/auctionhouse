@@ -1,28 +1,27 @@
 using AuctionBids.Domain.Repositories;
-using Auctions.Application.Commands.CreateAuction;
+using Auctions.Application.Commands.StartAuctionCreateSession;
 using Auctions.Domain.Repositories;
-using Common.Application.Commands;
+using FunctionalTests.Mocks;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Abstractions;
 using static FunctionalTests.Builders.CreateAuctionCommandBuilder;
 
 namespace FunctionalTests.Commands
 {
-    using AuctionBids.Domain;
-    using AuctionBids.Domain.Shared;
-    using Auctions.Application.Commands.StartAuctionCreateSession;
-    using FunctionalTests.Mocks;
+    [CollectionDefinition(nameof(CommandTestsCollection), DisableParallelization = true)]
+    public class CommandTestsCollection { }
 
+    [Collection(nameof(CommandTestsCollection))]
     public class CreateAuctionCommand_Tests : TestBase
     {
-        private InMemoryAuctionRepository auctions;
-        private InMemoryAuctionBidsRepository auctionBids;
+        private readonly InMemoryAuctionRepository auctions;
+        private readonly InMemoryAuctionBidsRepository auctionBids;
 
-        public CreateAuctionCommand_Tests() : base("AuctionBids.Application", "Auctions.Application")
+        public CreateAuctionCommand_Tests(ITestOutputHelper outputHelper) : base(outputHelper, "AuctionBids.Application", "Auctions.Application")
         {
             auctions = (InMemoryAuctionRepository)ServiceProvider.GetRequiredService<IAuctionRepository>();
             auctionBids = (InMemoryAuctionBidsRepository)ServiceProvider.GetRequiredService<IAuctionBidsRepository>();
@@ -34,16 +33,19 @@ namespace FunctionalTests.Commands
             //start session
             var startSessionCmd = new StartAuctionCreateSessionCommand();
             await SendCommand(startSessionCmd);
+            await Task.Delay(2000);
 
             //create auction in session
             var createAuctionCmd = GivenCreateAuctionCommand().Build();
             await SendCommand(createAuctionCmd);
+            await Task.Delay(2000);
 
 
-            AssertEventual(() => {
+            AssertEventual(() =>
+            {
                 var createdAuction = auctions.All.First();
                 var auctionLocked = (createdAuction.Locked);
-                var idEqual = (auctionBids.All.Count > 0 && auctionBids.All.First().AuctionId.Value == createdAuction.AggregateId.Value);
+                var idEqual = (auctionBids.All.Count > 0 && auctionBids.All.FirstOrDefault(a => a.AuctionId.Value == createdAuction.AggregateId.Value) is not null);
                 return !auctionLocked && idEqual;
             });
         }

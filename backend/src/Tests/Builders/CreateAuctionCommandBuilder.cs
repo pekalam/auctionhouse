@@ -7,16 +7,22 @@ namespace FunctionalTests.Builders
 {
     public class CreateAuctionCommandBuilder
     {
-        private readonly BuyNowPrice buyNowPrice = new BuyNowPrice(1m);
-        private readonly Product product = new Product("testxxx", "descss", Condition.New);
-        private readonly AuctionDate startDate = new AuctionDate(DateTime.UtcNow);
-        private readonly AuctionDate endDate = new AuctionDate(DateTime.UtcNow.AddDays(1));
-        private readonly List<string> CategoryNames = new List<string>() { "1", "2", "3" };
-        private readonly Tag[] tags = new[] { new Tag("tag1"), new Tag("tag2"), new Tag("tag3") };
-        private readonly AuctionName name = new AuctionName("namewq123");
-        private readonly bool buyNowOnly = false;
+        private BuyNowPrice buyNowPrice = new BuyNowPrice(1m);
+        private Product product = new Product("testxxx", "descss", Condition.New);
+        private AuctionDate startDate = new AuctionDate(DateTime.UtcNow);
+        private AuctionDate endDate = new AuctionDate(DateTime.UtcNow.AddDays(1));
+        private List<string> CategoryNames = new List<string>() { "1", "2", "3" };
+        private Tag[] tags = new[] { new Tag("tag1"), new Tag("tag2"), new Tag("tag3") };
+        private AuctionName name = new AuctionName("namewq123");
+        private bool buyNowOnly = false;
 
         public static CreateAuctionCommandBuilder GivenCreateAuctionCommand() => new();
+
+        public CreateAuctionCommandBuilder WithBuyNowOnly(bool buyNowOnly)
+        {
+            this.buyNowOnly = buyNowOnly;
+            return this;
+        }
 
         public CreateAuctionCommand Build()
         {

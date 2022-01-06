@@ -9,12 +9,10 @@ namespace Auctions.Application.EventSubscriptions
     public class AuctionBidsCreatedSubscriber : EventSubscriber<Events.V1.AuctionBidsCreated>
     {
         private readonly ISagaCoordinator _sagaCoordinator;
-        private readonly CreateAuctionService _createAuctionService;
 
-        public AuctionBidsCreatedSubscriber(IAppEventBuilder eventBuilder, ISagaCoordinator sagaCoordinator, CreateAuctionService createAuctionService) : base(eventBuilder)
+        public AuctionBidsCreatedSubscriber(IAppEventBuilder eventBuilder, ISagaCoordinator sagaCoordinator) : base(eventBuilder)
         {
             _sagaCoordinator = sagaCoordinator;
-            _createAuctionService = createAuctionService;
         }
 
         public override async Task Handle(IAppEvent<Events.V1.AuctionBidsCreated> appEvent)
@@ -22,7 +20,6 @@ namespace Auctions.Application.EventSubscriptions
             var context = SagaContext
                 .Create()
                 .WithSagaId(appEvent.CommandContext.CorrelationId.Value)
-                .WithMetadata(CreateAuctionSaga.ServiceDataKey, _createAuctionService.ServiceData)
                 .Build();
 
             await _sagaCoordinator.ProcessAsync(appEvent.Event, context);

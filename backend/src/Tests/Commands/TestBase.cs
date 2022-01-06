@@ -23,26 +23,38 @@ namespace FunctionalTests.Commands
     using Polly;
     using System.Linq;
     using System.Threading.Tasks;
+    using UserPayments.Application;
+    using UserPayments.Domain.Repositories;
     using Xunit;
+    using Xunit.Abstractions;
 
     public class TestBase
     {
         private string[] assemblyNames;
+        private ITestOutputHelper _outputHelper;
+        private UserIdentityServiceMock _userIdentityService;
 
         public IServiceProvider ServiceProvider { get; }
 
-        public ImmediateCommandMediator Mediator { get; }
+        public ImmediateCommandQueryMediator Mediator { get; }
 
         public UserId CurrentUser { get; } = UserId.New();
 
-        public TestBase(params string[] assemblyNames)
+        public TestBase(ITestOutputHelper outputHelper, params string[] assemblyNames)
         {
+            _outputHelper = outputHelper;
+            _userIdentityService = new(Guid.NewGuid());
             this.assemblyNames = assemblyNames;
 
             ServiceProvider = BuildConfiguredServiceProvider();
             RabbitMqInstaller.InitializeEventSubscriptions(ServiceProvider, assemblyNames.Select(n => Assembly.Load(n)).ToArray());
             CommonInstaller.InitAttributeStrategies(assemblyNames);
-            Mediator = ServiceProvider.GetRequiredService<ImmediateCommandMediator>();
+            Mediator = ServiceProvider.GetRequiredService<ImmediateCommandQueryMediator>();
+        }
+
+        public void ChangeSignedInUser(Guid userId)
+        {
+            _userIdentityService.UserId = userId;
         }
 
         public Task<RequestStatus> SendCommand<T>(T command) where T : ICommand
@@ -62,6 +74,7 @@ namespace FunctionalTests.Commands
                 services.AddCommon(assemblyNames.Select(n => Assembly.Load(n)).ToArray());
                 services.AddAuctionsModule(assemblyNames);
                 services.AddAuctionBidsModule();
+                services.AddUserPaymentsModule();
 
                 services.AddSingleton<IAuctionCreateSessionStore, InMemAuctionCreateSessionStore>();
                 services.AddSingleton<IAuctionRepository, InMemoryAuctionRepository>();
@@ -72,12 +85,25 @@ namespace FunctionalTests.Commands
                 services.AddTransient<CreateAuctionService>();
                 services.AddTransient<IAuctionEndScheduler, AuctionEndSchedulerMock>();
                 services.AddTransient(s => Mock.Of<IAuctionImageRepository>());
-                services.AddSingleton<IUserIdentityService, UserIdentityServiceMock>(s => new(CurrentUser.Value));
+                services.AddSingleton<IUserIdentityService, UserIdentityServiceMock>(s => _userIdentityService);
 
                 services.AddTransient<IAuctionImageConversion>((s) => Mock.Of<IAuctionImageConversion>());
                 services.AddTransient<ISagaNotifications, InMemorySagaNotifications>();
 
-                services.AddLogging();
+                var paymentVerification = new Mock<IAuctionPaymentVerification>();
+                paymentVerification
+                .Setup(f => f.Verification(It.IsAny<Auction>(), It.IsAny<UserId>(), It.IsAny<string>()))
+                .Returns(Task.FromResult(true));
+                services.AddTransient<IAuctionPaymentVerification>(s => paymentVerification.Object);
+                services.AddTransient<IAuctionUnlockScheduler>(s => Mock.Of<IAuctionUnlockScheduler>());
+
+                services.AddSingleton<IUserPaymentsRepository>(s => new InMemortUserPaymentsRepository());
+
+                services.AddLogging(c =>
+                {
+                    c.AddXUnit(_outputHelper);
+                    c.SetMinimumLevel(LogLevel.Debug);
+                });
 
                 services.AddRabbitMq(new RabbitMqSettings
                 {

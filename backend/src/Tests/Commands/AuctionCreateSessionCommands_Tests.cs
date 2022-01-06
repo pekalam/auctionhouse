@@ -17,6 +17,7 @@ namespace FunctionalTests.Commands
     using FunctionalTests.Mocks;
     using Moq;
     using System.IO;
+    using Xunit.Abstractions;
 
     public class AuctionCreateSessionCommands_Tests : TestBase
     {
@@ -24,7 +25,7 @@ namespace FunctionalTests.Commands
         private Mock<ITempFileService> tempFileServiceMock;
         private Mock<IAuctionImageConversion> imageConversionMock;
 
-        public AuctionCreateSessionCommands_Tests() : base("AuctionBids.Application", "Auctions.Application")
+        public AuctionCreateSessionCommands_Tests(ITestOutputHelper outputHelper) : base(outputHelper, "AuctionBids.Application", "Auctions.Application")
         {
             auctionCreateSessionStore = (InMemAuctionCreateSessionStore)ServiceProvider.GetRequiredService<IAuctionCreateSessionStore>();
             tempFileServiceMock = new Mock<ITempFileService>();

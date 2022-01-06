@@ -12,16 +12,16 @@ namespace FunctionalTests.Mocks
 {
     internal class UserIdentityServiceMock : IUserIdentityService
     {
-        private readonly Guid _userId;
+        public Guid UserId { get; set;  }
 
         public UserIdentityServiceMock(Guid userId)
         {
-            _userId = userId;
+            UserId = userId;
         }
 
         public Guid GetSignedInUserIdentity()
         {
-            return _userId;
+            return UserId;
         }
     }
 
