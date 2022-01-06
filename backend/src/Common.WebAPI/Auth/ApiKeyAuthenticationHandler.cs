@@ -1,4 +1,4 @@
-﻿namespace Auctionhouse.Command.Auth
+﻿namespace Common.WebAPI.Auth
 {
     //public class ApiKeyAuthenticationOptions : AuthenticationSchemeOptions
     //{

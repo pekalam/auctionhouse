@@ -79,7 +79,7 @@ namespace ReadModel.Core.Queries.Auction.Auctions
             if (request.ConditionQuery != ConditionQuery.All)
             {
                 filtersArr.Add(Builders<AuctionRead>.Filter.Eq(f => f.Product.Condition,
-                    (Condition)request.ConditionQuery));
+                    (int)request.ConditionQuery));
             }
 
             CreateBuyNowPriceFilter(filtersArr, request);

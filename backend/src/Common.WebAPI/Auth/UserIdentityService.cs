@@ -1,8 +1,10 @@
 ﻿using Common.Application;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
-namespace Auctionhouse.Command.Adapters
+namespace Common.WebAPI.Auth
 {
     internal class UserIdentityService : IUserIdentityService
     {

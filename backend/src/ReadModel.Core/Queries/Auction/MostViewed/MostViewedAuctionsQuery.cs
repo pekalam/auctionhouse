@@ -33,6 +33,6 @@ namespace ReadModel.Core.Queries.Auction.MostViewed
         [BsonDefaultValue(0)] public decimal ActualPrice { get; set; }
         public int TotalBids { get; set; }
         public int Views { get; set; }
-        public Common.Domain.Auctions.AuctionImage[] AuctionImages { get; set; }
+        public AuctionImageRead[] AuctionImages { get; set; }
     }
 }

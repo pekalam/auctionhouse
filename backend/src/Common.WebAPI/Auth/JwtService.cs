@@ -3,7 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Auctionhouse.Command.Auth
+namespace Common.WebAPI.Auth
 {
     public class JwtService
     {

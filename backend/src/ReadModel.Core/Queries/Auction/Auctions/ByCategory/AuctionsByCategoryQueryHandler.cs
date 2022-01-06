@@ -10,23 +10,21 @@ namespace ReadModel.Core.Queries.Auction.Auctions.ByCategory
     public class AuctionsByCategoryQueryHandler : AuctionsQueryHandlerBase<AuctionsByCategoryQuery>
     {
         private readonly ReadModelDbContext _dbContext;
-        private readonly CategoryBuilder _categoryBuilder;
 
         public AuctionsByCategoryQueryHandler(ReadModelDbContext dbContext, CategoryBuilder categoryBuilder)
         {
             _dbContext = dbContext;
-            _categoryBuilder = categoryBuilder;
         }
 
         protected async override Task<AuctionsQueryResult> HandleQuery(AuctionsByCategoryQuery request, CancellationToken cancellationToken)
         {
             var mapper = MapperConfigHolder.Configuration.CreateMapper();
-            var category = _categoryBuilder.FromCategoryNamesList(request.CategoryNames);
-            var catFilter = Builders<AuctionRead>.Filter.Eq(f => f.Category, category);
 
             var filtersArr = new List<FilterDefinition<AuctionRead>>()
             {
-                catFilter
+                Builders<AuctionRead>.Filter.Eq(f => f.Category.Name, request.CategoryNames[0]),
+                Builders<AuctionRead>.Filter.Eq(f => f.Category.SubCategory.Name, request.CategoryNames[1]),
+                Builders<AuctionRead>.Filter.Eq(f => f.Category.SubCategory.SubCategory.Name, request.CategoryNames[2]),
             };
             var filtersFromBase = CreateFilterDefs(request);
             filtersArr.AddRange(filtersFromBase);

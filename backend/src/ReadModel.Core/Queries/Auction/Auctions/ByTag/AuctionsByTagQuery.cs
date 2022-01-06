@@ -1,4 +1,5 @@
-﻿using Common.Application.Queries;
+﻿using Auctions.Domain;
+using Common.Application.Queries;
 using System.ComponentModel.DataAnnotations;
 
 
@@ -10,8 +11,8 @@ namespace ReadModel.Core.Queries.Auction.Auctions.ByTag
         [Range(0, int.MaxValue)]
         public int Page { get; set; } = 0;
         [Required]
-        [MinLength(global::Auctions.Domain.Tag.MIN_LENGTH)]
-        [MaxLength(global::Auctions.Domain.Tag.MAX_LENGTH)]
+        [MinLength(TagConstants.MIN_LENGTH)]
+        [MaxLength(TagConstants.MAX_LENGTH)]
         public string Tag { get; set; }
     }
 }

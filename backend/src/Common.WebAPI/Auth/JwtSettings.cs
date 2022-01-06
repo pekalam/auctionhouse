@@ -2,7 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace Auctionhouse.Command.Auth
+namespace Common.WebAPI.Auth
 {
     public class JwtSettings
     {

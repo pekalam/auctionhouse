@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Common.Application.Queries;
+using Core.Common.Domain.Users;
 
 namespace ReadModel.Core.Queries.Auth.CheckUsername
 {
     public class CheckUsernameQuery : IQuery<CheckUsernameQueryResult>
     {
-        [MinLength(Common.Domain.Users.User.MIN_USERNAME_LENGTH)]
+        [MinLength(UserConstants.MIN_USERNAME_LENGTH)]
         public string Username { get; }
 
         public CheckUsernameQuery(string username)

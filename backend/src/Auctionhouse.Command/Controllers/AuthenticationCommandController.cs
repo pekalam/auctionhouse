@@ -1,8 +1,8 @@
-﻿using Auctionhouse.Command.Auth;
-using Auctionhouse.Command.Dto;
+﻿using Auctionhouse.Command.Dto;
 using AutoMapper;
 using Common.Application;
 using Common.Application.Mediator;
+using Common.WebAPI.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Users.Application.Commands.ChangePassword;
 using Users.Application.Commands.CheckResetCode;
@@ -18,11 +18,11 @@ namespace Auctionhouse.Command.Controllers
     //[FeatureGate("Auctionhouse_AuthenticationCommands")]
     public class AuthenticationCommandController : Controller
     {
-        private readonly ImmediateCommandMediator _mediator;
+        private readonly ImmediateCommandQueryMediator _mediator;
         private readonly JwtService _jwtService;
         private readonly IMapper _mapper;
 
-        public AuthenticationCommandController(ImmediateCommandMediator immediateCommandMediator, JwtService jwtService, IMapper mapper)
+        public AuthenticationCommandController(ImmediateCommandQueryMediator immediateCommandMediator, JwtService jwtService, IMapper mapper)
         {
             _mediator = immediateCommandMediator;
             _jwtService = jwtService;

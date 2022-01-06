@@ -13,14 +13,5 @@ namespace ReadModel.Core.Model
         public decimal Price { get; set; }
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime DateCreated { get; set; }
-
-        public BidRead(Bid bid)
-        {
-            BidId = bid.Id.ToString();
-            //AuctionId = bid.AuctionId.ToString(); //TODO add id
-            UserIdentity = new UserIdentityRead(bid.UserId, bid.UserId.ToString()); //TODO
-            Price = bid.Price;
-            DateCreated = bid.Date; //TODO rename
-        }
     }
 }

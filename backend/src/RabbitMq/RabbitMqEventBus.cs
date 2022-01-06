@@ -18,7 +18,7 @@ namespace RabbitMq.EventBus
         {
             return assemblies
                 .SelectMany(a => a.ExportedTypes)
-                .Where(t => t.BaseType != null && t.BaseType.IsGenericType && t.BaseType.GetGenericTypeDefinition() == typeof(EventConsumer<>))
+                .Where(t => t.BaseType != null && t.BaseType.IsGenericType && t.BaseType.GetGenericTypeDefinition() == typeof(EventConsumer<,>))
                 .Select(t =>
                 {
                     return (t, t.BaseType.GenericTypeArguments[0]);

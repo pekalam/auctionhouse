@@ -1,4 +1,5 @@
-﻿using Common.Application.Queries;
+﻿using Common.Application.Commands.Attributes;
+using Common.Application.Queries;
 
 namespace ReadModel.Core.Queries.User.UserData
 {

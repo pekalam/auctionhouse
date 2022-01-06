@@ -5,10 +5,11 @@ using Adapter.MongoDb.AuctionImage;
 using Adapter.QuartzTimeTaskService.AuctionEndScheduler;
 using AuctionBids.Application;
 using Auctionhouse.Command.Adapters;
-using Auctionhouse.Command.Auth;
 using Auctions.Application;
 using Categories.Domain;
 using Common.Application;
+using Common.WebAPI;
+using Common.WebAPI.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using QuartzTimeTaskService.AuctionEndScheduler;
@@ -38,12 +39,9 @@ builder.Services.AddRabbitMq(builder.Configuration.GetSection("RabbitMq").Get<Ra
 builder.Services.AddXmlCategoryTreeStore(builder.Configuration.GetSection("XmlCategoryTreeStore").Get<XmlCategoryNameStoreSettings>());
 builder.Services.AddDapperAuctionhouse(builder.Configuration.GetSection("MSSql").Get<MsSqlConnectionSettings>());
 builder.Services.AddQuartzTimeTaskServiceAuctionEndScheduler(builder.Configuration.GetSection("TimeTaskService").Get<TimeTaskServiceSettings>());
-
-
 var jwtConfig = builder.Configuration.GetSection("JWT").Get<JwtSettings>();
-builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(jwtConfig.ConfigureJwt);
+builder.Services.AddCommonWebApi(jwtConfig);
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

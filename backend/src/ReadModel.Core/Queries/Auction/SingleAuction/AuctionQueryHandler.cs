@@ -25,7 +25,8 @@ namespace ReadModel.Core.Queries.Auction.SingleAuction
                 .FirstOrDefaultAsync();
             if (auction == null)
             {
-                throw new ResourceNotFoundException($"Cannot find auction with id: {request.AuctionId}");
+                //throw new ResourceNotFoundException($"Cannot find auction with id: {request.AuctionId}");
+                throw new Exception($"Cannot find auction with id: {request.AuctionId}");
             }
 
             await _readModelDbContext.AuctionsReadModel.UpdateManyAsync(filter, upd);

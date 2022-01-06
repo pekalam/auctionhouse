@@ -1,4 +1,4 @@
-﻿namespace Web.Dto.Commands
+﻿namespace Auctionhouse.Command.Dto
 {
     public class UpdateAuctionCommandDto
     {

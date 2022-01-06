@@ -16,6 +16,8 @@
     <ProjectReference Include="..\Auctions.Domain\Auctions.Domain.csproj" />
     <ProjectReference Include="..\Categories.Domain\Categories.Domain.csproj" />
     <ProjectReference Include="..\Common.Application\Common.Application.csproj" />
+    <ProjectReference Include="..\RabbitMq\Adatper.RabbitMq.EventBus.csproj" />
+    <ProjectReference Include="..\Users.Domain\Users.Domain.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,4 @@
-﻿using Core.Query.ReadModel;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson.Serialization.Attributes;
 
 namespace ReadModel.Core.Views
 {
