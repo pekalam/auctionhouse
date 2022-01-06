@@ -322,7 +322,6 @@ namespace Auctions.Domain
         {
             if (Locked)
             {
-                return;
                 throw new DomainException("Auction is already locked");
             }
             ApplyEvent(AddEvent(new AuctionLocked() { AuctionId = AggregateId, LockIssuer = lockIssuerId }));
