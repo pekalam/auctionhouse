@@ -12,7 +12,7 @@ namespace Test.UserPayments_.Domain
     public class UnitTest1
     {
         private UserPayments _userPayments = UserPayments.CreateNew(UserId.New());
-        private AuctionId _auctionId = AuctionId.New();
+        private TransactionId _transactionId = TransactionId.New();
         private UserId _userId = UserId.New();
 
         public UnitTest1()
@@ -24,13 +24,13 @@ namespace Test.UserPayments_.Domain
         public void Test1()
         {
             _userPayments.MarkPendingEventsAsHandled();
-            var payment = _userPayments.CreateBidPayment(_auctionId, _userId, 10m);
+            var payment = _userPayments.CreateBidPayment(_transactionId, _userId, 10m);
 
             _userPayments.PendingEvents.First().Should().BeOfType<BidPaymentCreated>();
             _userPayments.PendingEvents.Count.Should().Be(1);
             _userPayments.Payments.Count.Should().Be(1);
             payment.UserId.Should().Be(_userId);
-            payment.AuctionId.Should().Be(_auctionId);
+            payment.TransactionId.Should().Be(_transactionId);
             payment.Amount.Should().Be(10m);
             payment.Status.Should().Be(PaymentStatus.InProgress);
             payment.Type.Should().Be(PaymentType.Bid);
@@ -41,13 +41,13 @@ namespace Test.UserPayments_.Domain
         public void Test2()
         {
             _userPayments.MarkPendingEventsAsHandled();
-            var payment = _userPayments.CreateBuyNowPayment(_auctionId, _userId, 10m);
+            var payment = _userPayments.CreateBuyNowPayment(_transactionId, _userId, 10m);
 
             _userPayments.PendingEvents.First().Should().BeOfType<BuyNowPaymentCreated>();
             _userPayments.PendingEvents.Count.Should().Be(1);
             _userPayments.Payments.Count.Should().Be(1);
             payment.UserId.Should().Be(_userId);
-            payment.AuctionId.Should().Be(_auctionId);
+            payment.TransactionId.Should().Be(_transactionId);
             payment.Amount.Should().Be(10m);
             payment.Status.Should().Be(PaymentStatus.InProgress);
             payment.Type.Should().Be(PaymentType.BuyNow);
@@ -57,8 +57,8 @@ namespace Test.UserPayments_.Domain
         [Fact]
         public void Test3()
         {
-            _userPayments.CreateBuyNowPayment(_auctionId, _userId, 10m);
-            _userPayments.CreateBidPayment(_auctionId, _userId, 10m);
+            _userPayments.CreateBuyNowPayment(_transactionId, _userId, 10m);
+            _userPayments.CreateBidPayment(_transactionId, _userId, 10m);
 
             var events = _userPayments.PendingEvents.ToList();
             _userPayments.MarkPendingEventsAsHandled();

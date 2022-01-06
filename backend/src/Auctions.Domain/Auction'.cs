@@ -65,6 +65,29 @@ namespace Auctions.Domain
             AuctionBidsId = new AuctionBidsId(@event.AuctionBidsId);
         }
 
+        private void ApplyEvent(Events.V1.BuyNowTXCanceled _)
+        {
+            TransactionId = null;
+        }
+
+        private void ApplyEvent(Events.V1.BuyNowTXFailed _)
+        {
+            TransactionId = null;
+        }
+
+        private void ApplyEvent(Events.V1.BuyNowTXSuccess @event)
+        {
+            Buyer = @event.BuyerId;
+            EndDate = @event.EndDate;
+            TransactionId = @event.TransactionId;
+            Completed = true;
+        }
+
+        private void ApplyEvent(Events.V1.BuyNowTXStarted @event)
+        {
+            TransactionId = @event.TransactionId;
+        }
+
         private void ApplyEvent(AuctionBuyNowPriceChanged ev) => UpdateBuyNowPrice(ev.BuyNowPrice);
         private void ApplyEvent(AuctionUpdateEventGroup group) => group.UpdateEvents.ForEach(ev => Apply(ev));
         private void ApplyEvent(AuctionEndDateChanged ev) => UpdateEndDate(ev.Date);

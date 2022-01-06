@@ -27,6 +27,7 @@ namespace Auctions.DomainEvents
                 public Guid TransactionId { get; set; }
                 public Guid AuctionId { get; set; }
                 public Guid BuyerId { get; set; }
+                public DateTime EndDate { get; set; }
 
                 public BuyNowTXSuccess() : base("buyNowTXSuccess")
                 {
@@ -42,6 +43,16 @@ namespace Auctions.DomainEvents
                 public Guid AuctionId { get; set; }
 
                 public BuyNowTXFailed() : base("buyNowTXFailed")
+                {
+                }
+            }
+
+            public class BuyNowTXCanceled : Event
+            {
+                public Guid TransactionId { get; set; }
+                public Guid AuctionId { get; set; }
+
+                public BuyNowTXCanceled() : base("buyNowTXCanceled")
                 {
                 }
             }

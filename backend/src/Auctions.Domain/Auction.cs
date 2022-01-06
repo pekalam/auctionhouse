@@ -16,11 +16,13 @@ namespace Auctions.Domain
         public const int DEFAULT_MAX_TODAY_MIN_OFFSET = 15;
         public const int DEFAULT_MIN_AUCTION_TIME_M = 120;
         public const int DEFAULT_MIN_TAGS = 1;
+        public const int DEFAULT_BUY_UNLOCK_TIME = 1000 * 60 * 5;
 
         internal static int MaxImages { get; set; } = DEFAULT_MAX_IMAGES;
         internal static int MaxTodayMinOffset { get; set; } = DEFAULT_MAX_TODAY_MIN_OFFSET;
         internal static int MinAuctionTimeM { get; set; } = DEFAULT_MIN_AUCTION_TIME_M;
         internal static int MinTags { get; set; } = DEFAULT_MIN_TAGS;
+        internal static int UnlockBuyTime { get; set; } = DEFAULT_BUY_UNLOCK_TIME;
     }
 
     public class AuctionId : ValueObject
@@ -123,7 +125,10 @@ namespace Auctions.Domain
         /// </summary>
         public bool Locked { get; private set; }
         internal UserId LockIssuer { get; private set; } = UserId.Empty;
-        private Guid? TransactionId { get; set; }
+        /// <summary>
+        /// Represents transaction (payment etc...) that led to <see cref="Completed"/> state 
+        /// </summary>
+        public Guid? TransactionId { get; private set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public Auction()
@@ -251,7 +256,7 @@ namespace Auctions.Domain
             }
         }
 
-        public async Task Buy(UserId buyerId, string paymentMethod, IAuctionPaymentVerification paymentVerification)
+        public async Task<Guid> Buy(UserId buyerId, string paymentMethod, IAuctionPaymentVerification paymentVerification, IAuctionUnlockScheduler unlockScheduler)
         {
             if (!BuyNowOnly && BuyNowPrice is null)
             {
@@ -269,6 +274,9 @@ namespace Auctions.Domain
             }
 
             StartBuyNowTransaction(buyerId, paymentMethod);
+            var unlockTime = TimeOnly.FromTimeSpan(TimeSpan.FromMilliseconds(AuctionConstantsFactory.UnlockBuyTime));
+            unlockScheduler.ScheduleAuctionUnlock(AggregateId, unlockTime);
+            return TransactionId!.Value;
         }
 
         private async Task<bool> VerifyPayment(UserId buyerId, string paymentMethod, IAuctionPaymentVerification paymentVerification)
@@ -287,9 +295,19 @@ namespace Auctions.Domain
         private void StartBuyNowTransaction(UserId lockIssuerId, string paymentMethod)
         {
             Lock(lockIssuerId);
-            TransactionId = Guid.NewGuid();
 
-            AddEvent(new Events.V1.BuyNowTXStarted { TransactionId = TransactionId.Value, Price = BuyNowPrice.Value, AuctionId = AggregateId, BuyerId = lockIssuerId, PaymentMethod = paymentMethod, });
+            ApplyEvent(AddEvent(new Events.V1.BuyNowTXStarted { TransactionId = Guid.NewGuid(), Price = BuyNowPrice.Value, AuctionId = AggregateId, BuyerId = lockIssuerId, PaymentMethod = paymentMethod, }));
+        }
+
+        private void TryCancelScheduledAuctionUnlock(IAuctionUnlockScheduler auctionUnlockScheduler)
+        {
+            try
+            {
+                auctionUnlockScheduler.Cancel(AggregateId);
+            }
+            catch (Exception)
+            {
+            }
         }
 
         /// <summary>
@@ -297,24 +315,41 @@ namespace Auctions.Domain
         /// </summary>
         /// <param name="transactionId"></param>
         /// <exception cref="DomainException"></exception>
-        internal bool ConfirmBuy(Guid transactionId)
+        public bool ConfirmBuy(Guid transactionId, IAuctionUnlockScheduler auctionUnlockScheduler)
         {
             //transaction id was supplied in transaction event as a result of distributed transaction. Owner of
             //transaction id (subscriber of event) should supply valid transaction id and be able to commit it.
             //In other case failed event should be emitted.
             if (TransactionId != transactionId)
             {
+                Unlock(LockIssuer);
                 //transaction failed - auction unlocked and locked by another transaction
-                AddEvent(new Events.V1.BuyNowTXFailed { TransactionId = transactionId, AuctionId = AggregateId });
+                ApplyEvent(AddEvent(new Events.V1.BuyNowTXFailed { TransactionId = transactionId, AuctionId = AggregateId }));
                 return false;
             }
 
-            Buyer = LockIssuer;
+            // if scheduler will throw it doesnt matter anyway because it will not find this auction and additionaly wont unlock completed
+            TryCancelScheduledAuctionUnlock(auctionUnlockScheduler);
+
+            ApplyEvent(AddEvent(new Events.V1.BuyNowTXSuccess { TransactionId = transactionId, AuctionId = AggregateId, BuyerId = LockIssuer, EndDate = DateTime.UtcNow }));
             Unlock(LockIssuer);
-            EndDate = DateTime.UtcNow;
-            TransactionId = null;
-            Completed = true;
-            AddEvent(new Events.V1.BuyNowTXSuccess { TransactionId = transactionId, AuctionId = AggregateId, BuyerId = Buyer });
+            return true;
+        }
+
+        public bool CancelBuy(Guid transactionId, IAuctionUnlockScheduler auctionUnlockScheduler)
+        {
+            Unlock(LockIssuer);
+            if (TransactionId != transactionId)
+            {
+                //transaction failed - auction unlocked and locked by another transaction
+                ApplyEvent(AddEvent(new Events.V1.BuyNowTXFailed { TransactionId = transactionId, AuctionId = AggregateId }));
+                return false;
+            }
+
+            // this cannot fail
+            auctionUnlockScheduler.Cancel(AggregateId);
+
+            ApplyEvent(AddEvent(new Events.V1.BuyNowTXCanceled { TransactionId = transactionId, AuctionId= AggregateId }));
             return true;
         }
 
@@ -330,6 +365,7 @@ namespace Auctions.Domain
 
         internal void Unlock(UserId lockIssuerId)
         {
+            if (Completed) return; //TODO invariants checks
             if (!Locked) throw new DomainException("Auction is not locked");
             if (LockIssuer != lockIssuerId) throw new DomainException($"Invalid {nameof(lockIssuerId)}");
             ApplyEvent(AddEvent(new AuctionUnlocked() { AuctionId = AggregateId }));

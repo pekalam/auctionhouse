@@ -1,6 +1,8 @@
 using Auctions.Domain;
+using Auctions.Domain.Services;
 using Core.DomainFramework;
 using FluentAssertions;
+using Moq;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,7 +22,7 @@ namespace Test.AuctionsDomain
             var auctionPaymentVerificationScenario = AuctionPaymentVerificationContracts.ValidParams(auction, buyerId);
             var auctionPaymentVerification = new GivenAuctionPaymentVerification().Create(auctionPaymentVerificationScenario);
             auction.MarkPendingEventsAsHandled();
-            await auction.Buy(buyerId, auctionPaymentVerificationScenario.Given.paymentMethod, auctionPaymentVerification);
+            await auction.Buy(buyerId, auctionPaymentVerificationScenario.Given.paymentMethod, auctionPaymentVerification, Mock.Of<IAuctionUnlockScheduler>());
             return (auction, auctionPaymentVerificationScenario, buyerId);
         }
 
@@ -33,7 +35,7 @@ namespace Test.AuctionsDomain
             var auctionPaymentVerification = new GivenAuctionPaymentVerification().Create(auctionPaymentVerificationScenario);
 
             var paymentMethod = auctionPaymentVerificationScenario.Given.paymentMethod;
-            await Assert.ThrowsAsync<DomainException>(() => auction.Buy(buyerId, paymentMethod, auctionPaymentVerification));
+            await Assert.ThrowsAsync<DomainException>(() => auction.Buy(buyerId, paymentMethod, auctionPaymentVerification, Mock.Of<IAuctionUnlockScheduler>()));
         }
 
         [Fact]
@@ -41,9 +43,11 @@ namespace Test.AuctionsDomain
         {
             var (auction, auctionPaymentVerificationScenario, buyerId) = await CreateAndBuyAuction();
 
+            auction.TransactionId.HasValue.Should().BeTrue();
+            auction.TransactionId.Should().NotBe(Guid.Empty);
+            auction.LockIssuer.Should().Be(buyerId);
             var txStartedEvent = (BuyNowTXStarted)auction.PendingEvents.First(t => t.GetType() == typeof(BuyNowTXStarted));
             txStartedEvent.Should().NotBeNull();
-            auction.LockIssuer.Should().Be(buyerId);
             txStartedEvent.AuctionId.Should().Be(auction.AggregateId);
             txStartedEvent.BuyerId.Should().Be(buyerId);
             txStartedEvent.Price.Should().Be(auction.BuyNowPrice);
@@ -56,9 +60,13 @@ namespace Test.AuctionsDomain
         {
             var (auction, _, _) = await CreateAndBuyAuction();
             var txStartedEvent = (BuyNowTXStarted)auction.PendingEvents.First(t => t.GetType() == typeof(BuyNowTXStarted));
+            auction.TransactionId.HasValue.Should().BeTrue();
+            auction.TransactionId.Should().NotBe(Guid.Empty);
 
             auction.MarkPendingEventsAsHandled();
-            auction.ConfirmBuy(txStartedEvent.TransactionId).Should().BeTrue();
+            auction.ConfirmBuy(txStartedEvent.TransactionId, Mock.Of<IAuctionUnlockScheduler>()).Should().BeTrue();
+            auction.TransactionId.HasValue.Should().BeTrue();
+            auction.TransactionId.Should().NotBe(Guid.Empty);
 
             auction.PendingEvents.FirstOrDefault(t => t.GetType() == typeof(BuyNowTXSuccess)).Should().NotBeNull();
             auction.Completed.Should().BeTrue();
@@ -68,12 +76,14 @@ namespace Test.AuctionsDomain
         public async Task Cannot_confirm_with_invalid_tx_id_and_emits_failed_event()
         {
             var (auction, _, _) = await CreateAndBuyAuction();
+            auction.TransactionId.HasValue.Should().BeTrue();
+            auction.TransactionId.Should().NotBe(Guid.Empty);
 
             auction.MarkPendingEventsAsHandled();
-            auction.ConfirmBuy(Guid.NewGuid()).Should().BeFalse();
+            auction.ConfirmBuy(Guid.NewGuid(), Mock.Of<IAuctionUnlockScheduler>()).Should().BeFalse();
+            auction.TransactionId.HasValue.Should().BeFalse();
 
-            auction.PendingEvents.Count.Should().Be(1);
-            auction.PendingEvents.First().Should().BeOfType<BuyNowTXFailed>();
+            auction.PendingEvents.FirstOrDefault(e => e.GetType() == typeof(BuyNowTXFailed)).Should().NotBeNull();
             auction.Completed.Should().BeFalse();
         }
     }
