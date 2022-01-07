@@ -11,12 +11,12 @@ namespace Adapter.AuctionImageConversion
 
     internal class AuctionImageConversionService : IAuctionImageConversion
     {
-        private static readonly List<string[]> _allowedFirstBytes = new List<string[]>();
+        private static readonly List<string[]> _allowedFirstBytes = new();
 
         static AuctionImageConversionService()
         {
-            var jpg = new string[] { "FF", "D8" };
-            var png = new string[] { "89", "50", "4E", "47", "0D", "0A", "1A", "0A" };
+            var jpg = new [] { "FF", "D8" };
+            var png = new [] { "89", "50", "4E", "47", "0D", "0A", "1A", "0A" };
             _allowedFirstBytes.Add(jpg);
             _allowedFirstBytes.Add(png);
         }
@@ -30,12 +30,11 @@ namespace Adapter.AuctionImageConversion
                 case "png":
                     return new PngEncoder();
                 default:
-                    throw new Exception($"Unknown image extension {imageRepresentation.Metadata.Extension}");
+                    throw new ArgumentException($"Unknown image extension {imageRepresentation.Metadata.Extension}");
             }
         }
 
-        public AuctionImageRepresentation ConvertTo(AuctionImageRepresentation imageRepresentation,
-            AuctionImageSize size)
+        public AuctionImageRepresentation ConvertTo(AuctionImageRepresentation imageRepresentation, AuctionImageSize size)
         {
             using (var img = Image.Load(imageRepresentation.Img))
             {
@@ -52,11 +51,9 @@ namespace Adapter.AuctionImageConversion
                 }
 
                 img.Mutate(x => x.Resize(destW, destH));
-                using (var mem = new MemoryStream())
-                {
-                    img.Save(mem, GetEncoderFromImage(imageRepresentation));
-                    return new AuctionImageRepresentation(imageRepresentation.Metadata, mem.ToArray());
-                }
+                using var mem = new MemoryStream();
+                img.Save(mem, GetEncoderFromImage(imageRepresentation));
+                return new AuctionImageRepresentation(imageRepresentation.Metadata, mem.ToArray());
             }
         }
 
@@ -69,7 +66,7 @@ namespace Adapter.AuctionImageConversion
                 case "png":
                     return _allowedFirstBytes[1];
                 default:
-                    throw new Exception($"ConverterService does not contain definition of {ext} first bytes");
+                    throw new ArgumentException($"ConverterService does not contain definition of {ext} first bytes");
             }
         }
 

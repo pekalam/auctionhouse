@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Adapter.MongoDb\Adapter.MongoDb.csproj" />
+    <ProjectReference Include="..\Adapter.MongoDb\Adapter.MongoDb.AuctionImageRepository.csproj" />
   </ItemGroup>
 
   <ItemGroup>

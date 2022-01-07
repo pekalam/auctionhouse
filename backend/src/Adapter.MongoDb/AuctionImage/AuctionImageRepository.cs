@@ -1,5 +1,6 @@
 ﻿using Auctions.Domain;
 using Auctions.Domain.Repositories;
+using Core.DomainFramework;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
@@ -28,19 +29,25 @@ namespace Adapter.MongoDb.AuctionImage
             }
             catch (Exception e)
             {
-                _logger.LogError($"Cannot download image {e.Message}");
-                throw;
+                _logger.LogError(e, "Cannot download image");
+                throw new InfrastructureException("Cannot download image", e);
             }
         }
 
-        private GridFSFileInfo GetFileInfo(string imageId)
+        private GridFSFileInfo? GetFileInfo(string imageId)
         {
             var filter = Builders<GridFSFileInfo>.Filter.Eq(f => f.Filename,
                 imageId);
-            using (var cursor = _dbContext.Bucket.Find(filter))
+            try
             {
-                var fileInfo = cursor.ToList().FirstOrDefault();
+                using var cursor = _dbContext.Bucket.Find(filter);
+                var fileInfo = cursor.ToEnumerable().FirstOrDefault();
                 return fileInfo;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Could not find FileInfo about image {imageId}");
+                throw new InfrastructureException($"Could not find FileInfo about image {imageId}", e);
             }
         }
 
@@ -62,17 +69,26 @@ namespace Adapter.MongoDb.AuctionImage
         {
             var filter = Builders<BsonDocument>.Filter.Eq("filename", imageId);
             var update = Builders<BsonDocument>.Update.Set("metadata", metadata);
-            var result = _dbContext.Bucket.Database
-                .GetCollection<BsonDocument>("fs.files")
-                .UpdateOne(filter, update);
+            UpdateResult result;
+            try
+            {
+                result = _dbContext.Bucket.Database
+                    .GetCollection<BsonDocument>("fs.files")
+                    .UpdateOne(filter, update);
+            }
+            catch (Exception e)
+            {
+                throw new InfrastructureException($"Could not update metadata of image {imageId}", e);
+            }
+
             if (result.MatchedCount != 1)
             {
-                throw new Exception($"Matched count {result.MatchedCount}");
+                throw new ArgumentException($"Matched count {result.MatchedCount}");
             }
 
             if (result.ModifiedCount != 1)
             {
-                throw new Exception($"Modified count {result.ModifiedCount}");
+                throw new ArgumentException($"Modified count {result.ModifiedCount}");
             }
         }
 
@@ -81,12 +97,21 @@ namespace Adapter.MongoDb.AuctionImage
             var filter = Builders<BsonDocument>.Filter.In("filename", imageIds);
             var update = Builders<BsonDocument>.Update.Set("metadata.IsAssignedToAuction", metadata.IsAssignedToAuction);
 
-            var result = _dbContext.Bucket.Database
-                .GetCollection<BsonDocument>("fs.files")
-                .UpdateMany(filter, update);
+            UpdateResult result;
+            try
+            {
+                result = _dbContext.Bucket.Database
+            .GetCollection<BsonDocument>("fs.files")
+            .UpdateMany(filter, update);
+            }
+            catch (Exception e)
+            {
+                throw new InfrastructureException($"Could not update metadata of images", e);
+            }
+
             if (result.MatchedCount <= 0)
             {
-                throw new Exception($"Matched count {result.MatchedCount}");
+                throw new ArgumentException($"Matched count {result.MatchedCount}");
             }
 
             return (int)result.ModifiedCount;
@@ -94,28 +119,39 @@ namespace Adapter.MongoDb.AuctionImage
 
         public void Add(string imageId, AuctionImageRepresentation imageRepresentation)
         {
-            if (Find(imageId) == null)
+            if (Find(imageId) != null)
             {
-                var fileUploadOptions = new GridFSUploadOptions();
-                fileUploadOptions.Metadata = imageRepresentation.Metadata.ToBsonDocument();
+                throw new ArgumentException($"{imageId} already exists");
+            }
+            var fileUploadOptions = new GridFSUploadOptions
+            {
+                Metadata = imageRepresentation.Metadata.ToBsonDocument()
+            };
+            try
+            {
                 var o = _dbContext.Bucket.UploadFromBytes(imageId, imageRepresentation.Img, fileUploadOptions);
             }
-            else
+            catch (Exception e)
             {
-                throw new Exception($"{imageId} already exists");
+                throw new InfrastructureException($"Could not add image {imageId}", e);
             }
         }
 
         public void Remove(string imageId)
         {
             var info = GetFileInfo(imageId);
-            if (info != null)
+            if (info == null)
+            {
+                throw new ArgumentException($"Image {imageId} does not exist");
+            }
+
+            try
             {
                 _dbContext.Bucket.Delete(info.Id);
             }
-            else
+            catch (Exception e)
             {
-                throw new Exception($"Image {imageId} does not exist");
+                throw new InfrastructureException($"Could not delete image {imageId}", e);
             }
         }
     }

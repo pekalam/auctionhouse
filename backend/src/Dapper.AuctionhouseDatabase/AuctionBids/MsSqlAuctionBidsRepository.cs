@@ -1,17 +1,12 @@
 ﻿using AuctionBids.Domain.Repositories;
 using AuctionBids.Domain.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Adapter.Dapper.AuctionhouseDatabase
 {
     using AuctionBids.Domain;
     using Core.Common.Domain;
 
-    internal class MsSqlAuctionBidsRepository : MsSqlESRepositoryBase, IAuctionBidsRepository
+    internal class MsSqlAuctionBidsRepository : MsSqlESRepositoryBaseExceptionDecorator, IAuctionBidsRepository
     {
         public MsSqlAuctionBidsRepository(MsSqlConnectionSettings connectionSettings) : base(connectionSettings)
         {

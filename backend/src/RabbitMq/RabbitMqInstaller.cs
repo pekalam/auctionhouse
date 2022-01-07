@@ -1,6 +1,7 @@
 ﻿using Common.Application;
 using Common.Application.Events;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System.Reflection;
 
 namespace RabbitMq.EventBus

@@ -38,7 +38,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.AuctionBids_.Domain", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.UserPayments_.Domain", "Test.UserPayments.Domain\Test.UserPayments_.Domain.csproj", "{27B6DF0E-DF3B-4090-B7C8-2900D78ECC8D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Auctions.Domain", "Test.Auctions.Domain\Test.Auctions.Domain.csproj", "{E4726A92-8E2A-4ED6-92F7-ACF7297946FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.AuctionsDomain", "Test.Auctions.Domain\Test.AuctionsDomain.csproj", "{E4726A92-8E2A-4ED6-92F7-ACF7297946FB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctions.Domain", "Auctions.Domain\Auctions.Domain.csproj", "{7A73B27D-BD46-45E6-88C0-57E7D404C61A}"
 EndProject
@@ -98,7 +98,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adatper.RabbitMq.EventBus",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RabbitMq", "RabbitMq", "{7E28159A-BD62-46D0-8167-81A089544046}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.RabbitMq.EventBus", "Test.RabbitMq.EventBus\Test.RabbitMq.EventBus.csproj", "{9237AD4B-4959-4FAF-8CBA-141E4C0E4BEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.RabbitMq.EventBus", "Test.RabbitMq.EventBus\Test.Adapter.RabbitMq.EventBus.csproj", "{9237AD4B-4959-4FAF-8CBA-141E4C0E4BEB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dapper", "Dapper", "{94E22CD1-B1B9-44DF-8240-85E518B2CD5B}"
 EndProject
@@ -128,15 +128,27 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctionhouse.Query", "Aucti
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MongoDb", "MongoDb", "{2250DF43-E387-473E-9AFE-02C347335D32}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapter.MongoDb", "Adapter.MongoDb\Adapter.MongoDb.csproj", "{8E70447F-E471-4033-987D-45BA5734090B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.MongoDb.AuctionImageRepository", "Adapter.MongoDb\Adapter.MongoDb.AuctionImageRepository.csproj", "{8E70447F-E471-4033-987D-45BA5734090B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Adapter.MongoDb", "Test.Adapter.MongoDb\Test.Adapter.MongoDb.csproj", "{8D2660A3-A9FD-4EB0-9718-3F81A005C404}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.MongoDb.AuctionImageRepository", "Test.Adapter.MongoDb\Test.Adapter.MongoDb.AuctionImageRepository.csproj", "{8D2660A3-A9FD-4EB0-9718-3F81A005C404}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapter.AuctionImageConversion", "Adapter.AuctionImageConversion\Adapter.AuctionImageConversion.csproj", "{79FF3326-A130-4DDD-AAC6-08F0A68EF9C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.AuctionImageConversion", "Adapter.AuctionImageConversion\Adapter.AuctionImageConversion.csproj", "{79FF3326-A130-4DDD-AAC6-08F0A68EF9C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Adapter.AuctionImageConversion", "Test.Adapter.AuctionImageConversion\Test.Adapter.AuctionImageConversion.csproj", "{F4496BDD-3F7F-4502-95FB-F6C326F3747D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.AuctionImageConversion", "Test.Adapter.AuctionImageConversion\Test.Adapter.AuctionImageConversion.csproj", "{F4496BDD-3F7F-4502-95FB-F6C326F3747D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuctionImageonversion", "AuctionImageonversion", "{E6927AB3-C25B-47DA-BC7E-1921EA46FB40}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuctionImageConversion", "AuctionImageConversion", "{E6927AB3-C25B-47DA-BC7E-1921EA46FB40}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Arch", "ArchTests\Test.Arch.csproj", "{9C2F00B8-7124-43DE-AE15-44B6E6283B77}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{108DCD5F-C97B-44A0-90A4-1AE386A216BB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Auctionhouse.Command.Integration", "Test.Auctionhouse.Command.Integration\Test.Auctionhouse.Command.Integration.csproj", "{2DA24D10-8F4B-413C-AC79-089FF9D301C4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.WebAPI", "Common.WebAPI\Common.WebAPI.csproj", "{EC41C59D-A1E6-4458-9FC2-76CAF37D9C16}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Auctionhouse.Query.Integration", "Test.Auctionhouse.Query.Integration\Test.Auctionhouse.Query.Integration.csproj", "{5F3DBBAD-5BED-4E1D-9726-F543A5DB26FB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserPayments.DomainEvents", "UserPayments.DomainEvents\UserPayments.DomainEvents.csproj", "{7C29DBE4-88BA-4252-AE1E-7676F4472D69}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -332,6 +344,26 @@ Global
 		{F4496BDD-3F7F-4502-95FB-F6C326F3747D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4496BDD-3F7F-4502-95FB-F6C326F3747D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4496BDD-3F7F-4502-95FB-F6C326F3747D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C2F00B8-7124-43DE-AE15-44B6E6283B77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C2F00B8-7124-43DE-AE15-44B6E6283B77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C2F00B8-7124-43DE-AE15-44B6E6283B77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C2F00B8-7124-43DE-AE15-44B6E6283B77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DA24D10-8F4B-413C-AC79-089FF9D301C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DA24D10-8F4B-413C-AC79-089FF9D301C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DA24D10-8F4B-413C-AC79-089FF9D301C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DA24D10-8F4B-413C-AC79-089FF9D301C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC41C59D-A1E6-4458-9FC2-76CAF37D9C16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC41C59D-A1E6-4458-9FC2-76CAF37D9C16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC41C59D-A1E6-4458-9FC2-76CAF37D9C16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC41C59D-A1E6-4458-9FC2-76CAF37D9C16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F3DBBAD-5BED-4E1D-9726-F543A5DB26FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F3DBBAD-5BED-4E1D-9726-F543A5DB26FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F3DBBAD-5BED-4E1D-9726-F543A5DB26FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F3DBBAD-5BED-4E1D-9726-F543A5DB26FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C29DBE4-88BA-4252-AE1E-7676F4472D69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C29DBE4-88BA-4252-AE1E-7676F4472D69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C29DBE4-88BA-4252-AE1E-7676F4472D69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C29DBE4-88BA-4252-AE1E-7676F4472D69}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -391,6 +423,12 @@ Global
 		{79FF3326-A130-4DDD-AAC6-08F0A68EF9C3} = {E6927AB3-C25B-47DA-BC7E-1921EA46FB40}
 		{F4496BDD-3F7F-4502-95FB-F6C326F3747D} = {E6927AB3-C25B-47DA-BC7E-1921EA46FB40}
 		{E6927AB3-C25B-47DA-BC7E-1921EA46FB40} = {2C7F9FB2-0106-45A8-8185-8B58DF359DE2}
+		{9C2F00B8-7124-43DE-AE15-44B6E6283B77} = {43ED7127-AEF4-4CB5-BB7E-F16504A51079}
+		{108DCD5F-C97B-44A0-90A4-1AE386A216BB} = {84D834F3-79C2-4E31-9A71-1917955E6CD7}
+		{2DA24D10-8F4B-413C-AC79-089FF9D301C4} = {108DCD5F-C97B-44A0-90A4-1AE386A216BB}
+		{EC41C59D-A1E6-4458-9FC2-76CAF37D9C16} = {84D834F3-79C2-4E31-9A71-1917955E6CD7}
+		{5F3DBBAD-5BED-4E1D-9726-F543A5DB26FB} = {108DCD5F-C97B-44A0-90A4-1AE386A216BB}
+		{7C29DBE4-88BA-4252-AE1E-7676F4472D69} = {A82DE09D-91E6-4C6A-9341-F6ADE7800B7C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F4E77E2A-13ED-428A-962C-F0BDF00E9A14}

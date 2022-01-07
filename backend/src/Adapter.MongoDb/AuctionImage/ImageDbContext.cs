@@ -1,5 +1,4 @@
-﻿using System;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
@@ -11,7 +10,7 @@ namespace Adapter.MongoDb.AuctionImage
     {
         private readonly IMongoDatabase _db;
         private readonly MongoClient _client;
-        private GridFSBucket _bucket;
+        private readonly GridFSBucket _bucket;
 
         public ImageDbContext(ImageDbSettings options)
         {

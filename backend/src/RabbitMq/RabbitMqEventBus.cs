@@ -1,9 +1,8 @@
 ﻿using Common.Application;
 using Common.Application.Events;
 using Core.Common.Domain;
-using Core.Query.EventHandlers;
+using Core.DomainFramework;
 using EasyNetQ;
-using EasyNetQ.Internals;
 using EasyNetQ.SystemMessages;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -12,76 +11,6 @@ using System.Reflection;
 
 namespace RabbitMq.EventBus
 {
-    internal class QueryHandlerSeeker : IHandlerSeeker
-    {
-        public IEnumerable<(Type handlerType, Type eventType)> Seek(params Assembly[] assemblies)
-        {
-            return assemblies
-                .SelectMany(a => a.ExportedTypes)
-                .Where(t => t.BaseType != null && t.BaseType.IsGenericType && t.BaseType.GetGenericTypeDefinition() == typeof(EventConsumer<,>))
-                .Select(t =>
-                {
-                    return (t, t.BaseType.GenericTypeArguments[0]);
-                });
-        }
-    }
-
-    internal interface IHandlerSeeker
-    {
-        IEnumerable<(Type handlerType, Type eventType)> Seek(params Assembly[] assemblies);
-    }
-
-    internal class EventSubscriberSeeker : IHandlerSeeker
-    {
-        public IEnumerable<(Type handlerType, Type eventType)> Seek(params Assembly[] assemblies)
-        {
-            return assemblies
-                .SelectMany(a => a.ExportedTypes)
-                .Where(t => t.BaseType != null && t.BaseType.IsGenericType && t.BaseType.GetGenericTypeDefinition() == typeof(EventSubscriber<>))
-                .Select(t =>
-                {
-                    return (t, t.BaseType.GenericTypeArguments[0]);
-                });
-        }
-    }
-
-
-    internal class RabbitMqEventBusSubscriptions
-    {
-        private readonly IBus _bus;
-        private readonly ILogger _logger;
-        private readonly List<AwaitableDisposable<ISubscriptionResult>> _subscriptions = new();
-
-        public RabbitMqEventBusSubscriptions(IBus bus, ILogger logger)
-        {
-            _bus = bus;
-            _logger = logger;
-        }
-
-        public IReadOnlyList<AwaitableDisposable<ISubscriptionResult>> Subscriptions => _subscriptions;
-
-        public void InitSubscriptions(IImplProvider implProvider, IHandlerSeeker handlerSeeker, params Assembly[] assemblies)
-        {
-            var handlerToEventType = handlerSeeker.Seek(assemblies).ToArray();
-            _logger.LogDebug("Found {Count} event handlers", handlerToEventType.Length);
-
-
-            foreach (var (handlerType, eventType) in handlerToEventType)
-            {
-                var sub = _bus.PubSub.SubscribeAsync<IAppEvent<Event>>(eventType.Name,
-                    (appEvent, ct) =>
-                    {
-                        var dispatcher = (IEventDispatcher)implProvider.Get(handlerType);
-                        return dispatcher.Dispatch(appEvent);
-                    }, conf =>
-                    {
-                        conf.WithTopic(eventType.Name);
-                        conf.WithQueueName(handlerType.Name);
-                    });
-                _subscriptions.Add(sub);
-            }
-        }
-    }
 
     internal class RabbitMqEventBus : Common.Application.Events.IEventBus
     {
@@ -118,9 +47,17 @@ namespace RabbitMq.EventBus
 
         internal void CancelSubscriptions()
         {
-            Task.WaitAll(_eventSubscriptions.Subscriptions.Select(e => e.AsTask()).Concat(
+            try
+            {
+                Task.WaitAll(_eventSubscriptions.Subscriptions.Select(e => e.AsTask()).Concat(
                     _eventConsumers.Subscriptions.Select(e => e.AsTask())
                 ).ToArray());
+            }
+            catch (Exception e)
+            {
+                throw new InfrastructureException("Exception caught while cancelling subscriptions", e);
+            }
+
         }
 
         private IAppEvent<Event> ParseEventFromMessage(IMessage<Error> message)
@@ -134,12 +71,12 @@ namespace RabbitMq.EventBus
                         DateTimeZoneHandling = DateTimeZoneHandling.Utc,
                         DateFormatHandling = DateFormatHandling.MicrosoftDateFormat,
                         DateParseHandling = DateParseHandling.DateTime
-                    });
+                    }) ?? throw new NullReferenceException("DeserializeObject returned null value");
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Cannot parse event from error message: {message}", message);
-                return null;
+                throw new InfrastructureException("MQ message parse error", e);
             }
         }
 
@@ -171,11 +108,23 @@ namespace RabbitMq.EventBus
             _bus.Advanced.Consume<Error>(queue, HandleErrorMessage);
         }
 
+        private void TryPublish<T>(IAppEvent<T> @event) where T : Event
+        {
+            try
+            {
+                _bus.PubSub.Publish(@event, @event.Event.GetType().Name);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Could not publish event");
+                throw new InfrastructureException("Could not publish event", e);
+            }
+        }
 
         public void Publish<T>(IAppEvent<T> @event) where T : Event
         {
             _logger.LogDebug("Publishing event {@event}", @event);
-            _bus.PubSub.Publish(@event, @event.Event.GetType().Name);
+            TryPublish(@event);
         }
 
         public void Publish<T>(IEnumerable<IAppEvent<T>> events) where T : Event

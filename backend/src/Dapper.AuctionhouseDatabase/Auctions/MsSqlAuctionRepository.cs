@@ -1,9 +1,6 @@
 ﻿using Auctions.Domain;
 using Auctions.Domain.Repositories;
 using Core.Common.Domain;
-using Microsoft.Data.SqlClient;
-using Newtonsoft.Json;
-using System.Data;
 
 namespace Adapter.Dapper.AuctionhouseDatabase
 {
@@ -12,7 +9,7 @@ namespace Adapter.Dapper.AuctionhouseDatabase
         public string ConnectionString { get; set; }
     }
 
-    internal class MsSqlAuctionRepository : MsSqlESRepositoryBase, IAuctionRepository
+    internal class MsSqlAuctionRepository : MsSqlESRepositoryBaseExceptionDecorator, IAuctionRepository
     {
         public MsSqlAuctionRepository(MsSqlConnectionSettings connectionSettings) : base(connectionSettings)
         {

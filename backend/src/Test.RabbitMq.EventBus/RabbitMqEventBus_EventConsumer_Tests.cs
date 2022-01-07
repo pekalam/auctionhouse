@@ -38,7 +38,7 @@ namespace Test.RabbitMq.EventBus
         }
     }
 
-    public class TestHandler : EventConsumer<TestEvent>
+    public class TestHandler : EventConsumer<TestEvent, TestHandler>
     {
         private Action<IAppEvent<TestEvent>> OnConsume;
         public bool Throws { get; set; }

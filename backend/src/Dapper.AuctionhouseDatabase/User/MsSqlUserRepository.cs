@@ -1,14 +1,11 @@
 ﻿using Core.Common.Domain;
 using Core.Common.Domain.Users;
-using Microsoft.Data.SqlClient;
-using Newtonsoft.Json;
-using System.Data;
 using Users.Domain;
 using Users.Domain.Repositories;
 
 namespace Adapter.Dapper.AuctionhouseDatabase
 {
-    internal class MsSqlUserRepository : MsSqlESRepositoryBase, IUserRepository
+    internal class MsSqlUserRepository : MsSqlESRepositoryBaseExceptionDecorator, IUserRepository
     {
         public MsSqlUserRepository(MsSqlConnectionSettings connectionSettings) : base(connectionSettings)
         {
