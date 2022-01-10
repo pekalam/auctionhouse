@@ -25,12 +25,12 @@ namespace Common.Application.Mediator
             }
         }
 
-        public virtual async Task<RequestStatus> Send<T>(T command) where T : ICommand
+        public virtual async Task<RequestStatus> Send<T>(T command, CommandContext? commandContext = null) where T : ICommand
         {
             var appCommand = new AppCommand<T>
             {
                 Command = command,
-                CommandContext = CommandContext.CreateNew(typeof(T).Name),
+                CommandContext = commandContext ?? CommandContext.CreateNew(typeof(T).Name),
             };
 
             if (AttributeStrategies.PreHandleCommandAttributeStrategies.ContainsKey(command.GetType()))

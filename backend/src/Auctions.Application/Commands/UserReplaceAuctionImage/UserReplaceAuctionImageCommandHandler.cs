@@ -1,9 +1,11 @@
-﻿using Auctions.Domain;
+﻿using System;
+using Auctions.Domain;
 using Auctions.Domain.Repositories;
 using Auctions.Domain.Services;
 using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
+using Common.Application.SagaNotifications;
 using Microsoft.Extensions.Logging;
 
 namespace Auctions.Application.Commands.UserReplaceAuctionImage
@@ -12,20 +14,19 @@ namespace Auctions.Application.Commands.UserReplaceAuctionImage
     {
         private readonly AuctionImageService _auctionImageService;
         private readonly IAuctionRepository _auctionRepository;
-        private readonly EventBusFacade _eventBusService;
         private readonly ILogger<UserReplaceAuctionImageCommandHandler> _logger;
 
         public UserReplaceAuctionImageCommandHandler(AuctionImageService auctionImageService,
-            IAuctionRepository auctionRepository, EventBusFacade eventBusService,
-            ILogger<UserReplaceAuctionImageCommandHandler> logger) : base(logger)
+            IAuctionRepository auctionRepository,
+            ILogger<UserReplaceAuctionImageCommandHandler> logger, Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) 
+            : base(ReadModelNotificationsMode.Immediate, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
         {
             _auctionImageService = auctionImageService;
             _auctionRepository = auctionRepository;
-            _eventBusService = eventBusService;
             _logger = logger;
         }
 
-        private void ReplaceAuctionImage(AppCommand<UserReplaceAuctionImageCommand> request)
+        private void ReplaceAuctionImage(AppCommand<UserReplaceAuctionImageCommand> request, EventBusFacade eventBus)
         {
             var auction = _auctionRepository.FindAuction(request.Command.AuctionId);
             if (auction == null)
@@ -45,7 +46,7 @@ namespace Auctions.Application.Commands.UserReplaceAuctionImage
             _auctionRepository.UpdateAuction(auction);
             try
             {
-                _eventBusService.Publish(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
+                eventBus.Publish(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
             }
             catch (Exception)
             {
@@ -54,11 +55,13 @@ namespace Auctions.Application.Commands.UserReplaceAuctionImage
             }
         }
 
-        protected override Task<RequestStatus> HandleCommand(AppCommand<UserReplaceAuctionImageCommand> request,
+        protected override Task<RequestStatus> HandleCommand(
+            AppCommand<UserReplaceAuctionImageCommand> request,
+            Lazy<EventBusFacade> eventBus,
             CancellationToken cancellationToken)
         {
             var response = RequestStatus.CreatePending(request.CommandContext);
-            ReplaceAuctionImage(request);
+            ReplaceAuctionImage(request, eventBus.Value);
 
 
 

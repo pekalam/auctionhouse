@@ -15,16 +15,21 @@ using FunctionalTests.Mocks;
 
 namespace FunctionalTests.Commands
 {
+    using Adapter.EfCore.ReadModelNotifications;
     using AuctionBids.Application;
     using Auctions.Application.Commands.StartAuctionCreateSession;
     using Auctions.Domain;
+    using Categories.Domain;
     using Common.Application.Commands;
     using Common.Application.Mediator;
     using Polly;
+    using ReadModel.Core;
+    using ReadModel.Core.Model;
     using System.Linq;
     using System.Threading.Tasks;
     using UserPayments.Application;
     using UserPayments.Domain.Repositories;
+    using XmlCategoryTreeStore;
     using Xunit;
     using Xunit.Abstractions;
 
@@ -49,6 +54,9 @@ namespace FunctionalTests.Commands
             ServiceProvider = BuildConfiguredServiceProvider();
             RabbitMqInstaller.InitializeEventSubscriptions(ServiceProvider, assemblyNames.Select(n => Assembly.Load(n)).ToArray());
             CommonInstaller.InitAttributeStrategies(assemblyNames);
+            EfCoreReadModelNotificationsInstaller.Initialize(ServiceProvider);
+            ReadModelInstaller.InitSubscribers(ServiceProvider);
+            XmlCategoryTreeStoreInstaller.Init(ServiceProvider);
             Mediator = ServiceProvider.GetRequiredService<ImmediateCommandQueryMediator>();
         }
 
@@ -60,6 +68,14 @@ namespace FunctionalTests.Commands
         public Task<RequestStatus> SendCommand<T>(T command) where T : ICommand
         {
             return Mediator.Send(command);
+        }
+
+        protected void TruncateReadModelNotificaitons(IServiceProvider serviceProvider)
+        {
+            var dbContext = serviceProvider.GetRequiredService<SagaEventsConfirmationDbContext>();
+            var confirmations = dbContext.SagaEventsConfirmations.ToList();
+            dbContext.SagaEventsConfirmations.RemoveRange(confirmations);
+            dbContext.SaveChanges();
         }
 
         protected virtual void AddServices(IServiceCollection services)
@@ -88,7 +104,12 @@ namespace FunctionalTests.Commands
                 services.AddSingleton<IUserIdentityService, UserIdentityServiceMock>(s => _userIdentityService);
 
                 services.AddTransient<IAuctionImageConversion>((s) => Mock.Of<IAuctionImageConversion>());
-                services.AddTransient<ISagaNotifications, InMemorySagaNotifications>();
+
+                services.AddEfCoreReadModelNotifications(new EfCoreReadModelNotificaitonsOptions
+                {
+                    Provider = "sqlserver",
+                    ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Marek\source\repos\Csharp\auctionhouse\backend\src\Tests\FunctionalTestsServer.mdf;Integrated Security=True",
+                }, ServiceLifetime.Transient); //transient to avoid concurrency issues in tests
 
                 var paymentVerification = new Mock<IAuctionPaymentVerification>();
                 paymentVerification
@@ -111,6 +132,23 @@ namespace FunctionalTests.Commands
                 });
 
                 services.AddTransient<IImplProvider>((p) => new ImplProviderMock(p));
+
+                services.AddReadModel(new MongoDbSettings
+                {
+                    ConnectionString = "mongodb://localhost:27017",
+                    DatabaseName = "appDb"
+                }, new RabbitMqSettings
+                {
+                    ConnectionString = "host=localhost",
+                });
+                services.AddEventConsumers(typeof(ReadModelInstaller));
+                services.AddAutoMapper(typeof(Auctionhouse.Query.QueryMapperProfile).Assembly);
+                services.AddCategoriesModule();
+                services.AddXmlCategoryTreeStore(new XmlCategoryNameStoreSettings
+                {
+    CategoriesFilePath = "C:\\Users\\Marek\\source\\repos\\Csharp\\auctionhouse\\backend\\src\\Xml.CategoryTreeStore\\_Categories-xml-data\\categories.xml",
+    SchemaFilePath = "C:\\Users\\Marek\\source\\repos\\Csharp\\auctionhouse\\backend\\src\\Xml.CategoryTreeStore\\_Categories-xml-data\\categories.xsd"
+                });
 
                 AddServices(services);
             });

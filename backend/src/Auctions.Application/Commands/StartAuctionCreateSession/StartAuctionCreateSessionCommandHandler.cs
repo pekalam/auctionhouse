@@ -1,7 +1,10 @@
-﻿using Auctions.Domain;
+﻿using System;
+using Auctions.Domain;
 using Auctions.Domain.Services;
 using Common.Application;
 using Common.Application.Commands;
+using Common.Application.Events;
+using Common.Application.SagaNotifications;
 using Microsoft.Extensions.Logging;
 
 namespace Auctions.Application.Commands.StartAuctionCreateSession
@@ -11,13 +14,16 @@ namespace Auctions.Application.Commands.StartAuctionCreateSession
         private readonly IAuctionCreateSessionStore _auctionCreateSessionStore;
         private readonly ILogger<StartAuctionCreateSessionCommandHandler> _logger;
 
-        public StartAuctionCreateSessionCommandHandler(IAuctionCreateSessionStore auctionCreateSessionStore, ILogger<StartAuctionCreateSessionCommandHandler> logger) : base(logger)
+        public StartAuctionCreateSessionCommandHandler(IAuctionCreateSessionStore auctionCreateSessionStore, ILogger<StartAuctionCreateSessionCommandHandler> logger,
+            Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) : base(Common.Application.Events.ReadModelNotificationsMode.Disabled, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
         {
             _auctionCreateSessionStore = auctionCreateSessionStore;
             _logger = logger;
         }
 
-        protected override Task<RequestStatus> HandleCommand(AppCommand<StartAuctionCreateSessionCommand> request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(
+            AppCommand<StartAuctionCreateSessionCommand> request, Lazy<EventBusFacade> eventBus,
+            CancellationToken cancellationToken)
         {
             AuctionCreateSession session;
             if (_auctionCreateSessionStore.SessionExists())

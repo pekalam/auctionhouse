@@ -17,20 +17,20 @@ namespace Common.Application.Events
             _sagaNotificationsFactory = sagaNotificationsFactory;
         }
 
-        public virtual async void Publish<T>(T @event, CommandContext commandContext, ReadModelNotificationsMode consistencyMode) where T : Event //TODO task
+        public virtual void Publish<T>(T @event, CommandContext commandContext, ReadModelNotificationsMode consistencyMode) where T : Event //TODO task
         {
             if (consistencyMode == ReadModelNotificationsMode.Saga)
             {
-                await _sagaNotificationsFactory.Value.AddUnhandledEvent(commandContext.CorrelationId, @event);
+                _sagaNotificationsFactory.Value.AddUnhandledEvent(commandContext.CorrelationId, @event).GetAwaiter().GetResult();
             }
             PublishEvent(@event, commandContext, consistencyMode);
         }
 
-        public virtual async void Publish(IEnumerable<Event> events, CommandContext commandContext, ReadModelNotificationsMode consistencyMode)//TODO task
+        public virtual void Publish(IEnumerable<Event> events, CommandContext commandContext, ReadModelNotificationsMode consistencyMode)//TODO task
         {
             if (consistencyMode == ReadModelNotificationsMode.Saga)
             {
-                await _sagaNotificationsFactory.Value.AddUnhandledEvents(commandContext.CorrelationId, events);
+                _sagaNotificationsFactory.Value.AddUnhandledEvents(commandContext.CorrelationId, events).GetAwaiter().GetResult();
             }
             foreach (var @event in events)
             {

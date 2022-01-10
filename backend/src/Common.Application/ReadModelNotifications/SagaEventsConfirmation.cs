@@ -29,6 +29,7 @@ namespace Common.Application.SagaNotifications
         public static SagaEventsConfirmation CreateNew(CommandId commandId, CorrelationId correlationId) => new SagaEventsConfirmation(correlationId, commandId, new(), new(), false);
 
         public void SetCompleted() => IsCompleted = true;
+        public void SetFailed() => IsFailed = true;
 
         public bool AddUnprocessedEvent(string @event)
         {

@@ -1,55 +1,21 @@
-﻿using Common.Application.Events;
+﻿using Common.Application.Commands;
+using Common.Application.Events;
 using Core.Common.Domain;
 
 namespace Common.Application.SagaNotifications
 {
+    /// <summary>
+    /// Responsible for sending notification / saving outcome of saga. 
+    /// Listeners use this interface to mark events that require notifications mode=<see cref="ReadModelNotificationsMode.Saga"/>
+    /// </summary>
     public interface ISagaNotifications
     {
-        Task RegisterNewSaga(CorrelationId correlationId);
-        Task MarkSagaAsCompleted(CorrelationId correlationId);
-        Task MarkSagaAsFailed(CorrelationId correlationId);
+        Task RegisterNewSaga(CorrelationId correlationId, CommandId commandId);
+        Task MarkSagaAsCompleted(CorrelationId correlationId, Dictionary<string, object>? extraData = null);
+        Task MarkSagaAsFailed(CorrelationId correlationId, Dictionary<string, object>? extraData = null);
         Task MarkEventAsHandled<T>(CorrelationId correlationId, T @event) where T : Event;
         Task AddUnhandledEvent<T>(CorrelationId correlationId, T @event) where T : Event;
         Task AddUnhandledEvents<T>(CorrelationId correlationId, IEnumerable<T> @event) where T : Event;
-    }
-
-    public class InMemorySagaNotifications : ISagaNotifications
-    {
-        private readonly InMemorySagaEventsConfirmationStore _sagaEventsConfirmationStore = new();
-
-        public Task AddUnhandledEvent<T>(CorrelationId correlationId, T @event) where T : Event
-        {
-            return Task.CompletedTask;
-
-        }
-
-        public Task AddUnhandledEvents<T>(CorrelationId correlationId, IEnumerable<T> @event) where T : Event
-        {
-            return Task.CompletedTask;
-
-        }
-
-        public Task MarkEventAsHandled<T>(CorrelationId correlationId, T @event) where T : Event
-        {
-            return Task.CompletedTask;
-
-        }
-
-        public Task MarkSagaAsCompleted(CorrelationId correlationId)
-        {
-            return Task.CompletedTask;
-
-        }
-
-        public Task MarkSagaAsFailed(CorrelationId correlationId)
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task RegisterNewSaga(CorrelationId correlationId)
-        {
-            return Task.CompletedTask;
-        }
     }
 
     internal class SagaEventsConfirmationStoreItem

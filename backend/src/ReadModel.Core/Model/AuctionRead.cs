@@ -49,5 +49,7 @@ namespace ReadModel.Core.Model
         [BsonDefaultValue(0)]
         [JsonIgnore]
         public long Version { get; set; }
+
+        public bool Locked { get; set; }
     }
 }

@@ -1,7 +1,10 @@
-﻿using Auctions.Domain;
+﻿using System;
+using Auctions.Domain;
 using Auctions.Domain.Services;
 using Common.Application;
 using Common.Application.Commands;
+using Common.Application.Events;
+using Common.Application.SagaNotifications;
 using Microsoft.Extensions.Logging;
 
 namespace Auctions.Application.Commands.AddAuctionImage
@@ -14,13 +17,17 @@ namespace Auctions.Application.Commands.AddAuctionImage
 
         public AddAuctionImageCommandHandler(
             ILogger<AddAuctionImageCommandHandler> logger,
-            AuctionImageService auctionImageService) : base(logger)
+            AuctionImageService auctionImageService, Lazy<IImmediateNotifications> immediateNotifications,
+            Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) : 
+            base(ReadModelNotificationsMode.Disabled, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
         {
             _logger = logger;
             _auctionImageService = auctionImageService;
         }
 
-        protected override Task<RequestStatus> HandleCommand(AppCommand<AddAuctionImageCommand> request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(
+            AppCommand<AddAuctionImageCommand> request, Lazy<EventBusFacade> eventBus,
+            CancellationToken cancellationToken)
         {
             var file = File.ReadAllBytes(request.Command.TempPath);
             File.Delete(request.Command.TempPath);

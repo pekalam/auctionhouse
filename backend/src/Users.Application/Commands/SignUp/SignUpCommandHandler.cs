@@ -1,6 +1,8 @@
-﻿using Common.Application;
+﻿using System;
+using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
+using Common.Application.SagaNotifications;
 using Core.Common.Domain.Users;
 using Microsoft.Extensions.Logging;
 using Users.Application.Exceptions;
@@ -12,20 +14,22 @@ namespace Users.Application.Commands.SignUp
 {
     public class SignUpCommandHandler : CommandHandlerBase<SignUpCommand>
     {
-        private readonly EventBusFacade _eventBus;
         private readonly IUserAuthenticationDataRepository _userAuthenticationDataRepository;
         private readonly IUserRepository _userRepository;
         private readonly ILogger<SignUpCommandHandler> _logger;
 
-        public SignUpCommandHandler(EventBusFacade eventBusFacade, IUserAuthenticationDataRepository userAuthenticationDataRepository, IUserRepository userRepository, ILogger<SignUpCommandHandler> logger) : base(logger)
+        public SignUpCommandHandler(IUserAuthenticationDataRepository userAuthenticationDataRepository, 
+            IUserRepository userRepository, ILogger<SignUpCommandHandler> logger,
+            Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) : base(ReadModelNotificationsMode.Disabled, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
         {
-            _eventBus = eventBusFacade;
             _userAuthenticationDataRepository = userAuthenticationDataRepository;
             _userRepository = userRepository;
             _logger = logger;
         }
 
-        protected override async Task<RequestStatus> HandleCommand(AppCommand<SignUpCommand> request, CancellationToken cancellationToken)
+        protected override async Task<RequestStatus> HandleCommand(
+            AppCommand<SignUpCommand> request, Lazy<EventBusFacade> eventBus,
+            CancellationToken cancellationToken)
         {
             var existing = _userAuthenticationDataRepository.FindUserAuth(request.Command.Username);
             if (existing != null)
@@ -47,7 +51,7 @@ namespace Users.Application.Commands.SignUp
             };
             _userAuthenticationDataRepository.AddUserAuth(userAuth);
             _userRepository.AddUser(user);
-            _eventBus.Publish(user.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
+            eventBus.Value.Publish(user.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
             user.MarkPendingEventsAsHandled();
 
             return response;

@@ -1,9 +1,11 @@
-﻿using Auctions.Domain;
+﻿using System;
+using Auctions.Domain;
 using Auctions.Domain.Repositories;
 using Auctions.Domain.Services;
 using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
+using Common.Application.SagaNotifications;
 using Microsoft.Extensions.Logging;
 
 namespace Auctions.Application.Commands.UserAddAuctionImage
@@ -12,21 +14,19 @@ namespace Auctions.Application.Commands.UserAddAuctionImage
     {
         private readonly AuctionImageService _auctionImageService;
         private readonly IAuctionRepository _auctions;
-        private readonly EventBusFacade _eventBus;
         private readonly ILogger<UserAddAuctionImageCommandHandler> _logger;
 
         public UserAddAuctionImageCommandHandler(AuctionImageService auctionImageService,
-            IAuctionRepository auctionRepository, EventBusFacade eventBus,
-            ILogger<UserAddAuctionImageCommandHandler> logger)
-            : base(logger)
+            IAuctionRepository auctionRepository,
+            ILogger<UserAddAuctionImageCommandHandler> logger, Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox)
+            : base(ReadModelNotificationsMode.Immediate, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
         {
             _auctionImageService = auctionImageService;
             _auctions = auctionRepository;
-            _eventBus = eventBus;
             _logger = logger;
         }
 
-        private void AddImage(AppCommand<UserAddAuctionImageCommand> request, CancellationToken cancellationToken)
+        private void AddImage(AppCommand<UserAddAuctionImageCommand> request, EventBusFacade eventBus, CancellationToken cancellationToken)
         {
             var auction = _auctions.FindAuction(request.Command.AuctionId);
             if (auction == null)
@@ -50,7 +50,7 @@ namespace Auctions.Application.Commands.UserAddAuctionImage
 
             try
             {
-                _eventBus.Publish(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
+                eventBus.Publish(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
             }
             catch (Exception e)
             {
@@ -60,12 +60,14 @@ namespace Auctions.Application.Commands.UserAddAuctionImage
             }
         }
 
-        protected override Task<RequestStatus> HandleCommand(AppCommand<UserAddAuctionImageCommand> request,
+        protected override Task<RequestStatus> HandleCommand(
+            AppCommand<UserAddAuctionImageCommand> request,
+            Lazy<EventBusFacade> eventBus,
             CancellationToken cancellationToken)
         {
             var response = RequestStatus.CreatePending(request.CommandContext);
             response.MarkAsCompleted();
-            AddImage(request, cancellationToken);
+            AddImage(request, eventBus.Value, cancellationToken);
 
             return Task.FromResult(response);
         }

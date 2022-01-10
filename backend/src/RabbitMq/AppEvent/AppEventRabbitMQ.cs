@@ -6,9 +6,9 @@ namespace RabbitMq.EventBus
 {
     public class AppEventRabbitMQ<T> : IAppEvent<T> where T : Event
     {
-        public CommandContext CommandContext { get; }
-        public T Event { get; }
-        public ReadModelNotificationsMode ReadModelNotifications { get; }
+        public CommandContext CommandContext { get; set; }
+        public T Event { get; set; }
+        public ReadModelNotificationsMode ReadModelNotifications { get; set; }
 
         public AppEventRabbitMQ(CommandContext commandContext, T @event, ReadModelNotificationsMode consistencyMode)
         {

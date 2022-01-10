@@ -1,16 +1,17 @@
 using Adapter.AuctionImageConversion;
 using Adapter.Dapper.AuctionhouseDatabase;
+using Adapter.EfCore.ReadModelNotifications;
 using Adapter.MongoDb;
 using Adapter.MongoDb.AuctionImage;
 using Adapter.QuartzTimeTaskService.AuctionEndScheduler;
 using AuctionBids.Application;
+using Auctionhouse.Command;
 using Auctionhouse.Command.Adapters;
 using Auctions.Application;
 using Categories.Domain;
 using Common.Application;
 using Common.WebAPI;
 using Common.WebAPI.Auth;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using QuartzTimeTaskService.AuctionEndScheduler;
 using RabbitMq.EventBus;
@@ -34,11 +35,12 @@ builder.Services.AddAuctionsModule(moduleNames);
 builder.Services.AddCategoriesModule();
 builder.Services.AddWebApiAdapters();
 builder.Services.AddAuctionImageConversion();
-builder.Services.AddMongoDb(builder.Configuration.GetSection("ImageDb").Get<ImageDbSettings>());
+builder.Services.AddMongoDbImageDb(builder.Configuration.GetSection("ImageDb").Get<ImageDbSettings>());
 builder.Services.AddRabbitMq(builder.Configuration.GetSection("RabbitMq").Get<RabbitMqSettings>());
 builder.Services.AddXmlCategoryTreeStore(builder.Configuration.GetSection("XmlCategoryTreeStore").Get<XmlCategoryNameStoreSettings>());
 builder.Services.AddDapperAuctionhouse(builder.Configuration.GetSection("MSSql").Get<MsSqlConnectionSettings>());
 builder.Services.AddQuartzTimeTaskServiceAuctionEndScheduler(builder.Configuration.GetSection("TimeTaskService").Get<TimeTaskServiceSettings>());
+builder.Services.AddEfCoreReadModelNotifications(builder.Configuration.GetSection("EfCoreReadModelNotificatitons").Get<EfCoreReadModelNotificaitonsOptions>());
 var jwtConfig = builder.Configuration.GetSection("JWT").Get<JwtSettings>();
 builder.Services.AddCommonWebApi(jwtConfig);
 
@@ -98,6 +100,8 @@ XmlCategoryTreeStoreInstaller.Init(app.Services);
 app.UseAuthentication();
 app.UseStaticFiles();
 app.UseSession();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

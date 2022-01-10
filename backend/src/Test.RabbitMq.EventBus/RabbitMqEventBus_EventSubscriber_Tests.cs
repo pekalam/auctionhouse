@@ -21,22 +21,6 @@ namespace Test.RabbitMq.EventBus
         }
     }
 
-    public class TestSubAppEvent : IAppEvent<Event>
-    {
-        public Event Event { get; }
-
-        public CommandContext CommandContext { get; set; }
-
-        public ReadModelNotificationsMode ReadModelNotifications { get; set; }
-
-        public TestSubAppEvent(Event @event, CommandContext commandContext, ReadModelNotificationsMode consistencyMode)
-        {
-            Event = @event;
-            CommandContext = commandContext;
-            ReadModelNotifications = consistencyMode;
-        }
-    }
-
     public class TestsSubHandler : EventSubscriber<TestSubEvent>
     {
         private Action<IAppEvent<TestSubEvent>> OnConsume;
@@ -72,7 +56,11 @@ namespace Test.RabbitMq.EventBus
             }, Mock.Of<ILogger<RabbitMqEventBus>>());
 
             var ctx = CommandContext.CreateNew("test", Guid.NewGuid());
-            var toPublish = new TestSubAppEvent(new TestSubEvent(), ctx, ReadModelNotificationsMode.Immediate);
+            var toPublish = new AppEventRabbitMQBuilder()
+                .WithReadModelNotificationsMode(ReadModelNotificationsMode.Immediate)
+                .WithCommandContext(ctx)
+                .WithEvent(new TestSubEvent())
+                .Build<TestSubEvent>();
 
             var handler = new TestsSubHandler(new AppEventRabbitMQBuilder(), (ev) =>
             {
@@ -92,7 +80,7 @@ namespace Test.RabbitMq.EventBus
             stubImplProvider.Setup(provider => provider.Get(typeof(TestsSubHandler)))
             .Returns(handler);
 
-            bus.InitEventSubscriptions(stubImplProvider.Object, Assembly.Load("Test.RabbitMq.EventBus"));
+            bus.InitEventSubscriptions(stubImplProvider.Object, Assembly.Load("Test.Adapter.RabbitMq.EventBus"));
 
             bus.Publish(toPublish);
 

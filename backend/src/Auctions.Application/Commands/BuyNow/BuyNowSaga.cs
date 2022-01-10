@@ -83,7 +83,7 @@ namespace Auctions.Application.Commands.BuyNow
         public Task HandleAsync(UserPaymentsEvents.V1.PaymentCreationError message, ISagaContext context)
         {
             var auction = _auctionUnlock.Value.Unlock(Data.AuctionId, _auctions.Value);
-            _eventBus.Value.Publish(auction.PendingEvents, GetCommandContextFromSagaContext(context), ReadModelNotificationsMode.Disabled);
+            _eventBus.Value.Publish(auction.PendingEvents, GetCommandContextFromSagaContext(context), ReadModelNotificationsMode.Saga);
             auction.MarkPendingEventsAsHandled();
             return base.RejectAsync();
         }
@@ -97,7 +97,7 @@ namespace Auctions.Application.Commands.BuyNow
         public Task HandleAsync(MaxLockTimeElapsed message, ISagaContext context)
         {
             var auction = _auctionUnlock.Value.Unlock(Data.AuctionId, _auctions.Value);
-            _eventBus.Value.Publish(auction.PendingEvents, GetCommandContextFromSagaContext(context), ReadModelNotificationsMode.Disabled);
+            _eventBus.Value.Publish(auction.PendingEvents, GetCommandContextFromSagaContext(context), ReadModelNotificationsMode.Saga);
             auction.MarkPendingEventsAsHandled();
             return Task.CompletedTask;
         }

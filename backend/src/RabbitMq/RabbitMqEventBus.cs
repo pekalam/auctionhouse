@@ -108,7 +108,7 @@ namespace RabbitMq.EventBus
             _bus.Advanced.Consume<Error>(queue, HandleErrorMessage);
         }
 
-        private void TryPublish<T>(IAppEvent<T> @event) where T : Event
+        private void TryPublish(IAppEvent<Event> @event)
         {
             try
             {

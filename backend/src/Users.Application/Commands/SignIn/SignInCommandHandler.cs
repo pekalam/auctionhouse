@@ -1,5 +1,8 @@
-﻿using Common.Application;
+﻿using System;
+using Common.Application;
 using Common.Application.Commands;
+using Common.Application.Events;
+using Common.Application.SagaNotifications;
 using Microsoft.Extensions.Logging;
 using Users.Application.Exceptions;
 using Users.Domain.Repositories;
@@ -11,14 +14,16 @@ namespace Users.Application.Commands.SignIn
         private readonly IUserAuthenticationDataRepository _userAuthenticationDataRepository;
         private readonly ILogger<SignInCommandHandler> _logger;
 
-        public SignInCommandHandler(IUserAuthenticationDataRepository userAuthenticationDataRepository, ILogger<SignInCommandHandler> logger)
-        : base(logger)
+        public SignInCommandHandler(IUserAuthenticationDataRepository userAuthenticationDataRepository, ILogger<SignInCommandHandler> logger,
+            Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox)
+        : base(ReadModelNotificationsMode.Disabled, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
         {
             _userAuthenticationDataRepository = userAuthenticationDataRepository;
             _logger = logger;
         }
 
-        protected override Task<RequestStatus> HandleCommand(AppCommand<SignInCommand> request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(AppCommand<SignInCommand> request,
+            Lazy<EventBusFacade> eventBus, CancellationToken cancellationToken)
         {
             var authData = _userAuthenticationDataRepository.FindUserAuth(request.Command.Username);
             if (authData != null)

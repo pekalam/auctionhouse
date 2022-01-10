@@ -1,8 +1,10 @@
-﻿using AuctionBids.Domain.Repositories;
+﻿using System;
+using AuctionBids.Domain.Repositories;
 using AuctionBids.Domain.Shared;
 using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
+using Common.Application.SagaNotifications;
 using Core.Command.Bid;
 using Microsoft.Extensions.Logging;
 
@@ -13,12 +15,14 @@ namespace Core.Command.Commands.Bid
         private readonly IAuctionBidsRepository _auctionBids;
         private readonly ILogger<BidCommandHandler> _logger;
 
-        public BidCommandHandler(ILogger<BidCommandHandler> logger) : base(logger)
+        public BidCommandHandler(ILogger<BidCommandHandler> logger, Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) 
+            : base(ReadModelNotificationsMode.Disabled, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
         {
             _logger = logger;
         }
 
-        protected override async Task<RequestStatus> HandleCommand(AppCommand<BidCommand> request, CancellationToken cancellationToken)
+        protected override async Task<RequestStatus> HandleCommand(AppCommand<BidCommand> request,
+            Lazy<EventBusFacade> eventBus, CancellationToken cancellationToken)
         {
             var auctionBids = _auctionBids.WithAuctionId(new AuctionId(request.Command.AuctionId));
             if (auctionBids is null)

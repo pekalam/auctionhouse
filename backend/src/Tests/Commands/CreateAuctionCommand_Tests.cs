@@ -1,3 +1,4 @@
+using Adapter.EfCore.ReadModelNotifications;
 using AuctionBids.Domain.Repositories;
 using Auctions.Application.Commands.StartAuctionCreateSession;
 using Auctions.Domain.Repositories;
@@ -16,15 +17,22 @@ namespace FunctionalTests.Commands
     public class CommandTestsCollection { }
 
     [Collection(nameof(CommandTestsCollection))]
-    public class CreateAuctionCommand_Tests : TestBase
+    public class CreateAuctionCommand_Tests : TestBase, IDisposable
     {
         private readonly InMemoryAuctionRepository auctions;
         private readonly InMemoryAuctionBidsRepository auctionBids;
+        private readonly ITestOutputHelper outputHelper;
 
-        public CreateAuctionCommand_Tests(ITestOutputHelper outputHelper) : base(outputHelper, "AuctionBids.Application", "Auctions.Application")
+        public CreateAuctionCommand_Tests(ITestOutputHelper outputHelper) : base(outputHelper, "AuctionBids.Application", "Auctions.Application", "ReadModel.Core")
         {
+            this.outputHelper = outputHelper;
             auctions = (InMemoryAuctionRepository)ServiceProvider.GetRequiredService<IAuctionRepository>();
             auctionBids = (InMemoryAuctionBidsRepository)ServiceProvider.GetRequiredService<IAuctionBidsRepository>();
+
+        }
+        public void Dispose()
+        {
+            TruncateReadModelNotificaitons(ServiceProvider);
         }
 
         [Fact]
@@ -43,10 +51,16 @@ namespace FunctionalTests.Commands
 
             AssertEventual(() =>
             {
+                var _readModelNotificationsDbContext = ServiceProvider.GetRequiredService<SagaEventsConfirmationDbContext>();
+                var confirmationsMarkedAsCompleted = _readModelNotificationsDbContext.SagaEventsConfirmations.FirstOrDefault()?.Completed == true;
+                var confirmationEventsProcessed = _readModelNotificationsDbContext.SagaEventsConfirmations.FirstOrDefault()?.ProcessedEvents?.Length > 0;
+                var confirmationEventsUnprocessedEmpty = _readModelNotificationsDbContext.SagaEventsConfirmations.FirstOrDefault()?.UnprocessedEvents?.Length == 0;
                 var createdAuction = auctions.All.First();
-                var auctionLocked = (createdAuction.Locked);
+                var auctionUnlocked = !createdAuction.Locked;
                 var idEqual = (auctionBids.All.Count > 0 && auctionBids.All.FirstOrDefault(a => a.AuctionId.Value == createdAuction.AggregateId.Value) is not null);
-                return !auctionLocked && idEqual;
+                if (!confirmationsMarkedAsCompleted) outputHelper.WriteLine("Notifications not marked as completed");
+                if (!confirmationEventsUnprocessedEmpty) outputHelper.WriteLine("Unprocessed array is not empty");
+                return auctionUnlocked && idEqual && confirmationsMarkedAsCompleted && confirmationEventsProcessed && confirmationEventsUnprocessedEmpty;
             });
         }
 

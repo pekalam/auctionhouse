@@ -35,10 +35,10 @@ namespace Common.Application.Mediator
             _implProvider = implProvider;
         }
 
-        public override Task<RequestStatus> Send<T>(T command)
+        public override Task<RequestStatus> Send<T>(T command, CommandContext? commandContext = null)
         {
             _queuedCommandBus.PreparePublish(_implProvider, command);
-            return base.Send(command);
+            return base.Send(command, commandContext);
         }
 
         public override Task<T> Send<T>(IQuery<T> query)

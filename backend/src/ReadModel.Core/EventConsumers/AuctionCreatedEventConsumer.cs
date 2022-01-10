@@ -16,7 +16,9 @@ namespace ReadModel.Core.EventConsumers
         private readonly IMapper _mapper;
         private readonly CategoryBuilder _categoryBuilder;
 
-        public AuctionCreatedEventConsumer(IAppEventBuilder appEventBuilder, ILogger<AuctionCreatedEventConsumer> logger, Lazy<ISagaNotifications> sagaNotificationsFactory, ReadModelDbContext dbContext, IMapper mapper, CategoryBuilder categoryBuilder) : base(appEventBuilder, logger, sagaNotificationsFactory)
+        public AuctionCreatedEventConsumer(IAppEventBuilder appEventBuilder, ILogger<AuctionCreatedEventConsumer> logger, Lazy<ISagaNotifications> sagaNotificationsFactory,
+            Lazy<IImmediateNotifications> immediateNotifications, ReadModelDbContext dbContext, IMapper mapper, CategoryBuilder categoryBuilder) :
+            base(appEventBuilder, logger, sagaNotificationsFactory, immediateNotifications)
         {
             _dbContext = dbContext;
             _mapper = mapper;
@@ -28,29 +30,33 @@ namespace ReadModel.Core.EventConsumers
             var auctionRead = _mapper.Map<AuctionRead>(appEvent.Event);
 
             var category = _categoryBuilder.FromCategoryIdList(appEvent.Event.Category.ToList());
-            if(category is null)
+            if (category is null)
             {
                 throw null;
             }
 
+            auctionRead.Category = CreateCategoryRead(category);
+
+            _dbContext.AuctionsReadModel.WithWriteConcern(new WriteConcern(mode: "majority", journal: true))
+                .InsertOne(auctionRead);
+        }
+
+        private static CategoryRead CreateCategoryRead(Category? category)
+        {
             var catRead = new CategoryRead();
             var currentCat = category;
             var currentCatRead = catRead;
             do
             {
                 currentCatRead.Name = currentCat.Name;
-                if(currentCat.SubCategory is not null)
+                if (currentCat.SubCategory is not null)
                 {
                     currentCatRead.SubCategory = new CategoryRead();
                 }
                 currentCatRead = currentCatRead.SubCategory;
                 currentCat = currentCat.SubCategory;
             } while (currentCat is not null);
-
-            auctionRead.Category = catRead;
-
-            _dbContext.AuctionsReadModel.WithWriteConcern(new WriteConcern(mode: "majority", journal: true))
-                .InsertOne(auctionRead);
+            return catRead;
         }
     }
 }

@@ -1,5 +1,8 @@
-﻿using Common.Application;
+﻿using System;
+using Common.Application;
 using Common.Application.Commands;
+using Common.Application.Events;
+using Common.Application.SagaNotifications;
 using Microsoft.Extensions.Logging;
 using Users.Domain.Auth;
 using Users.Domain.Repositories;
@@ -18,7 +21,8 @@ namespace Users.Application.Commands.RequestResetPassword
         public RequestResetPasswordCommandHandler(ILogger<RequestResetPasswordCommandHandler> logger,
             IResetPasswordCodeRepository resetPasswordCodeRepository,
             IUserAuthenticationDataRepository userAuthenticationDataRepository,
-            IResetLinkSenderService linkSenderService) : base(logger)
+            IResetLinkSenderService linkSenderService, Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) 
+            : base(ReadModelNotificationsMode.Disabled, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
         {
             _logger = logger;
             _resetPasswordCodeRepository = resetPasswordCodeRepository;
@@ -37,7 +41,9 @@ namespace Users.Application.Commands.RequestResetPassword
             return userAuthData;
         }
 
-        protected override Task<RequestStatus> HandleCommand(AppCommand<RequestResetPasswordCommand> request,
+        protected override Task<RequestStatus> HandleCommand(
+            AppCommand<RequestResetPasswordCommand> request,
+            Lazy<EventBusFacade> eventBus,
             CancellationToken cancellationToken)
         {
             var userAuthData = FindUserAuthenticationData(request);

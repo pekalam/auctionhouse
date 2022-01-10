@@ -1,5 +1,8 @@
-﻿using Common.Application;
+﻿using System;
+using Common.Application;
 using Common.Application.Commands;
+using Common.Application.Events;
+using Common.Application.SagaNotifications;
 using Microsoft.Extensions.Logging;
 using Users.Domain.Auth;
 using Users.Domain.Repositories;
@@ -14,7 +17,8 @@ namespace Users.Application.Commands.CheckResetCode
 
         public CheckResetCodeCommandHandler(IResetPasswordCodeRepository resetPasswordCodeRepository,
             IUserAuthenticationDataRepository userAuthenticationDataRepository,
-            ILogger<CheckResetCodeCommandHandler> logger) : base(logger)
+            ILogger<CheckResetCodeCommandHandler> logger, Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) 
+            : base(ReadModelNotificationsMode.Disabled, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
         {
             _resetPasswordCodeRepository = resetPasswordCodeRepository;
             _userAuthenticationDataRepository = userAuthenticationDataRepository;
@@ -42,7 +46,9 @@ namespace Users.Application.Commands.CheckResetCode
             }
         }
 
-        protected override Task<RequestStatus> HandleCommand(AppCommand<CheckResetCodeCommand> request,
+        protected override Task<RequestStatus> HandleCommand(
+            AppCommand<CheckResetCodeCommand> request,
+            Lazy<EventBusFacade> eventBus,
             CancellationToken cancellationToken)
         {
             var resetCode = FindResetPasswordCode(request);

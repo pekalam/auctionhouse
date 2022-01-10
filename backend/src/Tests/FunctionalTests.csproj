@@ -26,9 +26,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Adapter.EfCore.SagaEventsConfirmation\Adapter.EfCore.ReadModelNotifications.csproj" />
     <ProjectReference Include="..\AuctionBids.Application\AuctionBids.Application.csproj" />
+    <ProjectReference Include="..\Auctionhouse.Query\Auctionhouse.Query.csproj" />
     <ProjectReference Include="..\Auctions.Application\Auctions.Application.csproj" />
+    <ProjectReference Include="..\Categories.Domain\Categories.Domain.csproj" />
     <ProjectReference Include="..\RabbitMq\Adatper.RabbitMq.EventBus.csproj" />
+    <ProjectReference Include="..\ReadModel.Core\ReadModel.Core.csproj" />
+    <ProjectReference Include="..\Test.XmlCategoryTreeStore\Test.XmlCategoryTreeStore.csproj" />
     <ProjectReference Include="..\UserPayments.Application\UserPayments.Application.csproj" />
   </ItemGroup>
 

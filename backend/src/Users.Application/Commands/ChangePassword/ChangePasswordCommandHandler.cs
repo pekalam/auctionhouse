@@ -1,5 +1,8 @@
-﻿using Common.Application;
+﻿using System;
+using Common.Application;
 using Common.Application.Commands;
+using Common.Application.Events;
+using Common.Application.SagaNotifications;
 using Microsoft.Extensions.Logging;
 using Users.Application.Exceptions;
 using Users.Domain.Repositories;
@@ -11,13 +14,17 @@ namespace Users.Application.Commands.ChangePassword
         private readonly ILogger<ChangePasswordCommandHandler> _logger;
         private readonly IUserAuthenticationDataRepository _authenticationDataRepository;
 
-        public ChangePasswordCommandHandler(ILogger<ChangePasswordCommandHandler> logger, IUserAuthenticationDataRepository authenticationDataRepository) : base(logger)
+        public ChangePasswordCommandHandler(ILogger<ChangePasswordCommandHandler> logger, IUserAuthenticationDataRepository authenticationDataRepository,
+            Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) 
+            : base(ReadModelNotificationsMode.Disabled, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
         {
             _logger = logger;
             _authenticationDataRepository = authenticationDataRepository;
         }
 
-        protected override Task<RequestStatus> HandleCommand(AppCommand<ChangePasswordCommand> request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(
+            AppCommand<ChangePasswordCommand> request, Lazy<EventBusFacade> eventBus,
+            CancellationToken cancellationToken)
         {
             var userAuthData = _authenticationDataRepository.FindUserAuthById(request.Command.SignedInUser);
             if (userAuthData == null)

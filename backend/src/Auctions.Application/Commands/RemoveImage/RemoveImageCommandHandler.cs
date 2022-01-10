@@ -1,6 +1,9 @@
-﻿using Auctions.Domain.Services;
+﻿using System;
+using Auctions.Domain.Services;
 using Common.Application;
 using Common.Application.Commands;
+using Common.Application.Events;
+using Common.Application.SagaNotifications;
 using Microsoft.Extensions.Logging;
 
 namespace Auctions.Application.Commands.RemoveImage
@@ -10,13 +13,15 @@ namespace Auctions.Application.Commands.RemoveImage
         private readonly IAuctionCreateSessionStore _auctionCreateSessionService;
         private readonly ILogger<RemoveImageCommandHandler> _logger;
 
-        public RemoveImageCommandHandler(IAuctionCreateSessionStore auctionCreateSessionService, ILogger<RemoveImageCommandHandler> logger) : base(logger)
+        public RemoveImageCommandHandler(IAuctionCreateSessionStore auctionCreateSessionService, ILogger<RemoveImageCommandHandler> logger,
+            Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) : base(ReadModelNotificationsMode.Immediate, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
         {
             _auctionCreateSessionService = auctionCreateSessionService;
             _logger = logger;
         }
 
-        protected override Task<RequestStatus> HandleCommand(AppCommand<RemoveImageCommand> request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(AppCommand<RemoveImageCommand> request,
+            Lazy<EventBusFacade> eventBus, CancellationToken cancellationToken)
         {
             var auctionCreateSession = _auctionCreateSessionService.GetExistingSession();
 

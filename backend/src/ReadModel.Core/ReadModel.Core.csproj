@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AuctionBids.DomainEvents\AuctionBids.DomainEvents.csproj" />
     <ProjectReference Include="..\Auctions.Domain\Auctions.Domain.csproj" />
     <ProjectReference Include="..\Categories.Domain\Categories.Domain.csproj" />
     <ProjectReference Include="..\Common.Application\Common.Application.csproj" />

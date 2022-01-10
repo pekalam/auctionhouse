@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Common.WebAPI;
 using Adapter.MongoDb;
 using Adapter.MongoDb.AuctionImage;
+using Adapter.EfCore.ReadModelNotifications;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +32,8 @@ builder.Services.AddControllers();
 var jwtConfig = builder.Configuration.GetSection("JWT").Get<JwtSettings>();
 builder.Services.AddCommonWebApi(jwtConfig);
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddMongoDb(builder.Configuration.GetSection("ImageDb").Get<ImageDbSettings>());
+builder.Services.AddMongoDbImageDb(builder.Configuration.GetSection("ImageDb").Get<ImageDbSettings>());
+builder.Configuration.GetSection("EfCoreReadModelNotificatitons").Get<EfCoreReadModelNotificaitonsOptions>();
 
 var allowedOrigin = builder.Configuration.GetValue<string>("CORS:AllowedOrigin");
 builder.Services.AddCors(options =>

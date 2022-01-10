@@ -1,6 +1,9 @@
-﻿using AuctionBids.Domain.Repositories;
+﻿using System;
+using AuctionBids.Domain.Repositories;
 using Common.Application;
 using Common.Application.Commands;
+using Common.Application.Events;
+using Common.Application.SagaNotifications;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Command.Commands.CancelBid
@@ -9,12 +12,15 @@ namespace Core.Command.Commands.CancelBid
     {
         private readonly IAuctionBidsRepository _auctionBids;
 
-        public CancelBidCommandHandler(IAuctionBidsRepository auctionBids, ILogger<CancelBidCommandHandler> logger) : base(logger)
+        public CancelBidCommandHandler(IAuctionBidsRepository auctionBids, ILogger<CancelBidCommandHandler> logger,
+            Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) 
+            : base(ReadModelNotificationsMode.Immediate, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
         {
             _auctionBids = auctionBids;
         }
 
-        protected override Task<RequestStatus> HandleCommand(AppCommand<CancelBidCommand> request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(AppCommand<CancelBidCommand> request,
+            Lazy<EventBusFacade> eventBus, CancellationToken cancellationToken)
         {
             //TODO
             var requestStatus = RequestStatus.CreatePending(request.CommandContext);

@@ -1,9 +1,11 @@
+using System;
 using Auctions.Domain;
 using Auctions.Domain.Repositories;
 using Auctions.Domain.Services;
 using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
+using Common.Application.SagaNotifications;
 using Microsoft.Extensions.Logging;
 
 namespace Auctions.Application.Commands.UpdateAuction
@@ -14,17 +16,15 @@ namespace Auctions.Application.Commands.UpdateAuction
         private readonly IUserIdentityService _userIdentityService;
         private readonly ILogger<UpdateAuctionCommandHandler> _logger;
         private readonly IAuctionEndScheduler _schedulerService;
-        private readonly EventBusFacade _eventBusService;
 
         public UpdateAuctionCommandHandler(IAuctionRepository auctionRepository, IUserIdentityService userIdentityService,
             ILogger<UpdateAuctionCommandHandler> logger, IAuctionEndScheduler schedulerService,
-            EventBusFacade eventBusService) : base(logger)
+            Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) : base(ReadModelNotificationsMode.Immediate, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
         {
             _auctionRepository = auctionRepository;
             _userIdentityService = userIdentityService;
             _logger = logger;
             _schedulerService = schedulerService;
-            _eventBusService = eventBusService;
         }
 
         private Auction GetAuction(AppCommand<UpdateAuctionCommand> request)
@@ -34,7 +34,9 @@ namespace Auctions.Application.Commands.UpdateAuction
         }
 
 
-        protected override Task<RequestStatus> HandleCommand(AppCommand<UpdateAuctionCommand> request, CancellationToken cancellationToken)
+        protected override Task<RequestStatus> HandleCommand(
+            AppCommand<UpdateAuctionCommand> request, Lazy<EventBusFacade> eventBus,
+            CancellationToken cancellationToken)
         {
             var auction = GetAuction(request);
 
@@ -57,7 +59,7 @@ namespace Auctions.Application.Commands.UpdateAuction
 
             var response = RequestStatus.CreatePending(request.CommandContext);
             _auctionRepository.UpdateAuction(auction);
-            _eventBusService.Publish(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
+            eventBus.Value.Publish(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
 
             return Task.FromResult(response);
         }

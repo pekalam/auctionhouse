@@ -1,5 +1,8 @@
-﻿using Common.Application;
+﻿using System;
+using Common.Application;
 using Common.Application.Commands;
+using Common.Application.Events;
+using Common.Application.SagaNotifications;
 using Core.Common.Domain;
 using Microsoft.Extensions.Logging;
 
@@ -7,7 +10,8 @@ namespace Core.Command.Commands.BuyCredits
 {
     public class BuyCreditsCommandHandler : CommandHandlerBase<BuyCreditsCommand>
     {
-        public BuyCreditsCommandHandler(ILogger<BuyCreditsCommandHandler> logger) : base(logger)
+        public BuyCreditsCommandHandler(ILogger<BuyCreditsCommandHandler> logger, Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) 
+            : base(ReadModelNotificationsMode.Immediate, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
         {
         }
 
@@ -26,6 +30,7 @@ namespace Core.Command.Commands.BuyCredits
         //}
 
         protected override Task<RequestStatus> HandleCommand(AppCommand<BuyCreditsCommand> request,
+            Lazy<EventBusFacade> eventBus,
             CancellationToken cancellationToken)
         {
             //DEMO

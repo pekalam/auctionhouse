@@ -1,3 +1,4 @@
+using System;
 using Auctions.Domain;
 using Auctions.Domain.Services;
 using Auctions.DomainEvents;
@@ -5,6 +6,7 @@ using Chronicle;
 using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
+using Common.Application.SagaNotifications;
 using Microsoft.Extensions.Logging;
 
 namespace Auctions.Application.Commands.CreateAuction
@@ -15,18 +17,18 @@ namespace Auctions.Application.Commands.CreateAuction
         private readonly IConvertCategoryNamesToRootToLeafIds _convertCategoryNames;
         private readonly ISagaCoordinator _sagaCoordinator;
         private readonly CreateAuctionService _createAuctionService;
-        private readonly EventBusFacade _eventBusFacade;
 
 
         public CreateAuctionCommandHandler(ILogger<CreateAuctionCommandHandler> logger,
             IConvertCategoryNamesToRootToLeafIds convertCategoryNames, ISagaCoordinator sagaCoordinator,
-            CreateAuctionService createAuctionService, EventBusFacade eventBusFacade) : base(logger)
+            CreateAuctionService createAuctionService, 
+            Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) 
+            : base(ReadModelNotificationsMode.Saga, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
         {
             _logger = logger;
             _convertCategoryNames = convertCategoryNames;
             _sagaCoordinator = sagaCoordinator;
             _createAuctionService = createAuctionService;
-            _eventBusFacade = eventBusFacade;
         }
 
         private async Task<AuctionArgs> CreateAuctionArgs(CreateAuctionCommand request, UserId owner)
@@ -48,7 +50,9 @@ namespace Auctions.Application.Commands.CreateAuction
             return builder.Build();
         }
 
-        protected override async Task<RequestStatus> HandleCommand(AppCommand<CreateAuctionCommand> request, CancellationToken cancellationToken)
+        protected override async Task<RequestStatus> HandleCommand(
+            AppCommand<CreateAuctionCommand> request, Lazy<EventBusFacade> eventBus,
+            CancellationToken cancellationToken)
         {
             var auctionArgs = await CreateAuctionArgs(request.Command, new UserId(request.CommandContext.User!.Value));
             var auction = await _createAuctionService.StartCreate(request.Command.AuctionCreateSession, auctionArgs);
@@ -70,11 +74,11 @@ namespace Auctions.Application.Commands.CreateAuction
                     .WithMetadata(CreateAuctionSaga.ServiceDataKey, _createAuctionService.ServiceData)
                     .Build();
                 await _sagaCoordinator.ProcessAsync(createdEvent, context);
-                _eventBusFacade.Publish(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Saga);
+                eventBus.Value.Publish(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Saga);
             }
             else
             {
-                _eventBusFacade.Publish(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
+                eventBus.Value.Publish(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
             }
             auction.MarkPendingEventsAsHandled();
 
