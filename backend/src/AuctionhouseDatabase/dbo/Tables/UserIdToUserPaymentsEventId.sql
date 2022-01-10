@@ -1,0 +1,6 @@
+﻿CREATE TABLE [dbo].[UserIdToUserPaymentsEventId]
+(
+	[Id] BIGINT IDENTITY, 
+    [UserId] UNIQUEIDENTIFIER NOT NULL, 
+    [AggId] UNIQUEIDENTIFIER NOT NULL
+)

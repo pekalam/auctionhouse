@@ -16,7 +16,7 @@ namespace Adapter.Dapper.AuctionhouseDatabase
             _connectionSettings = connectionSettings;
         }
 
-        private Event DeserializeEvent(string evStr)
+        protected Event DeserializeEvent(string evStr)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace Adapter.Dapper.AuctionhouseDatabase
             }
         }
 
-        private List<Event> DeserializeEvents(IEnumerable<string> events)
+        protected List<Event> DeserializeEvents(IEnumerable<string> events)
         {
             var aggEvents = new List<Event>();
             foreach (var evStr in events)

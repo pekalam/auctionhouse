@@ -1,6 +1,8 @@
-﻿using AuctionBids.Domain.Repositories;
+﻿using Adapter.Dapper.AuctionhouseDatabase.UserPayments_;
+using AuctionBids.Domain.Repositories;
 using Auctions.Domain.Repositories;
 using Microsoft.Extensions.DependencyInjection;
+using UserPayments.Domain.Repositories;
 using Users.Domain.Repositories;
 
 namespace Adapter.Dapper.AuctionhouseDatabase
@@ -15,6 +17,7 @@ namespace Adapter.Dapper.AuctionhouseDatabase
             services.AddTransient<IAuctionBidsRepository, MsSqlAuctionBidsRepository>();
             services.AddTransient<IUserAuthenticationDataRepository, UserAuthenticationDataRepository>();
             services.AddTransient<IResetPasswordCodeRepository, ResetPasswordCodeRepository>();
+            services.AddTransient<IUserPaymentsRepository, MsSqlUserPaymentsRepository>();
         }
     }
 }
