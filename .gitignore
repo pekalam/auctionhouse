@@ -15,3 +15,6 @@ backend/src/AuctionhouseDatabase/AuctionhouseDatabase.dbmdl
 backend/src/Test.AuctionhouseDatabase/Test.AuctionhouseDatabase.dbmdl
 
 backend/scripts/mongodb/node_modules/*
+/backend/src/Tests/FunctionalTestsServer_log.ldf
+/backend/src/Tests/FunctionalTestsServer.mdf
+backend/src/AuctionhouseDatabase/AuctionhouseDatabase.jfm
