@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Auctionhouse.Command.Controllers
 {
     [ApiController]
-    [Route("api")]
+    [Route("api/c")]
     //[FeatureGate("Auctionhouse_AuctionCommands")]
     public class AuctionCommandController : ControllerBase
     {

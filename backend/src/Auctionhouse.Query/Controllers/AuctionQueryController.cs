@@ -19,7 +19,7 @@ using ReadModel.Core.Views;
 namespace Auctionhouse.Query.Controllers
 {
     [ApiController]
-    [Route("api")]
+    [Route("api/q")]
     //[FeatureGate("Auctionhouse_AuctionQueries")]
     public class AuctionQueryController : ControllerBase
     {

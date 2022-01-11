@@ -14,7 +14,7 @@ using Users.Application.Commands.SignUp;
 namespace Auctionhouse.Command.Controllers
 {
     [ApiController]
-    [Route("api")]
+    [Route("api/c")]
     //[FeatureGate("Auctionhouse_AuthenticationCommands")]
     public class AuthenticationCommandController : Controller
     {
@@ -34,7 +34,7 @@ namespace Auctionhouse.Command.Controllers
         {
             var cmd = _mapper.Map<SignUpCommandDto, SignUpCommand>(signUpCommandDto);
             var status = await _mediator.Send(cmd);
-            return this.StatusResponse(status, _mapper.Map<RequestStatusDto>(status));
+            return this.StatusResponse(status, (RequestStatusDto)status);
         }
 
         [HttpPost("signin")]
@@ -61,7 +61,7 @@ namespace Auctionhouse.Command.Controllers
         {
             var cmd = _mapper.Map<ChangePasswordCommandDto, ChangePasswordCommand>(commandDto);
             var status = await _mediator.Send(cmd);
-            return this.StatusResponse(status, _mapper.Map<RequestStatusDto>(status));
+            return this.StatusResponse(status, (RequestStatusDto)status);
         }
 
         [HttpPost("resetPassword")]
@@ -70,7 +70,7 @@ namespace Auctionhouse.Command.Controllers
             var cmd = _mapper.Map<ResetPasswordCommandDto, ResetPasswordCommand>(commandDto);
             var status = await _mediator.Send(cmd);
 
-            return this.StatusResponse(status, _mapper.Map<RequestStatusDto>(status));
+            return this.StatusResponse(status, (RequestStatusDto)status);
         }
 
         [HttpPost("requestResetPassword")]
@@ -80,7 +80,7 @@ namespace Auctionhouse.Command.Controllers
             var cmd = _mapper.Map<RequestResetPasswordCommandDto, RequestResetPasswordCommand>(commandDto);
             var status = await _mediator.Send(cmd);
 
-            return this.StatusResponse(status, _mapper.Map<RequestStatusDto>(status));
+            return this.StatusResponse(status, (RequestStatusDto)status);
         }
 
         [HttpPost("checkResetCode")]
@@ -89,7 +89,7 @@ namespace Auctionhouse.Command.Controllers
             var cmd = _mapper.Map<CheckResetCodeCommandDto, CheckResetCodeCommand>(commandDto);
             var status = await _mediator.Send(cmd);
 
-            return this.StatusResponse(status, _mapper.Map<RequestStatusDto>(status));
+            return this.StatusResponse(status, (RequestStatusDto)status);
         }
     }
 }

@@ -142,8 +142,10 @@ namespace Auctions.Domain
         {
             Create(auctionArgs, true);
             AggregateId = AuctionId.New();
-            AddEvent(new AuctionCreated(AggregateId)
+            AddEvent(new AuctionCreated()
             {
+                AuctionId = AggregateId,
+                DateCreated = DateTime.UtcNow,
                 Tags = auctionArgs.Tags.Select(t => t.Value).ToArray(),
                 AggVersion = Version,
                 Name = auctionArgs.Name,

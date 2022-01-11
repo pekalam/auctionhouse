@@ -28,6 +28,7 @@ namespace ReadModel.Core.EventConsumers
         public override void Consume(IAppEvent<AuctionCreated> appEvent)
         {
             var auctionRead = _mapper.Map<AuctionRead>(appEvent.Event);
+            auctionRead.Owner.UserName = "test"; //TODO
 
             var category = _categoryBuilder.FromCategoryIdList(appEvent.Event.Category.ToList());
             if (category is null)

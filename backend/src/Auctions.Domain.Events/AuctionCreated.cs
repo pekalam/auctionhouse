@@ -4,7 +4,7 @@ namespace Auctions.DomainEvents
 {
     public class AuctionCreated : Event
     {
-        public Guid AuctionId { get; }
+        public Guid AuctionId { get; set; }
         public decimal BuyNowPrice { get; set; } 
         public bool BuyNowOnly { get; set; }
         public string?[] AuctionImagesSize1Id { get; set; } 
@@ -12,6 +12,7 @@ namespace Auctions.DomainEvents
         public string?[] AuctionImagesSize3Id { get; set; } 
         public DateTime StartDate { get; set; } 
         public DateTime EndDate { get; set; } 
+        public DateTime DateCreated { get; set; } 
         public Guid Owner { get; set; } 
         public string ProductName { get; set; } 
         public string ProductDescription { get; set; } 
@@ -20,9 +21,8 @@ namespace Auctions.DomainEvents
         public string[] Tags { get; set; } 
         public string Name { get; set; } 
 
-        public AuctionCreated(Guid auctionId) : base(EventNames.AuctionCreated)
+        public AuctionCreated() : base(EventNames.AuctionCreated)
         {
-            AuctionId = auctionId;
         }
     }
 }

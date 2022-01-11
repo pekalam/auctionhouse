@@ -1,6 +1,7 @@
 ﻿using Core.Common.Domain.Users;
 using Core.DomainFramework;
 using System.Net;
+using Users.Application.Exceptions;
 
 namespace Auctionhouse.Command
 {
@@ -29,13 +30,28 @@ namespace Auctionhouse.Command
             {
                 HandleException(ex, context);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                HandleException(ex, context);
             }
         }
 
-
+        private void HandleException(Exception ex, HttpContext context)
+        {
+            switch (ex)
+            {
+                case UserNotFoundException e:
+                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    break;
+                case InvalidPasswordException e:
+                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    break;
+                default:
+                    _logger.LogWarning(ex, $"Exception not handled in {nameof(ExceptionHandlingMiddleware)}");
+                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    break;
+            }
+        }
 
         private void HandleException(InfrastructureException ex, HttpContext context)
         {

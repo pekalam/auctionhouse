@@ -33,7 +33,7 @@ var jwtConfig = builder.Configuration.GetSection("JWT").Get<JwtSettings>();
 builder.Services.AddCommonWebApi(jwtConfig);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddMongoDbImageDb(builder.Configuration.GetSection("ImageDb").Get<ImageDbSettings>());
-builder.Configuration.GetSection("EfCoreReadModelNotificatitons").Get<EfCoreReadModelNotificaitonsOptions>();
+builder.Services.AddEfCoreReadModelNotifications(builder.Configuration.GetSection("EfCoreReadModelNotificatitons").Get<EfCoreReadModelNotificaitonsOptions>());
 
 var allowedOrigin = builder.Configuration.GetValue<string>("CORS:AllowedOrigin");
 builder.Services.AddCors(options =>
