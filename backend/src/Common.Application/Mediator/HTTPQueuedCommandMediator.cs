@@ -41,7 +41,7 @@ namespace Common.Application.Mediator
             return base.Send(command, commandContext);
         }
 
-        public override Task<T> Send<T>(IQuery<T> query)
+        protected override Task<T> Send<T>(IQuery<T> query)
         {
             throw new NotImplementedException();
         }

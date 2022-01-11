@@ -28,6 +28,6 @@ namespace ReadModel.Core.Queries.User.UserAuctions
         public UserAuctionsSortDir SortingDirection { get; set; }
 
         [SignedInUser]
-        public UserId SignedInUser { get; set; }
+        public Guid SignedInUser { get; set; }
     }
 }

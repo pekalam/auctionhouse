@@ -16,7 +16,7 @@ namespace ReadModel.Core.Queries.User.UserWonAuctions
         public UserAuctionsSortDir SortingDirection { get; }
 
         [SignedInUser]
-        public UserId SignedInUser { get; set; }
+        public Guid SignedInUser { get; set; }
 
         public UserWonAuctionsQuery(int page, UserAuctionsSorting sorting, UserAuctionsSortDir sortingDirection)
         {

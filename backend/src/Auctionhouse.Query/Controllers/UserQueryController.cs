@@ -1,27 +1,71 @@
 ﻿using Auctionhouse.Query.Queries;
+using AutoMapper;
 using Common.Application.Mediator;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ReadModel.Core.Queries.Auth.CheckUsername;
+using ReadModel.Core.Queries.User.UserAuctions;
+using ReadModel.Core.Queries.User.UserBids;
+using ReadModel.Core.Queries.User.UserBoughtAuctions;
+using ReadModel.Core.Queries.User.UserData;
+using ReadModel.Core.Queries.User.UserWonAuctions;
 
 namespace Auctionhouse.Query.Controllers
 {
+
     [ApiController]
+    [Authorize]
     [Route("api/q")]
     public class UserQueryController : ControllerBase
     {
         private ImmediateCommandQueryMediator _mediator;
+        private IMapper _mapper;
 
-        public UserQueryController(ImmediateCommandQueryMediator mediator)
+        public UserQueryController(ImmediateCommandQueryMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
+            _mapper = mapper;
         }
 
-        [HttpGet("checkUsername")]
-        public async Task<ActionResult<CheckUsernameQueryResult>> CheckUsername([FromQuery] CheckUsernameQueryDto queryDto)
+        [HttpGet("userAuctions")]
+        public async Task<ActionResult<UserAuctionsQueryResult>> UserAuctions(
+      [FromQuery] UserAuctionsQueryDto queryDto)
         {
-            var query = new CheckUsernameQuery(queryDto.Username);
-            var result = await _mediator.Send(query);
-            return Ok(result);
+            var query = _mapper.Map<UserAuctionsQueryDto, UserAuctionsQuery>(queryDto);
+            var auctions = await _mediator.SendQuery(query);
+            return Ok(auctions);
+        }
+
+        [HttpGet("userData")]
+        public async Task<ActionResult<UserDataQueryResult>> UserData()
+        {
+            var userData = await _mediator.SendQuery(new UserDataQuery());
+            return Ok(userData);
+        }
+
+        [HttpGet("userBids")]
+        public async Task<ActionResult<UserBidsQueryResult>> UserBids()
+        {
+            var query = new UserBidsQuery();
+            var userBids = await _mediator.SendQuery(query);
+            return Ok(userBids);
+        }
+
+        [HttpGet("userBoughtAuctions")]
+        public async Task<ActionResult<UserBoughtAuctionQueryResult>> UserBoughtAuctions(
+            [FromQuery] UserBoughtAuctionsQueryDto dto)
+        {
+            var query = _mapper.Map<UserBoughtAuctionsQueryDto, UserBoughtAuctionsQuery>(dto);
+            var userWonAuctions = await _mediator.SendQuery(query);
+            return Ok(userWonAuctions);
+        }
+
+        [HttpGet("userWonAuctions")]
+        public async Task<ActionResult<UserWonAuctionQueryResult>> UserWonAuctions(
+            [FromQuery] UserWonAuctionsQueryDto dto)
+        {
+            var query = _mapper.Map<UserWonAuctionsQueryDto, UserWonAuctionsQuery>(dto);
+            var userWonAuctions = await _mediator.SendQuery(query);
+            return Ok(userWonAuctions);
         }
     }
 }

@@ -51,7 +51,29 @@ namespace Common.Application.Mediator
             return requestStatus;
         }
 
-        public abstract Task<T> Send<T>(IQuery<T> query);
+        public async Task<T> SendQuery<T>(IQuery<T> query)
+        {
+            if (AttributeStrategies.PreHandleQueryAttributeStrategies.ContainsKey(query.GetType()))
+            {
+                foreach (var strategy in AttributeStrategies.PreHandleQueryAttributeStrategies[query.GetType()])
+                {
+                    strategy?.Invoke(_implProvider, query);
+                }
+            }
+            var result = await Send(query);
+
+            if (AttributeStrategies.PostHandleQueryAttributeStrategies.ContainsKey(query.GetType()))
+            {
+                foreach (var strategy in AttributeStrategies.PostHandleQueryAttributeStrategies[query.GetType()])
+                {
+                    strategy?.Invoke(_implProvider, query);
+                }
+            }
+
+            return result;
+        }
+
+        protected abstract Task<T> Send<T>(IQuery<T> query);
 
         protected abstract Task<(RequestStatus, bool)> SendAppCommand<T>(AppCommand<T> command) where T : ICommand;
     }

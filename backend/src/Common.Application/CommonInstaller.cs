@@ -38,6 +38,7 @@ namespace Common.Application
             }
 
             AttributeStrategies.LoadCommandAttributeStrategies(commandAssemblyNames);
+            AttributeStrategies.LoadQueryAttributeStrategies(commandAssemblyNames);
             AuthorizationRequiredAttribute.LoadSignedInUserCmdAndQueryMembers(commandAssemblyNames);
         }
     }

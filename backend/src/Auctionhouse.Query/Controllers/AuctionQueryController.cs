@@ -37,7 +37,7 @@ namespace Auctionhouse.Query.Controllers
             [FromQuery] AuctionsByCategoryQueryDto byCategoryQueryDto)
         {
             var query = _mapper.Map<AuctionsByCategoryQuery>(byCategoryQueryDto);
-            var auctions = await _mediator.Send(query);
+            var auctions = await _mediator.SendQuery(query);
             return Ok(auctions);
         }
 
@@ -45,14 +45,14 @@ namespace Auctionhouse.Query.Controllers
         public async Task<ActionResult<AuctionRead>> Auction([FromQuery] AuctionQueryDto queryDto)
         {
             var query = _mapper.Map<AuctionQuery>(queryDto);
-            var auction = await _mediator.Send(query);
+            var auction = await _mediator.SendQuery(query);
             return Ok(auction);
         }
 
         [HttpGet("categories"), ResponseCache(Duration = 31536000, Location = ResponseCacheLocation.Any)]
         public async Task<ActionResult<CategoryTreeNode>> CategoriesQuery()
         {
-            var categoriesTree = await _mediator.Send(new CategoriesQuery());
+            var categoriesTree = await _mediator.SendQuery(new CategoriesQuery());
             return Ok(categoriesTree);
         }
 
@@ -63,7 +63,7 @@ namespace Auctionhouse.Query.Controllers
             {
                 ImageId = queryDto.ImageId
             };
-            var result = await _mediator.Send(query);
+            var result = await _mediator.SendQuery(query);
             if (result.Img != null)
             {
                 return File(result.Img.Img, "image/jpeg");
@@ -79,7 +79,7 @@ namespace Auctionhouse.Query.Controllers
         public async Task<ActionResult<TopAuctionsInTag>> TopAuctionsByTagQuery(
             [FromQuery] TopAuctionsByTagQueryDto queryDto)
         {
-            var result = await _mediator.Send(new TopAuctionsInTagQuery() { Tag = queryDto.Tag, Page = queryDto.Page });
+            var result = await _mediator.SendQuery(new TopAuctionsInTagQuery() { Tag = queryDto.Tag, Page = queryDto.Page });
             return Ok(result);
         }
 
@@ -88,7 +88,7 @@ namespace Auctionhouse.Query.Controllers
             [FromQuery] TopAuctionsByProductNameDto queryDto)
         {
             var query = _mapper.Map<TopAuctionsByProductNameQuery>(queryDto);
-            var result = await _mediator.Send(query);
+            var result = await _mediator.SendQuery(query);
             return Ok(result);
         }
 
@@ -96,7 +96,7 @@ namespace Auctionhouse.Query.Controllers
         public async Task<ActionResult<CommonTags>> CommonTags([FromQuery] CommonTagsQueryDto queryDto)
         {
             var query = _mapper.Map<CommonTagsQuery>(queryDto);
-            var result = await _mediator.Send(query);
+            var result = await _mediator.SendQuery(query);
             return Ok(result);
         }
 
@@ -104,7 +104,7 @@ namespace Auctionhouse.Query.Controllers
         public async Task<ActionResult<AuctionsQueryResult>> AuctionsByTag([FromQuery] AuctionsByTagQueryDto queryDto)
         {
             var query = _mapper.Map<AuctionsByTagQuery>(queryDto);
-            var result = await _mediator.Send(query);
+            var result = await _mediator.SendQuery(query);
             return Ok(result);
         }
 
@@ -112,7 +112,7 @@ namespace Auctionhouse.Query.Controllers
         public async Task<ActionResult<IEnumerable<MostViewedAuctionsResult>>> MostViewedAuctions()
         {
             var query = new MostViewedAuctionsQuery();
-            var result = await _mediator.Send(query);
+            var result = await _mediator.SendQuery(query);
             return Ok(result);
         }
 
@@ -120,7 +120,7 @@ namespace Auctionhouse.Query.Controllers
         public async Task<ActionResult<IEnumerable<EndingAuctions>>> EndingAuctions()
         {
             var query = new EndingAuctionsQuery();
-            var result = await _mediator.Send(query);
+            var result = await _mediator.SendQuery(query);
             return Ok(result);
         }
     }

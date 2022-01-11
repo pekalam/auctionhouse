@@ -13,7 +13,7 @@ namespace Common.Application.Mediator
             _mediator = mediator;
         }
 
-        public override Task<T> Send<T>(IQuery<T> query)
+        protected override Task<T> Send<T>(IQuery<T> query)
         {
             return _mediator.Send(query);
         }

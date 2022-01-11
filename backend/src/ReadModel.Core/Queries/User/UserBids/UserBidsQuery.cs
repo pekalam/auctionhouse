@@ -10,6 +10,6 @@ namespace ReadModel.Core.Queries.User.UserBids
         public int Page { get; set; } = 0;
 
         [SignedInUser]
-        public UserId SignedInUser { get; set; }
+        public Guid SignedInUser { get; set; }
     }
 }

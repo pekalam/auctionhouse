@@ -51,6 +51,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+CommonInstaller.InitAttributeStrategies("ReadModel.Core");
 ReadModelInstaller.InitSubscribers(app.Services);
 XmlCategoryTreeStoreInstaller.Init(app.Services);
 
