@@ -1,7 +1,7 @@
 <div class="auction-preview-div">
   <img class="preview-img" [src]="imgSrc"/>
   <h3>Auction name: {{auction.product.name}}</h3>
-  <p>From: {{auction.creator.userName}}</p>
+  <p>From: {{auction.owner.userName}}</p>
   <p>Start: {{auction.startDate | date : "yyyy MMMM dd"}}</p>
   <p>End: {{auction.endDate | date : "yyyy MMMM dd"}}</p>
 </div>

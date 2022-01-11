@@ -19,7 +19,7 @@ export class CheckUsernameQuery {
   }
 
   execute(username: string): Observable<CheckUsernameQueryResult> {
-    const url = `${environment.API_URL}/api/checkUsername?username=${username}`;
+    const url = `${environment.API_URL}/api/q/checkUsername?username=${username}`;
     return this.httpClient.get<CheckUsernameQueryResult>(url, {});
   }
 }

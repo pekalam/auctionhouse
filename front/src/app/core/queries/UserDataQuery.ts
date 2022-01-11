@@ -26,7 +26,7 @@ export class UserDataQuery {
   }
 
   execute(): Observable<UserData>{
-    const url = `${environment.API_URL}/api/userData`;
+    const url = `${environment.API_URL}/api/q/userData`;
     let req = this.httpClient.get<UserData>(url);
     return this.queryHelper.pipeLoading(req);
   }

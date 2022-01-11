@@ -10,6 +10,6 @@ import { environment } from '../../../environments/environment';
 })
 export class AuctionImageQuery{
   execute(auctionImageId: string): string{
-    return `${environment.API_URL}/api/auctionImage?img=${auctionImageId}`;
+    return `${environment.API_URL}/api/q/auctionImage?img=${auctionImageId}`;
   }
 }

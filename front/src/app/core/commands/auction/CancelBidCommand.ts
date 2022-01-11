@@ -18,7 +18,7 @@ export class CancelBidCommand{
   }
 
   execute(auctionId: string, bidId: string): Observable<RequestStatus> {
-    const url = `${environment.API_URL}/api/cancelBid`;
+    const url = `${environment.API_URL}/api/c/cancelBid`;
     const req = this.httpClient.post(url, { auctionId, bidId });
     return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.WSQueuedCommand);
   }

@@ -20,7 +20,7 @@ export class UserBidsQuery{
   }
 
   execute(page: number = 0): Observable<UserBidsQueryResult>{
-    const url = `${environment.API_URL}/api/userBids?page=${page}`;
+    const url = `${environment.API_URL}/api/q/userBids?page=${page}`;
 
     let req = this.httpClient.get<UserBidsQueryResult>(url);
     return this.queryHelper.pipeLoading(req);

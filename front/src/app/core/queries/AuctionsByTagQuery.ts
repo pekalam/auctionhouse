@@ -33,7 +33,7 @@ export class AuctionsByTagQuery {
 
   execute(page: number, tag: string, filters?: AuctionFilters): Observable<AuctionsQueryResult> {
     if (!filters) { filters = new AuctionFilters(); }
-    const url = `${environment.API_URL}/api/auctionsByTag?page=${page}&tag=${tag}&${this.getCondition(filters.condition)}`
+    const url = `${environment.API_URL}/api/q/auctionsByTag?page=${page}&tag=${tag}&${this.getCondition(filters.condition)}`
     + `&${this.getAuctionTypeQuery(filters)}&${this.getAuctionBuyNowPrice(filters)}&${this.getAuctionPrice(filters)}`;
     return this.queryHelper.pipeLoading(this.httpClient.get<AuctionsQueryResult>(url, {}));
   }

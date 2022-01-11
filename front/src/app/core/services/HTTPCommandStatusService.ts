@@ -26,7 +26,7 @@ export class HTTPCommandStatusService {
   }
 
   private sendCommandStatusRequest(correlationId: string): Observable<RequestStatus> {
-    const url = `${environment.API_URL}/api/command/${correlationId}`;
+    const url = `${environment.API_URL}/api/c/command/${correlationId}`;
     return this.httpClient.get<RequestStatus>(url);
   }
 

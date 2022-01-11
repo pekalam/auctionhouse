@@ -15,7 +15,7 @@ export class RemoveAuctionImageCommand {
   }
 
   execute(imgNum: number): Observable<RequestStatus> {
-    const url = `${environment.API_URL}/api/removeAuctionImage?num=${imgNum}`;
+    const url = `${environment.API_URL}/api/c/removeAuctionImage?num=${imgNum}`;
     const req = this.httpClient.post(url, null);
     return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.HTTPQueuedCommand);
   }

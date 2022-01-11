@@ -20,7 +20,7 @@ export class UserBoughtAuctionsQuery {
   }
 
   execute(page: number, sorting: UserAuctionsSorting, dir: UserAuctionsSortDir): Observable<UserBoughtAuctions> {
-    const url = `${environment.API_URL}/api/userBoughtAuctions?page=${page}&sort=${sorting}&dir=${dir}`;
+    const url = `${environment.API_URL}/api/q/userBoughtAuctions?page=${page}&sort=${sorting}&dir=${dir}`;
     let req = this.httpClient.get<UserBoughtAuctions>(url);
     return this.queryHelper.pipeLoading(req);
   }

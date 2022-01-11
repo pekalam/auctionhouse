@@ -24,7 +24,7 @@ export class TopAuctionsByTagQuery {
   }
 
   execute(tag: string, page: number): Observable<TopAuctionsQueryResult>{
-    const url = `${environment.API_URL}/api/topAuctionsByTag?tag=${tag}&page=${page}`;
+    const url = `${environment.API_URL}/api/q/topAuctionsByTag?tag=${tag}&page=${page}`;
     return this.httpClient.get<TopAuctionsQueryResult>(url, {});
   }
 }

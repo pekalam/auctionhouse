@@ -13,7 +13,7 @@ export class CheckResetCodeCommand {
   }
 
   execute(resetCode: string, email: string): Observable<RequestStatus> {
-    const url = `${environment.API_URL}/api/checkResetCode`;
+    const url = `${environment.API_URL}/api/c/checkResetCode`;
     const req = this.httpClient.post(url, { resetCode, email });
     return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.HTTPQueuedCommand);
   }

@@ -23,7 +23,7 @@ export class CommonTagsQuery {
   }
 
   execute(tag: string): Observable<CommonTagsQueryResult> {
-    const url = `${environment.API_URL}/api/commonTags?tag=${tag}`;
+    const url = `${environment.API_URL}/api/q/commonTags?tag=${tag}`;
     return this.httpClient.get<CommonTagsQueryResult>(url, {});
   }
 }

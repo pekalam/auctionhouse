@@ -6,7 +6,7 @@
     <div class="right-content">
       <h3 *ngIf="auction.archived">(Archived)</h3>
       <h3>{{auction.name}}</h3>
-      <div><span class="prop-title">From:</span> {{auction.creator.userName}}</div>
+      <div><span class="prop-title">From:</span> {{auction.owner.userName}}</div>
       <p *ngIf="showTimer" class="timer">TIME LEFT: {{timer.m}}:{{timer.s}}</p>
       <hr>
       <div class="info-container">

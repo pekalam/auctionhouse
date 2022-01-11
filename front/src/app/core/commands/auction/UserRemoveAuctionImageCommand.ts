@@ -17,7 +17,7 @@ export class UserRemoveAuctionImageCommand {
   }
 
   execute(imgNum: number, auctionId: string): Observable<RequestStatus> {
-    const url = `${environment.API_URL}/api/userRemoveAuctionImage`;
+    const url = `${environment.API_URL}/api/c/userRemoveAuctionImage`;
     const formData = new FormData();
     formData.append('img-num', imgNum.toString());
     formData.append('auction-id', auctionId);

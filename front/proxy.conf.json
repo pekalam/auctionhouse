@@ -1,6 +1,11 @@
 {
-  "/api/*": {
-    "target": "http://localhost:5000",
+  "/api/q/*": {
+    "target": "https://localhost:7070",
+    "secure": false,
+    "logLevel": "debug"
+  },
+  "/api/c/*": {
+    "target": "https://localhost:7203",
     "secure": false,
     "logLevel": "debug"
   }

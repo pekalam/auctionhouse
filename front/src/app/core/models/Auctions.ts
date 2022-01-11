@@ -12,7 +12,7 @@ export interface AuctionImage{
 export interface AuctionListModel{
   id: string;
   auctionId: string;
-  creator: UserIdentity;
+  owner: UserIdentity;
   productName: string;
   name: string;
   category: Category;
@@ -29,7 +29,7 @@ export interface AuctionListModel{
 export interface Auction {
   id: string;
   auctionId: string;
-  creator: UserIdentity;
+  owner: UserIdentity;
   product: Product;
   category: Category;
   startDate: Date;

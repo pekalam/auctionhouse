@@ -13,7 +13,7 @@ export class RequestResetPasswordCommand {
   }
 
   execute(email: string): Observable<RequestStatus>{
-    const url = `${environment.API_URL}/api/requestResetPassword`;
+    const url = `${environment.API_URL}/api/c/requestResetPassword`;
     const req = this.httpClient.post(url, {email});
     return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.HTTPQueuedCommand);
   }

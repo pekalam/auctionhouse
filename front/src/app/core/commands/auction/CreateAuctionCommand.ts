@@ -27,7 +27,7 @@ export class CreateAuctionCommand {
   }
 
   execute(commandArgs: CreateAuctionCommandArgs): Observable<RequestStatus> {
-    const url = `${environment.API_URL}/api/createAuction`;
+    const url = `${environment.API_URL}/api/c/createAuction`;
     console.log(commandArgs);
 
     const req = this.httpClient.post(url, commandArgs);

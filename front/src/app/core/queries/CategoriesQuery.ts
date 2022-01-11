@@ -14,7 +14,7 @@ export class CategoriesQuery {
   }
 
   execute(): Observable<CategoryTreeNode> {
-    const url = `${environment.API_URL}/api/categories`;
+    const url = `${environment.API_URL}/api/q/categories`;
     return this.httpClient.get<CategoryTreeNode>(url, {});
   }
 

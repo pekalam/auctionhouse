@@ -14,7 +14,7 @@ export class BuyNowCommand {
   }
 
   execute(auctionId: string): Observable<RequestStatus> {
-    const url = `${environment.API_URL}/api/buyNow`;
+    const url = `${environment.API_URL}/api/c/buyNow`;
     const req = this.httpClient.post(url, { auctionId });
     return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.HTTPQueuedCommand);
   }

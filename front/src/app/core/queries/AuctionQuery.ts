@@ -14,7 +14,7 @@ export class AuctionQuery {
   }
 
   execute(auctionId: string): Observable<Auction>{
-    const url = `${environment.API_URL}/api/auction?auctionId=${auctionId}`;
+    const url = `${environment.API_URL}/api/q/auction?auctionId=${auctionId}`;
     return this.queryHelper.pipeLoading(this.httpClient.get<Auction>(url, {}));
   }
 }

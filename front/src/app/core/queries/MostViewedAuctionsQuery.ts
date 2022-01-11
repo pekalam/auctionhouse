@@ -25,7 +25,7 @@ export class MostViewedAuctionsQuery {
   }
 
   execute(): Observable<MostViewedAuction[]>{
-    const url = `${environment.API_URL}/api/mostViewedAuctions`;
+    const url = `${environment.API_URL}/api/q/mostViewedAuctions`;
     return this.httpClient.get<MostViewedAuction[]>(url, {});
   }
 }

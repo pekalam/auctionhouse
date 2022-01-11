@@ -19,7 +19,7 @@ export class ChangePasswordCommand {
 
   execute(password: string): Observable<any> {
     const req = this.httpClient.post(
-      `${environment.API_URL}/api/changePassword`, { newPassword: password }
+      `${environment.API_URL}/api/c/changePassword`, { newPassword: password }
     );
     return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.HTTPQueuedCommand);
   }

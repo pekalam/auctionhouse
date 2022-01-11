@@ -24,7 +24,7 @@ export class SignUpCommand {
   }
 
   execute(commandArgs: SignUpCommandArgs): Observable<RequestStatus> {
-    const req = this.httpClient.post<RequestStatus>(`${environment.API_URL}/api/signup`, commandArgs);
+    const req = this.httpClient.post<RequestStatus>(`${environment.API_URL}/api/c/signup`, commandArgs);
     return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.HTTPQueuedCommand);
   }
 }

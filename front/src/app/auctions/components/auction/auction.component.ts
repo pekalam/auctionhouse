@@ -61,7 +61,7 @@ export class AuctionComponent implements OnInit, OnDestroy {
 
   private checkCanShowButtons() {
     this.authenticationStateService.currentUser.subscribe((user) => {
-      if (!user || user.userId !== this.auction.creator.userId) {
+      if (!user || user.userId !== this.auction.owner.userId) {
         this.showAuctionButtons = true;
       } else {
         this.showAuctionButtons = false;

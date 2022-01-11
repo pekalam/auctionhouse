@@ -31,7 +31,7 @@ export class SignInCommand {
   execute(username: string, password: string) {
     return this.httpClient
       .post<string>(
-        `${environment.API_URL}/api/signin`,
+        `${environment.API_URL}/api/c/signin`,
         { username, password }, { responseType: 'text' as 'json' }
       )
       .pipe(

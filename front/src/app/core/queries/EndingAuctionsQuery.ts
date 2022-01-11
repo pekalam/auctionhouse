@@ -28,7 +28,7 @@ export class EndingAuctionsQuery {
   }
 
   execute(): Observable<EndingAuctionsQueryResult[]> {
-    const url = `${environment.API_URL}/api/endingAuctions`;
+    const url = `${environment.API_URL}/api/q/endingAuctions`;
     return this.httpClient.get<EndingAuctionsQueryResult[]>(url, {});
   }
 }

@@ -19,7 +19,7 @@ export class TopAuctionsByProductNameQuery {
   }
 
   execute(productName: string, page: number): Observable<TopAuctionsByProductNameQueryResult>{
-    const url = `${environment.API_URL}/api/topAuctionsByProductName?product-name=${productName}&page=${page}`;
+    const url = `${environment.API_URL}/api/q/topAuctionsByProductName?product-name=${productName}&page=${page}`;
     return this.httpClient.get<TopAuctionsByProductNameQueryResult>(url, {});
   }
 }

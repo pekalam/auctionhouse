@@ -26,7 +26,7 @@ export class UserAuctionsQuery {
   }
 
   execute(pageNum: number, showArchived: boolean, sorting: UserAuctionsSorting, dir: UserAuctionsSortDir): Observable<UserAuctions> {
-    const url = `${environment.API_URL}/api/userAuctions?page=${pageNum}&show-archived=${showArchived}&sort=${sorting}&dir=${dir}`;
+    const url = `${environment.API_URL}/api/q/userAuctions?page=${pageNum}&show-archived=${showArchived}&sort=${sorting}&dir=${dir}`;
     let req = this.httpClient.get<UserAuctions>(url);
     return this.queryHelper.pipeLoading(req);
   }

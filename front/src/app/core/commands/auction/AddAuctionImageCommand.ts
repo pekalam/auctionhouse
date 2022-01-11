@@ -16,7 +16,7 @@ export class AddAuctionImageCommand {
   }
 
   execute(event: FileList, imgNum: number): Observable<RequestStatus> {
-    const url = `${environment.API_URL}/api/addAuctionImage`;
+    const url = `${environment.API_URL}/api/c/addAuctionImage`;
     const file: File = event && event.item(0);
     const formData = new FormData();
     formData.append('img', file);

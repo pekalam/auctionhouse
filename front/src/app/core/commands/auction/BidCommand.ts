@@ -13,7 +13,7 @@ export class BidCommand {
   }
 
   execute(auctionId: string, price: number): Observable<RequestStatus> {
-    const url = `${environment.API_URL}/api/bid`;
+    const url = `${environment.API_URL}/api/c/bid`;
     const req = this.httpClient.post(url, { auctionId, price });
     return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.WSQueuedCommand);
   }
