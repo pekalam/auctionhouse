@@ -35,7 +35,7 @@ describe('HttpcommandStatusService', () => {
       });
       for (let i = 0; i < MAX_RETRY; i++) {
         jasmine.clock().tick(INTERVAL_SEC * 300);
-        const req = httpMock.match('/api/c/command/123');
+        const req = httpMock.match('/api/s/status/123');
         req.forEach(r => {
           r.error(new ErrorEvent('test'), {
             status: 404
@@ -46,7 +46,7 @@ describe('HttpcommandStatusService', () => {
       }
 
       jasmine.clock().tick(INTERVAL_SEC * 300);
-      const req = httpMock.match('/api/c/command/123');
+      const req = httpMock.match('/api/s/status/123');
       req.forEach(r => {
         r.error(new ErrorEvent('test'), {
           status: 404
@@ -65,16 +65,16 @@ describe('HttpcommandStatusService', () => {
       });
       for (let i = 0; i < MAX_RETRY; i++) {
         jasmine.clock().tick(INTERVAL_SEC * 300);
-        const req = httpMock.match('/api/c/command/123');
+        const req = httpMock.match('/api/s/status/123');
         req.forEach(r => {
-          r.event(new HttpResponse({body: {correlationId: '123', status: 'PENDING', values: null}, status: 200}));
+          r.event(new HttpResponse({body: {commandId: '123', status: 'PENDING', values: null}, status: 200}));
         });
         httpMock.verify();
         expect(req.length).toBe(1);
       }
 
       jasmine.clock().tick(INTERVAL_SEC * 300);
-      const req = httpMock.match('/api/c/command/123');
+      const req = httpMock.match('/api/s/status/123');
       req.forEach(r => {
         r.error(new ErrorEvent('test'), {
           status: 404
@@ -92,7 +92,7 @@ describe('HttpcommandStatusService', () => {
         expect(err.status).toBe(500);
       });
       jasmine.clock().tick(INTERVAL_SEC - 50);
-      const req = httpMock.match('/api/c/command/123');
+      const req = httpMock.match('/api/s/status/123');
       req.forEach((r) => {
         r.error(new ErrorEvent('test'), {
           status: 500

@@ -25,8 +25,8 @@ export class WSCommandHelper {
           this.loadingService.setLoading(false);
           return of(response);
         }
-        const handler = this.serverMessageService.setupServerMessageHandler(response.correlationId);
-        return handler.pipe(filter((v) => v.correlationId === response.correlationId), tap(() => this.loadingService.setLoading(false)));
+        const handler = this.serverMessageService.setupServerMessageHandler(response.commandId);
+        return handler.pipe(filter((v) => v.commandId === response.commandId), tap(() => this.loadingService.setLoading(false)));
       })
     );
   }

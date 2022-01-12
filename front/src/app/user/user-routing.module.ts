@@ -7,8 +7,8 @@ import { AuctionEditPageComponent } from './pages/auction-edit-page/auction-edit
 import { ServerConnectionGuard } from '../core/guards/ServerConnectionGuard';
 
 const routes: Routes = [
-  { path: 'user', pathMatch: 'full', component: UserPageComponent, canActivate: [AuthGuard, ServerConnectionGuard] },
-  { path: 'editAuction', pathMatch: 'full', component: AuctionEditPageComponent, canActivate: [AuthGuard, ServerConnectionGuard] },
+  { path: 'user', pathMatch: 'full', component: UserPageComponent, canActivate: [AuthGuard, /*ServerConnectionGuard*/] },
+  { path: 'editAuction', pathMatch: 'full', component: AuctionEditPageComponent, canActivate: [AuthGuard, /*ServerConnectionGuard*/] },
 
 ];
 

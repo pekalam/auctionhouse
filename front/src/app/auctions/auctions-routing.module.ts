@@ -9,7 +9,7 @@ import { ServerConnectionGuard } from '../core/guards/ServerConnectionGuard';
 const routes: Routes = [
   { path: 'auction', component: AuctionPageComponent },
   { path: 'auctions/:mainCategory/:subCategory/:subCategory2', component: AuctionsPageComponent },
-  { path: 'auctions/create', canActivate: [AuthGuard, ServerConnectionGuard],
+  { path: 'auctions/create', canActivate: [AuthGuard, /*ServerConnectionGuard*/],
     data: { msg: 'You must be signed in to create an auction' }, component: AuctionCreatePageComponent },
   { path: 'auctions', component: AuctionsPageComponent }
 ];

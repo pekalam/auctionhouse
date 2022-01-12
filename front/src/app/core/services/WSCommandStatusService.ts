@@ -7,7 +7,7 @@ import { AuctionPriceChangedNotification_Name } from '../serverNotifications/Auc
 import { environment } from '../../../environments/environment';
 
 export interface RequestStatus {
-  correlationId: string;
+  commandId: string;
   status: string;
   extraData?: any;
 }
@@ -91,13 +91,13 @@ export class WSCommandStatusService {
   private handleServerMessage(serverMessage: RequestStatus) {
     console.log(serverMessage);
 
-    console.log('handling ' + serverMessage.correlationId);
+    console.log('handling ' + serverMessage.commandId);
     console.log('status: ' + serverMessage.status);
     console.log('extraData: ' + serverMessage.extraData);
 
 
-    if (this.handlerMap.has(serverMessage.correlationId)) {
-      const handler = this.handlerMap.get(serverMessage.correlationId);
+    if (this.handlerMap.has(serverMessage.commandId)) {
+      const handler = this.handlerMap.get(serverMessage.commandId);
       handler.next(serverMessage);
     } else {
       this.unhandledMesssages.push(serverMessage);
@@ -107,9 +107,9 @@ export class WSCommandStatusService {
   setupServerMessageHandler(correlationId: string): Observable<RequestStatus> {
     console.log('registered handler for ' + correlationId);
 
-    const unhandled = this.unhandledMesssages.filter(m => m.correlationId === correlationId);
+    const unhandled = this.unhandledMesssages.filter(m => m.commandId === correlationId);
     if (unhandled.length > 0) {
-      this.unhandledMesssages = this.unhandledMesssages.filter(m => m.correlationId !== correlationId);
+      this.unhandledMesssages = this.unhandledMesssages.filter(m => m.commandId !== correlationId);
       return of(unhandled[0]);
     }
 
