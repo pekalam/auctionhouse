@@ -4,6 +4,7 @@ using Auctions.DomainEvents;
 using Chronicle;
 using Common.Application.Events;
 using Common.Application.SagaNotifications;
+using Microsoft.Extensions.Logging;
 using AuctionBidsEvents = AuctionBids.DomainEvents.Events;
 
 namespace Auctions.Application.Commands.CreateAuction
@@ -21,13 +22,15 @@ namespace Auctions.Application.Commands.CreateAuction
         private readonly Lazy<IAuctionEndScheduler> _auctionEndScheduler;
         private readonly Lazy<IAuctionRepository> _auctions;
         private readonly Lazy<ISagaNotifications> _sagaNotifications;
+        private readonly ILogger<CreateAuctionSaga> _logger;
 
-        public CreateAuctionSaga(Lazy<IAuctionImageRepository> auctionImages, Lazy<IAuctionEndScheduler> auctionEndScheduler, Lazy<IAuctionRepository> auctions, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox)
+        public CreateAuctionSaga(Lazy<IAuctionImageRepository> auctionImages, Lazy<IAuctionEndScheduler> auctionEndScheduler, Lazy<IAuctionRepository> auctions, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox, ILogger<CreateAuctionSaga> logger)
         {
             _auctionImages = auctionImages;
             _auctionEndScheduler = auctionEndScheduler;
             _auctions = auctions;
             _sagaNotifications = sagaNotifications;
+            _logger = logger;
         }
 
         public Task CompensateAsync(AuctionCreated message, ISagaContext context)

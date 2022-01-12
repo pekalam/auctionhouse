@@ -5,7 +5,7 @@ namespace Auctions.Domain
 {
     public class AuctionArgs
     {
-        public BuyNowPrice BuyNowPrice { get; set; } = null!;
+        public BuyNowPrice? BuyNowPrice { get; set; }
         public bool BuyNowOnly { get; set; }
         public AuctionImage?[] AuctionImages { get; set; } = new AuctionImage[0]; //passing is not required
         public AuctionDate StartDate { get; set; } = null!;
@@ -35,6 +35,10 @@ namespace Auctions.Domain
                 {
                     throw new DomainException("Invalid auctionArgs");
                 }
+                if(args.BuyNowOnly && args.BuyNowPrice is null)
+                {
+                    throw new DomainException("Auction cannot be buyNowOnly and don't have a price");
+                }
             }
 
             public Builder From(AuctionArgs args)
@@ -53,7 +57,7 @@ namespace Auctions.Domain
                 args.Tags = tags;
                 return this;
             }
-            public Builder SetBuyNow(BuyNowPrice buyNowPrice)
+            public Builder SetBuyNow(BuyNowPrice? buyNowPrice)
             {
                 args.BuyNowPrice = buyNowPrice;
                 return this;

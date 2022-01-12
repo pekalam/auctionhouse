@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using static Adapter.EfCore.ReadModelNotifications.CollectionFormatter;
 using static Adapter.EfCore.ReadModelNotifications.SagaEventsConfirmationAssembler;
 
 namespace Adapter.EfCore.ReadModelNotifications
@@ -18,36 +17,30 @@ namespace Adapter.EfCore.ReadModelNotifications
         public long Id { get; set; }
         public string CommandId { get; set; } = null!;
         public string CorrelationId { get; set; } = null!;
-        public string? UnprocessedEvents { get; set; }
-        public string? ProcessedEvents { get; set; }
         public bool Completed { get; set; }
+        public bool Failed { get; set; }
     }
 
-    internal static class CollectionFormatter
+    internal class DbSagaEventToConfirm
     {
-        private const char Separator = ',';
-
-        public static string CollectionToString(IEnumerable<string> enumerable)
-        {
-            return string.Join(Separator, enumerable);
-        }
-
-        public static IEnumerable<string> StringToCollection(string? str)
-        {
-            if (str is null) return Enumerable.Empty<string>();
-
-            return str.Split(Separator);
-        }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long Id { get; set; }
+        public string CorrelationId { get; set; } = null!;
+        public string EventName { get; set; } = null!;
+        public bool Processed { get; set; }
     }
 
     internal static class SagaEventsConfirmationAssembler
     {
-        public static SagaEventsConfirmation FromDbEntity(DbSagaEventsConfirmation dbEntity)
+        public static SagaEventsConfirmation FromDbEntity(DbSagaEventsConfirmation dbEntity, DbSagaEventToConfirm[]? eventsToConfirm = null)
         {
+            var unprocessedEvents = eventsToConfirm?.Where(e => !e.Processed).Select(e => e.EventName) ?? Enumerable.Empty<string>();
+            var processedEvents = eventsToConfirm?.Where(e => e.Processed).Select(e => e.EventName) ?? Enumerable.Empty<string>();
             return new SagaEventsConfirmation(new CorrelationId(dbEntity.CorrelationId),
                 new CommandId(dbEntity.CommandId),
-                new HashSet<string>(StringToCollection(dbEntity.UnprocessedEvents)),
-                new HashSet<string>(StringToCollection(dbEntity.ProcessedEvents)), dbEntity.Completed);
+                new HashSet<string>(unprocessedEvents),
+                new HashSet<string>(processedEvents), dbEntity.Completed,
+                dbEntity.Failed);
         }
 
         public static DbSagaEventsConfirmation ToDbEntity(long id, SagaEventsConfirmation confirmations)
@@ -57,38 +50,53 @@ namespace Adapter.EfCore.ReadModelNotifications
                 Id = id,
                 CorrelationId = confirmations.CorrelationId.Value,
                 CommandId = confirmations.CommandId.Id,
-                ProcessedEvents = CollectionToString(confirmations.ProcessedEvents),
-                UnprocessedEvents = CollectionToString(confirmations.UnprocessedEvents),
                 Completed = confirmations.IsCompleted,
+                Failed = confirmations.IsFailed,
             };
         }
     }
 
     internal class SagaEventsConfirmationDbContext : DbContext
     {
+        public SagaEventsConfirmationDbContext()
+        {
+
+        }
+
         public SagaEventsConfirmationDbContext(DbContextOptions options) : base(options)
         {
         }
 
         public DbSet<DbSagaEventsConfirmation> SagaEventsConfirmations { get; private set; } = null!;
+        public DbSet<DbSagaEventToConfirm> SagaEventsToConfirm { get; private set; } = null!;
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+#if TEST
+            optionsBuilder.UseSqlServer("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Marek\\source\\repos\\Csharp\\auctionhouse\\backend\\src\\Tests\\FunctionalTestsServer.mdf;Integrated Security=True");
+#endif
+        }
     }
 
     internal class EfCoreSagaNotifications : ISagaNotifications, IImmediateNotifications
     {
         private readonly SagaEventsConfirmationDbContext _dbContext;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public EfCoreSagaNotifications(SagaEventsConfirmationDbContext dbContext)
+        public EfCoreSagaNotifications(SagaEventsConfirmationDbContext dbContext, IServiceScopeFactory serviceScopeFactory)
         {
+            _serviceScopeFactory = serviceScopeFactory;
             _dbContext = dbContext;
         }
-        private Task<(SagaEventsConfirmation, DbSagaEventsConfirmation)> FindEventConfirmations(CorrelationId correlationId)
+
+        private Task<DbSagaEventToConfirm> FindEventToConfirm(CorrelationId correlationId, string eventName)
         {
-            return _dbContext.SagaEventsConfirmations
-                .FirstAsync(e => e.CorrelationId == correlationId.Value)
-                .ContinueWith(t => (FromDbEntity(t.Result), t.Result), TaskContinuationOptions.OnlyOnRanToCompletion);
+            return _dbContext.SagaEventsToConfirm
+                .FirstAsync(e => e.CorrelationId == correlationId.Value && e.EventName == eventName);
         }
 
-        private Task SaveDbConfirmation(long id, SagaEventsConfirmation eventConfirmations, Action<DbSagaEventsConfirmation, DbSagaEventsConfirmation>? updateLocal = null)
+        private Task SaveDbConfirmation(long id, SagaEventsConfirmation eventConfirmations)
         {
             var dbEventConfirmations = ToDbEntity(id, eventConfirmations);
             var local = _dbContext.SagaEventsConfirmations.Local.FirstOrDefault(e => e.Id == id);
@@ -98,52 +106,67 @@ namespace Adapter.EfCore.ReadModelNotifications
             }
             else
             {
-                if(updateLocal != null) updateLocal(local, dbEventConfirmations);
-                else
-                {                
-                    // instead of clearning tracking
-                    local.ProcessedEvents = dbEventConfirmations.ProcessedEvents;
-                    local.UnprocessedEvents = dbEventConfirmations.UnprocessedEvents;
-                    local.Completed = dbEventConfirmations.Completed;
-                }
+                // instead of clearning tracking
+                local.Completed = dbEventConfirmations.Completed;
+                local.Failed = dbEventConfirmations.Failed;
             }
             return _dbContext.SaveChangesAsync();
         }
 
         public async Task AddUnhandledEvent<T>(CorrelationId correlationId, T @event) where T : Event
         {
-            var (eventConfirmations, dbEventConfirmations) = await FindEventConfirmations(correlationId);
-
-            if (eventConfirmations.AddUnprocessedEvent(@event.EventName))
+            var dbEventToConfirm = new DbSagaEventToConfirm
             {
-                await SaveDbConfirmation(dbEventConfirmations.Id, eventConfirmations);
-            }
+                CorrelationId = correlationId.Value,
+                EventName = @event.EventName,
+            };
+            _dbContext.SagaEventsToConfirm.Add(dbEventToConfirm);
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task AddUnhandledEvents<T>(CorrelationId correlationId, IEnumerable<T> events) where T : Event
         {
-            var (eventConfirmations, dbEventConfirmations) = await FindEventConfirmations(correlationId);
-
-            var needsSave = false;
             foreach (var @event in events)
             {
-                needsSave = eventConfirmations.AddUnprocessedEvent(@event.EventName) || needsSave;
+                var dbEventToConfirm = new DbSagaEventToConfirm
+                {
+                    CorrelationId = correlationId.Value,
+                    EventName = @event.EventName,
+                };
+                _dbContext.SagaEventsToConfirm.Add(dbEventToConfirm);
             }
 
-            if (needsSave)
-            {
-                await SaveDbConfirmation(dbEventConfirmations.Id, eventConfirmations);
-            }
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task MarkEventAsHandled<T>(CorrelationId correlationId, T @event) where T : Event
         {
-            var (eventConfirmations, dbEventConfirmations) = await FindEventConfirmations(correlationId);
+            var eventToConfirm = await FindEventToConfirm(correlationId, @event.EventName);
 
-            if (eventConfirmations.MarkEventAsProcessed(@event.EventName))
-            {
-                await SaveDbConfirmation(dbEventConfirmations.Id, eventConfirmations);
-            }
+            eventToConfirm.Processed = true;
+            _dbContext.SagaEventsToConfirm.Update(eventToConfirm);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        private async Task<(SagaEventsConfirmation, DbSagaEventsConfirmation)> FindEventConfirmations(CorrelationId correlationId)
+        {
+            Task<DbSagaEventToConfirm[]> eventsToConfirmTask;
+            using var scope = _serviceScopeFactory.CreateScope();
+            
+            var dbContext = scope.ServiceProvider.GetRequiredService<SagaEventsConfirmationDbContext>();
+            eventsToConfirmTask = dbContext.SagaEventsToConfirm.Where(e => e.CorrelationId == correlationId.Value)
+                .ToArrayAsync();
+            
+
+            var eventsConfirmationTask = _dbContext.SagaEventsConfirmations
+                .FirstAsync(e => e.CorrelationId == correlationId.Value);
+            
+            await Task.WhenAll(eventsToConfirmTask, eventsConfirmationTask);
+
+            var eventsToConfirm = eventsToConfirmTask.Result;
+            var eventsConfirmation = eventsConfirmationTask.Result;
+
+            return (FromDbEntity(eventsConfirmation, eventsToConfirm), eventsConfirmation);
         }
 
         public async Task MarkSagaAsCompleted(CorrelationId correlationId, Dictionary<string, object>? extraData = null)
@@ -152,7 +175,15 @@ namespace Adapter.EfCore.ReadModelNotifications
 
             eventConfirmations.SetCompleted();
 
-            await SaveDbConfirmation(dbEventConfirmations.Id, eventConfirmations, (local, db) => local.Completed = true);
+            try
+            {
+                await SaveDbConfirmation(dbEventConfirmations.Id, eventConfirmations);
+            }
+            catch (Exception E)
+            {
+
+                throw;
+            }
         }
 
         public async Task MarkSagaAsFailed(CorrelationId correlationId, Dictionary<string, object>? extraData = null)
@@ -161,7 +192,7 @@ namespace Adapter.EfCore.ReadModelNotifications
 
             eventConfirmations.SetFailed();
 
-            await SaveDbConfirmation(dbEventConfirmations.Id, eventConfirmations, (local, db) => local.Completed = false);
+            await SaveDbConfirmation(dbEventConfirmations.Id, eventConfirmations);
         }
 
         public async Task RegisterNewSaga(CorrelationId correlationId, CommandId commandId)
@@ -196,6 +227,8 @@ namespace Adapter.EfCore.ReadModelNotifications
 
         public async Task NotifyCompleted(CorrelationId correlationId, Dictionary<string, object>? extraData = null)
         {
+            
+
             var existing = await _dbContext.SagaEventsConfirmations
                 .FirstOrDefaultAsync(e => e.CorrelationId == correlationId.Value);
             if (existing == null) throw new ArgumentException("Could not find event confirmations with correlation id " + correlationId);
@@ -203,11 +236,15 @@ namespace Adapter.EfCore.ReadModelNotifications
             var confirmations = FromDbEntity(existing);
             confirmations.SetCompleted();
 
+            await SaveDbConfirmation(existing.Id, confirmations);
+            
             return;
         }
 
         public async Task NotifyFailed(CorrelationId correlationId, Dictionary<string, object>? extraData = null)
         {
+            
+
             var existing = await _dbContext.SagaEventsConfirmations
                     .FirstOrDefaultAsync(e => e.CorrelationId == correlationId.Value);
             if (existing == null) throw new ArgumentException("Could not find event confirmations with correlation id " + correlationId);
@@ -215,6 +252,8 @@ namespace Adapter.EfCore.ReadModelNotifications
             var confirmations = FromDbEntity(existing);
             confirmations.SetFailed();
 
+            await SaveDbConfirmation(existing.Id, confirmations);
+            
             return;
         }
     }
@@ -223,34 +262,5 @@ namespace Adapter.EfCore.ReadModelNotifications
     {
         public string ConnectionString { get; set; } = null!;
         public string Provider { get; set; } = "sqlite";
-    }
-
-    public static class EfCoreReadModelNotificationsInstaller
-    {
-        public static void AddEfCoreReadModelNotifications(this IServiceCollection services, EfCoreReadModelNotificaitonsOptions settings, ServiceLifetime contextLifetime = ServiceLifetime.Scoped)
-        {
-            services.AddDbContext<SagaEventsConfirmationDbContext>(opt =>
-                ConfigureDbContext(settings, opt), contextLifetime);
-            services.AddTransient<ISagaNotifications, EfCoreSagaNotifications>();
-            services.AddTransient<IImmediateNotifications, EfCoreSagaNotifications>();
-        }
-
-        private static DbContextOptionsBuilder ConfigureDbContext(EfCoreReadModelNotificaitonsOptions settings, DbContextOptionsBuilder opt)
-        {
-            if (settings.Provider.ToLower() == "sqlite")
-            {
-                return opt.UseSqlite(settings.ConnectionString);
-            }
-            else if (settings.Provider.ToLower() == "sqlserver")
-            {
-                return opt.UseSqlServer(settings.ConnectionString);
-            }
-            else throw new NotImplementedException();
-        }
-
-        public static void Initialize(IServiceProvider serviceProvider)
-        {
-            serviceProvider.GetRequiredService<SagaEventsConfirmationDbContext>().Database.EnsureCreated();
-        }
     }
 }

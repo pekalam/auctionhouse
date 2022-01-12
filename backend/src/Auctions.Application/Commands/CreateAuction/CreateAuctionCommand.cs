@@ -10,31 +10,32 @@ namespace Auctions.Application.Commands.CreateAuction
     [InAuctionCreateSessionRemove]
     public class CreateAuctionCommand : ICommand
     {
-        public BuyNowPrice BuyNowPrice { get; set; }
+        public BuyNowPrice? BuyNowPrice { get; set; }
+
         [Required]
-        public Product Product { get; set; }
+        public Product Product { get; set; } = null!;
         [Required]
-        public AuctionDate StartDate { get; set; }
+        public AuctionDate StartDate { get; set; } = null!;
         [Required]
-        public AuctionDate EndDate { get; set; }
+        public AuctionDate EndDate { get; set; } = null!;
         [Required]
         [MinCount(3)]
         [MaxCount(3)]
-        public List<string> Category { get; set; }
+        public List<string> Category { get; set; } = null!;
 
         [Required]
         public bool BuyNowOnly { get; set; }
 
         [Required]
         [MinLength(AuctionConstantsFactory.DEFAULT_MIN_TAGS)]
-        public Tag[] Tags { get; set; }
+        public Tag[] Tags { get; set; } = null!;
 
         [Required]
-        public AuctionName Name { get; set; }
+        public AuctionName Name { get; set; } = null!;
 
         [SignedInUser]
         public Guid SignedInUser { get; set; }
 
-        public AuctionCreateSession AuctionCreateSession { get; set; }
+        public AuctionCreateSession AuctionCreateSession { get; set; } = null!;
     }
 }

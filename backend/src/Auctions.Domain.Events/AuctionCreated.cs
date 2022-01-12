@@ -5,7 +5,7 @@ namespace Auctions.DomainEvents
     public class AuctionCreated : Event
     {
         public Guid AuctionId { get; set; }
-        public decimal BuyNowPrice { get; set; } 
+        public decimal? BuyNowPrice { get; set; } 
         public bool BuyNowOnly { get; set; }
         public string?[] AuctionImagesSize1Id { get; set; } 
         public string?[] AuctionImagesSize2Id { get; set; } 

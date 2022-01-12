@@ -75,6 +75,10 @@ namespace FunctionalTests.Commands
             var dbContext = serviceProvider.GetRequiredService<SagaEventsConfirmationDbContext>();
             var confirmations = dbContext.SagaEventsConfirmations.ToList();
             dbContext.SagaEventsConfirmations.RemoveRange(confirmations);
+
+            var eventsToConfirm = dbContext.SagaEventsToConfirm.ToList();
+            dbContext.SagaEventsToConfirm.RemoveRange(eventsToConfirm);
+
             dbContext.SaveChanges();
         }
 
@@ -109,7 +113,7 @@ namespace FunctionalTests.Commands
                 {
                     Provider = "sqlserver",
                     ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Marek\source\repos\Csharp\auctionhouse\backend\src\Tests\FunctionalTestsServer.mdf;Integrated Security=True",
-                }, ServiceLifetime.Transient); //transient to avoid concurrency issues in tests
+                });
 
                 var paymentVerification = new Mock<IAuctionPaymentVerification>();
                 paymentVerification

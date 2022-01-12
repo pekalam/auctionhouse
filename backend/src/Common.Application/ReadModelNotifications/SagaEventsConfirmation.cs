@@ -17,16 +17,17 @@ namespace Common.Application.SagaNotifications
         public bool IsFailed { get; private set; }
         public bool AllConfirmed => UnprocessedEvents.Count == 0;
 
-        public SagaEventsConfirmation(CorrelationId correlationId, CommandId commandId, HashSet<string> unprocessedEvents, HashSet<string> processedEvents, bool isCompleted)
+        public SagaEventsConfirmation(CorrelationId correlationId, CommandId commandId, HashSet<string> unprocessedEvents, HashSet<string> processedEvents, bool isCompleted, bool isFailed)
         {
             CorrelationId = correlationId;
             CommandId = commandId;
             UnprocessedEvents = unprocessedEvents;
             ProcessedEvents = processedEvents;
             IsCompleted = isCompleted;
+            IsFailed = isFailed;
         }
 
-        public static SagaEventsConfirmation CreateNew(CommandId commandId, CorrelationId correlationId) => new SagaEventsConfirmation(correlationId, commandId, new(), new(), false);
+        public static SagaEventsConfirmation CreateNew(CommandId commandId, CorrelationId correlationId) => new SagaEventsConfirmation(correlationId, commandId, new(), new(), false, false);
 
         public void SetCompleted() => IsCompleted = true;
         public void SetFailed() => IsFailed = true;

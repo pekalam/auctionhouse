@@ -61,7 +61,7 @@ namespace Auctions.Application.Commands.CreateAuction
 
             if (!_createAuctionService.Finished) // when transaction is not finished it means that distributed transaction must be started
             {
-                var createdEvent = (AuctionCreated)auction.PendingEvents.FirstOrDefault(t => t.EventName == "auctionCreated");
+                var createdEvent = auction.PendingEvents.FirstOrDefault(t => t.EventName == "auctionCreated") as AuctionCreated;
 
                 if(createdEvent is null)
                 {

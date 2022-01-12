@@ -6,7 +6,7 @@ namespace Test.Auctions.Base.Builders
 {
     public class GivenAuctionArgs
     {
-        private BuyNowPrice _buyNowPrice = BUY_NOW_PRICE;
+        private BuyNowPrice? _buyNowPrice = BUY_NOW_PRICE;
         private UserId _ownerId = UserId.New();
         private Product _product = new Product(PRODUCT_NAME, PRODUCT_DESCRIPTION, Condition.New);
         private string[] _tags = new[] { TAG_1 };
@@ -17,6 +17,18 @@ namespace Test.Auctions.Base.Builders
         public GivenAuctionArgs WithBuyNowOnly(bool buyNowOnly)
         {
             _buyNowOnly = buyNowOnly;
+            return this;
+        }
+
+        public GivenAuctionArgs WithBuyNowOnlyPrice(bool buyNowOnly)
+        {
+            _buyNowOnly = buyNowOnly;
+            return this;
+        }
+
+        public GivenAuctionArgs WithBuyNowOnlyPrice(BuyNowPrice? buyNowPrice)
+        {
+            _buyNowPrice = buyNowPrice;
             return this;
         }
 

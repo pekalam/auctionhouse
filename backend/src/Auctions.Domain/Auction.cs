@@ -105,7 +105,7 @@ namespace Auctions.Domain
         private readonly List<AuctionImage?> _auctionImages = new(new AuctionImage[MAX_IMAGES]);
         public AuctionName Name { get; private set; }
         public bool BuyNowOnly { get; private set; }
-        public BuyNowPrice BuyNowPrice { get; private set; }
+        public BuyNowPrice? BuyNowPrice { get; private set; }
         public decimal ActualPrice { get; private set; }
         public AuctionDate StartDate { get; private set; }
         public AuctionDate EndDate { get; private set; }
@@ -150,7 +150,7 @@ namespace Auctions.Domain
                 AggVersion = Version,
                 Name = auctionArgs.Name,
                 BuyNowOnly = auctionArgs.BuyNowOnly,
-                BuyNowPrice = auctionArgs.BuyNowPrice,
+                BuyNowPrice = auctionArgs.BuyNowPrice?.Value,
                 Category = auctionArgs.Categories.Select(i => (int)i).ToArray(),
                 EndDate = auctionArgs.EndDate,
                 Owner = auctionArgs.Owner,
@@ -171,10 +171,6 @@ namespace Auctions.Domain
         private void Create(AuctionArgs auctionArgs, bool compareToNow)
         {
             ValidateDates(auctionArgs.StartDate, auctionArgs.EndDate, compareToNow);
-            if (BuyNowOnly && BuyNowPrice.Value == 0)
-            {
-                throw new DomainException("Cannot create buyNowOnly auction with buyNowPrice 0");
-            }
             BuyNowPrice = auctionArgs.BuyNowPrice;
             StartDate = auctionArgs.StartDate;
             EndDate = auctionArgs.EndDate;
@@ -183,6 +179,14 @@ namespace Auctions.Domain
             Categories = auctionArgs.Categories;
             BuyNowOnly = auctionArgs.BuyNowOnly;
             Name = auctionArgs.Name;
+            if (BuyNowOnly && BuyNowPrice is null)
+            {
+                throw new DomainException("Cannot create buyNowOnly auction with null buyNowPrice");
+            }
+            if (BuyNowOnly && BuyNowPrice!.Value == 0)
+            {
+                throw new DomainException("Cannot create buyNowOnly auction with buyNowPrice 0");
+            }
             if (auctionArgs.Tags.Length < MIN_TAGS)
             {
                 throw new DomainException("Not enough auction tags");
