@@ -9,46 +9,25 @@ namespace Auctions.Application.Commands.UpdateAuction
     [AuthorizationRequired]
     public class UpdateAuctionCommand : ICommand
     {
-        public Guid AuctionId { get; }
+        [Required]
+        public Guid AuctionId { get; set; }
 
-        //can be null
-        public BuyNowPrice BuyNowPrice { get; }
-        public AuctionDate EndDate { get; }
-        //
+        public BuyNowPrice? BuyNowPrice { get; set; }
+        public AuctionDate? EndDate { get; set; }
 
         [MinCount(3)]
         [MaxCount(3)]
-        [Required]
-        public List<string> Category { get; }
+        public List<string>? Category { get; set; }
 
         [MinLength(Product.DESCRIPTION_MIN_LENGTH)]
-        [Required]
-        public string Description { get; }
+        public string? Description { get; set; }
 
         [MinCount(AuctionConstantsFactory.DEFAULT_MIN_TAGS)]
-        [Required]
-        public Tag[] Tags { get; }
+        public Tag[]? Tags { get; set; }
 
-        [Required]
-        public AuctionName Name { get; }
+        public AuctionName? Name { get; set; }
 
         [SignedInUser]
         public Guid SignedInUser { get; set; }
-
-
-        public UpdateAuctionCommand(Guid auctionId,
-            BuyNowPrice buyNowPrice, AuctionDate endDate,
-            List<string> category, string description,
-            Tag[] tags, AuctionName name)
-        {
-            if (auctionId.Equals(Guid.Empty)) { throw new InvalidCommandException($"Invalid field AuctionId = {auctionId}"); }
-            AuctionId = auctionId;
-            BuyNowPrice = buyNowPrice;
-            EndDate = endDate;
-            Category = category;
-            Description = description;
-            Tags = tags;
-            Name = name;
-        }
     }
 }

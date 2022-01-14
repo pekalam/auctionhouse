@@ -46,6 +46,8 @@ namespace FunctionalTests.Commands
 
         public UserId CurrentUser { get; } = UserId.New();
 
+        public ReadModelDbContext ReadModelDbContext { get; }
+
         public TestBase(ITestOutputHelper outputHelper, params string[] assemblyNames)
         {
             _outputHelper = outputHelper;
@@ -59,6 +61,7 @@ namespace FunctionalTests.Commands
             ReadModelInstaller.InitSubscribers(ServiceProvider);
             XmlCategoryTreeStoreInstaller.Init(ServiceProvider);
             Mediator = ServiceProvider.GetRequiredService<ImmediateCommandQueryMediator>();
+            ReadModelDbContext = ServiceProvider.GetRequiredService<ReadModelDbContext>();
         }
 
         public void ChangeSignedInUser(Guid userId)

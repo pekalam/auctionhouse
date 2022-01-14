@@ -36,28 +36,13 @@ namespace ReadModel.Core.EventConsumers
                 throw null;
             }
 
-            auctionRead.Category = CreateCategoryRead(category);
+            var categoryRead = CategoryRead.FromCategory(category);
+            auctionRead.Category = categoryRead;
 
             _dbContext.AuctionsReadModel.WithWriteConcern(new WriteConcern(mode: "majority", journal: true))
                 .InsertOne(auctionRead);
         }
 
-        private static CategoryRead CreateCategoryRead(Category? category)
-        {
-            var catRead = new CategoryRead();
-            var currentCat = category;
-            var currentCatRead = catRead;
-            do
-            {
-                currentCatRead.Name = currentCat.Name;
-                if (currentCat.SubCategory is not null)
-                {
-                    currentCatRead.SubCategory = new CategoryRead();
-                }
-                currentCatRead = currentCatRead.SubCategory;
-                currentCat = currentCat.SubCategory;
-            } while (currentCat is not null);
-            return catRead;
-        }
+
     }
 }

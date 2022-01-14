@@ -36,7 +36,7 @@ namespace Auctionhouse.Command
             }
         }
 
-        private void HandleException(Exception ex, HttpContext context)
+        private void HandleException(Exception ex, HttpContext context) //TODO codes
         {
             switch (ex)
             {
@@ -44,6 +44,9 @@ namespace Auctionhouse.Command
                     context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                     break;
                 case InvalidPasswordException e:
+                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    break;
+                case UnauthorizedAccessException e:
                     context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                     break;
                 default:
