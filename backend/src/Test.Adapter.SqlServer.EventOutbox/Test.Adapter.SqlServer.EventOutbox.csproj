@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Adapter.SqlServer.EventOutbox\Adapter.SqlServer.EventOutboxStorage.csproj" />
+    <ProjectReference Include="..\Test.Common.Base\Test.Common.Base.csproj" />
   </ItemGroup>
 
 </Project>

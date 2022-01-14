@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Test.Common.Base.Builders;
 using Xunit;
 
 namespace Test.Adapter.SqlServer.EventOutbox
@@ -18,7 +19,8 @@ namespace Test.Adapter.SqlServer.EventOutbox
 
         public OutboxItemFinder_Tests()
         {
-            dbContext = new EventOutboxDbContext(new DbContextOptionsBuilder().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
+            dbContext = new EventOutboxDbContext(new DbContextOptionsBuilder<EventOutboxDbContext>()
+                .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
             outboxItemFinder = new OutboxItemFinder(dbContext);
         }
 
@@ -59,7 +61,7 @@ namespace Test.Adapter.SqlServer.EventOutbox
             await dbContext.SaveChangesAsync();
 
             var unprocessed = (await outboxItemFinder.GetUnprocessedItemsOlderThan(1, 3, 10)).ToList();
-            
+
             Assert.Single(unprocessed);
             Assert.Equal(unprocessed[0].CommandContext, dbStoreItem.CommandContext);
         }
@@ -72,7 +74,8 @@ namespace Test.Adapter.SqlServer.EventOutbox
 
         public OutboxItemStore_Tests()
         {
-            dbContext = new EventOutboxDbContext(new DbContextOptionsBuilder().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
+            dbContext = new EventOutboxDbContext(new DbContextOptionsBuilder<EventOutboxDbContext>()
+                .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
             outboxItemStore = new OutboxItemStore(dbContext);
         }
 
@@ -127,6 +130,34 @@ namespace Test.Adapter.SqlServer.EventOutbox
             var deserializedEvent = SerializationUtils.FromJson(dbOutboxStoreItem.Event);
             Assert.Equal(outboxStoreItem.Event.GetType(), deserializedEvent.GetType());
             Assert.True(dbOutboxStoreItem.Processed);
+        }
+
+
+        [Fact]
+        public async Task Test3Async()
+        {
+            var outboxStoreItems = Enumerable.Range(0, 2).Select((_) => new GivenOutboxStoreItem().Build()).ToArray();
+            outboxStoreItems[1].CommandContext = outboxStoreItems[0].CommandContext;
+            var savedIitems = (await outboxItemStore.SaveMany(outboxStoreItems)).ToArray();
+
+            foreach (var item in savedIitems)
+            {
+                item.Processed = true;
+            }
+            await outboxItemStore.UpdateMany(savedIitems);
+
+            for (int i = 0; i < savedIitems.Length; i++)
+            {
+                Assert.NotEqual(0, savedIitems[i].Id);
+                var savedItem = savedIitems[i];
+                var dbOutboxStoreItem = await dbContext.OutboxItems.FirstAsync(i => i.Id == savedItem.Id);
+                Assert.Equal(JsonSerializer.Serialize(outboxStoreItems[i].CommandContext), JsonSerializer.Serialize(dbOutboxStoreItem.CommandContext));
+                Assert.Equal(outboxStoreItems[i].ReadModelNotifications, dbOutboxStoreItem.ReadModelNotifications);
+                Assert.Equal(outboxStoreItems[i].Timestamp, dbOutboxStoreItem.Timestamp);
+                var deserializedEvent = SerializationUtils.FromJson(dbOutboxStoreItem.Event);
+                Assert.Equal(outboxStoreItems[i].Event.GetType(), deserializedEvent.GetType());
+                Assert.True(dbOutboxStoreItem.Processed);
+            }
         }
     }
 }

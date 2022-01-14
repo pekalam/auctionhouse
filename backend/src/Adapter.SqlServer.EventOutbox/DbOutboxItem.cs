@@ -23,7 +23,15 @@ namespace Adapter.SqlServer.EventOutbox
             {
                 Id = outboxStoreItem.Id,
                 Event = SerializationUtils.ToJson(outboxStoreItem.Event),
-                CommandContext = outboxStoreItem.CommandContext,
+                CommandContext = new CommandContext
+                {
+                    CommandId = new CommandId(outboxStoreItem.CommandContext.CommandId.Id),
+                    CorrelationId = new CorrelationId(outboxStoreItem.CommandContext.CorrelationId.Value),
+                    HttpQueued = outboxStoreItem.CommandContext.HttpQueued,
+                    Name = outboxStoreItem.CommandContext.Name,
+                    User = outboxStoreItem.CommandContext.User,
+                    WSQueued = outboxStoreItem.CommandContext.WSQueued,
+                },
                 ReadModelNotifications = outboxStoreItem.ReadModelNotifications,
                 Timestamp = outboxStoreItem.Timestamp,
                 Processed = outboxStoreItem.Processed,
