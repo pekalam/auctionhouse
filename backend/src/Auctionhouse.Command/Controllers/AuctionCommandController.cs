@@ -4,6 +4,7 @@ using Auctions.Application.Commands.AddAuctionImage;
 using Auctions.Application.Commands.CreateAuction;
 using Auctions.Application.Commands.RemoveImage;
 using Auctions.Application.Commands.StartAuctionCreateSession;
+using Auctions.Application.Commands.UpdateAuction;
 using AutoMapper;
 using Common.Application.Mediator;
 using Microsoft.AspNetCore.Authorization;
@@ -62,6 +63,15 @@ namespace Auctionhouse.Command.Controllers
                 ImgNum = commandDto.ImgNum,
                 Extension = commandDto.Img.FileName.GetFileExtensionOrThrow400()
             };
+            var status = await _immediateCommandMediator.Send(cmd);
+
+            return this.StatusResponse(status, _mapper.Map<RequestStatusDto>(status));
+        }
+
+        [Authorize(Roles = "User"), HttpPost("userUpdateAuction")]
+        public async Task<ActionResult<RequestStatusDto>> UserUpdateAuction([FromBody] UpdateAuctionCommandDto commandDto)
+        {
+            var cmd = _mapper.Map<UpdateAuctionCommand>(commandDto);
             var status = await _immediateCommandMediator.Send(cmd);
 
             return this.StatusResponse(status, _mapper.Map<RequestStatusDto>(status));
