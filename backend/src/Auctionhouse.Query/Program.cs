@@ -10,6 +10,7 @@ using Common.WebAPI;
 using Adapter.MongoDb;
 using Adapter.MongoDb.AuctionImage;
 using Adapter.EfCore.ReadModelNotifications;
+using Adapter.SqlServer.EventOutbox;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,8 @@ builder.Services.AddCommonWebApi(jwtConfig);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddMongoDbImageDb(builder.Configuration.GetSection("ImageDb").Get<ImageDbSettings>());
 builder.Services.AddEfCoreReadModelNotifications(builder.Configuration.GetSection("EfCoreReadModelNotificatitons").Get<EfCoreReadModelNotificaitonsOptions>());
+//TODO remove unnecessar query dependecies
+builder.Services.AddSqlServerEventOutboxStorage(builder.Configuration.GetSection("EventOutboxStorage")["ConnectionString"]);
 
 var allowedOrigin = builder.Configuration.GetValue<string>("CORS:AllowedOrigin");
 builder.Services.AddCors(options =>

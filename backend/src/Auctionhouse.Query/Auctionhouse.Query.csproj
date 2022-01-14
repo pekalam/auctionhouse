@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Adapter.EfCore.SagaEventsConfirmation\Adapter.EfCore.ReadModelNotifications.csproj" />
     <ProjectReference Include="..\Adapter.MongoDb\Adapter.MongoDb.AuctionImageRepository.csproj" />
+    <ProjectReference Include="..\Adapter.SqlServer.EventOutbox\Adapter.SqlServer.EventOutboxStorage.csproj" />
     <ProjectReference Include="..\Categories.Domain\Categories.Domain.csproj" />
     <ProjectReference Include="..\Common.Application\Common.Application.csproj" />
     <ProjectReference Include="..\Common.WebAPI\Common.WebAPI.csproj" />

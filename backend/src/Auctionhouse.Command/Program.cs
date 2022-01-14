@@ -4,12 +4,14 @@ using Adapter.EfCore.ReadModelNotifications;
 using Adapter.MongoDb;
 using Adapter.MongoDb.AuctionImage;
 using Adapter.QuartzTimeTaskService.AuctionEndScheduler;
+using Adapter.SqlServer.EventOutbox;
 using AuctionBids.Application;
 using Auctionhouse.Command;
 using Auctionhouse.Command.Adapters;
 using Auctions.Application;
 using Categories.Domain;
 using Common.Application;
+using Common.Application.Events;
 using Common.WebAPI;
 using Common.WebAPI.Auth;
 using Microsoft.OpenApi.Models;
@@ -43,6 +45,11 @@ builder.Services.AddQuartzTimeTaskServiceAuctionEndScheduler(builder.Configurati
 builder.Services.AddEfCoreReadModelNotifications(builder.Configuration.GetSection("EfCoreReadModelNotificatitons").Get<EfCoreReadModelNotificaitonsOptions>());
 var jwtConfig = builder.Configuration.GetSection("JWT").Get<JwtSettings>();
 builder.Services.AddCommonWebApi(jwtConfig);
+builder.Services.AddSqlServerEventOutboxStorage(builder.Configuration.GetSection("EventOutboxStorage")["ConnectionString"]);
+builder.Services.AddOutboxProcessorService(new EventOutboxProcessorSettings
+{
+    MinMilisecondsDiff = 1500,
+});
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -90,6 +97,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
 
 var app = builder.Build();
 
