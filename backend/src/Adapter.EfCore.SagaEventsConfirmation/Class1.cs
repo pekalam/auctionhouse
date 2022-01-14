@@ -63,7 +63,7 @@ namespace Adapter.EfCore.ReadModelNotifications
 
         }
 
-        public SagaEventsConfirmationDbContext(DbContextOptions options) : base(options)
+        public SagaEventsConfirmationDbContext(DbContextOptions<SagaEventsConfirmationDbContext> options) : base(options)
         {
         }
 
