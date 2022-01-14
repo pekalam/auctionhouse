@@ -78,21 +78,31 @@ namespace UserPayments.Domain
 
         public void ChangeStatus(PaymentStatus newStatus)
         {
-            if (Status != PaymentStatus.InProgress)
-            {
-                throw new InvalidPaymentStatusException($"Cannot change status from {PaymentStatus.InProgress} to {newStatus}");
-            }
-            Status = newStatus;
             switch (newStatus)
             {
                 case PaymentStatus.Confirmed:
-                    AddEvent(new PaymentStatusChangedToConfirmed { PaymentId = Id });
-                    if(Type == PaymentType.BuyNow)
+                    if (Status != PaymentStatus.InProgress)
+                    {
+                        throw new InvalidPaymentStatusException($"Cannot change status from {PaymentStatus.InProgress} to {newStatus}");
+                    }
+                    if (Type == PaymentType.BuyNow)
                     {
                         AddEvent(new BuyNowPaymentConfirmed() { TransactionId = TransactionId });
                     }
+                    AddEvent(new PaymentStatusChangedToConfirmed { PaymentId = Id });
+                    break;
+                case PaymentStatus.Completed:
+                    if (Status != PaymentStatus.Confirmed)
+                    {
+                        throw new InvalidPaymentStatusException($"Cannot change status from {PaymentStatus.Confirmed} to {newStatus}");
+                    }
+                    AddEvent(new PaymentStatusChangedToCompleted { PaymentId = Id });
                     break;
                 case PaymentStatus.Failed:
+                    if (Status != PaymentStatus.InProgress)
+                    {
+                        throw new InvalidPaymentStatusException($"Cannot change status from {PaymentStatus.InProgress} to {newStatus}");
+                    }
                     AddEvent(new PaymentStatusChangedToFailed { PaymentId = Id });
                     break;
                 case PaymentStatus.FundsReturned:
@@ -100,6 +110,7 @@ namespace UserPayments.Domain
                 default:
                     throw new NotImplementedException();
             }
+            Status = newStatus;
         }
 
         public override void Apply(Event @event)
@@ -128,6 +139,10 @@ namespace UserPayments.Domain
                     Debug.Assert(e.PaymentId == Id);
                     Status = PaymentStatus.Confirmed;
                     break;
+                case PaymentStatusChangedToCompleted e:
+                    Debug.Assert(e.PaymentId == Id);
+                    Status = PaymentStatus.Completed;
+                    break;
                 case PaymentStatusChangedToFailed e:
                     Debug.Assert(e.PaymentId == Id);
                     Status = PaymentStatus.Failed;
@@ -147,7 +162,7 @@ namespace UserPayments.Domain
 
     public enum PaymentStatus
     {
-        InProgress, Confirmed, Failed, FundsReturned
+        InProgress, Confirmed, Failed, FundsReturned, Completed
     }
 
     public sealed class PaymentId : GuidId<PaymentId>

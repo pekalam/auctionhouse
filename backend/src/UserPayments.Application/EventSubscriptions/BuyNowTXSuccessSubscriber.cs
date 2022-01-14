@@ -6,30 +6,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UserPayments.Application.Commands.CreateBuyNowPayment;
+using UserPayments.Application.Commands.CompletePayment;
+using UserPayments.Domain.Repositories;
 
 namespace UserPayments.Application.EventSubscriptions
 {
-    public class BuyNowTxStartedSubscriber : EventSubscriber<Events.V1.BuyNowTXStarted>
+    public class BuyNowTXSuccessSubscriber : EventSubscriber<Events.V1.BuyNowTXSuccess>
     {
         private readonly ImmediateCommandQueryMediator _mediator;
 
-        public BuyNowTxStartedSubscriber(IAppEventBuilder eventBuilder, ImmediateCommandQueryMediator mediator) : base(eventBuilder)
+        public BuyNowTXSuccessSubscriber(IAppEventBuilder eventBuilder, ImmediateCommandQueryMediator mediator) : base(eventBuilder)
         {
             _mediator = mediator;
         }
 
-        public override async Task Handle(IAppEvent<Events.V1.BuyNowTXStarted> appEvent)
+        public override async Task Handle(IAppEvent<Events.V1.BuyNowTXSuccess> appEvent)
         {
-            var cmd = new CreateBuyNowPaymentCommand
+            var completePaymentCommand = new CompletePaymentCommand()
             {
                 AuctionId = appEvent.Event.AuctionId,
                 BuyerId = appEvent.Event.BuyerId,
                 TransactionId = appEvent.Event.TransactionId,
-                PaymentMethod = appEvent.Event.PaymentMethod,
-                Amount = appEvent.Event.Price,
             };
-            await _mediator.Send(cmd, appEvent.CommandContext);
+
+            await _mediator.Send(completePaymentCommand);
         }
     }
 }

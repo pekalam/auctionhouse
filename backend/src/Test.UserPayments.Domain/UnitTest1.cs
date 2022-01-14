@@ -54,17 +54,38 @@ namespace Test.UserPayments_.Domain
             payment.Id.Should().NotBe(Guid.Empty);
         }
 
+        private void AssertIsRecreated()
+        {
+            var events = _userPayments.PendingEvents.ToList();
+            _userPayments.MarkPendingEventsAsHandled();
+            var recreatedUserPayments = UserPayments.FromEvents(events);
+
+            recreatedUserPayments.Should().BeEquivalentTo(_userPayments);
+        }
+
         [Fact]
         public void Test3()
         {
             _userPayments.CreateBuyNowPayment(_transactionId, _userId, 10m);
             _userPayments.CreateBidPayment(_transactionId, _userId, 10m);
 
-            var events = _userPayments.PendingEvents.ToList();
-            _userPayments.MarkPendingEventsAsHandled();
-            var recreatedUserPayments = UserPayments.FromEvents(events);
+            AssertIsRecreated();
+        }
 
-            recreatedUserPayments.Should().BeEquivalentTo(_userPayments);
+        [Fact]
+        public void Test4()
+        {
+            var payment = _userPayments.CreateBuyNowPayment(_transactionId, _userId, 10m);
+
+            _userPayments.CompletePayment(payment.Id);
+
+            _userPayments.PendingEvents.Select(e => e.GetType()).Should().BeEquivalentTo(new[] { //TODO helper like this
+                typeof(UserPaymentsCreated),
+                typeof(BuyNowPaymentCreated),
+                typeof(PaymentStatusChangedToCompleted),
+            });
+
+            AssertIsRecreated();
         }
     }
 }

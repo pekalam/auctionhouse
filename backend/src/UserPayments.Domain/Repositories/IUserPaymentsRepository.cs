@@ -11,6 +11,7 @@ namespace UserPayments.Domain.Repositories
         Task<UserPayments> WithId(UserPaymentsId id);
         Task<UserPayments> WithUserId(UserId id);
         UserPayments Add(UserPayments userPayments);
+        UserPayments Update(UserPayments userPayments);
     }
 
 

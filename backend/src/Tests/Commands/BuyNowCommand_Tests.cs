@@ -74,7 +74,7 @@ namespace FunctionalTests.Commands
                 var auction = auctions.All.FirstOrDefault(a => a.AggregateId == buyNowCommand.AuctionId);
                 var allEventsPublished = AssertExpectedEventsArePublished();
 
-                return allEventsPublished && payment?.Status == PaymentStatus.Confirmed &&
+                return allEventsPublished && payment?.Status == PaymentStatus.Completed &&
                     auction is not null && auction.Completed;
             });
         }
@@ -89,6 +89,7 @@ namespace FunctionalTests.Commands
                     typeof(BuyNowPaymentCreated),
                     typeof(PaymentStatusChangedToConfirmed),
                     typeof(BuyNowPaymentConfirmed),
+                    typeof(PaymentStatusChangedToCompleted),
                 };
 
             var allEventsPublished = SentEvents.Select(e => e.Event.GetType()).Except(expectedEvents).Any() == false;

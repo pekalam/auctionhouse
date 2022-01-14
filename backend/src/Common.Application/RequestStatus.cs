@@ -52,5 +52,10 @@ namespace Common.Application
         {
             return new RequestStatus(context.CommandId, Status.PENDING);
         }
+
+        public static RequestStatus CreateCompleted(CommandContext context)
+        {
+            return new RequestStatus(context.CommandId, Status.COMPLETED);
+        }
     }
 }

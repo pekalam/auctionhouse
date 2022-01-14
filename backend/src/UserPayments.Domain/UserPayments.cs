@@ -54,6 +54,7 @@ namespace UserPayments.Domain
 
         public void SetPaymentToFailed(PaymentId paymentId) => ChangePaymentStatus(paymentId, PaymentStatus.Failed);
         public void ConfirmPayment(PaymentId paymentId) => ChangePaymentStatus(paymentId, PaymentStatus.Confirmed);
+        public void CompletePayment(PaymentId paymentId) => ChangePaymentStatus(paymentId, PaymentStatus.Completed);
         public void SetPaymentFundsRefunded(PaymentId paymentId) => ChangePaymentStatus(paymentId, PaymentStatus.FundsReturned);
 
         private void ChangePaymentStatus(PaymentId paymentId, PaymentStatus status)
@@ -91,6 +92,9 @@ namespace UserPayments.Domain
                         payment.Apply(e);
                         _payments.Add(payment);
                     }
+                    break;
+                case PaymentStatusChangedToCompleted e:
+                    _payments.First(p => p.Id == e.PaymentId).ApplyInternal(e);
                     break;
                 case PaymentStatusChangedToConfirmed e:
                     _payments.First(p => p.Id == e.PaymentId).ApplyInternal(e);
