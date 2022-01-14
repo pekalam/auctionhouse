@@ -44,10 +44,6 @@ namespace UserPayments.Application.Commands.CreateBuyNowPayment
                 userPayments.ConfirmPayment(payment.Id);
 
                 _eventBusHelper.Publish(userPayments.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
-                _eventBusHelper.Publish(new Events.V1.BuyNowPaymentConfirmed
-                {
-                    TransactionId = request.Command.TransactionId,
-                }, request.CommandContext, ReadModelNotificationsMode.Saga);
                 userPayments.MarkPendingEventsAsHandled();
             });
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed

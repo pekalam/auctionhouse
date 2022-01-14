@@ -1,4 +1,7 @@
-﻿using Common.Application.Events;
+﻿using Common.Application.Commands;
+using Common.Application.Events;
+using Core.Common.Domain;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +30,41 @@ namespace FunctionalTests.Mocks
         public Task UpdateMany(IEnumerable<OutboxItem> items)
         {
             return Task.CompletedTask;
+        }
+    }
+
+    internal class InMemoryEventBusDecorator : IEventBus
+    {
+        private readonly IEventBus _eventBus;
+
+        public InMemoryEventBusDecorator(IEventBus eventBus)
+        {
+            _eventBus = eventBus;
+        }
+
+        public event Action<EventArgs, ILogger> Disconnected = null!;
+
+        private static List<IAppEvent<Event>> _sentEvents = new();
+        public static IReadOnlyList<IAppEvent<Event>> SentEvents => _sentEvents;
+
+        public static void ClearSentEvents() => _sentEvents.Clear();
+
+        public void Publish<T>(IAppEvent<T> @event) where T : Event
+        {
+            lock (_eventBus)
+            {
+                _sentEvents.Add(@event);
+                _eventBus.Publish(@event);
+            }
+        }
+
+        public void Publish<T>(IEnumerable<IAppEvent<T>> events) where T : Event
+        {
+            lock (_eventBus)
+            {
+                _sentEvents.AddRange(events);
+                _eventBus.Publish(events);
+            }
         }
     }
 }

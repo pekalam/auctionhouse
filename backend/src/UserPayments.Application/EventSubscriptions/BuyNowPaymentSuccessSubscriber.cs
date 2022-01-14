@@ -25,7 +25,7 @@ namespace UserPayments.Application.EventSubscriptions
             var userPayments = await _userPayments.WithUserId(new Domain.Shared.UserId(appEvent.Event.BuyerId));
 
             var payment = userPayments.Payments.First(p => p.TransactionId.Value == appEvent.Event.TransactionId);
-            userPayments.ConfirmPayment(payment.Id);
+            //userPayments.ConfirmPayment(payment.Id); //TODO payment completed
             _eventBusHelper.Publish(userPayments.PendingEvents, appEvent.CommandContext, ReadModelNotificationsMode.Saga);
             userPayments.MarkPendingEventsAsHandled();
         }

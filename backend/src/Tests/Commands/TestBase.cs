@@ -23,9 +23,11 @@ namespace FunctionalTests.Commands
     using Common.Application.Commands;
     using Common.Application.Events;
     using Common.Application.Mediator;
+    using Core.Common.Domain;
     using Polly;
     using ReadModel.Core;
     using ReadModel.Core.Model;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using UserPayments.Application;
@@ -47,6 +49,8 @@ namespace FunctionalTests.Commands
         public UserId CurrentUser { get; } = UserId.New();
 
         public ReadModelDbContext ReadModelDbContext { get; }
+
+        public IReadOnlyList<IAppEvent<Event>> SentEvents => InMemoryEventBusDecorator.SentEvents;
 
         public TestBase(ITestOutputHelper outputHelper, params string[] assemblyNames)
         {
@@ -161,6 +165,8 @@ namespace FunctionalTests.Commands
 
                 services.AddTransient<IOutboxItemStore, InMemoryOutboxItemStore>();
                 services.AddTransient<IOutboxItemFinder, InMemoryPostProcessOutboxItemService>();
+
+                services.AddSingleton<IEventBus>(s => new InMemoryEventBusDecorator(s.GetRequiredService<RabbitMqEventBus>()));
 
                 AddServices(services);
             });

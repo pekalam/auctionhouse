@@ -12,30 +12,31 @@ namespace RabbitMq.EventBus
         {
             services.AddTransient<IAppEventBuilder, AppEventRabbitMQBuilder>();
             services.AddSingleton(rabbitMqSettings);
-            services.AddSingleton<IEventBus, RabbitMqEventBus>();
+            services.AddSingleton<RabbitMqEventBus>();
+            services.AddSingleton<IEventBus>(s => s.GetRequiredService<RabbitMqEventBus>());
         }
 
         public static void InitializeEventSubscriptions(IServiceProvider serviceProvider)
         {
-            var eventBus = (RabbitMqEventBus)serviceProvider.GetRequiredService<IEventBus>();
+            var eventBus = serviceProvider.GetRequiredService<RabbitMqEventBus>();
             eventBus.InitEventSubscriptions(serviceProvider.GetRequiredService<IImplProvider>(), Assembly.GetCallingAssembly());
         }
 
         public static void InitializeEventSubscriptions(IServiceProvider serviceProvider, params Assembly[] assemblies)
         {
-            var eventBus = (RabbitMqEventBus)serviceProvider.GetRequiredService<IEventBus>();
+            var eventBus = serviceProvider.GetRequiredService<RabbitMqEventBus>();
             eventBus.InitEventSubscriptions(serviceProvider.GetRequiredService<IImplProvider>(), assemblies);
         }
 
         public static void InitializeEventConsumers(IServiceProvider serviceProvider)
         {
-            var eventBus = (RabbitMqEventBus)serviceProvider.GetRequiredService<IEventBus>();
+            var eventBus = serviceProvider.GetRequiredService<RabbitMqEventBus>();
             eventBus.InitEventConsumers(serviceProvider.GetRequiredService<IImplProvider>(), Assembly.GetCallingAssembly());
         }
 
         public static void InitializeEventConsumers(IServiceProvider serviceProvider, params Assembly[] assemblies)
         {
-            var eventBus = (RabbitMqEventBus)serviceProvider.GetRequiredService<IEventBus>();
+            var eventBus = serviceProvider.GetRequiredService<RabbitMqEventBus>();
             eventBus.InitEventConsumers(serviceProvider.GetRequiredService<IImplProvider>(), assemblies);
         }
     }

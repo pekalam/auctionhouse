@@ -60,6 +60,7 @@ namespace Auctions.Application.Commands.CreateAuction
             var createAuctionService = new CreateAuctionService(_auctionImages, _auctionEndScheduler, _auctions, Data.CreateAuctionServiceData);
             var auction = createAuctionService.EndCreate(new Domain.AuctionBidsId(message.AuctionBidsId));
             _auctions.Value.UpdateAuction(auction);
+            auction.MarkPendingEventsAsHandled();
             await _sagaNotifications.Value.MarkSagaAsCompleted(correlationId);
             await CompleteAsync();
         }
