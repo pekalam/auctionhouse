@@ -19,6 +19,6 @@ export class StartAuctionCreateSessionCommand {
   execute() {
     const url = `${environment.API_URL}/api/c/startCreateSession`;
     const req = this.httpClient.post(url, {});
-    return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.WSQueuedCommand);
+    return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.HTTPQueuedCommand);
   }
 }

@@ -27,7 +27,7 @@ export class UpdateAuctionCommand {
   execute(args: UpdateAuctionCommandArgs): Observable<RequestStatus> {
     const url = `${environment.API_URL}/api/c/userUpdateAuction`;
     const req = this.httpClient.post(url, { ...args });
-    return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.WSQueuedCommand);
+    return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.HTTPQueuedCommand);
   }
 
 }

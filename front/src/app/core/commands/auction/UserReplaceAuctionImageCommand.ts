@@ -26,6 +26,6 @@ export class UserReplaceAuctionImageCommand {
 
     const httpHeaders = new HttpHeaders({ 'enctype': 'multipart/form-data' });
     const req = this.httpClient.post(url, formData, { headers: httpHeaders });
-    return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.WSQueuedCommand);
+    return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.HTTPQueuedCommand);
   }
 }

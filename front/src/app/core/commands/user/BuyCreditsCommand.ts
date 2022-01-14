@@ -17,6 +17,6 @@ export class BuyCreditsCommand {
   execute(ammount: number): Observable<RequestStatus> {
     const url = `${environment.API_URL}/api/c/buyCredits`;
     const req = this.httpClient.post(url, {ammount});
-    return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.WSQueuedCommand);
+    return this.commandHelper.getResponseStatusHandler(req, true, ResponseOptions.HTTPQueuedCommand);
   }
 }
