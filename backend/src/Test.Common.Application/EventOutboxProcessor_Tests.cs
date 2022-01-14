@@ -5,9 +5,9 @@ using Moq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Test.Common.Application.Builders;
 using Test.Common.Application.Mocks;
 using Test.Common.Application.ServiceContracts;
+using Test.Common.Base.Builders;
 using Xunit;
 
 namespace Test.Common.Application
