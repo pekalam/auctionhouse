@@ -12,7 +12,7 @@ export class AuthenticationStateService {
   protected isAuthenticatedSubject = new ReplaySubject<boolean>(0);
   public isAuthenticated = this.isAuthenticatedSubject.asObservable().pipe(distinctUntilChanged());
 
-  protected currentUserSubject = new ReplaySubject<UserIdentity>(0);
+  protected currentUserSubject = new ReplaySubject<UserIdentity | null>(0);
   public currentUser = this.currentUserSubject.asObservable().pipe(distinctUntilChanged());
 
   constructor(private router: Router) {
@@ -36,7 +36,7 @@ export class AuthenticationStateService {
     };
   }
 
-  notifyObservers(isAuthenticated: boolean, currentUser: UserIdentity) {
+  notifyObservers(isAuthenticated: boolean, currentUser: UserIdentity | null) {
     console.log("NOTF");
 
     this.isAuthenticatedSubject.next(isAuthenticated);

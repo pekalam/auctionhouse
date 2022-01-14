@@ -18,6 +18,9 @@ export class RecentlyViewedService {
     let ret =  this.authenticationStateService.currentUser.pipe(
       first(),
       map((user, ind) => {
+        if(!user){
+          return [];
+        }
         const data = this.userStorageService.getData(user.userId);
         if (data) {
           return data.recentlyViewed;
