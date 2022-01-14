@@ -9,19 +9,19 @@ namespace AuctionBids.Application.EventSubscriptions
     public class AuctionCreatedSubscriber : EventSubscriber<AuctionCreated>
     {
         private readonly IAuctionBidsRepository _allAuctionBids;
-        private readonly EventBusFacade _eventBusFacade;
+        private readonly EventBusHelper _eventBusHelper;
 
-        public AuctionCreatedSubscriber(IAppEventBuilder appEventBuilder, IAuctionBidsRepository auctionBids, EventBusFacade eventBusFacade) : base(appEventBuilder)
+        public AuctionCreatedSubscriber(IAppEventBuilder appEventBuilder, IAuctionBidsRepository auctionBids, EventBusHelper eventBusHelper) : base(appEventBuilder)
         {
             _allAuctionBids = auctionBids;
-            _eventBusFacade = eventBusFacade;
+            _eventBusHelper = eventBusHelper;
         }
 
         public override Task Handle(IAppEvent<AuctionCreated> appEvent)
         {
             var auctionBids = AuctionBids.CreateNew(new(appEvent.Event.AuctionId), new(appEvent.CommandContext.User!.Value));
             _allAuctionBids.Add(auctionBids);
-            _eventBusFacade.Publish(auctionBids.PendingEvents, appEvent.CommandContext, ReadModelNotificationsMode.Saga);
+            _eventBusHelper.Publish(auctionBids.PendingEvents, appEvent.CommandContext, ReadModelNotificationsMode.Saga);
             return Task.CompletedTask;
         }
     }

@@ -5,7 +5,7 @@
     /// </summary>
     public class CommandId
     {
-        public string Id { get; }
+        public string Id { get; private set; }
 
         public CommandId(string id)
         {

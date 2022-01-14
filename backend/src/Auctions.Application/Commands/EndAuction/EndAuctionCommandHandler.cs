@@ -14,15 +14,15 @@ namespace Core.Command.Commands.EndAuction
         private readonly ILogger<EndAuctionCommandHandler> _logger;
 
         public EndAuctionCommandHandler(IAuctionRepository auctionRepository, ILogger<EndAuctionCommandHandler> logger,
-            Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) 
-            : base(ReadModelNotificationsMode.Disabled, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
+                CommandHandlerBaseDependencies dependencies) 
+            : base(ReadModelNotificationsMode.Disabled, dependencies)
         {
             _auctionRepository = auctionRepository;
             _logger = logger;
         }
 
         protected override Task<RequestStatus> HandleCommand(AppCommand<EndAuctionCommand> request,
-            Lazy<EventBusFacade> eventBus, CancellationToken cancellationToken)
+            IEventOutbox eventOutbox, CancellationToken cancellationToken)
         {
 
 

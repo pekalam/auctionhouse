@@ -18,8 +18,8 @@ namespace Users.Application.Commands.ResetPassword
         public ResetPasswordCommandHandler(ILogger<ResetPasswordCommandHandler> logger,
             IResetPasswordCodeRepository resetPasswordCodeRepository,
             IUserAuthenticationDataRepository userAuthenticationDataRepository,
-            Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) 
-            : base(ReadModelNotificationsMode.Disabled, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
+            CommandHandlerBaseDependencies dependencies) 
+            : base(ReadModelNotificationsMode.Disabled, dependencies)
         {
             _resetPasswordCodeRepository = resetPasswordCodeRepository;
             _userAuthenticationDataRepository = userAuthenticationDataRepository;
@@ -50,7 +50,7 @@ namespace Users.Application.Commands.ResetPassword
 
         protected override Task<RequestStatus> HandleCommand(
             AppCommand<ResetPasswordCommand> request,
-            Lazy<EventBusFacade> eventBus,
+            IEventOutbox eventOutbox,
             CancellationToken cancellationToken)
         {
             var resetCode = FindResetCode(request);

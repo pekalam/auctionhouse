@@ -14,14 +14,14 @@ namespace Core.Command.Commands.BuyCredits
 
         public BuyCreditsCommandHandlerTransactionDecorator(
             ILogger<BuyCreditsCommandHandlerTransactionDecorator> logger,
-            BuyCreditsCommandHandler buyCreditsCommandHandler, Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) 
-            : base(ReadModelNotificationsMode.Disabled, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
+            BuyCreditsCommandHandler buyCreditsCommandHandler, CommandHandlerBaseDependencies dependencies) 
+            : base(ReadModelNotificationsMode.Disabled, dependencies)
         {
             _buyCreditsCommandHandler = buyCreditsCommandHandler;
         }
 
         protected override Task<RequestStatus> HandleCommand(AppCommand<BuyCreditsCommand> request,
-            Lazy<EventBusFacade> eventBus,
+            IEventOutbox eventOutbox,
             CancellationToken cancellationToken)
         {
             var transactionOpt = new TransactionOptions()

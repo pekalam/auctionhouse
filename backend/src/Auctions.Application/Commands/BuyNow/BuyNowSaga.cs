@@ -37,15 +37,16 @@ namespace Auctions.Application.Commands.BuyNow
 
         private readonly Lazy<IAuctionRepository> _auctions;
         private readonly Lazy<AuctionUnlockService> _auctionUnlock;
-        private readonly Lazy<EventBusFacade> _eventBus;
         private readonly Lazy<IAuctionUnlockScheduler> _auctionUnlockScheduler;
+        private readonly Lazy<EventBusHelper> _eventBusHelper;
 
-        public BuyNowSaga(Lazy<IAuctionRepository> auctions, Lazy<AuctionUnlockService> auctionUnlock, Lazy<EventBusFacade> eventBus, Lazy<IAuctionUnlockScheduler> auctionUnlockScheduler)
+
+        public BuyNowSaga(Lazy<IAuctionRepository> auctions, Lazy<AuctionUnlockService> auctionUnlock, Lazy<IAuctionUnlockScheduler> auctionUnlockScheduler, Lazy<EventBusHelper> eventBusHelper)
         {
             _auctions = auctions;
             _auctionUnlock = auctionUnlock;
-            _eventBus = eventBus;
             _auctionUnlockScheduler = auctionUnlockScheduler;
+            _eventBusHelper = eventBusHelper;
         }
 
         public Task CompensateAsync(Events.V1.BuyNowTXStarted message, ISagaContext context)
@@ -80,12 +81,12 @@ namespace Auctions.Application.Commands.BuyNow
             return Task.CompletedTask;
         }
 
-        public Task HandleAsync(UserPaymentsEvents.V1.PaymentCreationError message, ISagaContext context)
+        public async Task HandleAsync(UserPaymentsEvents.V1.PaymentCreationError message, ISagaContext context)
         {
-            var auction = _auctionUnlock.Value.Unlock(Data.AuctionId, _auctions.Value);
-            _eventBus.Value.Publish(auction.PendingEvents, GetCommandContextFromSagaContext(context), ReadModelNotificationsMode.Saga);
+            var auction = _auctionUnlock.Value.Unlock(Data.AuctionId, _auctions.Value); //TODO remove auciton?
+            _eventBusHelper.Value.Publish(auction.PendingEvents, GetCommandContextFromSagaContext(context), ReadModelNotificationsMode.Saga);
             auction.MarkPendingEventsAsHandled();
-            return base.RejectAsync();
+            await base.RejectAsync();
         }
 
 
@@ -94,12 +95,11 @@ namespace Auctions.Application.Commands.BuyNow
             return Task.CompletedTask;
         }
 
-        public Task HandleAsync(MaxLockTimeElapsed message, ISagaContext context)
+        public async Task HandleAsync(MaxLockTimeElapsed message, ISagaContext context)
         {
             var auction = _auctionUnlock.Value.Unlock(Data.AuctionId, _auctions.Value);
-            _eventBus.Value.Publish(auction.PendingEvents, GetCommandContextFromSagaContext(context), ReadModelNotificationsMode.Saga);
+            _eventBusHelper.Value.Publish(auction.PendingEvents, GetCommandContextFromSagaContext(context), ReadModelNotificationsMode.Saga);
             auction.MarkPendingEventsAsHandled();
-            return Task.CompletedTask;
         }
 
         private CommandContext GetCommandContextFromSagaContext(ISagaContext context)
@@ -117,7 +117,7 @@ namespace Auctions.Application.Commands.BuyNow
             return Task.CompletedTask;
         }
 
-        public Task HandleAsync(UserPaymentsEvents.V1.BuyNowPaymentConfirmed message, ISagaContext context)
+        public async Task HandleAsync(UserPaymentsEvents.V1.BuyNowPaymentConfirmed message, ISagaContext context)
         {
             var auction = _auctions.Value.FindAuction(Data.AuctionId);
             if(auction is null)
@@ -125,11 +125,11 @@ namespace Auctions.Application.Commands.BuyNow
                 throw new NullReferenceException();
             }
             auction.ConfirmBuy(Data.TransactionId, _auctionUnlockScheduler.Value);
-            _auctions.Value.UpdateAuction(auction);
-            _eventBus.Value.Publish(auction.PendingEvents, GetCommandContextFromSagaContext(context), ReadModelNotificationsMode.Saga);
+            _auctions.Value.UpdateAuction(auction); //TODO transaction
+            _eventBusHelper.Value.Publish(auction.PendingEvents, GetCommandContextFromSagaContext(context), ReadModelNotificationsMode.Saga);
             auction.MarkPendingEventsAsHandled();
 
-            return CompleteAsync();
+            await CompleteAsync();
         }
 
 

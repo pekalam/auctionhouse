@@ -18,15 +18,15 @@ namespace Auctions.Application.Commands.UserAddAuctionImage
 
         public UserAddAuctionImageCommandHandler(AuctionImageService auctionImageService,
             IAuctionRepository auctionRepository,
-            ILogger<UserAddAuctionImageCommandHandler> logger, Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox)
-            : base(ReadModelNotificationsMode.Immediate, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
+            ILogger<UserAddAuctionImageCommandHandler> logger, CommandHandlerBaseDependencies dependencies)
+            : base(ReadModelNotificationsMode.Immediate, dependencies)
         {
             _auctionImageService = auctionImageService;
             _auctions = auctionRepository;
             _logger = logger;
         }
 
-        private void AddImage(AppCommand<UserAddAuctionImageCommand> request, EventBusFacade eventBus, CancellationToken cancellationToken)
+        private void AddImage(AppCommand<UserAddAuctionImageCommand> request, IEventOutbox eventOutbox, CancellationToken cancellationToken)
         {
             var auction = _auctions.FindAuction(request.Command.AuctionId);
             if (auction == null)
@@ -50,7 +50,7 @@ namespace Auctions.Application.Commands.UserAddAuctionImage
 
             try
             {
-                eventBus.Publish(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
+                eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
             }
             catch (Exception e)
             {
@@ -60,14 +60,12 @@ namespace Auctions.Application.Commands.UserAddAuctionImage
             }
         }
 
-        protected override Task<RequestStatus> HandleCommand(
-            AppCommand<UserAddAuctionImageCommand> request,
-            Lazy<EventBusFacade> eventBus,
+        protected override Task<RequestStatus> HandleCommand(AppCommand<UserAddAuctionImageCommand> request, IEventOutbox eventOutbox,
             CancellationToken cancellationToken)
         {
             var response = RequestStatus.CreatePending(request.CommandContext);
             response.MarkAsCompleted();
-            AddImage(request, eventBus.Value, cancellationToken);
+            AddImage(request, eventOutbox, cancellationToken);
 
             return Task.FromResult(response);
         }

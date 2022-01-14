@@ -12,15 +12,14 @@ namespace Core.Command.Commands.CancelBid
     {
         private readonly IAuctionBidsRepository _auctionBids;
 
-        public CancelBidCommandHandler(IAuctionBidsRepository auctionBids, ILogger<CancelBidCommandHandler> logger,
-            Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) 
-            : base(ReadModelNotificationsMode.Immediate, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
+        public CancelBidCommandHandler(IAuctionBidsRepository auctionBids, ILogger<CancelBidCommandHandler> logger, CommandHandlerBaseDependencies dependencies) 
+            : base(ReadModelNotificationsMode.Immediate, dependencies)
         {
             _auctionBids = auctionBids;
         }
 
         protected override Task<RequestStatus> HandleCommand(AppCommand<CancelBidCommand> request,
-            Lazy<EventBusFacade> eventBus, CancellationToken cancellationToken)
+            IEventOutbox eventOutbox, CancellationToken cancellationToken)
         {
             //TODO
             var requestStatus = RequestStatus.CreatePending(request.CommandContext);

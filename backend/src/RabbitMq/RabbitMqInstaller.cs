@@ -13,7 +13,6 @@ namespace RabbitMq.EventBus
             services.AddTransient<IAppEventBuilder, AppEventRabbitMQBuilder>();
             services.AddSingleton(rabbitMqSettings);
             services.AddSingleton<IEventBus, RabbitMqEventBus>();
-            services.AddTransient<EventBusFacade>();
         }
 
         public static void InitializeEventSubscriptions(IServiceProvider serviceProvider)

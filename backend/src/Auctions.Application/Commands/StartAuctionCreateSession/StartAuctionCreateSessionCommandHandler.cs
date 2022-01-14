@@ -15,14 +15,14 @@ namespace Auctions.Application.Commands.StartAuctionCreateSession
         private readonly ILogger<StartAuctionCreateSessionCommandHandler> _logger;
 
         public StartAuctionCreateSessionCommandHandler(IAuctionCreateSessionStore auctionCreateSessionStore, ILogger<StartAuctionCreateSessionCommandHandler> logger,
-            Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) : base(Common.Application.Events.ReadModelNotificationsMode.Disabled, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
+            CommandHandlerBaseDependencies dependencies) : base(ReadModelNotificationsMode.Disabled, dependencies)
         {
             _auctionCreateSessionStore = auctionCreateSessionStore;
             _logger = logger;
         }
 
         protected override Task<RequestStatus> HandleCommand(
-            AppCommand<StartAuctionCreateSessionCommand> request, Lazy<EventBusFacade> eventBus,
+            AppCommand<StartAuctionCreateSessionCommand> request, IEventOutbox eventOutbox,
             CancellationToken cancellationToken)
         {
             AuctionCreateSession session;

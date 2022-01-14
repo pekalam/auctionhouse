@@ -24,7 +24,8 @@ namespace Auctions.Application.Commands.CreateAuction
         private readonly Lazy<ISagaNotifications> _sagaNotifications;
         private readonly ILogger<CreateAuctionSaga> _logger;
 
-        public CreateAuctionSaga(Lazy<IAuctionImageRepository> auctionImages, Lazy<IAuctionEndScheduler> auctionEndScheduler, Lazy<IAuctionRepository> auctions, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox, ILogger<CreateAuctionSaga> logger)
+        public CreateAuctionSaga(Lazy<IAuctionImageRepository> auctionImages, Lazy<IAuctionEndScheduler> auctionEndScheduler, Lazy<IAuctionRepository> auctions, 
+            Lazy<ISagaNotifications> sagaNotifications, ILogger<CreateAuctionSaga> logger)
         {
             _auctionImages = auctionImages;
             _auctionEndScheduler = auctionEndScheduler;
@@ -57,8 +58,8 @@ namespace Auctions.Application.Commands.CreateAuction
         {
             var correlationId = (CorrelationId)context.GetMetadata(CorrelationIdKey).Value;
             var createAuctionService = new CreateAuctionService(_auctionImages, _auctionEndScheduler, _auctions, Data.CreateAuctionServiceData);
-            createAuctionService.EndCreate(new Domain.AuctionBidsId(message.AuctionBidsId));
-            createAuctionService.Commit();
+            var auction = createAuctionService.EndCreate(new Domain.AuctionBidsId(message.AuctionBidsId));
+            _auctions.Value.UpdateAuction(auction);
             await _sagaNotifications.Value.MarkSagaAsCompleted(correlationId);
             await CompleteAsync();
         }

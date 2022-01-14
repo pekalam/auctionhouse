@@ -16,24 +16,26 @@ namespace Auctions.Application.Commands.BuyNow
         private readonly ILogger<BuyNowCommandHandler> _logger;
         private readonly IAuctionUnlockScheduler _auctionUnlockScheduler;
         private readonly IAuctionPaymentVerification _auctionPaymentVerification;
-        private readonly IAuctionRepository _auctionRepository;
+        private readonly IAuctionRepository _auctions;
         private readonly ISagaCoordinator _sagaCoordinator;
+        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
 
-        public BuyNowCommandHandler(IAuctionRepository auctionRepository, ILogger<BuyNowCommandHandler> logger, 
+        public BuyNowCommandHandler(IAuctionRepository auctions, ILogger<BuyNowCommandHandler> logger,
             IAuctionPaymentVerification auctionPaymentVerification, IAuctionUnlockScheduler auctionUnlockScheduler, ISagaCoordinator sagaCoordinator,
-            Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) 
-            : base(ReadModelNotificationsMode.Saga, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
+            CommandHandlerBaseDependencies dependencies, IUnitOfWorkFactory unitOfWorkFactory)
+            : base(ReadModelNotificationsMode.Saga, dependencies)
         {
             _logger = logger;
-            _auctionRepository = auctionRepository;
+            _auctions = auctions;
             _auctionPaymentVerification = auctionPaymentVerification;
             _auctionUnlockScheduler = auctionUnlockScheduler;
             _sagaCoordinator = sagaCoordinator;
+            _unitOfWorkFactory = unitOfWorkFactory;
         }
 
-        protected override async Task<RequestStatus> HandleCommand(AppCommand<BuyNowCommand> request, Lazy<EventBusFacade> eventBus, CancellationToken cancellationToken)
+        protected override async Task<RequestStatus> HandleCommand(AppCommand<BuyNowCommand> request, IEventOutbox eventOutbox, CancellationToken cancellationToken)
         {
-            var auction = _auctionRepository.FindAuction(request.Command.AuctionId);
+            var auction = _auctions.FindAuction(request.Command.AuctionId);
             if (auction == null)
             {
                 throw new ArgumentException($"Invalid auction id: {request.Command.AuctionId}");
@@ -41,8 +43,13 @@ namespace Auctions.Application.Commands.BuyNow
             _logger.LogDebug($"User {request.Command.SignedInUser} is buying auction {request.Command.AuctionId}");
 
             var transactionId = await auction.Buy(new UserId(request.Command.SignedInUser), "test", _auctionPaymentVerification, _auctionUnlockScheduler);
-            await StartSaga(request, auction, transactionId);
-            eventBus.Value.Publish(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
+            using(var uow = _unitOfWorkFactory.Begin())
+            {
+                _auctions.UpdateAuction(auction);
+                await StartSaga(request, auction, transactionId);
+                await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
+                uow.Commit();
+            }
 
             return RequestStatus.CreatePending(request.CommandContext);
         }

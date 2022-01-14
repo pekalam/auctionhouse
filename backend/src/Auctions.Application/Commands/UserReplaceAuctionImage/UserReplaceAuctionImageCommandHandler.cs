@@ -18,15 +18,15 @@ namespace Auctions.Application.Commands.UserReplaceAuctionImage
 
         public UserReplaceAuctionImageCommandHandler(AuctionImageService auctionImageService,
             IAuctionRepository auctionRepository,
-            ILogger<UserReplaceAuctionImageCommandHandler> logger, Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) 
-            : base(ReadModelNotificationsMode.Immediate, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
+            ILogger<UserReplaceAuctionImageCommandHandler> logger, CommandHandlerBaseDependencies dependencies) 
+            : base(ReadModelNotificationsMode.Immediate, dependencies)
         {
             _auctionImageService = auctionImageService;
             _auctionRepository = auctionRepository;
             _logger = logger;
         }
 
-        private void ReplaceAuctionImage(AppCommand<UserReplaceAuctionImageCommand> request, EventBusFacade eventBus)
+        private void ReplaceAuctionImage(AppCommand<UserReplaceAuctionImageCommand> request, IEventOutbox eventOutbox)
         {
             var auction = _auctionRepository.FindAuction(request.Command.AuctionId);
             if (auction == null)
@@ -46,7 +46,7 @@ namespace Auctions.Application.Commands.UserReplaceAuctionImage
             _auctionRepository.UpdateAuction(auction);
             try
             {
-                eventBus.Publish(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
+                eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
             }
             catch (Exception)
             {
@@ -57,13 +57,11 @@ namespace Auctions.Application.Commands.UserReplaceAuctionImage
 
         protected override Task<RequestStatus> HandleCommand(
             AppCommand<UserReplaceAuctionImageCommand> request,
-            Lazy<EventBusFacade> eventBus,
+            IEventOutbox eventOutbox,
             CancellationToken cancellationToken)
         {
             var response = RequestStatus.CreatePending(request.CommandContext);
-            ReplaceAuctionImage(request, eventBus.Value);
-
-
+            ReplaceAuctionImage(request, eventOutbox);
 
             return Task.FromResult(response);
         }

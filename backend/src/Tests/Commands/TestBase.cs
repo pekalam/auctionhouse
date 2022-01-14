@@ -21,6 +21,7 @@ namespace FunctionalTests.Commands
     using Auctions.Domain;
     using Categories.Domain;
     using Common.Application.Commands;
+    using Common.Application.Events;
     using Common.Application.Mediator;
     using Polly;
     using ReadModel.Core;
@@ -153,6 +154,10 @@ namespace FunctionalTests.Commands
     CategoriesFilePath = "C:\\Users\\Marek\\source\\repos\\Csharp\\auctionhouse\\backend\\src\\Xml.CategoryTreeStore\\_Categories-xml-data\\categories.xml",
     SchemaFilePath = "C:\\Users\\Marek\\source\\repos\\Csharp\\auctionhouse\\backend\\src\\Xml.CategoryTreeStore\\_Categories-xml-data\\categories.xsd"
                 });
+
+
+                services.AddTransient<IOutboxItemStore, InMemoryOutboxItemStore>();
+                services.AddTransient<IOutboxItemFinder, InMemoryPostProcessOutboxItemService>();
 
                 AddServices(services);
             });

@@ -18,7 +18,7 @@ namespace FunctionalTests.Commands
     using UserPayments.Domain.Shared;
 
     [Collection(nameof(CommandTestsCollection))]
-    public class BuyNowCommand_Tests : TestBase
+    public class BuyNowCommand_Tests : TestBase, IDisposable
     {
         private readonly InMemoryAuctionRepository auctions;
         private readonly InMemoryAuctionBidsRepository auctionBids;
@@ -70,5 +70,11 @@ namespace FunctionalTests.Commands
                     auction is not null && auction.Completed;
             });
         }
+
+        public void Dispose()
+        {
+            TruncateReadModelNotificaitons(ServiceProvider);
+        }
+
     }
 }

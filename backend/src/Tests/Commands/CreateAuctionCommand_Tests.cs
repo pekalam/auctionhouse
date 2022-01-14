@@ -54,9 +54,9 @@ namespace FunctionalTests.Commands
                 var _readModelNotificationsDbContext = ServiceProvider.GetRequiredService<SagaEventsConfirmationDbContext>();
                 var confirmationsMarkedAsCompleted = _readModelNotificationsDbContext.SagaEventsConfirmations.FirstOrDefault()?.Completed == true;
                 var confirmationEventsProcessed = _readModelNotificationsDbContext.SagaEventsToConfirm.All(e => e.Processed);
-                var createdAuction = auctions.All.First();
-                var auctionUnlocked = !createdAuction.Locked;
-                var idEqual = (auctionBids.All.Count > 0 && auctionBids.All.FirstOrDefault(a => a.AuctionId.Value == createdAuction.AggregateId.Value) is not null);
+                var createdAuction = auctions.All.FirstOrDefault();
+                var auctionUnlocked = createdAuction != null && !createdAuction.Locked;
+                var idEqual = (auctionBids.All.Count > 0 && auctionBids.All.FirstOrDefault(a => a.AuctionId.Value == createdAuction?.AggregateId.Value) is not null);
                 if (!confirmationsMarkedAsCompleted) outputHelper.WriteLine("Notifications not marked as completed");
                 return auctionUnlocked && idEqual && confirmationsMarkedAsCompleted && confirmationEventsProcessed;
             });

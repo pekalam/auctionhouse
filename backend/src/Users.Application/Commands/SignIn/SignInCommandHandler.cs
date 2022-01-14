@@ -14,16 +14,15 @@ namespace Users.Application.Commands.SignIn
         private readonly IUserAuthenticationDataRepository _userAuthenticationDataRepository;
         private readonly ILogger<SignInCommandHandler> _logger;
 
-        public SignInCommandHandler(IUserAuthenticationDataRepository userAuthenticationDataRepository, ILogger<SignInCommandHandler> logger,
-            Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox)
-        : base(ReadModelNotificationsMode.Disabled, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
+        public SignInCommandHandler(IUserAuthenticationDataRepository userAuthenticationDataRepository, ILogger<SignInCommandHandler> logger, CommandHandlerBaseDependencies dependencies)
+        : base(ReadModelNotificationsMode.Disabled, dependencies)
         {
             _userAuthenticationDataRepository = userAuthenticationDataRepository;
             _logger = logger;
         }
 
         protected override Task<RequestStatus> HandleCommand(AppCommand<SignInCommand> request,
-            Lazy<EventBusFacade> eventBus, CancellationToken cancellationToken)
+            IEventOutbox eventOutbox, CancellationToken cancellationToken)
         {
             var authData = _userAuthenticationDataRepository.FindUserAuth(request.Command.Username);
             if (authData != null)

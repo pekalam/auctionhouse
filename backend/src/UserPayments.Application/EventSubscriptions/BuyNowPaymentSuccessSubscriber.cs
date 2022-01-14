@@ -11,13 +11,13 @@ namespace UserPayments.Application.EventSubscriptions
 {
     public class BuyNowPaymentSuccessSubscriber : EventSubscriber<Events.V1.BuyNowTXSuccess>
     {
-        private readonly EventBusFacade _eventBus;
+        private readonly EventBusHelper _eventBusHelper;
         private readonly IUserPaymentsRepository _userPayments;
 
-        public BuyNowPaymentSuccessSubscriber(IAppEventBuilder eventBuilder, EventBusFacade eventBus, IUserPaymentsRepository userPayments) : base(eventBuilder)
+        public BuyNowPaymentSuccessSubscriber(IAppEventBuilder eventBuilder, IUserPaymentsRepository userPayments, EventBusHelper eventBusHelper) : base(eventBuilder)
         {
-            _eventBus = eventBus;
             _userPayments = userPayments;
+            _eventBusHelper = eventBusHelper;
         }
 
         public override async Task Handle(IAppEvent<Events.V1.BuyNowTXSuccess> appEvent)
@@ -26,7 +26,7 @@ namespace UserPayments.Application.EventSubscriptions
 
             var payment = userPayments.Payments.First(p => p.TransactionId.Value == appEvent.Event.TransactionId);
             userPayments.ConfirmPayment(payment.Id);
-            _eventBus.Publish(userPayments.PendingEvents, appEvent.CommandContext, ReadModelNotificationsMode.Saga);
+            _eventBusHelper.Publish(userPayments.PendingEvents, appEvent.CommandContext, ReadModelNotificationsMode.Saga);
             userPayments.MarkPendingEventsAsHandled();
         }
     }

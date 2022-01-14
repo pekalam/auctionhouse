@@ -15,23 +15,24 @@ namespace UserPayments.Application.Commands.CreateBuyNowPayment
     public class CreateBuyNowPaymentCommandHandler : CommandHandlerBase<CreateBuyNowPaymentCommand>
     {
         private readonly IUserPaymentsRepository _userPayments;
+        private readonly EventBusHelper _eventBusHelper;
 
-        public CreateBuyNowPaymentCommandHandler(ILogger<CreateBuyNowPaymentCommandHandler> logger, IUserPaymentsRepository userPayments,
-            Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) 
-            : base(ReadModelNotificationsMode.Disabled, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
+        public CreateBuyNowPaymentCommandHandler(ILogger<CreateBuyNowPaymentCommandHandler> logger, IUserPaymentsRepository userPayments, CommandHandlerBaseDependencies dependencies, EventBusHelper eventBusHelper)
+            : base(ReadModelNotificationsMode.Disabled, dependencies)
         {
             _userPayments = userPayments;
+            _eventBusHelper = eventBusHelper;
         }
 
         protected override async Task<RequestStatus> HandleCommand(
-            AppCommand<CreateBuyNowPaymentCommand> request, Lazy<EventBusFacade> eventBus,
+            AppCommand<CreateBuyNowPaymentCommand> request, IEventOutbox eventOutbox,
             CancellationToken cancellationToken)
         {
             var userPayments = await _userPayments.WithUserId(new UserId(request.Command.BuyerId));
 
             var payment = userPayments.CreateBuyNowPayment(new TransactionId(request.Command.TransactionId),
                 new UserId(request.Command.BuyerId), request.Command.Amount, paymentTargetId: new PaymentTargetId(request.Command.AuctionId));
-            eventBus.Value.Publish(userPayments.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Saga);
+            await eventOutbox.SaveEvents(userPayments.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Saga);
             userPayments.MarkPendingEventsAsHandled();
 
             //test
@@ -42,12 +43,11 @@ namespace UserPayments.Application.Commands.CreateBuyNowPayment
 
                 userPayments.ConfirmPayment(payment.Id);
 
-                eventBus.Value.Publish(userPayments.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
-                eventBus.Value.Publish(new Events.V1.BuyNowPaymentConfirmed
+                _eventBusHelper.Publish(userPayments.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
+                _eventBusHelper.Publish(new Events.V1.BuyNowPaymentConfirmed
                 {
                     TransactionId = request.Command.TransactionId,
                 }, request.CommandContext, ReadModelNotificationsMode.Saga);
-                ((EventBusFacadeWithOutbox)eventBus.Value).ProcessOutbox();
                 userPayments.MarkPendingEventsAsHandled();
             });
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed

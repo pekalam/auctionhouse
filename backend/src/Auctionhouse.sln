@@ -1,4 +1,3 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.31911.260
@@ -156,7 +155,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.EfCore.ReadModelNot
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.EfCore.ReadModelNotifications", "Test.Adapter.EfCore.SagaEventsConfirmation\Test.Adapter.EfCore.ReadModelNotifications.csproj", "{F59B28EB-65E7-458C-863A-9F200437D6A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auctionhouse.CommandStatus", "Auctionhouse.CommandStatusCheck\Auctionhouse.CommandStatus.csproj", "{68972832-B680-4E1A-AD31-A85289EA4421}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctionhouse.CommandStatus", "Auctionhouse.CommandStatusCheck\Auctionhouse.CommandStatus.csproj", "{68972832-B680-4E1A-AD31-A85289EA4421}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Auctionhouse.CommandStatus.Integration", "Test.Auctionhouse.CommandStatus.Integration\Test.Auctionhouse.CommandStatus.Integration.csproj", "{EA58E3C0-5C97-46D9-8AE7-143E28C3AE75}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.EfCore.ReadModelNotifications.SetupTestDb", "SetupTestDb\Adapter.EfCore.ReadModelNotifications.SetupTestDb.csproj", "{C8FECAFC-E541-441B-A19B-991D4959D7F6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventOutbox", "EventOutbox", "{D54B2273-CB0E-46DC-8B5D-B70D72226EDF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapter.SqlServer.EventOutboxStorage", "Adapter.SqlServer.EventOutbox\Adapter.SqlServer.EventOutboxStorage.csproj", "{0CE3CE42-E1A0-4804-AF03-D3AD01FFD3EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Adapter.SqlServer.EventOutbox", "Test.Adapter.SqlServer.EventOutbox\Test.Adapter.SqlServer.EventOutbox.csproj", "{8685B8D1-EB4B-4CA7-8C52-2AE5A2E31F44}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -384,6 +393,22 @@ Global
 		{68972832-B680-4E1A-AD31-A85289EA4421}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68972832-B680-4E1A-AD31-A85289EA4421}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68972832-B680-4E1A-AD31-A85289EA4421}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA58E3C0-5C97-46D9-8AE7-143E28C3AE75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA58E3C0-5C97-46D9-8AE7-143E28C3AE75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA58E3C0-5C97-46D9-8AE7-143E28C3AE75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA58E3C0-5C97-46D9-8AE7-143E28C3AE75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8FECAFC-E541-441B-A19B-991D4959D7F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8FECAFC-E541-441B-A19B-991D4959D7F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8FECAFC-E541-441B-A19B-991D4959D7F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8FECAFC-E541-441B-A19B-991D4959D7F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CE3CE42-E1A0-4804-AF03-D3AD01FFD3EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CE3CE42-E1A0-4804-AF03-D3AD01FFD3EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CE3CE42-E1A0-4804-AF03-D3AD01FFD3EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CE3CE42-E1A0-4804-AF03-D3AD01FFD3EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8685B8D1-EB4B-4CA7-8C52-2AE5A2E31F44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8685B8D1-EB4B-4CA7-8C52-2AE5A2E31F44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8685B8D1-EB4B-4CA7-8C52-2AE5A2E31F44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8685B8D1-EB4B-4CA7-8C52-2AE5A2E31F44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -453,6 +478,11 @@ Global
 		{F058EE29-59E9-40B1-A2E1-05C491B67DB5} = {E6CC83ED-4295-4092-8720-5A838CF8E0C5}
 		{F59B28EB-65E7-458C-863A-9F200437D6A7} = {E6CC83ED-4295-4092-8720-5A838CF8E0C5}
 		{68972832-B680-4E1A-AD31-A85289EA4421} = {84D834F3-79C2-4E31-9A71-1917955E6CD7}
+		{EA58E3C0-5C97-46D9-8AE7-143E28C3AE75} = {108DCD5F-C97B-44A0-90A4-1AE386A216BB}
+		{C8FECAFC-E541-441B-A19B-991D4959D7F6} = {E6CC83ED-4295-4092-8720-5A838CF8E0C5}
+		{D54B2273-CB0E-46DC-8B5D-B70D72226EDF} = {2C7F9FB2-0106-45A8-8185-8B58DF359DE2}
+		{0CE3CE42-E1A0-4804-AF03-D3AD01FFD3EB} = {D54B2273-CB0E-46DC-8B5D-B70D72226EDF}
+		{8685B8D1-EB4B-4CA7-8C52-2AE5A2E31F44} = {D54B2273-CB0E-46DC-8B5D-B70D72226EDF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F4E77E2A-13ED-428A-962C-F0BDF00E9A14}

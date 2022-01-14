@@ -17,18 +17,20 @@ namespace Users.Application.Commands.SignUp
         private readonly IUserAuthenticationDataRepository _userAuthenticationDataRepository;
         private readonly IUserRepository _userRepository;
         private readonly ILogger<SignUpCommandHandler> _logger;
+        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
 
-        public SignUpCommandHandler(IUserAuthenticationDataRepository userAuthenticationDataRepository, 
-            IUserRepository userRepository, ILogger<SignUpCommandHandler> logger,
-            Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) : base(ReadModelNotificationsMode.Disabled, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
+        public SignUpCommandHandler(IUserAuthenticationDataRepository userAuthenticationDataRepository,
+            IUserRepository userRepository, ILogger<SignUpCommandHandler> logger, CommandHandlerBaseDependencies dependencies, IUnitOfWorkFactory unitOfWorkFactory)
+            : base(ReadModelNotificationsMode.Disabled, dependencies)
         {
             _userAuthenticationDataRepository = userAuthenticationDataRepository;
             _userRepository = userRepository;
             _logger = logger;
+            _unitOfWorkFactory = unitOfWorkFactory;
         }
 
         protected override async Task<RequestStatus> HandleCommand(
-            AppCommand<SignUpCommand> request, Lazy<EventBusFacade> eventBus,
+            AppCommand<SignUpCommand> request, IEventOutbox eventOutbox,
             CancellationToken cancellationToken)
         {
             var existing = _userAuthenticationDataRepository.FindUserAuth(request.Command.Username);
@@ -49,10 +51,17 @@ namespace Users.Application.Commands.SignUp
                 UserName = user.Username,
                 Email = request.Command.Email
             };
-            _userAuthenticationDataRepository.AddUserAuth(userAuth);
-            _userRepository.AddUser(user);
-            eventBus.Value.Publish(user.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
-            user.MarkPendingEventsAsHandled();
+
+            using(var uow = _unitOfWorkFactory.Begin())
+            {
+                _userAuthenticationDataRepository.AddUserAuth(userAuth);
+                _userRepository.AddUser(user);
+                await eventOutbox.SaveEvents(user.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
+                user.MarkPendingEventsAsHandled();
+                
+                uow.Commit();
+            }
+
 
             return response;
         }

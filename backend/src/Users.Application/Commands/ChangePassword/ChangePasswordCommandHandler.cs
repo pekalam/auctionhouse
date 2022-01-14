@@ -14,16 +14,16 @@ namespace Users.Application.Commands.ChangePassword
         private readonly ILogger<ChangePasswordCommandHandler> _logger;
         private readonly IUserAuthenticationDataRepository _authenticationDataRepository;
 
-        public ChangePasswordCommandHandler(ILogger<ChangePasswordCommandHandler> logger, IUserAuthenticationDataRepository authenticationDataRepository,
-            Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) 
-            : base(ReadModelNotificationsMode.Disabled, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
+        public ChangePasswordCommandHandler(ILogger<ChangePasswordCommandHandler> logger, IUserAuthenticationDataRepository authenticationDataRepository, 
+            CommandHandlerBaseDependencies dependencies) 
+            : base(ReadModelNotificationsMode.Disabled, dependencies)
         {
             _logger = logger;
             _authenticationDataRepository = authenticationDataRepository;
         }
 
         protected override Task<RequestStatus> HandleCommand(
-            AppCommand<ChangePasswordCommand> request, Lazy<EventBusFacade> eventBus,
+            AppCommand<ChangePasswordCommand> request, IEventOutbox eventOutbox,
             CancellationToken cancellationToken)
         {
             var userAuthData = _authenticationDataRepository.FindUserAuthById(request.Command.SignedInUser);

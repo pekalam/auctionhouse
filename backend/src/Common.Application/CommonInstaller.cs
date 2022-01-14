@@ -1,4 +1,5 @@
-﻿using Common.Application.Commands.Attributes;
+﻿using Common.Application.Commands;
+using Common.Application.Commands.Attributes;
 using Common.Application.Events;
 using Common.Application.Mediator;
 using Common.Application.SagaNotifications;
@@ -20,14 +21,24 @@ namespace Common.Application
             services.AddTransient(typeof(Lazy<>), typeof(LazyInstance<>));
             //services.AddTransient<ISagaNotifications, InMemorySagaNotifications>();
             services.AddTransient<IImplProvider, DefaultDIImplProvider>();
-            services.AddTransient<EventBusFacade>();
-            services.AddTransient<EventBusFacadeWithOutbox>();
             services.AddMediatR(commandHandlerAssemblies,
                     cfg =>
                     {
                         cfg.AsTransient();
                     });
             services.AddTransient<ImmediateCommandQueryMediator>();
+            services.AddTransient<IUnitOfWorkFactory, DefaultUnitOfWorkFactory>();
+            services.AddTransient<IEventOutbox, EventOutbox>();
+            services.AddTransient<EventBusHelper>();
+            services.AddTransient<EventOutboxHelper>();
+            services.AddTransient<CommandHandlerBaseDependencies>();
+        }
+
+        public static void AddOutboxProcessorService(this IServiceCollection services, EventOutboxProcessorSettings outboxProcessorSettings)
+        {
+            services.AddSingleton(outboxProcessorSettings);
+            services.AddTransient<EventOutboxProcessor>();
+            services.AddHostedService<EventOutboxProcessorService>();
         }
 
         public static void InitAttributeStrategies(params string[] commandAssemblyNames)

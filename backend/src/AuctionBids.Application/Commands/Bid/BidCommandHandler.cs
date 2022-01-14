@@ -15,14 +15,14 @@ namespace Core.Command.Commands.Bid
         private readonly IAuctionBidsRepository _auctionBids;
         private readonly ILogger<BidCommandHandler> _logger;
 
-        public BidCommandHandler(ILogger<BidCommandHandler> logger, Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) 
-            : base(ReadModelNotificationsMode.Disabled, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
+        public BidCommandHandler(ILogger<BidCommandHandler> logger, CommandHandlerBaseDependencies dependencies) 
+            : base(ReadModelNotificationsMode.Disabled, dependencies)
         {
             _logger = logger;
         }
 
         protected override async Task<RequestStatus> HandleCommand(AppCommand<BidCommand> request,
-            Lazy<EventBusFacade> eventBus, CancellationToken cancellationToken)
+            IEventOutbox eventOutbox, CancellationToken cancellationToken)
         {
             var auctionBids = _auctionBids.WithAuctionId(new AuctionId(request.Command.AuctionId));
             if (auctionBids is null)

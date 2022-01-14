@@ -18,8 +18,8 @@ namespace Auctions.Application.Commands.UpdateAuction
         private readonly IAuctionEndScheduler _schedulerService;
 
         public UpdateAuctionCommandHandler(IAuctionRepository auctionRepository, IUserIdentityService userIdentityService,
-            ILogger<UpdateAuctionCommandHandler> logger, IAuctionEndScheduler schedulerService,
-            Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, Lazy<EventBusFacadeWithOutbox> eventBusFacadeWithOutbox) : base(ReadModelNotificationsMode.Immediate, logger, immediateNotifications, sagaNotifications, eventBusFacadeWithOutbox)
+            ILogger<UpdateAuctionCommandHandler> logger, IAuctionEndScheduler schedulerService
+            , CommandHandlerBaseDependencies dependencies) : base(ReadModelNotificationsMode.Immediate, dependencies)
         {
             _auctionRepository = auctionRepository;
             _userIdentityService = userIdentityService;
@@ -34,8 +34,8 @@ namespace Auctions.Application.Commands.UpdateAuction
         }
 
 
-        protected override Task<RequestStatus> HandleCommand(
-            AppCommand<UpdateAuctionCommand> request, Lazy<EventBusFacade> eventBus,
+        protected override async Task<RequestStatus> HandleCommand(
+            AppCommand<UpdateAuctionCommand> request, IEventOutbox eventOutbox,
             CancellationToken cancellationToken)
         {
             var auction = GetAuction(request);
@@ -59,9 +59,9 @@ namespace Auctions.Application.Commands.UpdateAuction
 
             var response = RequestStatus.CreatePending(request.CommandContext);
             _auctionRepository.UpdateAuction(auction);
-            eventBus.Value.Publish(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
+            await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
 
-            return Task.FromResult(response);
+            return response;
         }
     }
 }
