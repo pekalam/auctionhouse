@@ -67,13 +67,21 @@ namespace FunctionalTests.Commands
             };
             await SendCommand(buyNowCommand);
 
-            AssertEventual(() => {
+            AssertEventual(() =>
+            {
                 var payment = userPayments.All.FirstOrDefault(u => u.UserId == userId)
                         ?.Payments.FirstOrDefault(p => p.PaymentTargetId?.Value == buyNowCommand.AuctionId);
                 var auction = auctions.All.FirstOrDefault(a => a.AggregateId == buyNowCommand.AuctionId);
+                var allEventsPublished = AssertExpectedEventsArePublished();
 
+                return allEventsPublished && payment?.Status == PaymentStatus.Confirmed &&
+                    auction is not null && auction.Completed;
+            });
+        }
 
-                var expectedEvents = new[] {
+        private bool AssertExpectedEventsArePublished()
+        {
+            var expectedEvents = new[] {
                     typeof(Auctions.DomainEvents.AuctionLocked),
                     typeof(Auctions.DomainEvents.Events.V1.BuyNowTXStarted),
                     typeof(Auctions.DomainEvents.Events.V1.BuyNowTXSuccess),
@@ -83,33 +91,31 @@ namespace FunctionalTests.Commands
                     typeof(BuyNowPaymentConfirmed),
                 };
 
-                var allEventsPublished = SentEvents.Select(e => e.Event.GetType()).Except(expectedEvents).Any() == false;
+            var allEventsPublished = SentEvents.Select(e => e.Event.GetType()).Except(expectedEvents).Any() == false;
 
-                if(SentEvents.Count > expectedEvents.Length)
+            if (SentEvents.Count > expectedEvents.Length)
+            {
+                outputHelper.WriteLine("Not all events were included in expected");
+                foreach (var ev in SentEvents.Select(e => e.Event.GetType()).Except(expectedEvents))
                 {
-                    outputHelper.WriteLine("Not all events were included in expected");
-                    foreach (var ev in SentEvents.Select(e => e.Event.GetType()).Except(expectedEvents))
-                    {
-                        outputHelper.WriteLine("Event: " + ev.Name);
-                    }
+                    outputHelper.WriteLine("Event: " + ev.Name);
                 }
-                else if(!allEventsPublished)
+            }
+            else if (!allEventsPublished)
+            {
+                var notPublished = expectedEvents.Except(SentEvents.Select(e => e.Event.GetType()));
+                outputHelper.WriteLine($"Not all expected events were published ({notPublished.Count()}/{expectedEvents.Length}):");
+                foreach (var ev in notPublished)
                 {
-                    var notPublished = expectedEvents.Except(SentEvents.Select(e => e.Event.GetType()));
-                    outputHelper.WriteLine($"Not all expected events were published ({notPublished.Count()}/{expectedEvents.Length}):");
-                    foreach(var ev in notPublished)
-                    {
-                        outputHelper.WriteLine("Not published: " + ev.Name);
-                    }
+                    outputHelper.WriteLine("Not published: " + ev.Name);
                 }
-                else
-                {
-                    outputHelper.WriteLine("All events were published");
-                }
+            }
+            else
+            {
+                outputHelper.WriteLine("All events were published");
+            }
 
-                return allEventsPublished && payment?.Status == PaymentStatus.Confirmed && 
-                    auction is not null && auction.Completed;
-            });
+            return allEventsPublished;
         }
 
         public void Dispose()
