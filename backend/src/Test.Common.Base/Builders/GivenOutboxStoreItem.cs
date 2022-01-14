@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Test.Common.Application.Builders
+namespace Test.Common.Base.Builders
 {
     public class TestEvent : Event
     {
@@ -16,7 +16,7 @@ namespace Test.Common.Application.Builders
         }
     }
 
-    internal class GivenOutboxStoreItem
+    public class GivenOutboxStoreItem
     {
         private CommandContext _commandContext = CommandContext.CreateNew("test");
         private ReadModelNotificationsMode _readModelNotificationsMode;
