@@ -163,9 +163,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.EfCore.ReadModelNot
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventOutbox", "EventOutbox", "{D54B2273-CB0E-46DC-8B5D-B70D72226EDF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapter.SqlServer.EventOutboxStorage", "Adapter.SqlServer.EventOutbox\Adapter.SqlServer.EventOutboxStorage.csproj", "{0CE3CE42-E1A0-4804-AF03-D3AD01FFD3EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.SqlServer.EventOutboxStorage", "Adapter.SqlServer.EventOutbox\Adapter.SqlServer.EventOutboxStorage.csproj", "{0CE3CE42-E1A0-4804-AF03-D3AD01FFD3EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Adapter.SqlServer.EventOutbox", "Test.Adapter.SqlServer.EventOutbox\Test.Adapter.SqlServer.EventOutbox.csproj", "{8685B8D1-EB4B-4CA7-8C52-2AE5A2E31F44}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.SqlServer.EventOutbox", "Test.Adapter.SqlServer.EventOutbox\Test.Adapter.SqlServer.EventOutbox.csproj", "{8685B8D1-EB4B-4CA7-8C52-2AE5A2E31F44}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Common.Base", "Test.Common.Base\Test.Common.Base.csproj", "{F7CC5BF3-4406-4EF0-B5A1-2070AD4078AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -409,6 +411,10 @@ Global
 		{8685B8D1-EB4B-4CA7-8C52-2AE5A2E31F44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8685B8D1-EB4B-4CA7-8C52-2AE5A2E31F44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8685B8D1-EB4B-4CA7-8C52-2AE5A2E31F44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7CC5BF3-4406-4EF0-B5A1-2070AD4078AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7CC5BF3-4406-4EF0-B5A1-2070AD4078AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7CC5BF3-4406-4EF0-B5A1-2070AD4078AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7CC5BF3-4406-4EF0-B5A1-2070AD4078AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -483,6 +489,7 @@ Global
 		{D54B2273-CB0E-46DC-8B5D-B70D72226EDF} = {2C7F9FB2-0106-45A8-8185-8B58DF359DE2}
 		{0CE3CE42-E1A0-4804-AF03-D3AD01FFD3EB} = {D54B2273-CB0E-46DC-8B5D-B70D72226EDF}
 		{8685B8D1-EB4B-4CA7-8C52-2AE5A2E31F44} = {D54B2273-CB0E-46DC-8B5D-B70D72226EDF}
+		{F7CC5BF3-4406-4EF0-B5A1-2070AD4078AE} = {8461F559-5101-4F0D-8E98-E1CFAEFA802C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F4E77E2A-13ED-428A-962C-F0BDF00E9A14}
