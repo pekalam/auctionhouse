@@ -30,7 +30,7 @@ namespace Common.Application
             services.AddTransient<IUnitOfWorkFactory, DefaultUnitOfWorkFactory>();
             services.AddTransient<IEventOutbox, EventOutbox>();
             services.AddTransient<EventBusHelper>();
-            services.AddTransient<EventOutboxHelper>();
+            services.AddTransient<EventOutboxSender>();
             services.AddTransient<CommandHandlerBaseDependencies>();
         }
 

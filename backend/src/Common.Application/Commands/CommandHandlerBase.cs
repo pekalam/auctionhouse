@@ -12,16 +12,13 @@ namespace Common.Application.Commands
     public class CommandHandlerBaseDependencies
     {
         public CommandHandlerBaseDependencies(ILogger<RequestStatus> logger, Lazy<IImmediateNotifications> immediateNotifications,
-            Lazy<ISagaNotifications> sagaNotifications, IEventOutbox eventOutbox, IEventBus eventBus,
-            IAppEventBuilder appEventBuilder, IOutboxItemStore outboxItemStore)
+            Lazy<ISagaNotifications> sagaNotifications, IEventOutbox eventOutbox, EventOutboxSender eventOutboxSender)
         {
             Logger = logger;
             ImmediateNotifications = immediateNotifications;
             SagaNotifications = sagaNotifications;
             EventOutbox = eventOutbox;
-            EventBus = eventBus;
-            AppEventBuilder = appEventBuilder;
-            OutboxItemStore = outboxItemStore;
+            EventOutboxSender = eventOutboxSender;
         }
 
         public ILogger<RequestStatus> Logger { get; set; }
@@ -29,11 +26,7 @@ namespace Common.Application.Commands
         public Lazy<IImmediateNotifications> ImmediateNotifications { get; set; }
         public Lazy<ISagaNotifications> SagaNotifications { get; set; }
         public IEventOutbox EventOutbox { get; set; }
-
-        public IEventBus EventBus { get; set; }
-        public IAppEventBuilder AppEventBuilder { get; set; }
-        public IOutboxItemStore OutboxItemStore { get; set; }
-
+        public EventOutboxSender EventOutboxSender { get; set; }
     }
     public abstract class CommandHandlerBase<T> : IRequestHandler<AppCommand<T>, RequestStatus> where T : ICommand
     {
@@ -42,22 +35,18 @@ namespace Common.Application.Commands
         private readonly ReadModelNotificationsMode _notificationsMode;
         private readonly Lazy<IImmediateNotifications> _immediateNotifications;
         private readonly Lazy<ISagaNotifications> _sagaNotifications;
-        private readonly IEventBus _eventBus;
-        private readonly IOutboxItemStore _outboxItemStore;
-        private readonly IAppEventBuilder _appEventBuilder;
         private readonly IEventOutbox _eventOutbox;
+        private readonly EventOutboxSender _eventOutboxSender;
 
 
         protected CommandHandlerBase(ReadModelNotificationsMode notificationsMode, CommandHandlerBaseDependencies dependencies)
         {
             _logger = dependencies.Logger;
-            _appEventBuilder = dependencies.AppEventBuilder;
             _notificationsMode = notificationsMode;
             _immediateNotifications = dependencies.ImmediateNotifications;
             _sagaNotifications = dependencies.SagaNotifications;
-            _eventBus = dependencies.EventBus;
-            _outboxItemStore = dependencies.OutboxItemStore;
             _eventOutbox = dependencies.EventOutbox;
+            _eventOutboxSender = dependencies.EventOutboxSender;
         }
 
         private async Task<RequestStatus> TryHandleCommand(AppCommand<T> request, CancellationToken cancellationToken)
@@ -86,9 +75,11 @@ namespace Common.Application.Commands
 
                 var status = await TryHandleCommand(request, cancellationToken);
 
+                //TODO handle exception and remove notifications
+
                 var eventOutbox = (EventOutbox)_eventOutbox; //TODO remove casting ?
                 await AddSagaUnhandledEvents(request, eventOutbox);
-                await SendEventsFromOutbox(eventOutbox);
+                await _eventOutboxSender.SendEvents(eventOutbox.SavedOutboxStoreItems);
 
                 return status;
             }
@@ -97,19 +88,6 @@ namespace Common.Application.Commands
                 _logger.LogDebug("Invalid command {validationResults}", validationResults);
                 throw new InvalidCommandException($"Invalid command {request}", request.CommandContext);
             }
-        }
-
-        private async Task SendEventsFromOutbox(EventOutbox eventOutbox)
-        {
-            var appEvents = eventOutbox.SavedOutboxStoreItems.Select(e =>
-                _appEventBuilder.WithCommandContext(e.CommandContext).WithReadModelNotificationsMode(e.ReadModelNotifications)
-                .WithEvent(e.Event).Build<Event>());
-            _eventBus.Publish(appEvents);
-            foreach (var item in eventOutbox.SavedOutboxStoreItems)
-            {
-                item.Processed = true;
-            }
-            await _outboxItemStore.UpdateMany(eventOutbox.SavedOutboxStoreItems);
         }
 
         private async Task AddSagaUnhandledEvents(AppCommand<T> request, EventOutbox eventOutbox)

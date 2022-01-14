@@ -58,10 +58,8 @@ namespace Test.Common.Application
         {
             return new EventOutboxProcessor(
                             new() { MinMilisecondsDiff = minMilisecondsDiff, },
-                            eventBus.Object, outboxItemFinder.Object,
-                            new TestAppEventBuilder(),
-                            outboxItemStore.Object,
-                            Mock.Of<ILogger<EventOutboxProcessor>>()
+                             outboxItemFinder.Object, Mock.Of<ILogger<EventOutboxProcessor>>(),
+                            new EventOutboxSender(outboxItemStore.Object, new TestAppEventBuilder(), eventBus.Object)
                             );
         }
 

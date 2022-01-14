@@ -17,35 +17,22 @@ namespace Common.Application.Events
 
     public class EventOutboxProcessor
     {
-        private readonly IEventBus _eventBus;
         private readonly IOutboxItemFinder _outboxItemFinder;
-        private readonly IAppEventBuilder _appEventBuilder;
-        private readonly IOutboxItemStore _outboxItemStore;
         private readonly ILogger<EventOutboxProcessor> _logger;
         private readonly EventOutboxProcessorSettings _settings;
+        private readonly EventOutboxSender _eventOutboxSender;
 
-        public EventOutboxProcessor(EventOutboxProcessorSettings settings, IEventBus eventBus, IOutboxItemFinder outboxItemFinder, IAppEventBuilder appEventBuilder, IOutboxItemStore outboxItemStore, ILogger<EventOutboxProcessor> logger)
+        public EventOutboxProcessor(EventOutboxProcessorSettings settings, IOutboxItemFinder outboxItemFinder, ILogger<EventOutboxProcessor> logger, EventOutboxSender eventOutboxSender)
         {
             _settings = settings;
-            _eventBus = eventBus;
             _outboxItemFinder = outboxItemFinder;
-            _appEventBuilder = appEventBuilder;
-            _outboxItemStore = outboxItemStore;
             _logger = logger;
+            _eventOutboxSender = eventOutboxSender;
         }
 
         private static long ToMiliseconds(long timestamp1, long timestamp2) => (timestamp1 - timestamp2) / (1_000_000 / 100);
 
         private static long MilisecondsToFileTime(long miliseconds) => miliseconds * (1_000_000 / 100);
-
-        private IAppEvent<Event> CreateEventFromOutboxStoreItem(OutboxItem item)
-        {
-            var appEvent = _appEventBuilder.WithCommandContext(item.CommandContext)
-                .WithEvent(item.Event)
-                .WithReadModelNotificationsMode(item.ReadModelNotifications)
-                .Build<Event>();
-            return appEvent;
-        }
 
         private async Task HandleUnprocessedEvents(int total, long timestampDiff, long currentTimestamp)
         {
@@ -53,12 +40,7 @@ namespace Common.Application.Events
             var unprocessedItems = await _outboxItemFinder.GetUnprocessedItemsOlderThan(timestampDiff, currentTimestamp, total);
 
             _logger.LogDebug("Publishing {total} events from outbox", unprocessedItems.Count()); //TODO 
-            _eventBus.Publish(unprocessedItems.Select(CreateEventFromOutboxStoreItem));
-            foreach (var item in unprocessedItems)
-            {
-                item.Processed = true;
-            }
-            await _outboxItemStore.UpdateMany(unprocessedItems);
+            await _eventOutboxSender.SendEvents(unprocessedItems);
         }
 
         public async Task ProcessEvents()
