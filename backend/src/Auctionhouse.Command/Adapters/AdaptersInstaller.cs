@@ -16,7 +16,6 @@ namespace Auctionhouse.Command.Adapters
             services.AddTransient<IResetLinkSenderService, ResetLinkSenderService>();
             services.AddTransient<IAuctionCreateSessionStore, AuctionCreateSessionStore>();
             services.AddTransient<IConvertCategoryNamesToRootToLeafIds, ConvertCategoryNamesToRootToLeafIds>();
-            services.AddTransient<IAuctionUnlockScheduler, NullAuctionUnlockScheduler>();
         }
     }
 }

@@ -1,6 +1,7 @@
 using Adapter.AuctionImageConversion;
 using Adapter.Dapper.AuctionhouseDatabase;
 using Adapter.EfCore.ReadModelNotifications;
+using Adapter.Hangfire_.Auctionhouse;
 using Adapter.MongoDb;
 using Adapter.MongoDb.AuctionImage;
 using Adapter.QuartzTimeTaskService.AuctionEndScheduler;
@@ -50,6 +51,7 @@ builder.Services.AddOutboxProcessorService(new EventOutboxProcessorSettings
 {
     MinMilisecondsDiff = 1500,
 });
+builder.Services.AddHangfireServices(builder.Configuration.GetSection("HangfirePersistence")["ConnectionString"]);
 
 builder.Services.AddSwaggerGen(c =>
 {

@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Adapter.AuctionImageConversion\Adapter.AuctionImageConversion.csproj" />
     <ProjectReference Include="..\Adapter.EfCore.SagaEventsConfirmation\Adapter.EfCore.ReadModelNotifications.csproj" />
+    <ProjectReference Include="..\Adapter.Hangfire.Auctionhouse\Adapter.Hangfire_.Auctionhouse.csproj" />
     <ProjectReference Include="..\Adapter.MongoDb\Adapter.MongoDb.AuctionImageRepository.csproj" />
     <ProjectReference Include="..\Adapter.SqlServer.EventOutbox\Adapter.SqlServer.EventOutboxStorage.csproj" />
     <ProjectReference Include="..\AuctionBids.Application\AuctionBids.Application.csproj" />

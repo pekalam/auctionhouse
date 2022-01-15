@@ -7,10 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Moq" Version="4.16.1" />
+    <PackageReference Include="Hangfire" Version="1.7.28" />
+    <PackageReference Include="MartinCostello.Logging.XUnit" Version="0.2.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Auctions.Domain\Auctions.Domain.csproj" />
     <ProjectReference Include="..\Common.Application\Common.Application.csproj" />
   </ItemGroup>
 
