@@ -8,15 +8,17 @@ namespace Test.UserPayments_.Domain
     using UserPayments.Domain;
     using UserPayments.Domain.Events;
     using UserPayments.Domain.Shared;
+    using static UserPayments.DomainEvents.Events.V1;
 
     public class UnitTest1
     {
-        private UserPayments _userPayments = UserPayments.CreateNew(UserId.New());
         private TransactionId _transactionId = TransactionId.New();
         private UserId _userId = UserId.New();
+        private UserPayments _userPayments;
 
         public UnitTest1()
         {
+            _userPayments = UserPayments.CreateNew(_userId);
             _userPayments.PendingEvents.Count.Should().Be(1);
         }
 
@@ -24,7 +26,7 @@ namespace Test.UserPayments_.Domain
         public void Test1()
         {
             _userPayments.MarkPendingEventsAsHandled();
-            var payment = _userPayments.CreateBidPayment(_transactionId, _userId, 10m);
+            var payment = _userPayments.CreateBidPayment(_transactionId, 10m);
 
             _userPayments.PendingEvents.First().Should().BeOfType<BidPaymentCreated>();
             _userPayments.PendingEvents.Count.Should().Be(1);
@@ -41,7 +43,7 @@ namespace Test.UserPayments_.Domain
         public void Test2()
         {
             _userPayments.MarkPendingEventsAsHandled();
-            var payment = _userPayments.CreateBuyNowPayment(_transactionId, _userId, 10m);
+            var payment = _userPayments.CreateBuyNowPayment(_transactionId, 10m);
 
             _userPayments.PendingEvents.First().Should().BeOfType<BuyNowPaymentCreated>();
             _userPayments.PendingEvents.Count.Should().Be(1);
@@ -66,8 +68,8 @@ namespace Test.UserPayments_.Domain
         [Fact]
         public void Test3()
         {
-            _userPayments.CreateBuyNowPayment(_transactionId, _userId, 10m);
-            _userPayments.CreateBidPayment(_transactionId, _userId, 10m);
+            _userPayments.CreateBuyNowPayment(_transactionId, 10m);
+            _userPayments.CreateBidPayment(_transactionId, 10m);
 
             AssertIsRecreated();
         }
@@ -75,13 +77,16 @@ namespace Test.UserPayments_.Domain
         [Fact]
         public void Test4()
         {
-            var payment = _userPayments.CreateBuyNowPayment(_transactionId, _userId, 10m);
+            var payment = _userPayments.CreateBuyNowPayment(_transactionId, 10m);
 
+            _userPayments.ConfirmPayment(payment.Id);
             _userPayments.CompletePayment(payment.Id);
 
             _userPayments.PendingEvents.Select(e => e.GetType()).Should().BeEquivalentTo(new[] { //TODO helper like this
                 typeof(UserPaymentsCreated),
                 typeof(BuyNowPaymentCreated),
+                typeof(PaymentStatusChangedToConfirmed),
+                typeof(BuyNowPaymentConfirmed),
                 typeof(PaymentStatusChangedToCompleted),
             });
 

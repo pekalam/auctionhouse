@@ -31,7 +31,7 @@ namespace UserPayments.Application.Commands.CreateBuyNowPayment
             var userPayments = await _userPayments.WithUserId(new UserId(request.Command.BuyerId));
 
             var payment = userPayments.CreateBuyNowPayment(new TransactionId(request.Command.TransactionId),
-                new UserId(request.Command.BuyerId), request.Command.Amount, paymentTargetId: new PaymentTargetId(request.Command.AuctionId));
+                            request.Command.Amount, paymentTargetId: new PaymentTargetId(request.Command.AuctionId));
             await eventOutbox.SaveEvents(userPayments.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Saga);
             userPayments.MarkPendingEventsAsHandled();
 

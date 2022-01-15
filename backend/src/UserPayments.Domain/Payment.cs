@@ -45,7 +45,7 @@ namespace UserPayments.Domain
 
         public decimal Amount { get; private set; }
 
-        public static Payment CreateNew(UserPayments parent, TransactionId transactionId, UserId userId, PaymentType paymentType, decimal amount, PaymentTargetId? paymentTargetId = null)
+        internal static Payment CreateNew(UserPayments parent, TransactionId transactionId, UserId userId, PaymentType paymentType, decimal amount, PaymentTargetId? paymentTargetId = null)
         {
             return new Payment(PaymentId.New(), paymentTargetId, transactionId, userId, PaymentStatus.InProgress, paymentType, amount, parent);
         }
@@ -83,7 +83,7 @@ namespace UserPayments.Domain
                 case PaymentStatus.Confirmed:
                     if (Status != PaymentStatus.InProgress)
                     {
-                        throw new InvalidPaymentStatusException($"Cannot change status from {PaymentStatus.InProgress} to {newStatus}");
+                        throw new InvalidPaymentStatusException($"Cannot change status from {Status} to {newStatus}");
                     }
                     if (Type == PaymentType.BuyNow)
                     {
@@ -94,14 +94,14 @@ namespace UserPayments.Domain
                 case PaymentStatus.Completed:
                     if (Status != PaymentStatus.Confirmed)
                     {
-                        throw new InvalidPaymentStatusException($"Cannot change status from {PaymentStatus.Confirmed} to {newStatus}");
+                        throw new InvalidPaymentStatusException($"Cannot change status from {Status} to {newStatus}");
                     }
                     AddEvent(new PaymentStatusChangedToCompleted { PaymentId = Id });
                     break;
                 case PaymentStatus.Failed:
                     if (Status != PaymentStatus.InProgress)
                     {
-                        throw new InvalidPaymentStatusException($"Cannot change status from {PaymentStatus.InProgress} to {newStatus}");
+                        throw new InvalidPaymentStatusException($"Cannot change status from {Status} to {newStatus}");
                     }
                     AddEvent(new PaymentStatusChangedToFailed { PaymentId = Id });
                     break;

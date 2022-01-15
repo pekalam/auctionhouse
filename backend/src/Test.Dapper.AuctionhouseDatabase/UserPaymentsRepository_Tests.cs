@@ -62,7 +62,7 @@ namespace Test.Dapper.AuctionhouseDatabase
             userPaymentsRepo.Add(userPayments);
             userPayments.MarkPendingEventsAsHandled();
 
-            userPayments.CreateBidPayment(TransactionId.New(), userId, 10m);
+            userPayments.CreateBidPayment(TransactionId.New(), 10m);
             userPaymentsRepo.Update(userPayments);
             userPayments.MarkPendingEventsAsHandled();
 
