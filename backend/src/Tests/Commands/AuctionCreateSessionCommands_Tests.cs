@@ -19,6 +19,7 @@ namespace FunctionalTests.Commands
     using System.IO;
     using Xunit.Abstractions;
 
+    [Trait("Category","Functional")]
     public class AuctionCreateSessionCommands_Tests : TestBase
     {
         private InMemAuctionCreateSessionStore auctionCreateSessionStore;

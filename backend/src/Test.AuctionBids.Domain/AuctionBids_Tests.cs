@@ -10,6 +10,7 @@ namespace Test.AuctionBids_.Domain
     using AuctionBids.Domain.Shared;
     using AuctionBids.DomainEvents;
 
+    [Trait("Category", "Unit")]
     public class AuctionBids_Tests
     {
         private AuctionBids auctionBids = GivenValidAuctionBids();

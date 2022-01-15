@@ -13,6 +13,7 @@ using static Auctions.DomainEvents.Events.V1;
 
 namespace Test.AuctionsDomain
 {
+    [Trait("Category", "Unit")]
     public class Auction_BuyTests
     {
         private async Task<(Auction auction, AuctionPaymentVerificationScenario scenario, UserId buyerId)> CreateAndBuyAuction()

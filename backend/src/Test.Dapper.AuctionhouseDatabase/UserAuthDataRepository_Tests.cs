@@ -7,6 +7,7 @@ using Xunit;
 
 namespace Test.Dapper.AuctionhouseDatabase
 {
+    [Trait("Category", "Integration")]
     public class UserAuthDataRepository_Tests
     {
         private IUserAuthenticationDataRepository _userAuthenticationDataRepository;

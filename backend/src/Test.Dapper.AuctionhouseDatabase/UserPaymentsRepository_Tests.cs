@@ -14,6 +14,7 @@ namespace Test.Dapper.AuctionhouseDatabase
     using FluentAssertions;
     using UserPayments.Domain;
 
+    [Trait("Category", "Integration")]
     public class UserPaymentsRepository_Tests
     {
         IUserPaymentsRepository userPaymentsRepo;

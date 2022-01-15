@@ -17,6 +17,7 @@ namespace Test.Adapter.EfCore.ReadModelNotifications
         }
     }
 
+    [Trait("Category", "Integration")]
     public class UnitTest1
     {
         SagaEventsConfirmationDbContext dbContext;

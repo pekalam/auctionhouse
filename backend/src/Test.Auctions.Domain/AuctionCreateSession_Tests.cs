@@ -11,6 +11,7 @@ using Xunit;
 
 namespace Test.AuctionsDomain
 {
+    [Trait("Category", "Unit")]
     public class AuctionCreateSession_Tests
     {
         [Fact]

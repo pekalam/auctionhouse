@@ -20,6 +20,7 @@ namespace FunctionalTests.Commands
     using UserPayments.Domain.Shared;
 
     [Collection(nameof(CommandTestsCollection))]
+    [Trait("Category", "Functional")]
     public class BuyNowCommand_Tests : TestBase, IDisposable
     {
         private readonly InMemoryAuctionRepository auctions;

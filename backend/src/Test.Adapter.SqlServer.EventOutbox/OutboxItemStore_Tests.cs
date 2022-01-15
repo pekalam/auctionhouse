@@ -12,6 +12,7 @@ using Xunit;
 
 namespace Test.Adapter.SqlServer.EventOutbox
 {
+    [Trait("Category", "Integration")]
     public class OutboxItemFinder_Tests
     {
         EventOutboxDbContext dbContext;
@@ -67,6 +68,7 @@ namespace Test.Adapter.SqlServer.EventOutbox
         }
     }
 
+    [Trait("Category", "Integration")]
     public class OutboxItemStore_Tests
     {
         EventOutboxDbContext dbContext;

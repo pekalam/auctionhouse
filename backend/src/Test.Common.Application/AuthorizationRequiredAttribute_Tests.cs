@@ -38,6 +38,7 @@ namespace UnitTests.AuthorizationRequiredAttribute_Tests
         public int Prop { get; set; }
     }
 
+    [Trait("Category", "Unit")]
     public class AuthorizationRequiredAttribute_Tests
     {
         [Fact]

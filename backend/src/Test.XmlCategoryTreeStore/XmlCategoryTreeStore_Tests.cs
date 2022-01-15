@@ -6,6 +6,7 @@ namespace IntegrationTests
     using FluentAssertions;
     using XmlCategoryTreeStore;
 
+    [Trait("Category", "Integration")]
     public class XmlCategoryTreeStore_Tests
     {
         [Fact]

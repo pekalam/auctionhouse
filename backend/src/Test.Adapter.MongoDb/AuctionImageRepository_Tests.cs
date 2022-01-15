@@ -13,6 +13,7 @@ using Xunit;
 
 namespace IntegrationTests
 {
+    [Trait("Category", "Integration")]
     public class AuctionImageRepository_Tests : IDisposable
     {
         private ImageDbContext dbContext;

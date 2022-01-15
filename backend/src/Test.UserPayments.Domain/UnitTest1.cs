@@ -10,6 +10,7 @@ namespace Test.UserPayments_.Domain
     using UserPayments.Domain.Shared;
     using static UserPayments.DomainEvents.Events.V1;
 
+    [Trait("Category", "Unit")]
     public class UnitTest1
     {
         private TransactionId _transactionId = TransactionId.New();

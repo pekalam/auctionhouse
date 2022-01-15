@@ -10,6 +10,7 @@ using Xunit;
 
 namespace Test.Adapter.AuctionImageConversion
 {
+    [Trait("Category", "Integration")]
     public class AuctionImageConversionService_Tests
     {
         private IAuctionImageConversion service;

@@ -29,6 +29,7 @@ namespace Test.Common.Application
         public static Timestamp Now() => new Timestamp(SysTime.Now.ToFileTime());
     }
 
+    [Trait("Category", "Unit")]
     public class EventOutboxProcessor_Tests
     {
         [Fact]

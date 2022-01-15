@@ -12,6 +12,7 @@ using Xunit;
 
 namespace Test.AuctionsDomain
 {
+    [Trait("Category", "Unit")]
     public class AuctionUpdate_Tests
     {
         private static Type UpdateAndAssertDescription(Auction auction)

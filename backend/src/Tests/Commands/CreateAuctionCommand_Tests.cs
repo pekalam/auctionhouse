@@ -17,6 +17,7 @@ namespace FunctionalTests.Commands
     public class CommandTestsCollection { }
 
     [Collection(nameof(CommandTestsCollection))]
+    [Trait("Category", "Functional")]
     public class CreateAuctionCommand_Tests : TestBase, IDisposable
     {
         private readonly InMemoryAuctionRepository auctions;

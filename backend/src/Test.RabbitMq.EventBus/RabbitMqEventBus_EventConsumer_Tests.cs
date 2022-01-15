@@ -43,6 +43,7 @@ namespace Test.RabbitMq.EventBus
         }
     }
 
+    [Trait("Category", "Integration")]
     public class RabbitMqEventBus_EventConsumer_Tests
     {
         [Fact]

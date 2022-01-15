@@ -21,6 +21,7 @@ using Xunit.Abstractions;
 
 namespace Test.Adapter.Hangfire.Auctionhouse
 {
+    [Trait("Category", "Integration")]
     public class AuctionUnlockScheduler_Tests : IDisposable
     {
         private const string ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Marek\source\repos\Csharp\auctionhouse\backend\src\Tests\FunctionalTestsServer.mdf;Integrated Security=True;Connect Timeout=30";

@@ -22,6 +22,7 @@ using Adapter.EfCore.ReadModelNotifications;
 namespace FunctionalTests.Commands
 {
     [Collection(nameof(CommandTestsCollection))]
+    [Trait("Category", "Functional")]
     public class UpdateAuctionCommand_Tests : TestBase, IDisposable
     {
         private readonly InMemoryAuctionRepository auctions;
