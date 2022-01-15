@@ -84,5 +84,14 @@ namespace Adapter.Dapper.AuctionhouseDatabase.UserPayments_
             var userPayments = UserPayments.FromEvents(aggEvents);
             return Task.FromResult(userPayments);
         }
+
+        public UserPayments Update(UserPayments userPayments)
+        {
+            UpdateAggregate(userPayments.PendingEvents,
+                userPayments.AggregateId.Value.ToString(),
+                userPayments.Version,
+                "UserPayments");
+            return userPayments;
+        }
     }
 }

@@ -54,5 +54,20 @@ namespace Test.Dapper.AuctionhouseDatabase
 
             dbPayments.Should().BeEquivalentTo(userPayments);
         }
+
+        [Fact]
+        public async Task Can_update_user_payments()
+        {
+            var userPayments = UserPayments.CreateNew(userId);
+            userPaymentsRepo.Add(userPayments);
+            userPayments.MarkPendingEventsAsHandled();
+
+            userPayments.CreateBidPayment(TransactionId.New(), userId, 10m);
+            userPaymentsRepo.Update(userPayments);
+            userPayments.MarkPendingEventsAsHandled();
+
+            var savedUserPayments = await userPaymentsRepo.WithId(userPayments.AggregateId);
+            savedUserPayments.Should().BeEquivalentTo(userPayments);
+        }
     }
 }
