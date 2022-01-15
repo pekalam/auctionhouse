@@ -22,7 +22,7 @@ namespace Test.Dapper.AuctionhouseDatabase
         {
             var serverOpt = new MsSqlConnectionSettings()
             {
-                ConnectionString = "Server=DESKTOP-69UIJIF\\SQLEXPRESS;Database=AuctionhouseDatabase;TrustServerCertificate=True;User ID=sa;Password=qwerty;"
+                ConnectionString = "Server=127.0.0.1;Database=AuctionhouseDatabase;TrustServerCertificate=True;User ID=sa;Password=Qwerty1234;"
             };
             _userAuthenticationDataRepository = new UserAuthenticationDataRepository(serverOpt);
         }

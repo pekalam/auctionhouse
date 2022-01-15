@@ -20,7 +20,7 @@ namespace Test.Dapper.AuctionhouseDatabase
             {
                 //ConnectionString = TestContextUtils.GetParameterOrDefault("sqlserver",
                 //"Data Source=.;Initial Catalog=AuctionhouseDatabase;Integrated Security=False;User ID=sa;PWD=Qwerty1234;")
-                ConnectionString = "Server=DESKTOP-69UIJIF\\SQLEXPRESS;Database=AuctionhouseDatabase;TrustServerCertificate=True;User ID=sa;Password=qwerty;"
+                ConnectionString = "Server=127.0.0.1;Database=AuctionhouseDatabase;TrustServerCertificate=True;User ID=sa;Password=Qwerty1234;"
             };
             auctionRepository = new MsSqlAuctionRepository(serverOpt);
             user = User.Create(Username.Create("Test username").Result);
