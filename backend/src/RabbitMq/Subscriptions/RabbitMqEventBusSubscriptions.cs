@@ -32,16 +32,17 @@ namespace RabbitMq.EventBus
 
             foreach (var (handlerType, eventType) in handlerToEventType)
             {
-                _logger.LogInformation(handlerType.Name + "is subscribing to " + eventType.Name);
-                var sub = _bus.PubSub.SubscribeAsync<IAppEvent<Event>>(eventType.Name,
+                var subscriptionId = string.Join('_', handlerType.AssemblyQualifiedName!.Split(',')[0]) + eventType.Name;
+                _logger.LogInformation($"{handlerType.Name} with subscriptionId= {subscriptionId} is subscribing to {eventType.Name}");
+                var sub = _bus.PubSub.SubscribeAsync<IAppEvent<Event>>(subscriptionId,
                     (appEvent, ct) =>
                     {
                         var dispatcher = (IEventDispatcher)implProvider.Get(handlerType);
                         return dispatcher.Dispatch(appEvent);
                     }, conf =>
                     {
+                        conf.WithQueueName(subscriptionId);
                         conf.WithTopic(eventType.Name);
-                        conf.WithQueueName(handlerType.Name);
                     });
                 _subscriptions.Add(sub);
             }
