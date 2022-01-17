@@ -4,6 +4,7 @@ using Auctions.Application.Commands.StartAuctionCreateSession;
 using Auctions.Domain.Repositories;
 using FunctionalTests.Mocks;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace FunctionalTests.Commands
 
     [Collection(nameof(CommandTestsCollection))]
     [Trait("Category", "Functional")]
-    public class CreateAuctionCommand_Tests : TestBase, IDisposable
+    public class CreateAuctionCommand_Tests : TestBase
     {
         private readonly InMemoryAuctionRepository auctions;
         private readonly InMemoryAuctionBidsRepository auctionBids;
@@ -32,8 +33,9 @@ namespace FunctionalTests.Commands
             auctionBids = (InMemoryAuctionBidsRepository)ServiceProvider.GetRequiredService<IAuctionBidsRepository>();
 
         }
-        public void Dispose()
+        public override void Dispose()
         {
+            base.Dispose();
             TruncateReadModelNotificaitons(ServiceProvider);
         }
 
@@ -48,20 +50,38 @@ namespace FunctionalTests.Commands
             //create auction in session
             var createAuctionCmd = GivenCreateAuctionCommand().Build();
             await SendCommand(createAuctionCmd);
-            await Task.Delay(2000);
+            AssertEventual(() => {
+                using var scope = ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
+                var _readModelNotificationsDbContext = scope.ServiceProvider.GetRequiredService<SagaEventsConfirmationDbContext>();
+                return _readModelNotificationsDbContext.SagaEventsConfirmations.FirstOrDefault() != null;
+            });
+            await Task.Delay(3000);
+
 
 
             AssertEventual(() =>
             {
-                var _readModelNotificationsDbContext = ServiceProvider.GetRequiredService<SagaEventsConfirmationDbContext>();
+                using var scope = ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
+                var _readModelNotificationsDbContext = scope.ServiceProvider.GetRequiredService<SagaEventsConfirmationDbContext>();
                 var confirmationsMarkedAsCompleted = _readModelNotificationsDbContext.SagaEventsConfirmations.FirstOrDefault()?.Completed == true;
                 var confirmationEventsProcessed = _readModelNotificationsDbContext.SagaEventsToConfirm.All(e => e.Processed);
                 var createdAuction = auctions.All.FirstOrDefault();
                 var auctionUnlocked = createdAuction != null && !createdAuction.Locked;
                 var idEqual = (auctionBids.All.Count > 0 && auctionBids.All.FirstOrDefault(a => a.AuctionId.Value == createdAuction?.AggregateId.Value) is not null);
                 if (!confirmationsMarkedAsCompleted) outputHelper.WriteLine("Notifications not marked as completed");
-                return auctionUnlocked && idEqual && confirmationsMarkedAsCompleted && confirmationEventsProcessed;
+                return auctionUnlocked && idEqual && confirmationsMarkedAsCompleted && confirmationEventsProcessed && AssertReadModel(createdAuction);
             });
+        }
+
+        private bool AssertReadModel(Auctions.Domain.Auction? createdAuction)
+        {
+            if(createdAuction == null) return false;
+
+            var auctionRead = ReadModelDbContext.AuctionsReadModel
+                .Find(a => a.AuctionId == createdAuction.AggregateId.ToString())
+                .SingleOrDefault();
+
+            return auctionRead != null;
         }
 
         [Fact]

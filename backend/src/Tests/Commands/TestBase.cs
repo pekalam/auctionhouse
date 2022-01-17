@@ -31,6 +31,7 @@ namespace FunctionalTests.Commands
     using System.Linq;
     using System.Threading.Tasks;
     using Test.Auctions.Base.Mocks;
+    using Test.ReadModel.Base;
     using Test.Users.Base.Mocks;
     using UserPayments.Application;
     using UserPayments.Domain.Repositories;
@@ -40,11 +41,12 @@ namespace FunctionalTests.Commands
     using Xunit;
     using Xunit.Abstractions;
 
-    public class TestBase
+    public class TestBase : IDisposable
     {
         private string[] assemblyNames;
         private ITestOutputHelper _outputHelper;
         private UserIdentityServiceMock _userIdentityService;
+        private ReadModelUserReadTestHelper _modelUserReadTestHelper = new();
 
         public IServiceProvider ServiceProvider { get; }
 
@@ -59,10 +61,11 @@ namespace FunctionalTests.Commands
         public TestBase(ITestOutputHelper outputHelper, params string[] assemblyNames)
         {
             _outputHelper = outputHelper;
-            _userIdentityService = new(Guid.NewGuid());
+            var userId = Guid.NewGuid();
+            _userIdentityService = new(userId);
             this.assemblyNames = assemblyNames;
-
             ServiceProvider = BuildConfiguredServiceProvider();
+
             RabbitMqInstaller.InitializeEventSubscriptions(ServiceProvider, assemblyNames.Select(n => Assembly.Load(n)).ToArray());
             CommonInstaller.InitAttributeStrategies(assemblyNames);
             EfCoreReadModelNotificationsInstaller.Initialize(ServiceProvider);
@@ -70,11 +73,14 @@ namespace FunctionalTests.Commands
             XmlCategoryTreeStoreInstaller.Init(ServiceProvider);
             Mediator = ServiceProvider.GetRequiredService<ImmediateCommandQueryMediator>();
             ReadModelDbContext = ServiceProvider.GetRequiredService<ReadModelDbContext>();
+
+            _modelUserReadTestHelper.TryInsertUserRead(userId, ReadModelDbContext);
         }
 
         public void ChangeSignedInUser(Guid userId)
         {
             _userIdentityService.UserId = userId;
+            _modelUserReadTestHelper.TryInsertUserRead(userId, ReadModelDbContext);
         }
 
         public Task<RequestStatus> SendCommand<T>(T command) where T : ICommand
@@ -174,6 +180,7 @@ namespace FunctionalTests.Commands
 
                 services.AddSingleton<IEventBus>(s => new InMemoryEventBusDecorator(s.GetRequiredService<RabbitMqEventBus>()));
 
+
                 AddServices(services);
             });
         }
@@ -186,6 +193,11 @@ namespace FunctionalTests.Commands
                 TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
               );
             Assert.True(policy.Execute(getResults));
+        }
+
+        public virtual void Dispose()
+        {
+            _modelUserReadTestHelper.Dispose();
         }
     }
 

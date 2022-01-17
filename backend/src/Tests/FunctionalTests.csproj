@@ -34,6 +34,7 @@
     <ProjectReference Include="..\RabbitMq\Adatper.RabbitMq.EventBus.csproj" />
     <ProjectReference Include="..\ReadModel.Core\ReadModel.Core.csproj" />
     <ProjectReference Include="..\Test.Auctions.Base\Test.Auctions.Base.csproj" />
+    <ProjectReference Include="..\Test.ReadModel.Base\Test.ReadModel.Base.csproj" />
     <ProjectReference Include="..\Test.Users.Base\Test.Users.Base.csproj" />
     <ProjectReference Include="..\Test.XmlCategoryTreeStore\Test.XmlCategoryTreeStore.csproj" />
     <ProjectReference Include="..\UserPayments.Application\UserPayments.Application.csproj" />
