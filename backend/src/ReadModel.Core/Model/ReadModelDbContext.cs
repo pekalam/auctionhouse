@@ -26,7 +26,10 @@ namespace ReadModel.Core.Model
                 BsonSerializer.RegisterSerializer(typeof(Guid),
                     new GuidSerializer(BsonType.String));
             }
-            BsonSerializer.RegisterSerializer(typeof(decimal), new DecimalSerializer(BsonType.Decimal128));
+            if (BsonSerializer.SerializerRegistry.GetSerializer(typeof(decimal)) == null)
+            {
+                BsonSerializer.RegisterSerializer(typeof(decimal), new DecimalSerializer(BsonType.Decimal128));
+            }
 
             _client = new MongoClient(new MongoUrl(options.ConnectionString));
             _db = _client.GetDatabase(options.DatabaseName);
