@@ -1,28 +1,29 @@
-﻿using AuctionBids.Domain.Repositories;
-using Auctions.DomainEvents;
+﻿using Auctions.DomainEvents;
 using Common.Application.Events;
 
 namespace AuctionBids.Application.EventSubscriptions
 {
-    using AuctionBids.Domain;
+    using AuctionBids.Application.Commands.CreateAuctionBids;
+    using Common.Application.Mediator;
 
     public class AuctionCreatedSubscriber : EventSubscriber<AuctionCreated>
     {
-        private readonly IAuctionBidsRepository _allAuctionBids;
-        private readonly EventBusHelper _eventBusHelper;
+        private readonly ImmediateCommandQueryMediator _mediator;
 
-        public AuctionCreatedSubscriber(IAppEventBuilder appEventBuilder, IAuctionBidsRepository auctionBids, EventBusHelper eventBusHelper) : base(appEventBuilder)
+        public AuctionCreatedSubscriber(IAppEventBuilder appEventBuilder, ImmediateCommandQueryMediator mediator) : base(appEventBuilder)
         {
-            _allAuctionBids = auctionBids;
-            _eventBusHelper = eventBusHelper;
+            _mediator = mediator;
         }
 
-        public override Task Handle(IAppEvent<AuctionCreated> appEvent)
+        public override async Task Handle(IAppEvent<AuctionCreated> appEvent)
         {
-            var auctionBids = AuctionBids.CreateNew(new(appEvent.Event.AuctionId), new(appEvent.CommandContext.User!.Value));
-            _allAuctionBids.Add(auctionBids);
-            _eventBusHelper.Publish(auctionBids.PendingEvents, appEvent.CommandContext, ReadModelNotificationsMode.Saga);
-            return Task.CompletedTask;
+            var cmd = new CreateAuctionBidsCommand
+            {
+                AuctionId = appEvent.Event.AuctionId,
+                Owner = appEvent.Event.Owner,
+            };
+
+            await _mediator.Send(cmd, appEvent.CommandContext);
         }
     }
 }
