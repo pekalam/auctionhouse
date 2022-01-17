@@ -8,17 +8,17 @@ using ReadModel.Core.Model;
 
 namespace ReadModel.Core.EventConsumers
 {
-    public class AuctionLockedEventConsumer : EventConsumer<AuctionLocked, AuctionLockedEventConsumer>
+    public class AuctionUnlockedEventConsumer : EventConsumer<AuctionUnlocked, AuctionUnlockedEventConsumer>
     {
         private readonly ReadModelDbContext _dbContext;
 
-        public AuctionLockedEventConsumer(ILogger<AuctionLockedEventConsumer> logger, ReadModelDbContext dbContext, EventConsumerDependencies dependencies)
+        public AuctionUnlockedEventConsumer(ILogger<AuctionUnlockedEventConsumer> logger, ReadModelDbContext dbContext, EventConsumerDependencies dependencies)
             : base(logger, dependencies)
         {
             _dbContext = dbContext;
         }
 
-        public override Task Consume(IAppEvent<AuctionLocked> appEvent)
+        public override Task Consume(IAppEvent<AuctionUnlocked> appEvent)
         {
             var filterBuilder = Builders<AuctionRead>.Filter;
             var idFilter = filterBuilder.Eq(f => f.AuctionId, appEvent.Event.AuctionId.ToString());

@@ -12,29 +12,25 @@ namespace ReadModel.Core.EventConsumers
         private readonly ReadModelDbContext _dbContext;
         private readonly ILogger<UserRegisteredEventConsumer> _logger;
 
-        public UserRegisteredEventConsumer(IAppEventBuilder appEventBuilder, ReadModelDbContext dbContext,
-            ILogger<UserRegisteredEventConsumer> logger, Lazy<ISagaNotifications> sagaNotifications, Lazy<IImmediateNotifications> immediateNotifications)
-            : base(appEventBuilder, logger, sagaNotifications, immediateNotifications)
+        public UserRegisteredEventConsumer(ReadModelDbContext dbContext, ILogger<UserRegisteredEventConsumer> logger, EventConsumerDependencies dependencies)
+            : base(logger, dependencies)
         {
             _dbContext = dbContext;
             _logger = logger;
         }
 
-        public override void Consume(IAppEvent<UserRegistered> message)
+        public override Task Consume(IAppEvent<UserRegistered> message)
         {
             UserRegistered ev = message.Event;
 
-            var userReadModel = new UserRead();
+            var userReadModel = new UserRead
+            {
+                Credits = ev.InitialCredits,
+            };
             userReadModel.UserIdentity = new UserIdentityRead(ev.UserId, ev.Username);
 
-            try
-            {
-                _dbContext.UsersReadModel.InsertOne(userReadModel);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            _dbContext.UsersReadModel.InsertOne(userReadModel);
+            return Task.CompletedTask;
         }
     }
 }

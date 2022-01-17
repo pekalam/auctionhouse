@@ -5,6 +5,20 @@ using Microsoft.Extensions.Logging;
 
 namespace Core.Query.EventHandlers
 {
+    public class EventConsumerDependencies
+    {
+        public IAppEventBuilder AppEventBuilder { get; set; } = null!;
+        public Lazy<ISagaNotifications> SagaNotifications { get; set; } = null!;
+        public Lazy<IImmediateNotifications> ImmediateNotifications { get; set; } = null!;
+        
+        public EventConsumerDependencies(IAppEventBuilder appEventBuilder, Lazy<ISagaNotifications> sagaNotifications, Lazy<IImmediateNotifications> immediateNotifications)
+        {
+            AppEventBuilder = appEventBuilder;
+            SagaNotifications = sagaNotifications;
+            ImmediateNotifications = immediateNotifications;
+        }
+    }
+
     public abstract class EventConsumer<T, TImpl> : IEventDispatcher where T : Event where TImpl : EventConsumer<T, TImpl>
     {
         private readonly IAppEventBuilder _appEventBuilder;
@@ -12,30 +26,29 @@ namespace Core.Query.EventHandlers
         private readonly Lazy<ISagaNotifications> _sagaNotifications;
         private readonly Lazy<IImmediateNotifications> _immediateNotifications;
 
-        protected EventConsumer(IAppEventBuilder appEventBuilder, ILogger<TImpl> logger, Lazy<ISagaNotifications> sagaNotificationsFactory, Lazy<IImmediateNotifications> immediateNotifications)
+        protected EventConsumer(ILogger<TImpl> logger, EventConsumerDependencies dependencies)
         {
-            _appEventBuilder = appEventBuilder;
+            _appEventBuilder = dependencies.AppEventBuilder;
             _logger = logger;
-            _sagaNotifications = sagaNotificationsFactory;
-            _immediateNotifications = immediateNotifications;
+            _sagaNotifications = dependencies.SagaNotifications;
+            _immediateNotifications = dependencies.ImmediateNotifications;
         }
 
-        //TODO TASK return type
-        public abstract void Consume(IAppEvent<T> appEvent);
+        public abstract Task Consume(IAppEvent<T> appEvent);
 
         async Task IEventDispatcher.Dispatch(IAppEvent<Event> msg)
         {
-            Consume(_appEventBuilder
+            await Consume(_appEventBuilder
               .WithEvent(msg.Event)
               .WithCommandContext(msg.CommandContext)
               .WithReadModelNotificationsMode(msg.ReadModelNotifications)
               .Build<T>());
 
-            if(msg.ReadModelNotifications == ReadModelNotificationsMode.Saga)
+            if (msg.ReadModelNotifications == ReadModelNotificationsMode.Saga)
             {
                 await _sagaNotifications.Value.MarkEventAsHandled(msg.CommandContext.CorrelationId, msg.Event);
             }
-            if(msg.ReadModelNotifications == ReadModelNotificationsMode.Immediate)
+            if (msg.ReadModelNotifications == ReadModelNotificationsMode.Immediate)
             {
                 await _immediateNotifications.Value.NotifyCompleted(msg.CommandContext.CorrelationId);
             }

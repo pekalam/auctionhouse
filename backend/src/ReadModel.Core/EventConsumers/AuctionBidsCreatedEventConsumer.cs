@@ -13,11 +13,11 @@ namespace ReadModel.Core.EventConsumers
 {
     public class AuctionBidsCreatedEventConsumer : EventConsumer<AuctionBidsCreated, AuctionBidsCreatedEventConsumer>
     {
-        public AuctionBidsCreatedEventConsumer(IAppEventBuilder appEventBuilder, ILogger<AuctionBidsCreatedEventConsumer> logger, Lazy<ISagaNotifications> sagaNotificationsFactory, Lazy<IImmediateNotifications> immediateNotifications) : base(appEventBuilder, logger, sagaNotificationsFactory, immediateNotifications)
+        public AuctionBidsCreatedEventConsumer(ILogger<AuctionBidsCreatedEventConsumer> logger, EventConsumerDependencies dependencies) : base(logger, dependencies)
         {
         }
 
-        public override void Consume(IAppEvent<AuctionBidsCreated> appEvent)
+        public override async Task Consume(IAppEvent<AuctionBidsCreated> appEvent)
         {
         }
     }

@@ -17,7 +17,8 @@ namespace Core.Query.EventHandlers.AuctionUpdateHandlers
         private readonly CategoryBuilder _categoryBuilder;
 
 
-        public AuctionUpdatedEventConsumer(IAppEventBuilder appEventBuilder, ILogger<AuctionUpdatedEventConsumer> logger, Lazy<ISagaNotifications> sagaNotificationsFactory, Lazy<IImmediateNotifications> immediateNotifications, ReadModelDbContext dbContext, CategoryBuilder categoryBuilder) : base(appEventBuilder, logger, sagaNotificationsFactory, immediateNotifications)
+        public AuctionUpdatedEventConsumer(ILogger<AuctionUpdatedEventConsumer> logger, ReadModelDbContext dbContext, 
+            CategoryBuilder categoryBuilder, EventConsumerDependencies dependencies) : base(logger, dependencies)
         {
             _dbContext = dbContext;
             _logger = logger;
@@ -68,7 +69,7 @@ namespace Core.Query.EventHandlers.AuctionUpdateHandlers
             return Builders<AuctionRead>.Update.Set(read => read.Product.Description, ev.Description);
         }
 
-        public override void Consume(IAppEvent<AuctionUpdateEventGroup> appEvent)
+        public override Task Consume(IAppEvent<AuctionUpdateEventGroup> appEvent)
         {
             var filter = Builders<AuctionRead>.Filter.Eq(f => f.AuctionId, appEvent.Event.AggregateId.ToString());
             var updates = new List<UpdateDefinition<AuctionRead>>();
@@ -78,6 +79,7 @@ namespace Core.Query.EventHandlers.AuctionUpdateHandlers
             var update = Builders<AuctionRead>.Update.Combine(updates);
 
             _dbContext.AuctionsReadModel.UpdateMany(filter, update);
+            return Task.CompletedTask;
         }
     }
 }

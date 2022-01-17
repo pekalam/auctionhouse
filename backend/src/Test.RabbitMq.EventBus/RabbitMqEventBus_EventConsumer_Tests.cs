@@ -27,8 +27,7 @@ namespace Test.RabbitMq.EventBus
         private Action<IAppEvent<TestEvent>> OnConsume;
         public bool Throws { get; set; }
 
-        public TestHandler(IAppEventBuilder appEventBuilder, Action<IAppEvent<TestEvent>> onConsume) : base(appEventBuilder, Mock.Of<ILogger<TestHandler>>(), new(() => Mock.Of<ISagaNotifications>()),
-            new(() => Mock.Of<IImmediateNotifications>()))
+        public TestHandler(EventConsumerDependencies dependencies, Action<IAppEvent<TestEvent>> onConsume) : base(Mock.Of<ILogger<TestHandler>>(), dependencies)
         {
             OnConsume = onConsume;
         }
@@ -64,7 +63,10 @@ namespace Test.RabbitMq.EventBus
                 .WithEvent(new TestEvent())
                 .Build<TestEvent>();
 
-            var handler = new TestHandler(new AppEventRabbitMQBuilder(), (ev) =>
+            var handler = new TestHandler(new EventConsumerDependencies
+            {
+                AppEventBuilder= new AppEventRabbitMQBuilder()
+            }, (ev) =>
             {
                 try
                 {

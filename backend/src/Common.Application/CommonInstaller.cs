@@ -3,6 +3,7 @@ using Common.Application.Commands.Attributes;
 using Common.Application.Events;
 using Common.Application.Mediator;
 using Common.Application.SagaNotifications;
+using Core.Query.EventHandlers;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -32,6 +33,7 @@ namespace Common.Application
             services.AddTransient<EventBusHelper>();
             services.AddTransient<EventOutboxSender>();
             services.AddTransient<CommandHandlerBaseDependencies>();
+            services.AddTransient<EventConsumerDependencies>();
         }
 
         public static void AddOutboxProcessorService(this IServiceCollection services, EventOutboxProcessorSettings outboxProcessorSettings)
