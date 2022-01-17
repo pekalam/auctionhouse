@@ -70,6 +70,10 @@ namespace Auctions.Domain
             TransactionId = null;
         }
 
+        private void ApplyEvent(Events.V1.BuyNowTXCanceledConcurrently _)
+        {
+        }
+
         private void ApplyEvent(Events.V1.BuyNowTXFailed _)
         {
             TransactionId = null;

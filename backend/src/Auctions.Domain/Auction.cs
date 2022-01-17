@@ -328,7 +328,6 @@ namespace Auctions.Domain
             //In other case failed event should be emitted.
             if (TransactionId != transactionId)
             {
-                Unlock(LockIssuer);
                 //transaction failed - auction unlocked and locked by another transaction
                 ApplyEvent(AddEvent(new Events.V1.BuyNowTXFailed { TransactionId = transactionId, AuctionId = AggregateId }));
                 return false;
@@ -337,24 +336,25 @@ namespace Auctions.Domain
             // if scheduler will throw it doesnt matter anyway because it will not find this auction and additionaly wont unlock completed
             TryCancelScheduledAuctionUnlock(auctionUnlockScheduler);
 
-            ApplyEvent(AddEvent(new Events.V1.BuyNowTXSuccess { TransactionId = transactionId, AuctionId = AggregateId, BuyerId = LockIssuer, EndDate = DateTime.UtcNow }));
+            var buyerId = LockIssuer;
             Unlock(LockIssuer);
+            ApplyEvent(AddEvent(new Events.V1.BuyNowTXSuccess { TransactionId = transactionId, AuctionId = AggregateId, BuyerId = buyerId, EndDate = DateTime.UtcNow }));
             return true;
         }
 
         public bool CancelBuy(Guid transactionId, IAuctionUnlockScheduler auctionUnlockScheduler)
-        {
-            Unlock(LockIssuer);
-            if (TransactionId != transactionId)
+        {;
+            if (TransactionId != transactionId) //when someone started buynow tx
             {
-                //transaction failed - auction unlocked and locked by another transaction
-                ApplyEvent(AddEvent(new Events.V1.BuyNowTXFailed { TransactionId = transactionId, AuctionId = AggregateId }));
+                //this event doesn't result in state change
+                ApplyEvent(AddEvent(new Events.V1.BuyNowTXCanceledConcurrently { TransactionId = transactionId, AuctionId = AggregateId }));
                 return false;
             }
 
             // this cannot fail
             auctionUnlockScheduler.Cancel(AggregateId);
 
+            Unlock(LockIssuer);
             ApplyEvent(AddEvent(new Events.V1.BuyNowTXCanceled { TransactionId = transactionId, AuctionId= AggregateId }));
             return true;
         }
@@ -372,7 +372,7 @@ namespace Auctions.Domain
         internal void Unlock(UserId lockIssuerId)
         {
             if (Completed) return; //TODO invariants checks
-            if (!Locked) throw new DomainException("Auction is not locked");
+            if (!Locked) return;
             if (LockIssuer != lockIssuerId) throw new DomainException($"Invalid {nameof(lockIssuerId)}");
             ApplyEvent(AddEvent(new AuctionUnlocked() { AuctionId = AggregateId }));
         }

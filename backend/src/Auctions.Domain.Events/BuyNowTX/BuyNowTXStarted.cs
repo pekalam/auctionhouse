@@ -56,6 +56,16 @@ namespace Auctions.DomainEvents
                 {
                 }
             }
+
+            public class BuyNowTXCanceledConcurrently : Event
+            {
+                public Guid TransactionId { get; set; }
+                public Guid AuctionId { get; set; }
+
+                public BuyNowTXCanceledConcurrently() : base("buyNowTXCanceled")
+                {
+                }
+            }
         }
     }
 
