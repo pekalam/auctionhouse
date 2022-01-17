@@ -3,6 +3,7 @@ using Common.Application.Events;
 using Core.Common.Domain;
 using EasyNetQ;
 using EasyNetQ.Internals;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 
@@ -35,10 +36,13 @@ namespace RabbitMq.EventBus
                 var subscriptionId = string.Join('_', handlerType.AssemblyQualifiedName!.Split(',')[0]) + eventType.Name;
                 _logger.LogInformation($"{handlerType.Name} with subscriptionId= {subscriptionId} is subscribing to {eventType.Name}");
                 var sub = _bus.PubSub.SubscribeAsync<IAppEvent<Event>>(subscriptionId,
-                    (appEvent, ct) =>
+                    async (appEvent, ct) =>
                     {
-                        var dispatcher = (IEventDispatcher)implProvider.Get(handlerType);
-                        return dispatcher.Dispatch(appEvent);
+                        using (var scope = implProvider.Get<IServiceScopeFactory>().CreateScope())
+                        {
+                            var dispatcher = (IEventDispatcher)scope.ServiceProvider.GetRequiredService(handlerType);
+                            await dispatcher.Dispatch(appEvent);
+                        }
                     }, conf =>
                     {
                         conf.WithQueueName(subscriptionId);
