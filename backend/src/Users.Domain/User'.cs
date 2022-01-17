@@ -2,6 +2,8 @@
 using ReflectionMagic;
 using Users.Domain;
 using Users.Domain.Events;
+using Users.Domain.Shared;
+using Users.DomainEvents;
 
 namespace Core.Common.Domain.Users
 {
@@ -28,12 +30,23 @@ namespace Core.Common.Domain.Users
         {
             AggregateId = @event.UserId;
             Username = new Username(@event.Username);
+            Credits = @event.InitialCredits;
         }
 
-        private void ApplyEvent(CreditsAdded ev) => AddCredits(ev.CreditsCount);
-        private void ApplyEvent(CreditsReturned ev) => ReturnCredits(ev.CreditsCount);
-        private void ApplyEvent(CreditsWithdrawn ev) => WithdrawCredits(ev.CreditsCount);
-        private void ApplyEvent(CreditsCanceled ev) => CancelCredits(ev.Ammount);
+        private void ApplyEvent(CreditsAdded ev)
+        {
+            Credits += ev.CreditsCount;
+        }
+        private void ApplyEvent(CreditsWithdrawn ev)
+        {
+            _lockedFunds.Remove(_lockedFunds.First(l => l.Id.Value == ev.LockedFundsId));
+            Credits -= ev.CreditsCount;
+        }
+
+        private void ApplyEvent(LockedFundsCreated ev)
+        {
+           _lockedFunds.Add(new LockedFunds(new LockedFundsId(ev.LockedFundsId), ev.Amount));
+        }
 
     }
 }

@@ -30,8 +30,12 @@ namespace FunctionalTests.Commands
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Test.Auctions.Base.Mocks;
+    using Test.Users.Base.Mocks;
     using UserPayments.Application;
     using UserPayments.Domain.Repositories;
+    using Users.Application;
+    using Users.Domain.Repositories;
     using XmlCategoryTreeStore;
     using Xunit;
     using Xunit.Abstractions;
@@ -103,10 +107,12 @@ namespace FunctionalTests.Commands
                 services.AddAuctionsModule(assemblyNames);
                 services.AddAuctionBidsModule();
                 services.AddUserPaymentsModule();
+                services.AddUsersModule();
 
                 services.AddSingleton<IAuctionCreateSessionStore, InMemAuctionCreateSessionStore>();
                 services.AddSingleton<IAuctionRepository, InMemoryAuctionRepository>();
                 services.AddSingleton<IAuctionBidsRepository, InMemoryAuctionBidsRepository>();
+                services.AddSingleton<IUserRepository, InMemoryUserRepository>();
                 services.AddTransient(s => () => s.GetRequiredService<IAuctionRepository>());
                 services.AddTransient<IConvertCategoryNamesToRootToLeafIds, ConvertCategoryNamesToRootToLeafIdsMock>();
                 services.AddTransient(s => Mock.Of<ILogger<CreateAuctionCommandHandler>>());

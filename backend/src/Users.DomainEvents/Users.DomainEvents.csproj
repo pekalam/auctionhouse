@@ -8,11 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core.DomainFramework\Core.DomainFramework.csproj" />
-    <ProjectReference Include="..\UserPayments.DomainEvents\UserPayments.DomainEvents.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

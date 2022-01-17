@@ -8,10 +8,13 @@ namespace Users.Domain.Events
 
         public string Username { get; }
 
-        public UserRegistered(UserId userId, string username) : base("userRegistered")
+        public decimal InitialCredits { get; }
+
+        public UserRegistered(UserId userId, string username, decimal initialCredits) : base("userRegistered")
         {
             UserId = userId;
             Username = username;
+            InitialCredits = initialCredits;
         }
     }
 }

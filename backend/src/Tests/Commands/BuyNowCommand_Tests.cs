@@ -15,53 +15,78 @@ using static UserPayments.DomainEvents.Events.V1;
 
 namespace FunctionalTests.Commands
 {
+    using Auctions.Domain;
+    using Core.Common.Domain;
+    using Core.Common.Domain.Users;
+    using Test.Auctions.Base.Mocks;
+    using Test.Users.Base.Mocks;
     using UserPayments.Domain;
     using UserPayments.Domain.Events;
     using UserPayments.Domain.Shared;
+    using Users.Domain;
+    using Users.Domain.Events;
+    using Users.Domain.Repositories;
+    using Users.DomainEvents;
 
     [Collection(nameof(CommandTestsCollection))]
     [Trait("Category", "Functional")]
     public class BuyNowCommand_Tests : TestBase, IDisposable
     {
-        private readonly InMemoryAuctionRepository auctions;
-        private readonly InMemoryAuctionBidsRepository auctionBids;
-        private readonly InMemortUserPaymentsRepository userPayments;
-        private readonly ITestOutputHelper outputHelper;
+        InMemoryAuctionRepository auctions;
+        InMemoryAuctionBidsRepository auctionBids;
+        InMemortUserPaymentsRepository allUserPayments;
+        InMemoryUserRepository users;
+        ITestOutputHelper outputHelper;
 
-        public BuyNowCommand_Tests(ITestOutputHelper outputHelper) : base(outputHelper, "AuctionBids.Application", "Auctions.Application", "UserPayments.Application")
+        Type[] SuccessExpectedEvents = new[] {
+                    typeof(Auctions.DomainEvents.AuctionLocked),
+                    typeof(Auctions.DomainEvents.Events.V1.BuyNowTXStarted),
+                    typeof(BuyNowPaymentCreated),
+                    typeof(LockedFundsCreated),
+                    typeof(UserCreditsLockedForBuyNowAuction),
+                    typeof(BuyNowPaymentConfirmed),
+                    typeof(PaymentStatusChangedToConfirmed),
+                    typeof(Auctions.DomainEvents.AuctionUnlocked),
+                    typeof(Auctions.DomainEvents.Events.V1.BuyNowTXSuccess),
+                    typeof(PaymentStatusChangedToCompleted),
+                    typeof(CreditsWithdrawn),
+                };
+
+        Type[] FailureExpectedEvents = new[] {
+                    typeof(Auctions.DomainEvents.AuctionLocked),
+                    typeof(Auctions.DomainEvents.Events.V1.BuyNowTXStarted),
+                    typeof(BuyNowPaymentCreated),
+                    typeof(UserCreditsFailedToLockForBuyNowAuction),
+                    typeof(BuyNowPaymentFailed),
+                    typeof(PaymentStatusChangedToFailed),
+                    typeof(Auctions.DomainEvents.AuctionUnlocked),
+                    typeof(Auctions.DomainEvents.Events.V1.BuyNowTXCanceled),
+                };
+
+        public BuyNowCommand_Tests(ITestOutputHelper outputHelper) 
+            : base(outputHelper, "AuctionBids.Application", "Auctions.Application", "UserPayments.Application", "Users.Application")
         {
             this.outputHelper = outputHelper;
             auctions = (InMemoryAuctionRepository)ServiceProvider.GetRequiredService<IAuctionRepository>();
             auctionBids = (InMemoryAuctionBidsRepository)ServiceProvider.GetRequiredService<IAuctionBidsRepository>();
-            userPayments = (InMemortUserPaymentsRepository)ServiceProvider.GetRequiredService<IUserPaymentsRepository>();
+            allUserPayments = (InMemortUserPaymentsRepository)ServiceProvider.GetRequiredService<IUserPaymentsRepository>();
+            users = (InMemoryUserRepository)ServiceProvider.GetRequiredService<IUserRepository>();
         }
 
         [Fact]
         public async Task BuyNowCommand_creates_confirmed_payment_and_sets_auction_to_completed()
         {
-            //start session
-            var startSessionCmd = new StartAuctionCreateSessionCommand();
-            await SendCommand(startSessionCmd);
-            await Task.Delay(3000);
+            await StartAuctionCreateSession();
+            await CreateAuction();
 
-            //create auction in session
-            var createAuctionCmd = GivenCreateAuctionCommand().Build();
-            await SendCommand(createAuctionCmd);
-            await Task.Delay(3000);
-
-
-            AssertEventual(() =>
-            {
-                var createdAuction = auctions.All.First();
-                var auctionLocked = (createdAuction.Locked);
-                var idEqual = (auctionBids.All.Count > 0 && auctionBids.All.First().AuctionId.Value == createdAuction.AggregateId.Value);
-                return !auctionLocked && idEqual;
-            });
+            AssertAuctionCreated();
             InMemoryEventBusDecorator.ClearSentEvents();
 
-            var userId = Guid.NewGuid();
-            ChangeSignedInUser(userId);
-            userPayments.Add(UserPayments.CreateNew(new UserId(userId)));
+            var initialCredits = 1000m;
+            var user = await CreateUser(initialCredits);
+
+            CreateUserPayments(user);
+
             var buyNowCommand = new BuyNowCommand
             {
                 AuctionId = auctions.All.First().AggregateId,
@@ -70,29 +95,102 @@ namespace FunctionalTests.Commands
 
             AssertEventual(() =>
             {
-                var payment = userPayments.All.FirstOrDefault(u => u.UserId == userId)
-                        ?.Payments.FirstOrDefault(p => p.PaymentTargetId?.Value == buyNowCommand.AuctionId);
                 var auction = auctions.All.FirstOrDefault(a => a.AggregateId == buyNowCommand.AuctionId);
-                var allEventsPublished = AssertExpectedEventsArePublished();
+                var auctionCompleted = auction?.Completed == true;
 
-                return allEventsPublished && payment?.Status == PaymentStatus.Completed &&
-                    auction is not null && auction.Completed;
+                return AssertExpectedEventsArePublished(SuccessExpectedEvents) && AssertPaymentStatus(user, buyNowCommand, PaymentStatus.Completed) &&
+                    auction is not null && auctionCompleted && AssertUser(user, auction, initialCredits);
             });
         }
 
-        private bool AssertExpectedEventsArePublished()
+        [Fact]
+        public async Task BuyNowCommand_creates_failed_payment_and_cancels_buynowtx_when_user_doesnt_have_enought_credits() 
+            //TODO: this case should be handled in BuyNowCommandHandler rather than asynchronously because it's too chatty and results in temporarily locked auction
         {
-            var expectedEvents = new[] {
-                    typeof(Auctions.DomainEvents.AuctionLocked),
-                    typeof(Auctions.DomainEvents.Events.V1.BuyNowTXStarted),
-                    typeof(Auctions.DomainEvents.Events.V1.BuyNowTXSuccess),
-                    typeof(UserPaymentsCreated),
-                    typeof(BuyNowPaymentCreated),
-                    typeof(PaymentStatusChangedToConfirmed),
-                    typeof(BuyNowPaymentConfirmed),
-                    typeof(PaymentStatusChangedToCompleted),
-                };
+            await StartAuctionCreateSession();
+            await CreateAuction();
 
+            AssertAuctionCreated();
+            InMemoryEventBusDecorator.ClearSentEvents();
+
+            var initialCredits = 0;
+            var user = await CreateUser(initialCredits);
+
+            CreateUserPayments(user);
+
+            var buyNowCommand = new BuyNowCommand
+            {
+                AuctionId = auctions.All.First().AggregateId,
+            };
+            await SendCommand(buyNowCommand);
+
+            AssertEventual(() =>
+            {
+                var auction = auctions.All.FirstOrDefault(a => a.AggregateId == buyNowCommand.AuctionId);
+                var auctionNotCompleted = auction?.Completed == false;
+
+                return AssertExpectedEventsArePublished(FailureExpectedEvents) && AssertPaymentStatus(user, buyNowCommand, PaymentStatus.Failed) &&
+                    auction is not null && auctionNotCompleted && user.Credits == initialCredits;
+            });
+        }
+
+        private bool AssertPaymentStatus(User user, BuyNowCommand buyNowCommand, PaymentStatus paymentStatus)
+        {
+            return allUserPayments.All
+                                    .FirstOrDefault(u => u.UserId.Value == user.AggregateId.Value)
+                                    ?.Payments.FirstOrDefault(p => p.PaymentTargetId?.Value == buyNowCommand.AuctionId)?.Status == paymentStatus;
+        }
+
+        private async Task<User> CreateUser(decimal initialCredits)
+        {
+            var user = User.Create(await Username.Create("test user"), initialCredits);
+            users.AddUser(user);
+            user.MarkPendingEventsAsHandled();
+            ChangeSignedInUser(user.AggregateId.Value);
+            return user;
+        }
+
+        private void CreateUserPayments(User user)
+        {
+            var userPayments = UserPayments.CreateNew(new global::UserPayments.Domain.Shared.UserId(user.AggregateId.Value));
+            userPayments.MarkPendingEventsAsHandled();
+            allUserPayments.Add(userPayments);
+        }
+
+        private void AssertAuctionCreated()
+        {
+            AssertEventual(() =>
+            {
+                var createdAuction = auctions.All.First();
+                var auctionLocked = (createdAuction.Locked);
+                var idEqual = (auctionBids.All.Count > 0 && auctionBids.All.First().AuctionId.Value == createdAuction.AggregateId.Value);
+                return !auctionLocked && idEqual;
+            });
+        }
+
+        private async Task CreateAuction()
+        {
+            //create auction in session
+            var createAuctionCmd = GivenCreateAuctionCommand().Build();
+            await SendCommand(createAuctionCmd);
+            await Task.Delay(3000);
+        }
+
+        private async Task StartAuctionCreateSession()
+        {
+            //start session
+            var startSessionCmd = new StartAuctionCreateSessionCommand();
+            await SendCommand(startSessionCmd);
+            await Task.Delay(3000);
+        }
+
+        private bool AssertUser(User user, Auction boughtAuction, decimal initialCredits)
+        {
+            return user.Credits == initialCredits - boughtAuction.BuyNowPrice!.Value;
+        }
+
+        private bool AssertExpectedEventsArePublished(Type[] expectedEvents)
+        {
             var allEventsPublished = SentEvents.Select(e => e.Event.GetType()).Except(expectedEvents).Any() == false;
 
             if (SentEvents.Count > expectedEvents.Length)

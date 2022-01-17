@@ -7,7 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Auctions.Domain.Events\Auctions.DomainEvents.csproj" />
     <ProjectReference Include="..\Common.Application\Common.Application.csproj" />
+    <ProjectReference Include="..\UserPayments.DomainEvents\UserPayments.DomainEvents.csproj" />
+    <ProjectReference Include="..\UserPayments.Domain\UserPayments.Domain.csproj" />
+    <ProjectReference Include="..\Users.DomainEvents\Users.DomainEvents.csproj" />
     <ProjectReference Include="..\Users.Domain\Users.Domain.csproj" />
   </ItemGroup>
 

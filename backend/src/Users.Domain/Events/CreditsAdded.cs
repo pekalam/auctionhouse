@@ -5,12 +5,12 @@ namespace Users.Domain.Events
     public class CreditsAdded : Event
     {
         public decimal CreditsCount { get; }
-        public Guid UserIdentity { get; }
+        public Guid UserId { get; }
 
-        public CreditsAdded(decimal creditsCount, Guid userIdentity) : base("creditsAdded")
+        public CreditsAdded(decimal creditsCount, Guid userId) : base("creditsAdded")
         {
             CreditsCount = creditsCount;
-            UserIdentity = userIdentity;
+            UserId = userId;
         }
     }
 }

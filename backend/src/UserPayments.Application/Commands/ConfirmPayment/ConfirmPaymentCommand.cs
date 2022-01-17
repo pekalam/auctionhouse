@@ -8,27 +8,26 @@ using System.Text;
 using System.Threading.Tasks;
 using UserPayments.Domain.Repositories;
 
-namespace UserPayments.Application.Commands.CompletePayment
+namespace UserPayments.Application.Commands.ConfirmPayment
 {
-    public class CompletePaymentCommand : ICommand
+    public class ConfirmPaymentCommand : ICommand
     {
-        public Guid TransactionId { get; set; }
         public Guid UserId { get; set; }
+        public Guid TransactionId { get; set; }
     }
 
-    public class CompletePaymentCommandHandler : CommandHandlerBase<CompletePaymentCommand>
+    public class ConfirmPaymentCommandHandler : CommandHandlerBase<ConfirmPaymentCommand>
     {
         private readonly IUserPaymentsRepository _allUserPayments;
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
 
-        public CompletePaymentCommandHandler(CommandHandlerBaseDependencies dependencies, IUserPaymentsRepository allUserPayments, IUnitOfWorkFactory unitOfWorkFactory)
-            : base(ReadModelNotificationsMode.Disabled, dependencies)
+        public ConfirmPaymentCommandHandler(CommandHandlerBaseDependencies dependencies, IUserPaymentsRepository allUserPayments, IUnitOfWorkFactory unitOfWorkFactory) : base(ReadModelNotificationsMode.Disabled, dependencies)
         {
             _allUserPayments = allUserPayments;
             _unitOfWorkFactory = unitOfWorkFactory;
         }
 
-        protected override async Task<RequestStatus> HandleCommand(AppCommand<CompletePaymentCommand> request, IEventOutbox eventOutbox, CancellationToken cancellationToken)
+        protected override async Task<RequestStatus> HandleCommand(AppCommand<ConfirmPaymentCommand> request, IEventOutbox eventOutbox, CancellationToken cancellationToken)
         {
             var userPayments = await _allUserPayments.WithUserId(new Domain.Shared.UserId(request.Command.UserId));
 
@@ -37,9 +36,9 @@ namespace UserPayments.Application.Commands.CompletePayment
             {
                 return RequestStatus.CreateFromCommandContext(request.CommandContext, Status.FAILED);
             }
-            userPayments.CompletePayment(payment.Id); 
+            userPayments.ConfirmPayment(payment.Id);
 
-            using(var uow = _unitOfWorkFactory.Begin())
+            using (var uow = _unitOfWorkFactory.Begin())
             {
                 _allUserPayments.Update(userPayments);
                 await eventOutbox.SaveEvents(userPayments.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);

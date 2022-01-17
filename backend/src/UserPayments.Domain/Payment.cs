@@ -45,9 +45,11 @@ namespace UserPayments.Domain
 
         public decimal Amount { get; private set; }
 
-        internal static Payment CreateNew(UserPayments parent, TransactionId transactionId, UserId userId, PaymentType paymentType, decimal amount, PaymentTargetId? paymentTargetId = null)
+        public string PaymentMethod { get; private set; }
+
+        internal static Payment CreateNew(UserPayments parent, TransactionId transactionId, UserId userId, PaymentType paymentType, decimal amount, string paymentMethod, PaymentTargetId? paymentTargetId = null)
         {
-            return new Payment(PaymentId.New(), paymentTargetId, transactionId, userId, PaymentStatus.InProgress, paymentType, amount, parent);
+            return new Payment(PaymentId.New(), transactionId, userId, PaymentStatus.InProgress, paymentType, amount, paymentMethod, parent, paymentTargetId);
         }
 
         /// <summary>
@@ -55,8 +57,8 @@ namespace UserPayments.Domain
         /// </summary>
         internal Payment(IInternalEventAdd parentAdd, IInternalEventApply parentApply = null) : base(parentAdd, parentApply) { }
 
-        public Payment(PaymentId paymentId, PaymentTargetId paymentTargetId, TransactionId transactionId, UserId userId, PaymentStatus status, PaymentType paymentType, decimal amount,
-            IInternalEventAdd parentAdd, IInternalEventApply parentApply = null) : base(parentAdd, parentApply)
+        internal Payment(PaymentId paymentId, TransactionId transactionId, UserId userId, PaymentStatus status, PaymentType paymentType, decimal amount,
+            string paymentMethod, IInternalEventAdd parentAdd, PaymentTargetId? paymentTargetId = null, IInternalEventApply? parentApply = null) : base(parentAdd, parentApply)
         {
             //TODO checks
             PaymentTargetId = paymentTargetId;
@@ -66,13 +68,14 @@ namespace UserPayments.Domain
             Status = status;
             Type = paymentType;
             Amount = amount;
+            PaymentMethod = paymentMethod;
             if (paymentType == PaymentType.Bid)
             {
-                AddEvent(new BidPaymentCreated { TransactionId = transactionId, Amount = amount, UserId = userId, PaymentId = Id });
+                AddEvent(new BidPaymentCreated { TransactionId = transactionId, Amount = amount, UserId = userId, PaymentId = Id, PaymentMethod = paymentMethod, PaymentTargetId = (paymentTargetId != null ? (Guid)paymentTargetId : null)  });
             }
             else if (paymentType == PaymentType.BuyNow)
             {
-                AddEvent(new BuyNowPaymentCreated { TransactionId = transactionId, Amount = amount, UserId = userId, PaymentId = Id });
+                AddEvent(new BuyNowPaymentCreated { TransactionId = transactionId, Amount = amount, UserId = userId, PaymentId = Id, PaymentMethod = paymentMethod, PaymentTargetId = (paymentTargetId != null ? (Guid)paymentTargetId : null) });
             }
         }
 
@@ -103,6 +106,10 @@ namespace UserPayments.Domain
                     {
                         throw new InvalidPaymentStatusException($"Cannot change status from {Status} to {newStatus}");
                     }
+                    if (Type == PaymentType.BuyNow)
+                    {
+                        AddEvent(new BuyNowPaymentFailed() { TransactionId = TransactionId });
+                    }
                     AddEvent(new PaymentStatusChangedToFailed { PaymentId = Id });
                     break;
                 case PaymentStatus.FundsReturned:
@@ -125,6 +132,7 @@ namespace UserPayments.Domain
                     Type = PaymentType.Bid;
                     Status = PaymentStatus.InProgress;
                     PaymentTargetId = e.PaymentTargetId.HasValue ? new PaymentTargetId(e.PaymentTargetId.Value) : null;
+                    PaymentMethod = e.PaymentMethod;
                     break;
                 case BuyNowPaymentCreated e:
                     Id = new PaymentId(e.PaymentId);
@@ -134,6 +142,7 @@ namespace UserPayments.Domain
                     Type = PaymentType.BuyNow;
                     Status = PaymentStatus.InProgress;
                     PaymentTargetId = e.PaymentTargetId.HasValue ? new PaymentTargetId(e.PaymentTargetId.Value) : null;
+                    PaymentMethod = e.PaymentMethod;
                     break;
                 case PaymentStatusChangedToConfirmed e:
                     Debug.Assert(e.PaymentId == Id);

@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core.DomainFramework\Core.DomainFramework.csproj" />
+    <ProjectReference Include="..\Users.DomainEvents\Users.DomainEvents.csproj" />
   </ItemGroup>
 
 </Project>

@@ -11,6 +11,7 @@
     <ProjectReference Include="..\Common.Application\Common.Application.csproj" />
     <ProjectReference Include="..\Core.DomainFramework\Core.DomainFramework.csproj" />
     <ProjectReference Include="..\UserPayments.Domain\UserPayments.Domain.csproj" />
+    <ProjectReference Include="..\Users.DomainEvents\Users.DomainEvents.csproj" />
   </ItemGroup>
 
 </Project>

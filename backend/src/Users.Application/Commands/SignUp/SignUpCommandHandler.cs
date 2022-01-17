@@ -40,7 +40,7 @@ namespace Users.Application.Commands.SignUp
             }
 
             var username = await Username.Create(request.Command.Username);
-            var user = User.Create(username);
+            var user = User.Create(username, 1000);
 
             var response = RequestStatus.CreatePending(request.CommandContext);
             response.MarkAsCompleted();

@@ -15,6 +15,7 @@ namespace UserPayments.DomainEvents
 
             public class BuyNowPaymentFailed : Event
             {
+                public Guid TransactionId { get; set; }
                 public BuyNowPaymentFailed() : base("buyNowPaymentFailed")
                 {
                 }
