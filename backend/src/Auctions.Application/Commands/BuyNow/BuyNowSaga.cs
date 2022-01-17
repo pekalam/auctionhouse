@@ -26,8 +26,6 @@ namespace Auctions.Application.Commands.BuyNow
 
     internal class BuyNowSaga : Saga<BuyNowSagaData>,
         ISagaStartAction<Events.V1.BuyNowTXStarted>,
-        ISagaAction<UserPaymentsEvents.V1.PaymentCreationError>,
-        ISagaAction<MaxLockTimeElapsed>,
         ISagaAction<UserPaymentsEvents.V1.BuyNowPaymentConfirmed>,
         ISagaAction<UserPaymentsEvents.V1.BuyNowPaymentFailed>
     {
@@ -36,15 +34,13 @@ namespace Auctions.Application.Commands.BuyNow
         public const string CmdContextParamName = "CommandContext";
 
         private readonly Lazy<IAuctionRepository> _auctions;
-        private readonly Lazy<AuctionUnlockService> _auctionUnlock;
         private readonly Lazy<IAuctionUnlockScheduler> _auctionUnlockScheduler;
         private readonly Lazy<EventBusHelper> _eventBusHelper;
 
 
-        public BuyNowSaga(Lazy<IAuctionRepository> auctions, Lazy<AuctionUnlockService> auctionUnlock, Lazy<IAuctionUnlockScheduler> auctionUnlockScheduler, Lazy<EventBusHelper> eventBusHelper)
+        public BuyNowSaga(Lazy<IAuctionRepository> auctions, Lazy<IAuctionUnlockScheduler> auctionUnlockScheduler, Lazy<EventBusHelper> eventBusHelper)
         {
             _auctions = auctions;
-            _auctionUnlock = auctionUnlock;
             _auctionUnlockScheduler = auctionUnlockScheduler;
             _eventBusHelper = eventBusHelper;
         }
@@ -73,33 +69,6 @@ namespace Auctions.Application.Commands.BuyNow
             };
 
             return Task.CompletedTask;
-        }
-
-
-        public Task CompensateAsync(UserPaymentsEvents.V1.PaymentCreationError message, ISagaContext context)
-        {
-            return Task.CompletedTask;
-        }
-
-        public async Task HandleAsync(UserPaymentsEvents.V1.PaymentCreationError message, ISagaContext context)
-        {
-            var auction = _auctionUnlock.Value.Unlock(Data.AuctionId, _auctions.Value); //TODO remove auciton?
-            _eventBusHelper.Value.Publish(auction.PendingEvents, GetCommandContextFromSagaContext(context), ReadModelNotificationsMode.Saga);
-            auction.MarkPendingEventsAsHandled();
-            await base.RejectAsync();
-        }
-
-
-        public Task CompensateAsync(MaxLockTimeElapsed message, ISagaContext context)
-        {
-            return Task.CompletedTask;
-        }
-
-        public async Task HandleAsync(MaxLockTimeElapsed message, ISagaContext context)
-        {
-            var auction = _auctionUnlock.Value.Unlock(Data.AuctionId, _auctions.Value);
-            _eventBusHelper.Value.Publish(auction.PendingEvents, GetCommandContextFromSagaContext(context), ReadModelNotificationsMode.Saga);
-            auction.MarkPendingEventsAsHandled();
         }
 
         private CommandContext GetCommandContextFromSagaContext(ISagaContext context)
@@ -135,13 +104,21 @@ namespace Auctions.Application.Commands.BuyNow
 
         public Task CompensateAsync(UserPaymentsEvents.V1.BuyNowPaymentFailed message, ISagaContext context)
         {
-            var auction = _auctionUnlock.Value.Unlock(Data.AuctionId, _auctions.Value);
-            
             return Task.CompletedTask;
         }
 
         public Task HandleAsync(UserPaymentsEvents.V1.BuyNowPaymentFailed message, ISagaContext context)
         {
+            var auction = _auctions.Value.FindAuction(Data.AuctionId);
+            if (auction is null)
+            {
+                throw new NullReferenceException();
+            }
+
+            auction.CancelBuy(message.TransactionId, _auctionUnlockScheduler.Value);
+            _eventBusHelper.Value.Publish(auction.PendingEvents, GetCommandContextFromSagaContext(context), ReadModelNotificationsMode.Saga);
+            auction.MarkPendingEventsAsHandled();
+
             return RejectAsync();
         }
     }

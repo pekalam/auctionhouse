@@ -1,4 +1,5 @@
-﻿using Chronicle;
+﻿using Auctions.Application.Commands.BuyNow;
+using Chronicle;
 using Common.Application.Events;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,13 @@ namespace Auctions.Application.EventSubscriptions
 
         public override Task Handle(IAppEvent<BuyNowPaymentFailed> appEvent)
         {
-            return Task.CompletedTask;
+            var context = SagaContext
+                .Create()
+                .WithSagaId(appEvent.CommandContext.CorrelationId.Value)
+                .WithMetadata(BuyNowSaga.CmdContextParamName, appEvent.CommandContext)
+                .Build();
+
+            return _sagaCoordinator.ProcessAsync(appEvent.Event, context);
         }
     }
 }
