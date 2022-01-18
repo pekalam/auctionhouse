@@ -15,17 +15,17 @@ export class HTTPCommandHelper {
   getResponseStatusHandler(commandRequest: any, showLoading: boolean = false,
     intervalSec: number = INTERVAL_SEC,
     maxRetry: number = MAX_RETRY): Observable<RequestStatus> {
+    if(showLoading) this.loadingService.setLoading(true);
     return commandRequest.pipe(
-      tap(() => this.loadingService.setLoading(true)),
       catchError((err, caught) => {
         console.log(err);
-        this.loadingService.setLoading(false);
+        if(showLoading) this.loadingService.setLoading(false);
         throw err;
       }),
       switchMap((response: RequestStatus) => {
         console.log(response);
         if (response.status === 'COMPLETED') {
-          this.loadingService.setLoading(false);
+          if(showLoading) this.loadingService.setLoading(false);
           return of(response);
         }
         const handler = this.serverMessageService.setupServerMessageHandler(response.commandId, intervalSec, maxRetry);

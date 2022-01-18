@@ -12,17 +12,17 @@ export class WSCommandHelper {
   constructor(private serverMessageService: WSCommandStatusService, private loadingService: LoadingService) {}
 
   getResponseStatusHandler(commandRequest: any, showLoading: boolean = false): Observable<RequestStatus> {
+    if(showLoading) this.loadingService.setLoading(true);
     return commandRequest.pipe(
-      tap(() => this.loadingService.setLoading(true)),
       catchError((err, caught) => {
         console.log(err);
-        this.loadingService.setLoading(false);
+        if(showLoading) this.loadingService.setLoading(false);
         throw err;
       }),
       switchMap((response: RequestStatus) => {
         console.log(response);
         if (response.status === 'COMPLETED') {
-          this.loadingService.setLoading(false);
+          if(showLoading) this.loadingService.setLoading(false);
           return of(response);
         }
         const handler = this.serverMessageService.setupServerMessageHandler(response.commandId);
