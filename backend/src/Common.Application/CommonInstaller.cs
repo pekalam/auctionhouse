@@ -34,6 +34,7 @@ namespace Common.Application
             services.AddTransient<EventOutboxSender>();
             services.AddTransient<CommandHandlerBaseDependencies>();
             services.AddTransient<EventConsumerDependencies>();
+            services.AddTransient<OptimisticConcurrencyHandler>();
         }
 
         public static void AddOutboxProcessorService(this IServiceCollection services, EventOutboxProcessorSettings outboxProcessorSettings)

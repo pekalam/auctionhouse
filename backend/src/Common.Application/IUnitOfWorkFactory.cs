@@ -27,7 +27,10 @@ namespace Common.Application
     {
         public IUnitOfWork Begin()
         {
-            var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+            var scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions
+            {
+                IsolationLevel = IsolationLevel.ReadCommitted,
+            }, TransactionScopeAsyncFlowOption.Enabled);
             return new DefaultUnitOfWork(scope);
         }
     }
