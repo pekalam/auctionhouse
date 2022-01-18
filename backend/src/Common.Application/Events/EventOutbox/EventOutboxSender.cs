@@ -30,11 +30,11 @@ namespace Common.Application.Events
                     .Build<Event>());
 
             _eventBus.Publish(appEvents);
-            foreach (var item in outboxItems)
+            await _outboxItemStore.UpdateMany(outboxItems.Select(static i =>
             {
-                item.Processed = true;
-            }
-            await _outboxItemStore.UpdateMany(outboxItems);
+                i.Processed = true;
+                return i;
+            }));
         }
     }
 }
