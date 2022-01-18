@@ -30,8 +30,7 @@ namespace Auctions.Domain
             AggregateId = @event.AuctionId;
             Create(new AuctionArgs
             {
-                AuctionImages = @event.AuctionImagesSize1Id.Select((id, i) => new AuctionImage(@event.AuctionImagesSize1Id[i],
-                @event.AuctionImagesSize2Id[i], @event.AuctionImagesSize3Id[i])).ToArray(),
+                AuctionImages = Domain.AuctionImages.FromSizeIds(@event.AuctionImagesSize1Id, @event.AuctionImagesSize2Id, @event.AuctionImagesSize3Id),
                 BuyNowOnly = @event.BuyNowOnly,
                 BuyNowPrice = @event.BuyNowPrice,
                 Categories = @event.Category.Select(c => new CategoryId(c)).ToArray(),

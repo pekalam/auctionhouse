@@ -67,14 +67,5 @@ namespace Auctionhouse.Command.Controllers
 
             return this.StatusResponse(status, _mapper.Map<RequestStatusDto>(status));
         }
-
-        [Authorize(Roles = "User"), HttpPost("userUpdateAuction")]
-        public async Task<ActionResult<RequestStatusDto>> UserUpdateAuction([FromBody] UpdateAuctionCommandDto commandDto)
-        {
-            var cmd = _mapper.Map<UpdateAuctionCommand>(commandDto);
-            var status = await _immediateCommandMediator.Send(cmd);
-
-            return this.StatusResponse(status, _mapper.Map<RequestStatusDto>(status));
-        }
     }
 }

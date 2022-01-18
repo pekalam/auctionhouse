@@ -7,7 +7,7 @@ namespace Auctions.Domain
     {
         public BuyNowPrice? BuyNowPrice { get; set; }
         public bool BuyNowOnly { get; set; }
-        public AuctionImage?[] AuctionImages { get; set; } = new AuctionImage[0]; //passing is not required
+        public AuctionImages AuctionImages { get; set; } = new();
         public AuctionDate StartDate { get; set; } = null!;
         public AuctionDate EndDate { get; set; } = null!;
         public UserId Owner { get; set; } = null!;
@@ -99,7 +99,7 @@ namespace Auctions.Domain
                 return this;
             }
 
-            public Builder SetImages(AuctionImage?[] images)
+            public Builder SetImages(AuctionImages images)
             {
                 args.AuctionImages = images;
                 return this;

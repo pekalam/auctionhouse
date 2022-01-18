@@ -26,6 +26,9 @@ namespace Auctions.Application.Commands.UserReplaceAuctionImage
         [Range(0, AuctionConstantsFactory.DEFAULT_MAX_IMAGES - 1)]
         public int ImgNum { get; }
 
+        [SignedInUser]
+        public Guid SignedInUser { get; set; }
+
         public UserReplaceAuctionImageCommand(Guid auctionId, IFileStreamAccessor img, int imgNum, string extension)
         {
             if (auctionId.Equals(Guid.Empty)) { throw new InvalidCommandException($"Invalid field AuctionId = {auctionId}"); }

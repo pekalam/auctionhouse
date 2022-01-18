@@ -7,6 +7,36 @@ using System.Text;
 
 namespace Auctionhouse.Command.Adapters
 {
+    internal class AuctionCreateSessionDto
+    {
+        public string?[] Size1Ids { get; set; }
+        public string?[] Size2Ids { get; set; }
+        public string?[] Size3Ids { get; set; }
+        public DateTime DateCreated { get; set; }
+        public Guid OwnerId { get; set; }
+    }
+
+    internal static class AuctionCreateSessionAssembler
+    {
+        public static AuctionCreateSessionDto ToDto(AuctionCreateSession auctionCreateSession)
+        {
+            return new AuctionCreateSessionDto
+            {
+                DateCreated = auctionCreateSession.DateCreated,
+                OwnerId = auctionCreateSession.OwnerId,
+                Size1Ids = auctionCreateSession.SessionAuctionImages.Size1Ids.ToArray(),
+                Size2Ids = auctionCreateSession.SessionAuctionImages.Size2Ids.ToArray(),
+                Size3Ids = auctionCreateSession.SessionAuctionImages.Size3Ids.ToArray(),
+            };
+        }
+
+        public static AuctionCreateSession FromDto(AuctionCreateSessionDto dto)
+        {
+            return new AuctionCreateSession(AuctionImages.FromSizeIds(dto.Size1Ids, dto.Size2Ids, dto.Size3Ids),
+                dto.DateCreated, new(dto.OwnerId));
+        }
+    }
+
     internal class AuctionCreateSessionStore : IAuctionCreateSessionStore
     {
         private string GetSessionKey(UserId userIdentity) => $"user-{userIdentity}";
@@ -27,7 +57,8 @@ namespace Auctionhouse.Command.Adapters
 
         private byte[] SerializeSession(AuctionCreateSession session)
         {
-            var json = JsonConvert.SerializeObject(session, new JsonSerializerSettings()
+            var dto = AuctionCreateSessionAssembler.ToDto(session);
+            var json = JsonConvert.SerializeObject(dto, new JsonSerializerSettings()
             {
                 TypeNameHandling = TypeNameHandling.All,
             });
@@ -37,12 +68,12 @@ namespace Auctionhouse.Command.Adapters
         private AuctionCreateSession DeserializeSession(byte[] session)
         {
             var json = Encoding.UTF8.GetString(session);
-            var deserialized = JsonConvert.DeserializeObject<AuctionCreateSession>(json, new JsonSerializerSettings()
+            var deserialized = JsonConvert.DeserializeObject<AuctionCreateSessionDto>(json, new JsonSerializerSettings()
             {
                 NullValueHandling = NullValueHandling.Include,
                 DateTimeZoneHandling = DateTimeZoneHandling.Utc,
             });
-            return deserialized;
+            return AuctionCreateSessionAssembler.FromDto(deserialized);
         }
 
         private UserId GetSignedInUserIdentity()

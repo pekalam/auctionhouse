@@ -3,6 +3,7 @@ using Auctions.DomainEvents;
 using Auctions.DomainEvents.Update;
 using Core.Common.Domain;
 using Core.DomainFramework;
+using System.Collections;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Test.IntegrationTests")]
@@ -95,6 +96,87 @@ namespace Auctions.Domain
         }
     }
 
+    public class AuctionImages : IEnumerable<AuctionImage?>
+    {
+        private AuctionImage?[] _images = new AuctionImage[AuctionConstantsFactory.MaxImages];
+
+
+        public IEnumerable<string?> Size1Ids => _images.Select(i => i?.Size1Id);
+        public IEnumerable<string?> Size2Ids => _images.Select(i => i?.Size2Id);
+        public IEnumerable<string?> Size3Ids => _images.Select(i => i?.Size3Id);
+
+        public static AuctionImages FromSizeIds(string?[] Size1Ids, string?[] Size2Ids, string?[] Size3Ids)
+        {
+            if(Size1Ids.Length != Size2Ids.Length || Size1Ids.Length != Size3Ids.Length || Size2Ids.Length != Size3Ids.Length)
+            {
+                throw new ArgumentException();
+            }
+            if(Size1Ids.Length != AuctionConstantsFactory.MaxImages)
+            {
+                throw new ArgumentException();
+            }
+            var images = new AuctionImage[AuctionConstantsFactory.MaxImages];
+
+            for (int i = 0; i < Size1Ids.Length; i++)
+            {
+                if(Size1Ids[i] is not null)
+                {
+                    images[i] = new AuctionImage(Size1Ids[i] ?? throw new ArgumentException(), Size2Ids[i] ?? throw new ArgumentException(), Size3Ids[i] ?? throw new ArgumentException());
+                }
+            }
+            return new AuctionImages { _images = images };
+        }
+
+        internal void ClearAll()
+        {
+            _images = new AuctionImage[AuctionConstantsFactory.MaxImages];
+        }
+
+        public int AddImage(AuctionImage image)
+        {
+            for (int i = 0; i < AuctionConstantsFactory.MaxImages; i++)
+            {
+                if (_images[i] is null)
+                {
+                    this[i] = image;
+                    return i;
+                }
+            }
+            throw new DomainException("Could not add auction image");
+        }
+
+        public AuctionImage? this[int imageNum]
+        {
+            get
+            {
+                ThrowIfImageNumIsInvalid(imageNum);
+                return _images[imageNum];
+            }
+            set
+            {
+                ThrowIfImageNumIsInvalid(imageNum);
+                _images[imageNum] = value;
+            }
+        }
+
+        private static void ThrowIfImageNumIsInvalid(int imageNum)
+        {
+            if (imageNum >= AuctionConstantsFactory.MaxImages || imageNum < 0) throw new DomainException("Invalid image number");
+        }
+
+        public int Count() => _images.Where(x => x is not null).Count();
+
+        public IEnumerator<AuctionImage?> GetEnumerator()
+        {
+            return _images.AsEnumerable().GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+    }
+
     public partial class Auction : AggregateRoot<Auction, AuctionId, AuctionUpdateEventGroup>
     {
         public static int MAX_IMAGES => AuctionConstantsFactory.MaxImages;
@@ -102,7 +184,7 @@ namespace Auctions.Domain
         public static int MIN_AUCTION_TIME_M => AuctionConstantsFactory.MinAuctionTimeM;
         public static int MIN_TAGS => AuctionConstantsFactory.MinTags;
 
-        private readonly List<AuctionImage?> _auctionImages = new(new AuctionImage[MAX_IMAGES]);
+        private AuctionImages _auctionImages = new();
         public AuctionName Name { get; private set; }
         public bool BuyNowOnly { get; private set; }
         public BuyNowPrice? BuyNowPrice { get; private set; }
@@ -116,7 +198,7 @@ namespace Auctions.Domain
         public bool Completed { get; private set; }
         public bool Canceled { get; private set; }
         public Tag[] Tags { get; private set; }
-        public IReadOnlyList<AuctionImage?> AuctionImages => _auctionImages;
+        public IReadOnlyList<AuctionImage?> AuctionImages => _auctionImages.ToList();
 
         public AuctionBidsId? AuctionBidsId { get; private set; }
 
@@ -158,9 +240,9 @@ namespace Auctions.Domain
                 ProductName = auctionArgs.Product.Name,
                 ProductDescription = auctionArgs.Product.Description,
                 StartDate = auctionArgs.StartDate,
-                AuctionImagesSize1Id = auctionArgs.AuctionImages.Select(i => i?.Size1Id).ToArray(),
-                AuctionImagesSize2Id = auctionArgs.AuctionImages.Select(i => i?.Size2Id).ToArray(),
-                AuctionImagesSize3Id = auctionArgs.AuctionImages.Select(i => i?.Size3Id).ToArray(),
+                AuctionImagesSize1Id = auctionArgs.AuctionImages.Size1Ids.ToArray(),
+                AuctionImagesSize2Id = auctionArgs.AuctionImages.Size2Ids.ToArray(),
+                AuctionImagesSize3Id = auctionArgs.AuctionImages.Size3Ids.ToArray(),
             });
             if (!BuyNowOnly)
             {
@@ -203,14 +285,7 @@ namespace Auctions.Domain
             }
             if (auctionArgs.AuctionImages != null)
             {
-                var i = 0;
-                foreach (var img in auctionArgs.AuctionImages)
-                {
-                    if (img is not null)
-                    {
-                        _auctionImages[i++] = img;
-                    }
-                }
+                _auctionImages = auctionArgs.AuctionImages;
             }
         }
 
@@ -387,23 +462,12 @@ namespace Auctions.Domain
 
         public void AddImage(AuctionImage img)
         {
-            if (!_auctionImages.Contains(null))
-            {
-                throw new DomainException("Cannot add more auction images");
-            }
-
-            var ind = _auctionImages.IndexOf(null);
-            _auctionImages[ind] = img;
+            var ind = _auctionImages.AddImage(img);
             AddEvent(new AuctionImageAdded(ind, AggregateId, Owner, img.Size1Id, img.Size2Id, img.Size3Id));
         }
 
         public AuctionImage? ReplaceImage(AuctionImage img, int imgNum)
         {
-            if (imgNum > _auctionImages.Capacity - 1)
-            {
-                throw new DomainException($"Cannot replace {imgNum} image");
-            }
-
             var replaced = _auctionImages[imgNum];
             _auctionImages[imgNum] = img;
             AddEvent(new AuctionImageReplaced(AggregateId, imgNum, Owner, img.Size1Id, img.Size2Id, img.Size3Id));
@@ -412,7 +476,7 @@ namespace Auctions.Domain
 
         public AuctionImage? RemoveImage(int imgNum)
         {
-            if (imgNum > _auctionImages.Capacity - 1)
+            if (_auctionImages[imgNum] is null)
             {
                 throw new DomainException($"Cannot remove {imgNum} image");
             }

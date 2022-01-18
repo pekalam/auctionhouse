@@ -11,17 +11,13 @@ namespace Auctions.Domain
         public const int DEFAULT_SESSION_MAX_TIME = 1000 * 60 * 10;
         public static int SESSION_MAX_TIME { get; internal set; } = DEFAULT_SESSION_MAX_TIME;
 
-        public AuctionImage?[] SessionAuctionImages { get; private set; }
+        public AuctionImages SessionAuctionImages { get; private set; }
         public DateTime DateCreated { get; private set; }
 
         public UserId OwnerId { get; private set; }
 
-        public AuctionCreateSession(AuctionImage[] sessionAuctionImages, DateTime dateCreated, UserId ownerId)
+        public AuctionCreateSession(AuctionImages sessionAuctionImages, DateTime dateCreated, UserId ownerId)
         {
-            if (sessionAuctionImages.Length < Auction.MAX_IMAGES)
-            {
-                throw new DomainException("");
-            }
             SessionAuctionImages = sessionAuctionImages;
             DateCreated = dateCreated;
             OwnerId = ownerId;
@@ -31,7 +27,7 @@ namespace Auctions.Domain
         {
             OwnerId = owner;
             DateCreated = DateTime.UtcNow;
-            SessionAuctionImages = new AuctionImage[Auction.MAX_IMAGES];
+            SessionAuctionImages = new();
         }
 
         public static AuctionCreateSession CreateSession(UserId ownerId)
@@ -63,20 +59,12 @@ namespace Auctions.Domain
         {
             CheckIsSessionValid();
             DateCreated = DateTime.UtcNow;
-            for (var i = 0; i < SessionAuctionImages.Length; i++)
-            {
-                SessionAuctionImages[i] = null;
-            }
+            SessionAuctionImages.ClearAll();
         }
 
         public void AddOrReplaceImage(AuctionImage img, int imgNum)
         {
             CheckIsSessionValid();
-            if (imgNum > SessionAuctionImages.Length)
-            {
-                throw new DomainException($"Cannot add more than {SessionAuctionImages.Length} images");
-            }
-
             SessionAuctionImages[imgNum] = img;
         }
 

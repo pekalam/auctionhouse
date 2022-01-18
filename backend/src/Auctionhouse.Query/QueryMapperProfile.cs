@@ -58,13 +58,14 @@ namespace Auctionhouse.Query
                     Condition = e.ProductCondition,
                 }))
                 .ForMember(r => r.AuctionImages, opt => opt.MapFrom(e => e.AuctionImagesSize1Id
-                .Where(i => i != null)
-                .Select((id, i) => new AuctionImageRead
+                .Select((id, i) => id != null ? new AuctionImageRead
                 {
-                    Size1Id = e.AuctionImagesSize1Id[i],
-                    Size2Id = e.AuctionImagesSize2Id[i],
-                    Size3Id = e.AuctionImagesSize3Id[i],
-                })
+                    ImgNum = i,
+                    Size1Id = e.AuctionImagesSize1Id[i]!,
+                    Size2Id = e.AuctionImagesSize2Id[i]!,
+                    Size3Id = e.AuctionImagesSize3Id[i]!,
+                } : null)
+                .Where(x => x != null)
                 .ToArray()));
             //.ForMember(read => read.AuctionId, opt => opt.MapFrom(created => created.AuctionId.ToString()))
             //.ForMember(read => read.Id, opt => opt.AllowNull())
