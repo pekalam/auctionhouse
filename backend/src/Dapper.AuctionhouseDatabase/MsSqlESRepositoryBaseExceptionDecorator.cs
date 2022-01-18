@@ -1,5 +1,6 @@
 ﻿using Core.Common.Domain;
 using Core.DomainFramework;
+using Microsoft.Data.SqlClient;
 
 namespace Adapter.Dapper.AuctionhouseDatabase
 {
@@ -17,6 +18,10 @@ namespace Adapter.Dapper.AuctionhouseDatabase
             try
             {
                 _base.AddAggregate(pendingEvents, aggregateId, aggVersion, aggregateName);
+            }
+            catch(SqlException e) when(e.Number == 51000)
+            {
+                throw new ConcurrencyException("Concurrency exception while adding aggregate", e);
             }
             catch (Exception e)
             {
@@ -65,6 +70,10 @@ namespace Adapter.Dapper.AuctionhouseDatabase
             try
             {
                 _base.UpdateAggregate(pendingEvents, aggregateId, aggVersion, aggregateName);
+            }
+            catch (SqlException e) when (e.Number == 51000)
+            {
+                throw new ConcurrencyException("Concurrency exception while updating aggregate", e);
             }
             catch (Exception e)
             {

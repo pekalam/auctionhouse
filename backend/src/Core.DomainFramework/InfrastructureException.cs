@@ -13,4 +13,15 @@ namespace Core.DomainFramework
           System.Runtime.Serialization.SerializationInfo info,
           System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
+
+    public class ConcurrencyException : InfrastructureException
+    {
+        public ConcurrencyException(string message) : base(message)
+        {
+        }
+
+        public ConcurrencyException(string message, Exception inner) : base(message, inner)
+        {
+        }
+    }
 }
