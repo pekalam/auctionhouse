@@ -22,18 +22,25 @@ namespace Common.Application
         public Task Run(Action<int, IUnitOfWorkFactory> action) => Run((repeats, unitOfWorkFactory) =>
         {
             action(repeats, unitOfWorkFactory);
-            return Task.CompletedTask;
+            return Task.FromResult((Action)null!);
         });
 
-        public async Task Run(Func<int, IUnitOfWorkFactory, Task> action)
+        public Task Run(Func<int, IUnitOfWorkFactory, Task> action) => Run<Action>(async (repeats, unitOfWorkFactory) =>
+        {
+            await action(repeats, unitOfWorkFactory);
+            return null!;
+        });
+
+        public async Task<T> Run<T>(Func<int, IUnitOfWorkFactory, Task<T>> action)
         {
             int attempts = MaxAttempts;
             bool completed = false;
+            T result = default!;
             while (!completed)
             {
                 try
                 {
-                    await action(MaxAttempts - attempts, _unitOfWorkFactory);
+                    result = await action(MaxAttempts - attempts, _unitOfWorkFactory);
                     completed = true;
                 }
                 catch (ConcurrencyException)
@@ -46,6 +53,8 @@ namespace Common.Application
                     await Task.Delay(500);
                 }
             }
+
+            return result;
         }
     }
 }

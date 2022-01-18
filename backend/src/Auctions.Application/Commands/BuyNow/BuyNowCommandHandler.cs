@@ -18,11 +18,11 @@ namespace Auctions.Application.Commands.BuyNow
         private readonly IAuctionPaymentVerification _auctionPaymentVerification;
         private readonly IAuctionRepository _auctions;
         private readonly ISagaCoordinator _sagaCoordinator;
-        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
+        private readonly OptimisticConcurrencyHandler _optimisticConcurrencyHandler;
 
         public BuyNowCommandHandler(IAuctionRepository auctions, ILogger<BuyNowCommandHandler> logger,
             IAuctionPaymentVerification auctionPaymentVerification, IAuctionUnlockScheduler auctionUnlockScheduler, ISagaCoordinator sagaCoordinator,
-            CommandHandlerBaseDependencies dependencies, IUnitOfWorkFactory unitOfWorkFactory)
+            CommandHandlerBaseDependencies dependencies, OptimisticConcurrencyHandler optimisticConcurrencyHandler)
             : base(ReadModelNotificationsMode.Saga, dependencies)
         {
             _logger = logger;
@@ -30,7 +30,7 @@ namespace Auctions.Application.Commands.BuyNow
             _auctionPaymentVerification = auctionPaymentVerification;
             _auctionUnlockScheduler = auctionUnlockScheduler;
             _sagaCoordinator = sagaCoordinator;
-            _unitOfWorkFactory = unitOfWorkFactory;
+            _optimisticConcurrencyHandler = optimisticConcurrencyHandler;
         }
 
         protected override async Task<RequestStatus> HandleCommand(AppCommand<BuyNowCommand> request, IEventOutbox eventOutbox, CancellationToken cancellationToken)
@@ -42,15 +42,21 @@ namespace Auctions.Application.Commands.BuyNow
             }
             _logger.LogDebug($"User {request.Command.SignedInUser} is buying auction {request.Command.AuctionId}");
 
-            var transactionId = await auction.Buy(new UserId(request.Command.SignedInUser), "test", _auctionPaymentVerification, _auctionUnlockScheduler);
-            using(var uow = _unitOfWorkFactory.Begin())
-            {
-                _auctions.UpdateAuction(auction);
-                await StartSaga(request, auction, transactionId);
-                await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
-                auction.MarkPendingEventsAsHandled();
-                uow.Commit();
-            }
+            await _optimisticConcurrencyHandler.Run(async (repeats, uowFactory) => {
+                if (repeats > 0) auction = _auctions.FindAuction(request.Command.AuctionId);
+
+                var transactionId = await auction.Buy(new UserId(request.Command.SignedInUser), "test", _auctionPaymentVerification, _auctionUnlockScheduler);
+
+                using (var uow = uowFactory.Begin())
+                {
+                    _auctions.UpdateAuction(auction);
+                    await StartSaga(request, auction, transactionId);
+                    await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
+                    auction.MarkPendingEventsAsHandled();
+                    uow.Commit();
+                }
+            });
+
 
             return RequestStatus.CreatePending(request.CommandContext);
         }

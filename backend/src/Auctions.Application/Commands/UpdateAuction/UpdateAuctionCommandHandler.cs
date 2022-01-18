@@ -14,17 +14,18 @@ namespace Auctions.Application.Commands.UpdateAuction
     {
         private readonly IAuctionRepository _auctions;
         private readonly ILogger<UpdateAuctionCommandHandler> _logger;
-        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         private readonly IConvertCategoryNamesToRootToLeafIds _convertCategoryNamesToIds;
+        private readonly OptimisticConcurrencyHandler _optimisticConcurrencyHandler;
 
         public UpdateAuctionCommandHandler(IAuctionRepository auctions, ILogger<UpdateAuctionCommandHandler> logger,
-            CommandHandlerBaseDependencies dependencies, IUnitOfWorkFactory unitOfWorkFactory, IConvertCategoryNamesToRootToLeafIds convertCategoryNamesToIds)
+            CommandHandlerBaseDependencies dependencies, IConvertCategoryNamesToRootToLeafIds convertCategoryNamesToIds,
+            OptimisticConcurrencyHandler optimisticConcurrencyHandler)
             : base(ReadModelNotificationsMode.Immediate, dependencies)
         {
             _auctions = auctions;
             _logger = logger;
-            _unitOfWorkFactory = unitOfWorkFactory;
             _convertCategoryNamesToIds = convertCategoryNamesToIds;
+            _optimisticConcurrencyHandler = optimisticConcurrencyHandler;
         }
 
         private Auction GetAuction(AppCommand<UpdateAuctionCommand> request)
@@ -33,6 +34,53 @@ namespace Auctions.Application.Commands.UpdateAuction
             return auction ?? throw new InvalidOperationException($"Cannot find auction {request.Command.AuctionId}");
         }
 
+        private async Task<RequestStatus> UpdateAuction(Auction auction, AppCommand<UpdateAuctionCommand> request, IEventOutbox eventOutbox, int repeats, IUnitOfWorkFactory uowFactory)
+        {
+            if(repeats > 0) auction = GetAuction(request);
+
+
+            if (request.Command.Tags != null)
+            {
+                auction.UpdateTags(request.Command.Tags.Select(s => new Tag(s)).ToArray());
+            }
+            if (request.Command.Name != null)
+            {
+                auction.UpdateName(request.Command.Name);
+            }
+            if (request.Command.BuyNowPrice != null)
+            {
+                auction.UpdateBuyNowPrice(request.Command.BuyNowPrice);
+            }
+            if (request.Command.Description != null)
+            {
+                auction.UpdateDescription(request.Command.Description);
+            }
+            if (request.Command.EndDate != null)
+            {
+                auction.UpdateEndDate(request.Command.EndDate);
+            }
+            if (request.Command.Category != null)
+            {
+                var newCategoryIds = await _convertCategoryNamesToIds.ConvertNames(request.Command.Category.ToArray());
+                auction.UpdateCategories(newCategoryIds);
+            }
+
+            if (auction.PendingEvents.Count == 0)
+            {
+                return RequestStatus.CreateCompleted(request.CommandContext);
+            }
+
+
+            using (var uow = uowFactory.Begin())
+            {
+                _auctions.UpdateAuction(auction);
+                await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
+
+                uow.Commit();
+            }
+
+            return RequestStatus.CreatePending(request.CommandContext);
+        }
 
         protected override async Task<RequestStatus> HandleCommand(
             AppCommand<UpdateAuctionCommand> request, IEventOutbox eventOutbox,
@@ -45,51 +93,8 @@ namespace Auctions.Application.Commands.UpdateAuction
                 throw new UnauthorizedAccessException($"User is not owner of an auction {auction.AggregateId}");
             }
 
-
-            if(request.Command.Tags != null)
-            {
-                auction.UpdateTags(request.Command.Tags.Select(s => new Tag(s)).ToArray());
-            }
-            if(request.Command.Name != null)
-            {
-                auction.UpdateName(request.Command.Name);
-            }
-            if (request.Command.BuyNowPrice != null)
-            {
-                auction.UpdateBuyNowPrice(request.Command.BuyNowPrice);
-            }
-            if(request.Command.Description != null)
-            {
-                auction.UpdateDescription(request.Command.Description);
-            }
-            if (request.Command.EndDate != null)
-            {
-                auction.UpdateEndDate(request.Command.EndDate);
-            }
-            if(request.Command.Category != null)
-            {
-                var newCategoryIds = await _convertCategoryNamesToIds.ConvertNames(request.Command.Category.ToArray());
-                auction.UpdateCategories(newCategoryIds);
-            }
-
-            if(auction.PendingEvents.Count == 0)
-            {
-                var requestStatus = RequestStatus.CreatePending(request.CommandContext);
-                requestStatus.MarkAsCompleted();
-                return requestStatus;
-            }
-
-            var response = RequestStatus.CreatePending(request.CommandContext);
-
-            using(var uow = _unitOfWorkFactory.Begin())
-            {
-                _auctions.UpdateAuction(auction);
-                await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
-
-                uow.Commit();
-            }
-
-            return response;
+            return await _optimisticConcurrencyHandler.Run((repeats, uowFactory) =>
+                UpdateAuction(auction, request, eventOutbox, repeats, uowFactory));
         }
     }
 }

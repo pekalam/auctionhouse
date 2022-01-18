@@ -40,7 +40,7 @@ namespace Auctions.Application.Commands.CreateAuction
             var auctionArgs = await CreateAuctionArgs(request.Command, new UserId(request.CommandContext.User!.Value));
             var auction = await _createAuctionService.StartCreate(request.Command.AuctionCreateSession, auctionArgs);
 
-            using (var uowCtx = _uow.Begin())
+            using (var uow = _uow.Begin())
             {
                 _auctions.AddAuction(auction);
                 if (!_createAuctionService.Finished) // when transaction is not finished it means that bids must be created and assigned by saga
@@ -53,7 +53,7 @@ namespace Auctions.Application.Commands.CreateAuction
                     await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
                 }
                 auction.MarkPendingEventsAsHandled();
-                uowCtx.Commit();
+                uow.Commit();
             }
 
             return RequestStatus.CreatePending(request.CommandContext);

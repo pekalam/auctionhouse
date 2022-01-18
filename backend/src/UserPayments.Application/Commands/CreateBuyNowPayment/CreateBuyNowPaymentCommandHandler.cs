@@ -12,13 +12,14 @@ namespace UserPayments.Application.Commands.CreateBuyNowPayment
     public class CreateBuyNowPaymentCommandHandler : CommandHandlerBase<CreateBuyNowPaymentCommand>
     {
         private readonly IUserPaymentsRepository _userPayments;
-        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
-        public CreateBuyNowPaymentCommandHandler(ILogger<CreateBuyNowPaymentCommandHandler> logger, IUserPaymentsRepository userPayments, 
-            CommandHandlerBaseDependencies dependencies, IUnitOfWorkFactory unitOfWorkFactory)
+        private readonly OptimisticConcurrencyHandler _optimisticConcurrencyHandler;
+
+        public CreateBuyNowPaymentCommandHandler(ILogger<CreateBuyNowPaymentCommandHandler> logger, IUserPaymentsRepository userPayments,
+            CommandHandlerBaseDependencies dependencies, OptimisticConcurrencyHandler optimisticConcurrencyHandler)
             : base(ReadModelNotificationsMode.Disabled, dependencies)
         {
             _userPayments = userPayments;
-            _unitOfWorkFactory = unitOfWorkFactory;
+            _optimisticConcurrencyHandler = optimisticConcurrencyHandler;
         }
 
         protected override async Task<RequestStatus> HandleCommand(
@@ -27,19 +28,21 @@ namespace UserPayments.Application.Commands.CreateBuyNowPayment
         {
             var userPayments = await _userPayments.WithUserId(new UserId(request.Command.BuyerId));
 
-            var payment = userPayments.CreateBuyNowPayment(new TransactionId(request.Command.TransactionId),
-                            request.Command.Amount, request.Command.PaymentMethod, paymentTargetId: new PaymentTargetId(request.Command.AuctionId));
-
-            using (var uow = _unitOfWorkFactory.Begin())
+            await _optimisticConcurrencyHandler.Run(async (repeats, uowFactory) =>
             {
-                _userPayments.Update(userPayments);
-                await eventOutbox.SaveEvents(userPayments.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Saga);
-                uow.Commit();
-            }
+                if (repeats > 0) userPayments = await _userPayments.WithUserId(new UserId(request.Command.BuyerId));
 
+                var payment = userPayments.CreateBuyNowPayment(new TransactionId(request.Command.TransactionId),
+                                request.Command.Amount, request.Command.PaymentMethod, paymentTargetId: new PaymentTargetId(request.Command.AuctionId));
+
+                using (var uow = uowFactory.Begin())
+                {
+                    _userPayments.Update(userPayments);
+                    await eventOutbox.SaveEvents(userPayments.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Saga);
+                    uow.Commit();
+                }
+            });
             userPayments.MarkPendingEventsAsHandled();
-
-
 
             return RequestStatus.CreatePending(request.CommandContext);
         }
