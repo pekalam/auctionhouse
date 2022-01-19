@@ -8,6 +8,7 @@ using Chronicle;
 using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
+using Common.Application.SagaNotifications;
 using Core.Common.Domain;
 using FluentAssertions;
 using FluentAssertions.Common;
@@ -201,8 +202,42 @@ f.Verification(It.IsAny<Auction>(), It.IsAny<UserId>(), It.IsAny<string>()))
             serviceCollection.AddTransient(typeof(Lazy<>), typeof(LazyInstance<>));
             serviceCollection.AddSingleton<IAuctionRepository>(_auctions);
             serviceCollection.AddTransient<IAuctionUnlockScheduler>(s => Mock.Of<IAuctionUnlockScheduler>());
-            serviceCollection.AddTransient<EventBusHelper>(s => new EventBusHelper(eventBus, new TestAppEventBuilder()));
+            serviceCollection.AddTransient<IEventOutbox, EventOutboxMock>();
+            serviceCollection.AddTransient<IUnitOfWorkFactory>(s => UnitOfWorkFactoryMock.Instance.Object);
+            serviceCollection.AddTransient<ISagaNotifications>(s => Mock.Of<ISagaNotifications>());
+            serviceCollection.AddTransient<OptimisticConcurrencyHandler>();
+
+            serviceCollection.AddSingleton<IEventBus>(eventBus);
+            serviceCollection.AddTransient<IAppEventBuilder, TestAppEventBuilder>();
+            serviceCollection.AddTransient<EventOutboxMock>();
+            serviceCollection.AddTransient<EventOutboxSender>();
+            serviceCollection.AddTransient<IOutboxItemStore>(s => Mock.Of<IOutboxItemStore>());
+
+            //serviceCollection.AddTransient<EventBusHelper>(s => new EventBusHelper(eventBus, new TestAppEventBuilder()));
             serviceProvider = serviceCollection.BuildServiceProvider();
+        }
+    }
+
+    internal class EventOutboxMock : IEventOutbox
+    {
+        public Task<OutboxItem> SaveEvent(Event @event, CommandContext commandContext, ReadModelNotificationsMode notificationsMode)
+        {
+            return Task.FromResult(new OutboxItem
+            {
+                CommandContext = commandContext,
+                Event = @event,
+                ReadModelNotifications = notificationsMode,
+            });
+        }
+
+        public Task<OutboxItem[]> SaveEvents(IEnumerable<Event> events, CommandContext commandContext, ReadModelNotificationsMode notificationsMode)
+        {
+            return Task.FromResult(events.Select(e => new OutboxItem
+            {
+                CommandContext = commandContext,
+                Event = e,
+                ReadModelNotifications = notificationsMode,
+            }).ToArray());
         }
     }
 }

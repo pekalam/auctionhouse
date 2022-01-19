@@ -29,8 +29,11 @@ namespace Common.Application
                     });
             services.AddTransient<ImmediateCommandQueryMediator>();
             services.AddTransient<IUnitOfWorkFactory, DefaultUnitOfWorkFactory>();
-            services.AddTransient<IEventOutbox, EventOutbox>();
-            services.AddTransient<EventBusHelper>();
+
+            services.AddScoped<EventOutbox>();
+            services.AddTransient<IEventOutbox>(s => s.GetRequiredService<EventOutbox>());
+            services.AddTransient<IEventOutboxSavedItems>(s => s.GetRequiredService<EventOutbox>());
+
             services.AddTransient<EventOutboxSender>();
             services.AddTransient<CommandHandlerBaseDependencies>();
             services.AddTransient<EventConsumerDependencies>();

@@ -50,11 +50,25 @@ namespace FunctionalTests.Commands
 
         public IServiceProvider ServiceProvider { get; }
 
-        public ImmediateCommandQueryMediator Mediator { get; }
+        public ImmediateCommandQueryMediator Mediator
+        {
+            get
+            {
+                return ServiceProvider.GetRequiredService<ImmediateCommandQueryMediator>();
+            }
+        }
 
         public UserId CurrentUser { get; } = UserId.New();
 
         public ReadModelDbContext ReadModelDbContext { get; }
+
+        internal SagaEventsConfirmationDbContext SagaEventsConfirmationDbContext
+        {
+            get
+            {
+                return ServiceProvider.CreateScope().ServiceProvider.GetRequiredService<SagaEventsConfirmationDbContext>();
+            }
+        }
 
         public IReadOnlyList<IAppEvent<Event>> SentEvents => InMemoryEventBusDecorator.SentEvents;
 
@@ -71,7 +85,6 @@ namespace FunctionalTests.Commands
             EfCoreReadModelNotificationsInstaller.Initialize(ServiceProvider);
             ReadModelInstaller.InitSubscribers(ServiceProvider);
             XmlCategoryTreeStoreInstaller.Init(ServiceProvider);
-            Mediator = ServiceProvider.GetRequiredService<ImmediateCommandQueryMediator>();
             ReadModelDbContext = ServiceProvider.GetRequiredService<ReadModelDbContext>();
 
             _modelUserReadTestHelper.TryInsertUserRead(userId, ReadModelDbContext);
@@ -83,9 +96,11 @@ namespace FunctionalTests.Commands
             _modelUserReadTestHelper.TryInsertUserRead(userId, ReadModelDbContext);
         }
 
-        public Task<RequestStatus> SendCommand<T>(T command) where T : ICommand
+        public async Task<RequestStatus> SendCommand<T>(T command) where T : ICommand
         {
-            return Mediator.Send(command);
+            using var scope = ServiceProvider.CreateScope();
+            var result = await scope.ServiceProvider.GetRequiredService<ImmediateCommandQueryMediator>().Send(command);
+            return result;
         }
 
         protected void TruncateReadModelNotificaitons(IServiceProvider serviceProvider)
@@ -132,7 +147,7 @@ namespace FunctionalTests.Commands
                 services.AddEfCoreReadModelNotifications(new EfCoreReadModelNotificaitonsOptions
                 {
                     Provider = "sqlserver",
-                    ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Marek\source\repos\Csharp\auctionhouse\backend\src\Tests\FunctionalTestsServer.mdf;Integrated Security=True",
+                    ConnectionString = @"Data Source=127.0.0.1;Initial Catalog=AuctionhouseDatabase;MultipleActiveResultSets=True;TrustServerCertificate=True;User ID=sa;Password=Qwerty1234;",
                 });
 
                 var paymentVerification = new Mock<IAuctionPaymentVerification>();

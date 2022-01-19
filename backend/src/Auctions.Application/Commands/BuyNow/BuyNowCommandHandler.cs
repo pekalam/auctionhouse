@@ -52,9 +52,9 @@ namespace Auctions.Application.Commands.BuyNow
                     _auctions.UpdateAuction(auction);
                     await StartSaga(request, auction, transactionId);
                     await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
-                    auction.MarkPendingEventsAsHandled();
                     uow.Commit();
                 }
+                auction.MarkPendingEventsAsHandled();
             });
 
 

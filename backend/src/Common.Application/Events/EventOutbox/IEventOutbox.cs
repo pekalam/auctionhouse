@@ -6,7 +6,7 @@ namespace Common.Application.Events
 {
     public interface IEventOutbox
     {
-        Task SaveEvent(Event @event, CommandContext commandContext, ReadModelNotificationsMode notificationsMode);
-        Task SaveEvents(IEnumerable<Event> @event, CommandContext commandContext, ReadModelNotificationsMode notificationsMode);
+        Task<OutboxItem> SaveEvent(Event @event, CommandContext commandContext, ReadModelNotificationsMode notificationsMode);
+        Task<OutboxItem[]> SaveEvents(IEnumerable<Event> @event, CommandContext commandContext, ReadModelNotificationsMode notificationsMode);
     }
 }

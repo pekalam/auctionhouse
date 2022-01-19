@@ -21,6 +21,7 @@ namespace Auctions.Application.EventSubscriptions
                 .Create()
                 .WithSagaId(appEvent.CommandContext.CorrelationId.Value)
                 .WithMetadata(CreateAuctionSaga.CorrelationIdKey, appEvent.CommandContext.CorrelationId)
+                .WithMetadata(CreateAuctionSaga.CommandContextKey, appEvent.CommandContext)
                 .Build();
 
             await _sagaCoordinator.ProcessAsync(appEvent.Event, context);

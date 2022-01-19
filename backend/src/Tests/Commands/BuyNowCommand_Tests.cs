@@ -98,7 +98,14 @@ namespace FunctionalTests.Commands
                 var auction = auctions.All.FirstOrDefault(a => a.AggregateId == buyNowCommand.AuctionId);
                 var auctionCompleted = auction?.Completed == true;
 
-                return AssertExpectedEventsArePublished(SuccessExpectedEvents) && AssertPaymentStatus(user, buyNowCommand, PaymentStatus.Completed) &&
+                var correlationId = InMemoryEventBusDecorator.SentEvents.FirstOrDefault()?.CommandContext.CorrelationId;
+
+
+                var sagaCompleted = correlationId != null ? SagaEventsConfirmationDbContext.SagaEventsConfirmations
+                .FirstOrDefault(s => s.CorrelationId == correlationId.Value)?
+                .Completed == true : false;
+
+                return sagaCompleted && AssertExpectedEventsArePublished(SuccessExpectedEvents) && AssertPaymentStatus(user, buyNowCommand, PaymentStatus.Completed) &&
                     auction is not null && auctionCompleted && AssertUser(user, auction, initialCredits);
             });
         }

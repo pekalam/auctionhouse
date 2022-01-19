@@ -150,21 +150,18 @@ namespace Adapter.EfCore.ReadModelNotifications
 
         private async Task<(SagaEventsConfirmation, DbSagaEventsConfirmation)> FindEventConfirmations(CorrelationId correlationId)
         {
-            Task<DbSagaEventToConfirm[]> eventsToConfirmTask;
-            using var scope = _serviceScopeFactory.CreateScope();
-            
-            var dbContext = scope.ServiceProvider.GetRequiredService<SagaEventsConfirmationDbContext>();
-            eventsToConfirmTask = dbContext.SagaEventsToConfirm.Where(e => e.CorrelationId == correlationId.Value)
+            //Task<DbSagaEventToConfirm[]> eventsToConfirmTask;
+            var eventsToConfirm = await _dbContext.SagaEventsToConfirm.Where(e => e.CorrelationId == correlationId.Value)
                 .ToArrayAsync();
             
 
-            var eventsConfirmationTask = _dbContext.SagaEventsConfirmations
+            var eventsConfirmation = await _dbContext.SagaEventsConfirmations
                 .FirstAsync(e => e.CorrelationId == correlationId.Value);
             
-            await Task.WhenAll(eventsToConfirmTask, eventsConfirmationTask);
+            //await Task.WhenAll(eventsToConfirmTask, eventsConfirmationTask);
 
-            var eventsToConfirm = eventsToConfirmTask.Result;
-            var eventsConfirmation = eventsConfirmationTask.Result;
+            //var eventsToConfirm = eventsToConfirmTask.Result;
+            //var eventsConfirmation = eventsConfirmationTask.Result;
 
             return (FromDbEntity(eventsConfirmation, eventsToConfirm), eventsConfirmation);
         }
