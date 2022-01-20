@@ -158,6 +158,7 @@ namespace FunctionalTests.Commands
                 services.AddTransient<IAuctionUnlockScheduler>(s => Mock.Of<IAuctionUnlockScheduler>());
 
                 services.AddSingleton<IUserPaymentsRepository>(s => new InMemortUserPaymentsRepository());
+                services.AddSingleton<IUserAuthenticationDataRepository>(s => new InMemUserAuthenticationDataRepository());
 
                 services.AddLogging(c =>
                 {

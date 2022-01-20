@@ -1,4 +1,5 @@
 ﻿using System;
+using Chronicle;
 using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
@@ -9,6 +10,7 @@ using Users.Application.Exceptions;
 using Users.Domain;
 using Users.Domain.Auth;
 using Users.Domain.Repositories;
+using Users.DomainEvents;
 
 namespace Users.Application.Commands.SignUp
 {
@@ -18,15 +20,28 @@ namespace Users.Application.Commands.SignUp
         private readonly IUserRepository _userRepository;
         private readonly ILogger<SignUpCommandHandler> _logger;
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
+        private readonly ISagaCoordinator _sagaCoordinator;
 
         public SignUpCommandHandler(IUserAuthenticationDataRepository userAuthenticationDataRepository,
-            IUserRepository userRepository, ILogger<SignUpCommandHandler> logger, CommandHandlerBaseDependencies dependencies, IUnitOfWorkFactory unitOfWorkFactory)
-            : base(ReadModelNotificationsMode.Disabled, dependencies)
+            IUserRepository userRepository, ILogger<SignUpCommandHandler> logger, CommandHandlerBaseDependencies dependencies, IUnitOfWorkFactory unitOfWorkFactory, ISagaCoordinator sagaCoordinator)
+            : base(ReadModelNotificationsMode.Saga, dependencies)
         {
             _userAuthenticationDataRepository = userAuthenticationDataRepository;
             _userRepository = userRepository;
             _logger = logger;
             _unitOfWorkFactory = unitOfWorkFactory;
+            _sagaCoordinator = sagaCoordinator;
+        }
+
+        private async Task StartSaga(AppCommand<SignUpCommand> request, User user)
+        {
+            var userCreated = (UserCreated)user.PendingEvents.First(e => e.EventName == "userCreated");
+            var context = SagaContext
+                .Create()
+                .WithSagaId(request.CommandContext.CorrelationId.Value)
+                .WithMetadata(SignUpSaga.CmdContextParamName, request.CommandContext)
+                .Build();
+            await _sagaCoordinator.ProcessAsync(userCreated, context);
         }
 
         protected override async Task<RequestStatus> HandleCommand(
@@ -56,6 +71,8 @@ namespace Users.Application.Commands.SignUp
             {
                 _userAuthenticationDataRepository.AddUserAuth(userAuth);
                 _userRepository.AddUser(user);
+                await StartSaga(request, user);
+                // user created should not be condirmed
                 await eventOutbox.SaveEvents(user.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
                 user.MarkPendingEventsAsHandled();
                 

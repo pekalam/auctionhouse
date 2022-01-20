@@ -46,6 +46,7 @@ namespace Core.Common.Domain.Users
         public decimal Credits { get; private set; }
         public Username Username { get; private set; }
         public IReadOnlyList<LockedFunds> LockedFunds => _lockedFunds;
+        public UserPaymentsId? UserPaymentsId { get; private set; }
 
         public static User Create(Username username, decimal initialCredits = 0)
         {
@@ -55,12 +56,23 @@ namespace Core.Common.Domain.Users
                 Username = username,
                 Credits = initialCredits,
             };
-            user.AddEvent(new UserRegistered(user.AggregateId, username.Value, initialCredits));
+            user.AddEvent(new UserCreated(user.AggregateId, username, initialCredits));
             return user;
         }
 
         public User()
         {
+        }
+
+        public void AssignUserPayments(UserPaymentsId userPaymentsId)
+        {
+            if(UserPaymentsId != null)
+            {
+                throw new DomainException("UserPayments already assigned");
+            }
+
+            UserPaymentsId = userPaymentsId;
+            AddEvent(new UserRegistered(AggregateId, Username, Credits));
         }
 
 

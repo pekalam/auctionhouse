@@ -26,11 +26,17 @@ namespace Core.Common.Domain.Users
             return new UserUpdateEventGroup();
         }
 
-        private void ApplyEvent(UserRegistered @event)
+        private void ApplyEvent(UserCreated @event)
         {
             AggregateId = @event.UserId;
             Username = new Username(@event.Username);
             Credits = @event.InitialCredits;
+        }
+
+        private void ApplyEvent(UserRegistered @event)
+        {
+            //Username = new Username(@event.Username);
+            //Credits = @event.InitialCredits;
         }
 
         private void ApplyEvent(CreditsAdded ev)

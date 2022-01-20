@@ -31,12 +31,12 @@ namespace FunctionalTests.Mocks
 
         public Task<UserPayments> WithId(UserPaymentsId id)
         {
-            return Task.FromResult(_userPaymentsIdToPayments[id]);
+            return Task.FromResult(_userPaymentsIdToPayments.ContainsKey(id) ? _userPaymentsIdToPayments[id] : null);
         }
 
         public Task<UserPayments> WithUserId(UserId id)
         {
-            return Task.FromResult(_userIdToPayments[id]);
+            return Task.FromResult(_userIdToPayments.ContainsKey(id) ? _userIdToPayments[id] : null);
         }
     }
 }

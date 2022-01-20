@@ -1,4 +1,5 @@
-﻿using Common.Application;
+﻿using Chronicle;
+using Common.Application;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,10 @@ namespace Users.Application
         public static void AddUsersModule(this IServiceCollection services)
         {
             services.AddEventSubscribers(typeof(ModuleInstaller));
+            services.AddChronicle(build =>
+            {
+                build.UseInMemoryPersistence();
+            });
         }
     }
 }
