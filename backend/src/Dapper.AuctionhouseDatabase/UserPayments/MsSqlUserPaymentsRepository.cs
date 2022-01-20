@@ -51,8 +51,6 @@ namespace Adapter.Dapper.AuctionhouseDatabase.UserPayments_
             }, transaction: trans);
             trans.Commit();
 
-
-            AddAggregate(userPayments.PendingEvents, userPayments.AggregateId.ToString(), userPayments.Version, "UserPayments");
             return userPayments;
         }
 
@@ -76,7 +74,7 @@ namespace Adapter.Dapper.AuctionhouseDatabase.UserPayments_
                     new { UserId = id.Value });
                 if (events.Count() == 0)
                 {
-                    return null;
+                    return Task.FromResult((UserPayments)null!);
                 }
             }
 
