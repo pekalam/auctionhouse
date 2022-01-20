@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AuctionBids.DomainEvents\AuctionBids.DomainEvents.csproj" />
-    <ProjectReference Include="..\Core.DomainFramework\Core.DomainFramework.csproj" />
+    <ProjectReference Include="..\Core.DomainFramework\Common.DomainFramework.csproj" />
   </ItemGroup>
 
 </Project>

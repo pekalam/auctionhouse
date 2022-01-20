@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core.DomainFramework\Core.DomainFramework.csproj" />
+    <ProjectReference Include="..\Core.DomainFramework\Common.DomainFramework.csproj" />
   </ItemGroup>
 
 </Project>

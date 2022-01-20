@@ -19,7 +19,7 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Test.AuctionhouseDatabase",
 		{31D723E0-FB8D-4C1A-8200-68570D4ED3A8} = {31D723E0-FB8D-4C1A-8200-68570D4ED3A8}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.DomainFramework", "Core.DomainFramework\Core.DomainFramework.csproj", "{F7720E68-77D4-401B-B4C6-348CDC8DFB81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.DomainFramework", "Core.DomainFramework\Common.DomainFramework.csproj", "{F7720E68-77D4-401B-B4C6-348CDC8DFB81}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{43ED7127-AEF4-4CB5-BB7E-F16504A51079}"
 EndProject
