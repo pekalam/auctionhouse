@@ -66,7 +66,7 @@ namespace Test.Common.Application
 
         private static Mock<IOutboxItemFinder> GivenMockOutboxItemFinder(OutboxItem[] savedOutboxStoreItems, Timestamp currentTimestamp, int minMilisecondsDiff)
         {
-            return PostProcessOutboxItemServiceMock.Instance(
+            return OutboxItemFinderMock.Instance(
                                 OutboxItemFinderContracts.ValidGetUnprocessedItemsOlderThanArgs(
                                     savedOutboxStoreItems,
                                 Timestamp.FromMiliseconds(minMilisecondsDiff),
