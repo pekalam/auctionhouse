@@ -15,6 +15,7 @@ namespace Adapter.Hangfire_.Auctionhouse
     {
         public static void AddHangfireServices(this IServiceCollection services, string connectionString)
         {
+            services.AddTransient<AutomaticRetryAttribute>(s => new AutomaticRetryAttribute());
             services.AddSingleton(new SqlServerSettings
             {
                 ConnectionString = connectionString
