@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Test.Common.Application.Mocks;
 using Test.Common.Application.ServiceContracts;
 using Test.Common.Base.Builders;
+using Test.Common.Base.Mocks.Events;
 using Xunit;
 
 namespace Test.Common.Application
