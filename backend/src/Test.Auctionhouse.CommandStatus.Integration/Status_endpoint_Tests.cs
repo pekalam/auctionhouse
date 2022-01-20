@@ -10,7 +10,8 @@ using Xunit;
 
 namespace Test.Auctionhouse.CommandStatus.Integration
 {
-    public class UnitTest1
+    [Trait("Category", "Integration")]
+    public class Status_endpoint_Tests
     {
         [Fact]
         public async Task Gets_saved_status_with_valid_value()
@@ -33,7 +34,7 @@ namespace Test.Auctionhouse.CommandStatus.Integration
                     // ... Configure test services
                 });
 
-            var dbContext = new SagaEventsConfirmationDbContext(new DbContextOptionsBuilder()
+            var dbContext = new SagaEventsConfirmationDbContext(new DbContextOptionsBuilder<SagaEventsConfirmationDbContext>()
                 .UseSqlServer("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Marek\\source\\repos\\Csharp\\auctionhouse\\backend\\src\\Tests\\FunctionalTestsServer.mdf;Integrated Security=True")
                 .Options);
 
