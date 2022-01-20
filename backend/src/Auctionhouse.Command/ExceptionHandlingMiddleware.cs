@@ -1,4 +1,5 @@
-﻿using Core.Common.Domain.Users;
+﻿using Common.Application.Commands;
+using Core.Common.Domain.Users;
 using Core.DomainFramework;
 using System.Net;
 using Users.Application.Exceptions;
@@ -40,6 +41,9 @@ namespace Auctionhouse.Command
         {
             switch (ex)
             {
+                case InvalidCommandException e:
+                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    break;
                 case UserNotFoundException e:
                     context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                     break;
