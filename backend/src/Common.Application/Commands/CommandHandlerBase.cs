@@ -11,6 +11,14 @@ namespace Common.Application.Commands
 {
     public class CommandHandlerBaseDependencies
     {
+        /// <summary>
+        /// Test ctor
+        /// </summary>
+        internal CommandHandlerBaseDependencies()
+        {
+
+        }
+
         public CommandHandlerBaseDependencies(ILogger<RequestStatus> logger, Lazy<IImmediateNotifications> immediateNotifications,
             Lazy<ISagaNotifications> sagaNotifications, IEventOutbox eventOutbox, EventOutboxSender eventOutboxSender, IEventOutboxSavedItems eventOutboxSavedItems)
         {
@@ -117,11 +125,11 @@ namespace Common.Application.Commands
 
         public virtual async Task<RequestStatus> Handle(AppCommand<T> request, CancellationToken cancellationToken)
         {
-            var validationContext = new ValidationContext(request);
+            var validationContext = new ValidationContext(request.Command);
             var validationResults = new Collection<ValidationResult>();
 
             _logger.LogTrace("Handling command {name}", typeof(T).Name);
-            if (Validator.TryValidateObject(request, validationContext, validationResults, true))
+            if (Validator.TryValidateObject(request.Command, validationContext, validationResults, true))
             {
                 await RegisterCommandNotifications(request);
 
