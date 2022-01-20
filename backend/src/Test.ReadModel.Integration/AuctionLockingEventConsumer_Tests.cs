@@ -103,7 +103,7 @@ namespace Test.ReadModel.Integration
             ConsumeAuctionEvent(GivenAuctionUnlockedEvent(aggVersion, auctionRead), auctionUnlockedConsumer);
 
             var dbAuctionReadModels = FindInsertedAuctionRead();
-            dbAuctionReadModels[0].Locked.Should().BeTrue();
+            dbAuctionReadModels[0].Locked.Should().BeFalse();
         }
 
         private AuctionLockedEventConsumer GivenAuctionLockedConsumer()
@@ -118,12 +118,8 @@ namespace Test.ReadModel.Integration
 
         private static EventConsumerDependencies GivenMockEventConsumerDependencies()
         {
-            return new EventConsumerDependencies()
-            {
-                AppEventBuilder = new TestAppEventBuilder(),
-                ImmediateNotifications = new(() => Mock.Of<IImmediateNotifications>()),
-                SagaNotifications = new(() => Mock.Of<ISagaNotifications>()),
-            };
+            return new EventConsumerDependencies(new TestAppEventBuilder(), 
+                new(() => Mock.Of<ISagaNotifications>()), new(() => Mock.Of<IImmediateNotifications>()));
         }
 
         private static void ConsumeAuctionEvent<T>(T @event, IEventDispatcher eventDispatcher) where T : Event
