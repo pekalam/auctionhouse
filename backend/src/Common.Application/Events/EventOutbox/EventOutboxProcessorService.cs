@@ -26,9 +26,17 @@ namespace Common.Application.Events
             {
                 using (var scope = _serviceScopeFactory.CreateScope())
                 {
-                    var eventOutboxProcessor = scope.ServiceProvider.GetRequiredService<EventOutboxProcessor>();
                     _logger.LogDebug("Processing events from outbox");
-                    await eventOutboxProcessor.ProcessEvents(); //TODO pass cancellation token in all calls
+                    var eventOutboxProcessor = scope.ServiceProvider.GetRequiredService<EventOutboxProcessor>();
+                    try
+                    {
+                        await eventOutboxProcessor.ProcessEvents(); //TODO pass cancellation token in all calls
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.LogError(e, "Error while processing events");
+                        throw e;
+                    }
                 }
 
                 await Task.Delay(5000, stoppingToken);

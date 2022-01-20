@@ -21,6 +21,7 @@ namespace Common.Application.Events
             var @event = _eventBuilder
                 .WithCommandContext(msg.CommandContext)
                 .WithEvent(msg.Event)
+                .WithRedeliveryCount(msg.RedeliveryCount)
                 .Build<T>();
 
             return Handle(@event);

@@ -9,12 +9,14 @@ namespace RabbitMq.EventBus
         public CommandContext CommandContext { get; set; }
         public T Event { get; set; }
         public ReadModelNotificationsMode ReadModelNotifications { get; set; }
+        public int RedeliveryCount { get; set; }
 
-        public AppEventRabbitMQ(CommandContext commandContext, T @event, ReadModelNotificationsMode consistencyMode)
+        public AppEventRabbitMQ(CommandContext commandContext, T @event, ReadModelNotificationsMode consistencyMode, int redeliveryCount)
         {
             CommandContext = commandContext;
             Event = @event;
             ReadModelNotifications = consistencyMode;
+            RedeliveryCount = redeliveryCount;
         }
     }
 }

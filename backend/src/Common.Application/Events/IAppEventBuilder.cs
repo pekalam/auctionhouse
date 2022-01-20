@@ -8,6 +8,7 @@ namespace Common.Application.Events
         IAppEventBuilder WithReadModelNotificationsMode(ReadModelNotificationsMode consistencyMode);
         IAppEventBuilder WithCommandContext(CommandContext commandContext);
         IAppEventBuilder WithEvent<TEvent>(TEvent @event) where TEvent : Event;
+        IAppEventBuilder WithRedeliveryCount(int redeliveryCount);
         IAppEvent<TEvent> Build<TEvent>() where TEvent : Event;
     }
 }

@@ -3,7 +3,10 @@ using Common.Application.Events;
 using Core.Common.Domain;
 using Core.DomainFramework;
 using EasyNetQ;
+using EasyNetQ.Consumer;
 using EasyNetQ.SystemMessages;
+using EasyNetQ.Topology;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Reflection;
@@ -11,27 +14,49 @@ using System.Reflection;
 
 namespace RabbitMq.EventBus
 {
+    internal interface IRabbitMqEventBus
+    {
+        IExchange EventExchange { get; }
+        IBus Bus { get; }
+    }
 
-    internal class RabbitMqEventBus : Common.Application.Events.IEventBus
+    internal class RabbitMqEventBus : Common.Application.Events.IEventBus, IDisposable, IRabbitMqEventBus
     {
         private readonly RabbitMqSettings _settings;
         private readonly ILogger<RabbitMqEventBus> _logger;
         private readonly IBus _bus;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
         private readonly RabbitMqEventBusSubscriptions _eventSubscriptions;
         private readonly RabbitMqEventBusSubscriptions _eventConsumers;
 
-        public RabbitMqEventBus(RabbitMqSettings settings, ILogger<RabbitMqEventBus> logger)
+        public IBus Bus => _bus;
+        public IExchange EventExchange { get; private set; }
+
+        public RabbitMqEventBus(RabbitMqSettings settings, ILogger<RabbitMqEventBus> logger, IServiceScopeFactory serviceScopeFactory)
         {
             _settings = settings;
             _logger = logger;
-            _bus = RabbitHutch.CreateBus(_settings.ConnectionString);
+            _serviceScopeFactory = serviceScopeFactory;
+
+            _bus = RabbitHutch.CreateBus(_settings.ConnectionString, s =>
+            {
+                s.Register<IConsumerErrorStrategy, CustomErrorStrategy>();
+            });
+
+            EventExchange = _bus.Advanced.ExchangeDeclare("Common.Application.Events.IAppEvent`1[[Core.Common.Domain.Event, Core.DomainFramework]], Common.Application",
+cfg =>
+            {
+                cfg.WithType("topic");
+                cfg.AsDurable(true);
+            });
+
             _bus.Advanced.Disconnected += (sender, args) =>
             {
                 Disconnected?.Invoke(args, _logger);
             };
-            _eventSubscriptions = new(_bus, _logger);
-            _eventConsumers = new(_bus, _logger);
+            _eventSubscriptions = new(_bus, _logger,_serviceScopeFactory);
+            _eventConsumers = new(_bus, _logger, _serviceScopeFactory);
         }
 
         public void InitEventSubscriptions(IImplProvider implProvider, params Assembly[] assemblies)
@@ -52,6 +77,11 @@ namespace RabbitMq.EventBus
                 Task.WaitAll(_eventSubscriptions.Subscriptions.Select(e => e.AsTask()).Concat(
                     _eventConsumers.Subscriptions.Select(e => e.AsTask())
                 ).ToArray());
+
+                foreach (var subscribption in _eventConsumers.ErrorSubscriptions.Concat(_eventSubscriptions.ErrorSubscriptions))
+                {
+                    subscribption.Dispose();
+                }
             }
             catch (Exception e)
             {
@@ -60,40 +90,15 @@ namespace RabbitMq.EventBus
 
         }
 
-        private IAppEvent<Event> ParseEventFromMessage(IMessage<Error> message)
-        {
-            try
-            {
-                return JsonConvert.DeserializeObject<AppEventRabbitMQ<Event>>(message.Body.Message,
-                    new JsonSerializerSettings()
-                    {
-                        TypeNameHandling = TypeNameHandling.All,
-                        DateTimeZoneHandling = DateTimeZoneHandling.Utc,
-                        DateFormatHandling = DateFormatHandling.MicrosoftDateFormat,
-                        DateParseHandling = DateParseHandling.DateTime
-                    }) ?? throw new NullReferenceException("DeserializeObject returned null value");
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Cannot parse event from error message: {message}", message);
-                throw new InfrastructureException("MQ message parse error", e);
-            }
-        }
 
-        private void HandleErrorMessage(IMessage<Error> message, MessageReceivedInfo info)
+        private void RedeliverMessage(IMessage<Error> message, MessageReceivedInfo info)
         {
             try
             {
                 _logger.LogWarning("Handling error message: {@message} with routingKey: {routingKey}", message, info.RoutingKey);
-                IAppEvent<Event> commandEvent = ParseEventFromMessage(message);
-                if (commandEvent != null)
-                {
-                    var commandName = commandEvent.CommandContext.Name;
-                }
-                else
-                {
-                    _logger.LogError("Parsed command event is null! RoutingKey: {routingKey}", info.RoutingKey);
-                }
+                //var appEvent = ParseEventFromMessage(message);
+                //appEvent.RedeliveryCount++;
+                //_bus.PubSub.Publish((IAppEvent<Event>)appEvent, appEvent.Event.GetType().Name);
             }
             catch (Exception)
             {
@@ -101,18 +106,18 @@ namespace RabbitMq.EventBus
             }
         }
 
-        private void SetupErrorQueueSubscribtion()
+        public void SetupErrorQueueSubscribtion()
         {
             var errorQueueName = "EasyNetQ_Default_Error_Queue";
-            var queue = _bus.Advanced.QueueDeclare(errorQueueName);
-            _bus.Advanced.Consume<Error>(queue, HandleErrorMessage);
+            var queue = Bus.Advanced.QueueDeclare(errorQueueName);
+            Bus.Advanced.Consume<Error>(queue, RedeliverMessage);
         }
 
         private void TryPublish(IAppEvent<Event> @event)
         {
             try
             {
-                _bus.PubSub.Publish(@event, @event.Event.GetType().Name);
+                Bus.PubSub.Publish(@event, @event.Event.GetType().Name);
             }
             catch (Exception e)
             {
@@ -133,6 +138,12 @@ namespace RabbitMq.EventBus
             {
                 Publish(@event);
             }
+        }
+
+        public void Dispose()
+        {
+            CancelSubscriptions();
+            _bus.Dispose();
         }
 
         public event Action<EventArgs, ILogger> Disconnected = null!;

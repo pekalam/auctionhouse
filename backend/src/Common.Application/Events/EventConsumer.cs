@@ -42,6 +42,7 @@ namespace Core.Query.EventHandlers
               .WithEvent(msg.Event)
               .WithCommandContext(msg.CommandContext)
               .WithReadModelNotificationsMode(msg.ReadModelNotifications)
+              .WithRedeliveryCount(msg.RedeliveryCount)
               .Build<T>());
 
             if (msg.ReadModelNotifications == ReadModelNotificationsMode.Saga)
