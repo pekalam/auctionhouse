@@ -21,9 +21,10 @@ namespace Adapter.Hangfire_.Auctionhouse
             });
             services.AddTransient<IAuctionUnlockSchedulerJobIdFinder, AuctionUnlockSchedulerJobIdFinder>();
             services.AddTransient<IAuctionUnlockScheduler, AuctionUnlockScheduler>();
-            services.AddHangfire(cfg =>
+            services.AddHangfire((provider, cfg) =>
             {
                 cfg.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseFilter(provider.GetRequiredService<AutomaticRetryAttribute>())
                 .UseColouredConsoleLogProvider()
                 .UseSimpleAssemblyNameTypeSerializer()
                 .UseRecommendedSerializerSettings()

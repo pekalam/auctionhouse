@@ -52,6 +52,8 @@ namespace Adapter.Hangfire_.Auctionhouse
 
     internal class AuctionUnlockScheduler : IAuctionUnlockScheduler
     {
+        public const int MaxRetries = 6;
+
         private readonly AuctionUnlockService _auctionUnlockService;
         private readonly IAuctionRepository _auctions;
         private readonly ILogger<AuctionUnlockScheduler> _logger;
@@ -76,6 +78,7 @@ namespace Adapter.Hangfire_.Auctionhouse
             BackgroundJob.Delete(jobId);
         }
 
+        [AutomaticRetry(Attempts = MaxRetries, DelaysInSeconds = new[] {10,10,10,10,10,10},  OnAttemptsExceeded = AttemptsExceededAction.Fail)]
         public async Task UnlockAuctionAsync(AuctionId auctionId)
         {
             var unlockedAuction = _auctionUnlockService.Unlock(auctionId, _auctions);
