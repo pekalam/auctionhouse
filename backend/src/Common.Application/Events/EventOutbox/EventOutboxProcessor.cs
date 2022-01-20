@@ -1,5 +1,6 @@
 ﻿using Core.Common.Domain;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Common.Application.Events
 {
@@ -13,6 +14,7 @@ namespace Common.Application.Events
     public class EventOutboxProcessorSettings
     {
         public long MinMilisecondsDiff { get; set; }
+        public bool EnableLogging { get; set; } = true;
     }
 
     public class EventOutboxProcessor
@@ -26,7 +28,7 @@ namespace Common.Application.Events
         {
             _settings = settings;
             _outboxItemFinder = outboxItemFinder;
-            _logger = logger;
+            _logger = settings.EnableLogging ? logger : new NullLogger<EventOutboxProcessor>();
             _eventOutboxSender = eventOutboxSender;
         }
 
