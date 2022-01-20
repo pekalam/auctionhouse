@@ -18,11 +18,6 @@ namespace Core.Common.Attributes
         internal static Dictionary<Type, PropertyInfo> _signedInUserCommandProperties;
         internal static Dictionary<Type, PropertyInfo> _signedInUserQueryProperties;
 
-        static AuthorizationRequiredAttribute()
-        {
-            LoadSignedInUserCmdAndQueryMembers("Core.Command", "Core.Query");
-        }
-
         internal static void LoadSignedInUserCmdAndQueryMembers(params string[] assemblyNames)
         {
             var commandMembers = assemblyNames.Select(s => Assembly.Load((string) s))

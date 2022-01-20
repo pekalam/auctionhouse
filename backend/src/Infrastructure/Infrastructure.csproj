@@ -27,12 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core.Command\Core.Command.csproj" />
-    <ProjectReference Include="..\Core.Common\Core.Common.csproj" />
-    <ProjectReference Include="..\Core.Query\Core.Query.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="_Categories-xml-data\categories.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

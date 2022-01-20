@@ -47,7 +47,7 @@ namespace Core.Command.Commands.UpdateAuction
         {
             var auction = GetAuction(request);
 
-            if (!auction.Owner.Equals(request.Command.SignedInUser))
+            if (!auction.Owner.Value.Equals(request.Command.SignedInUser.Value))
             {
                 throw new UnauthorizedAccessException($"User is not owner of an auction {auction.AggregateId}");
             }

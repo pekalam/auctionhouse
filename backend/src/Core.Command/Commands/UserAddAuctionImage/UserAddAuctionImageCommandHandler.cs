@@ -43,7 +43,7 @@ namespace Core.Command.Commands.UserAddAuctionImage
                 throw new CommandException($"Cannot find auction {request.Command.AuctionId}");
             }
 
-            if (!auction.Owner.Equals(request.Command.SignedInUser))
+            if (!auction.Owner.Value.Equals(request.Command.SignedInUser))
             {
                 throw new CommandException(
                     $"User {request.Command.SignedInUser} cannot modify auction ${auction.AggregateId}");
