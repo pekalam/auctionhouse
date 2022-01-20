@@ -40,8 +40,14 @@ namespace ReadModel.Core.Model
         public virtual IMongoCollection<AuctionRead> AuctionsReadModel =>
             _db.GetCollection<AuctionRead>("AuctionsReadModel");
 
+        public virtual IMongoCollection<AuctionBidsRead> AuctionBidsReadModel =>
+            _db.GetCollection<AuctionBidsRead>("AuctionBidsReadModel");
+
         public virtual IMongoCollection<UserRead> UsersReadModel =>
             _db.GetCollection<UserRead>("UsersReadModel");
+
+        public virtual IMongoCollection<UserPaymentsRead> UserPaymentsReadModel =>
+            _db.GetCollection<UserPaymentsRead>("UserPaymentsReadModel");
 
         public virtual IMongoCollection<TopAuctionsInTag> TagsAuctionsCollection =>
             _db.GetCollection<TopAuctionsInTag>(nameof(TopAuctionsInTag));

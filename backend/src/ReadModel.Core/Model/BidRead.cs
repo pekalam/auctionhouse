@@ -14,4 +14,14 @@ namespace ReadModel.Core.Model
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime DateCreated { get; set; }
     }
+
+    public class AuctionBidsRead
+    {
+        public string AuctionId { get; set; }
+        public string OwnerId { get; set; }
+        public string? WinnerId { get; set; }
+        public string? WinnerBidId { get; set; }
+        [JsonConverter(typeof(DecimalRoundingConverter))]
+        public decimal CurrentPrice { get; set; }
+    }
 }

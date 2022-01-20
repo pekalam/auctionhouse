@@ -26,7 +26,7 @@ namespace ReadModel.Core.EventConsumers
             var filter = filterBuilder.And(idFilter, versionFilter);
 
             var updateBuilder = Builders<AuctionRead>.Update;
-            var updateLocked = updateBuilder.Set(read => read.Locked, true);
+            var updateLocked = updateBuilder.Set(read => read.Locked, false);
             var updateVersion = updateBuilder.Set(read => read.Version, appEvent.Event.AggVersion);
             var update = updateBuilder.Combine(updateLocked, updateVersion);
 

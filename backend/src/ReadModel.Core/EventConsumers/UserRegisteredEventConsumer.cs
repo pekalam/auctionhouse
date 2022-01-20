@@ -4,6 +4,7 @@ using Core.Query.EventHandlers;
 using Microsoft.Extensions.Logging;
 using ReadModel.Core.Model;
 using Users.Domain.Events;
+using Users.DomainEvents;
 
 namespace ReadModel.Core.EventConsumers
 {
