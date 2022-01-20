@@ -44,7 +44,7 @@ namespace RabbitMq.EventBus
                 s.Register<IConsumerErrorStrategy, CustomErrorStrategy>();
             });
 
-            EventExchange = _bus.Advanced.ExchangeDeclare("Common.Application.Events.IAppEvent`1[[Core.Common.Domain.Event, Core.DomainFramework]], Common.Application",
+            EventExchange = _bus.Advanced.ExchangeDeclare("Common.Application.Events.IAppEvent`1[[Core.Common.Domain.Event, Common.DomainFramework]], Common.Application",
 cfg =>
             {
                 cfg.WithType("topic");
