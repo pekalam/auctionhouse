@@ -85,13 +85,16 @@ namespace Auctions.Application.Commands.CreateAuction
             var correlationId = (CorrelationId)context.GetMetadata(CorrelationIdKey).Value;
             var createAuctionService = new CreateAuctionService(_auctionImages, _auctionEndScheduler, _auctions, Data.CreateAuctionServiceData);
             var auction = createAuctionService.EndCreate(new Domain.AuctionBidsId(message.AuctionBidsId));
-
+            var cmdContext = GetCommandContext(context);
             OutboxItem[] savedOutboxItems;
+            // auctionBidsAdded doesn't need to be projected in read model
+            var eventsToSend = auction.PendingEvents.Where(e => e.EventName != "auctionBidsAdded");
             // there is no need to handle concurrency issues
-            using(var uow = _unitOfWorkFactory.Begin())
+            using (var uow = _unitOfWorkFactory.Begin())
             {
                 _auctions.Value.UpdateAuction(auction);
-                savedOutboxItems = await _eventOutbox.Value.SaveEvents(auction.PendingEvents, GetCommandContext(context), ReadModelNotificationsMode.Saga);
+                savedOutboxItems = await _eventOutbox.Value.SaveEvents(eventsToSend, cmdContext, ReadModelNotificationsMode.Saga);
+                await _sagaNotifications.Value.AddUnhandledEvents(cmdContext.CorrelationId, eventsToSend);    
                 await _sagaNotifications.Value.MarkSagaAsCompleted(correlationId);
                 uow.Commit();
             }
