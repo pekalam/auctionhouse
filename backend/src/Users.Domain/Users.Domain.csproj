@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="Test.UsersDomain"/>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Core.DomainFramework\Common.DomainFramework.csproj" />
     <ProjectReference Include="..\Users.DomainEvents\Users.DomainEvents.csproj" />
   </ItemGroup>

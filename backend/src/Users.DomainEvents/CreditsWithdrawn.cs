@@ -4,14 +4,14 @@ namespace Users.DomainEvents
 {
     public class CreditsWithdrawn : Event
     {
-        public decimal CreditsCount { get; }
+        public decimal Amount { get; }
         public Guid UserId { get; }
 
         public Guid LockedFundsId { get; }
 
-        public CreditsWithdrawn(decimal creditsCount, Guid userId, Guid lockedFundsId) : base("creditsWithdrawn")
+        public CreditsWithdrawn(decimal amount, Guid userId, Guid lockedFundsId) : base("creditsWithdrawn")
         {
-            CreditsCount = creditsCount;
+            Amount = amount;
             UserId = userId;
             LockedFundsId = lockedFundsId;
         }

@@ -64,6 +64,13 @@ namespace Core.Common.Domain.Users
         {
         }
 
+        private void ApplyEvent(UserCreated @event)
+        {
+            AggregateId = @event.UserId;
+            Username = new Username(@event.Username);
+            Credits = @event.InitialCredits;
+        }
+
         public void AssignUserPayments(UserPaymentsId userPaymentsId)
         {
             if(UserPaymentsId != null)
@@ -74,11 +81,18 @@ namespace Core.Common.Domain.Users
             UserPaymentsId = userPaymentsId;
             AddEvent(new UserRegistered(AggregateId, Username, Credits));
         }
+        private void ApplyEvent(UserRegistered @event)
+        {
+        }
 
 
         public void AddCredits(decimal toAdd)
         {
             ApplyEvent(AddEvent(new CreditsAdded(toAdd, AggregateId)));
+        }
+        private void ApplyEvent(CreditsAdded ev)
+        {
+            Credits += ev.CreditsCount;
         }
 
         public void LockCredits(LockedFundsId lockedFundsId, decimal amount)
@@ -92,12 +106,31 @@ namespace Core.Common.Domain.Users
                 throw new DomainException("There is already registered lockedFunds entity with id " + lockedFundsId.Value);
             }
 
-            var lockedFunds = new LockedFunds(lockedFundsId, amount);
-            _lockedFunds.Add(lockedFunds);
-            AddEvent(new LockedFundsCreated { 
-                LockedFundsId = lockedFunds.Id,
+            ApplyEvent(AddEvent(new LockedFundsCreated { 
+                LockedFundsId = lockedFundsId.Value,
                 Amount = amount,
-            });
+            }));
+        }
+        private void ApplyEvent(LockedFundsCreated ev)
+        {
+            Credits -= ev.Amount;
+            _lockedFunds.Add(new LockedFunds(new LockedFundsId(ev.LockedFundsId), ev.Amount));
+        }
+
+        public void UnlockCredits(LockedFundsId lockedFundsId)
+        {
+            var lockedFunds = _lockedFunds.FirstOrDefault(f => f.Id.Value == lockedFundsId.Value);
+            if (lockedFunds is null)
+            {
+                throw new DomainException("Could not find LockedFunds with id " + lockedFundsId.Value);
+            }
+
+            ApplyEvent(AddEvent(new CreditsLocked { LockedFundsId = lockedFundsId.Value, Amount = lockedFunds.Amount, UserId = AggregateId }));
+        }
+        private void ApplyEvent(CreditsLocked ev)
+        {
+            Credits += ev.Amount;
+            _lockedFunds.Remove(_lockedFunds.First(l => l.Id.Value == ev.LockedFundsId));
         }
 
         public void WithdrawCredits(LockedFundsId lockedFundsId)
@@ -108,10 +141,12 @@ namespace Core.Common.Domain.Users
                 throw new DomainException("Could not find LockedFunds with id " + lockedFundsId.Value);
             }
 
-            Credits -= lockedFunds.Amount;
-            _lockedFunds.Remove(lockedFunds);
             
-            AddEvent(new CreditsWithdrawn(lockedFunds.Amount, AggregateId,lockedFundsId.Value));
+            ApplyEvent(AddEvent(new CreditsWithdrawn(lockedFunds.Amount, AggregateId,lockedFundsId.Value)));
+        }
+        private void ApplyEvent(CreditsWithdrawn ev)
+        {
+            _lockedFunds.Remove(_lockedFunds.First(l => l.Id.Value == ev.LockedFundsId));
         }
     }
 }

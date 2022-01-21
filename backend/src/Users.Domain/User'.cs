@@ -25,34 +25,5 @@ namespace Core.Common.Domain.Users
         {
             return new UserUpdateEventGroup();
         }
-
-        private void ApplyEvent(UserCreated @event)
-        {
-            AggregateId = @event.UserId;
-            Username = new Username(@event.Username);
-            Credits = @event.InitialCredits;
-        }
-
-        private void ApplyEvent(UserRegistered @event)
-        {
-            //Username = new Username(@event.Username);
-            //Credits = @event.InitialCredits;
-        }
-
-        private void ApplyEvent(CreditsAdded ev)
-        {
-            Credits += ev.CreditsCount;
-        }
-        private void ApplyEvent(CreditsWithdrawn ev)
-        {
-            _lockedFunds.Remove(_lockedFunds.First(l => l.Id.Value == ev.LockedFundsId));
-            Credits -= ev.CreditsCount;
-        }
-
-        private void ApplyEvent(LockedFundsCreated ev)
-        {
-           _lockedFunds.Add(new LockedFunds(new LockedFundsId(ev.LockedFundsId), ev.Amount));
-        }
-
     }
 }

@@ -29,14 +29,14 @@ namespace Users.Application.Commands.WithdrawCredits
                 throw new ArgumentException("Could not find user with id " + request.Command.UserId);
             }
 
-            await _optimisticConcurrencyHandler.Run((repeats, uowFactory) =>
+            await _optimisticConcurrencyHandler.Run(async (repeats, uowFactory) =>
             {
                 user.WithdrawCredits(new LockedFundsId(request.Command.TransactionId));
 
                 using (var uow = uowFactory.Begin())
                 {
                     _users.UpdateUser(user);
-                    eventOutbox.SaveEvents(user.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
+                    await eventOutbox.SaveEvents(user.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
                     uow.Commit();
                 }
                 user.MarkPendingEventsAsHandled();
