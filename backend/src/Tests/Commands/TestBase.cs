@@ -120,6 +120,22 @@ namespace FunctionalTests.Commands
 
         }
 
+        protected (bool sagaCompleted, bool allEventsProcessed) CheckSagaCompletedAndAllEventsProcessed(RequestStatus requestStatus)
+        {
+            var eventConfirmations = SagaEventsConfirmationDbContext.SagaEventsConfirmations.FirstOrDefault(e => e.CommandId == requestStatus.CommandId.Id);
+            var sagaCompleted = eventConfirmations?.Completed == true;
+            var allEventsProcessed = false;
+            if (eventConfirmations != null)
+            {
+                var eventsToProcess = SagaEventsConfirmationDbContext.SagaEventsToConfirm
+                 .Where(e => e.CorrelationId == eventConfirmations.CorrelationId).ToList();
+
+                allEventsProcessed = eventsToProcess.Count > 0 && eventsToProcess.All(e => e.Processed);
+            }
+
+            return (sagaCompleted, allEventsProcessed);
+        }
+
         private IServiceProvider BuildConfiguredServiceProvider()
         {
             return DiTestUtils.CreateServiceProvider((services) =>
