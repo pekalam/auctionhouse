@@ -18,11 +18,11 @@ namespace ReadModel.Core.EventConsumers
             _dbContext = dbContext;
         }
 
-        public override Task Consume(IAppEvent<AuctionLocked> appEvent)
+        public override async Task Consume(IAppEvent<AuctionLocked> appEvent)
         {
             var filterBuilder = Builders<AuctionRead>.Filter;
             var idFilter = filterBuilder.Eq(f => f.AuctionId, appEvent.Event.AuctionId.ToString());
-            var versionFilter = filterBuilder.Lte(f => f.Version, appEvent.Event.AggVersion);
+            var versionFilter = filterBuilder.Lt(f => f.Version, appEvent.Event.AggVersion);
             var filter = filterBuilder.And(idFilter, versionFilter);
 
             var updateBuilder = Builders<AuctionRead>.Update;
@@ -30,8 +30,9 @@ namespace ReadModel.Core.EventConsumers
             var updateVersion = updateBuilder.Set(read => read.Version, appEvent.Event.AggVersion);
             var update = updateBuilder.Combine(updateLocked, updateVersion);
 
-            _dbContext.AuctionsReadModel.UpdateMany(filter, update);
-            return Task.CompletedTask;
+            await _dbContext.AuctionsReadModel
+                .WithWriteConcern(new WriteConcern(mode: "majority", journal: true))
+                .UpdateOneAsync(filter, update);
         }
     }
 }

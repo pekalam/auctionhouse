@@ -40,13 +40,28 @@ namespace Test.ReadModel.Integration
             dbContext.AuctionsReadModel.DeleteOne(Builders<AuctionRead>.Filter.Eq(a => a.Id, insertedAuctionRead.Id));
         }
 
-        [Theory]
-        [InlineData(2)]
-        [InlineData(1)]
-        public void AuctionLockedEventConsumer_should_update_auction_when_AggVersion_greater_or_equal_to_inserted(long aggVersion)
+        [Fact]
+        public void AuctionLockedEventConsumer_should_update_auction_when_AggVersion_greater_than_to_inserted()
         {
             var auctionRead = GivenAuctionRead();
             auctionRead.Version = 1;
+            var auctionLockedConsumer = GivenAuctionLockedConsumer();
+
+            //setup AuctionRead
+            dbContext.AuctionsReadModel.InsertOne(auctionRead);
+            ConsumeAuctionEvent(GivenAuctionLockedEvent(2, auctionRead), auctionLockedConsumer);
+
+            var dbAuctionReadModels = FindInsertedAuctionRead();
+            dbAuctionReadModels[0].Locked.Should().BeTrue();
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        public void AuctionLockedEventConsumer_should_not_update_auction_when_AggVersion_less_or_equal_to_inserted(long aggVersion)
+        {
+            var auctionRead = GivenAuctionRead();
+            auctionRead.Version = 2;
             var auctionLockedConsumer = GivenAuctionLockedConsumer();
 
             //setup AuctionRead
@@ -54,26 +69,13 @@ namespace Test.ReadModel.Integration
             ConsumeAuctionEvent(GivenAuctionLockedEvent(aggVersion, auctionRead), auctionLockedConsumer);
 
             var dbAuctionReadModels = FindInsertedAuctionRead();
-            dbAuctionReadModels[0].Locked.Should().BeTrue();
-        }
-
-        [Fact]
-        public void AuctionLockedEventConsumer_should_not_update_auction_when_AggVersion_less_than_inserted()
-        {
-            var auctionRead = GivenAuctionRead();
-            auctionRead.Version = 2;
-            var auctionLockedConsumer = GivenAuctionLockedConsumer();
-
-            //setup AuctionRead
-            dbContext.AuctionsReadModel.InsertOne(auctionRead);
-            ConsumeAuctionEvent(GivenAuctionLockedEvent(1, auctionRead), auctionLockedConsumer);
-
-            var dbAuctionReadModels = FindInsertedAuctionRead();
             dbAuctionReadModels[0].Locked.Should().BeFalse();
         }
 
-        [Fact]
-        public void AuctionUnlockedEventConsumer_should_not_update_auction_when_AggVersion_less_than_inserted()
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        public void AuctionUnlockedEventConsumer_should_not_update_auction_when_AggVersion_less_or_eq_to_inserted(long aggVersion)
         {
             var auctionRead = GivenAuctionRead();
             auctionRead.Version = 2;
@@ -82,16 +84,14 @@ namespace Test.ReadModel.Integration
 
             //setup AuctionRead
             dbContext.AuctionsReadModel.InsertOne(auctionRead);
-            ConsumeAuctionEvent(GivenAuctionUnlockedEvent(1, auctionRead), auctionUnlockedConsumer);
+            ConsumeAuctionEvent(GivenAuctionUnlockedEvent(aggVersion, auctionRead), auctionUnlockedConsumer);
 
             var dbAuctionReadModels = FindInsertedAuctionRead();
             dbAuctionReadModels[0].Locked.Should().BeTrue();
         }
 
-        [Theory]
-        [InlineData(2)]
-        [InlineData(1)]
-        public void AuctionUnlockedEventConsumer_should_update_auction_when_AggVersion_greater_or_equal_to_inserted(long aggVersion)
+        [Fact]
+        public void AuctionUnlockedEventConsumer_should_update_auction_when_AggVersion_greater_than_inserted()
         {
             var auctionRead = GivenAuctionRead();
             auctionRead.Version = 1;
@@ -100,7 +100,7 @@ namespace Test.ReadModel.Integration
 
             //setup AuctionRead
             dbContext.AuctionsReadModel.InsertOne(auctionRead);
-            ConsumeAuctionEvent(GivenAuctionUnlockedEvent(aggVersion, auctionRead), auctionUnlockedConsumer);
+            ConsumeAuctionEvent(GivenAuctionUnlockedEvent(2, auctionRead), auctionUnlockedConsumer);
 
             var dbAuctionReadModels = FindInsertedAuctionRead();
             dbAuctionReadModels[0].Locked.Should().BeFalse();
