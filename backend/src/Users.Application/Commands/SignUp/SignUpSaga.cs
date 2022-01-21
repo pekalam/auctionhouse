@@ -23,9 +23,9 @@ namespace Users.Application.Commands.SignUp
     {
         public const string CmdContextParamName = "CommandContext";
 
-        private readonly ImmediateCommandQueryMediator _mediator;
+        private readonly Lazy<ImmediateCommandQueryMediator> _mediator;
 
-        public SignUpSaga(ImmediateCommandQueryMediator mediator)
+        public SignUpSaga(Lazy<ImmediateCommandQueryMediator> mediator)
         {
             _mediator = mediator;
         }
@@ -62,7 +62,7 @@ namespace Users.Application.Commands.SignUp
                 UserId = message.UserId,
                 UserPaymentsId = message.UserPaymentsId,
             };
-            await _mediator.Send(cmd, GetCommandContext(context));
+            await _mediator.Value.Send(cmd, GetCommandContext(context));
 
             await CompleteAsync();
         }

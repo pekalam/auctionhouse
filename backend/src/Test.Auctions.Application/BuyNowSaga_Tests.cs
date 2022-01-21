@@ -8,15 +8,18 @@ using Chronicle;
 using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
+using Common.Application.Mediator;
 using Common.Application.SagaNotifications;
 using Core.Common.Domain;
 using FluentAssertions;
 using FluentAssertions.Common;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Test.Auctions.Base.Builders;
@@ -151,6 +154,8 @@ namespace Test.Auctions.Application
         private void SetupServices(IEventBus eventBus, out Mock<IAuctionPaymentVerification> paymentVerification, out ServiceProvider serviceProvider)
         {
             var serviceCollection = new ServiceCollection();
+            serviceCollection.AddCommon(new[] { Assembly.Load("Auctions.Application") });
+
             serviceCollection.AddChronicle(b => b.UseInMemoryPersistence());
             paymentVerification = new Mock<IAuctionPaymentVerification>();
             paymentVerification.Setup(f =>
@@ -159,42 +164,54 @@ f.Verification(It.IsAny<Auction>(), It.IsAny<UserId>(), It.IsAny<string>()))
             serviceCollection.AddTransient(typeof(Lazy<>), typeof(LazyInstance<>));
             serviceCollection.AddSingleton<IAuctionRepository>(_auctions);
             serviceCollection.AddTransient<IAuctionUnlockScheduler>(s => Mock.Of<IAuctionUnlockScheduler>());
-            serviceCollection.AddTransient<IEventOutbox, EventOutboxMock>();
+            serviceCollection.AddScoped<EventOutboxMock>();
+            serviceCollection.AddTransient<IEventOutbox, EventOutboxMock>(s => s.GetRequiredService<EventOutboxMock>());
+            serviceCollection.AddTransient<IEventOutboxSavedItems, EventOutboxMock>(s => s.GetRequiredService<EventOutboxMock>());
             serviceCollection.AddTransient<IUnitOfWorkFactory>(s => UnitOfWorkFactoryMock.Instance.Object);
             serviceCollection.AddTransient<ISagaNotifications>(s => Mock.Of<ISagaNotifications>());
             serviceCollection.AddTransient<OptimisticConcurrencyHandler>();
-
+            
             serviceCollection.AddSingleton<IEventBus>(eventBus);
             serviceCollection.AddTransient<IAppEventBuilder, TestAppEventBuilder>();
-            serviceCollection.AddTransient<EventOutboxMock>();
             serviceCollection.AddTransient<EventOutboxSender>();
             serviceCollection.AddTransient<IOutboxItemStore>(s => Mock.Of<IOutboxItemStore>());
 
+            serviceCollection.AddLogging();
             //serviceCollection.AddTransient<EventBusHelper>(s => new EventBusHelper(eventBus, new TestAppEventBuilder()));
             serviceProvider = serviceCollection.BuildServiceProvider();
+
+            CommonInstaller.InitAttributeStrategies("Auctions.Application");
         }
     }
 
-    internal class EventOutboxMock : IEventOutbox
+    internal class EventOutboxMock : IEventOutbox, IEventOutboxSavedItems
     {
+        private readonly List<OutboxItem> _outboxItems = new();
+        
+        public IReadOnlyList<OutboxItem> SavedOutboxStoreItems => _outboxItems;
+
         public Task<OutboxItem> SaveEvent(Event @event, CommandContext commandContext, ReadModelNotificationsMode notificationsMode)
         {
-            return Task.FromResult(new OutboxItem
+            var item = new OutboxItem
             {
                 CommandContext = commandContext,
                 Event = @event,
                 ReadModelNotifications = notificationsMode,
-            });
+            };
+            _outboxItems.Add(item);
+            return Task.FromResult(item);
         }
 
         public Task<OutboxItem[]> SaveEvents(IEnumerable<Event> events, CommandContext commandContext, ReadModelNotificationsMode notificationsMode)
         {
-            return Task.FromResult(events.Select(e => new OutboxItem
+            var outboxItems = events.Select(e => new OutboxItem
             {
                 CommandContext = commandContext,
                 Event = e,
                 ReadModelNotifications = notificationsMode,
-            }).ToArray());
+            }).ToArray();
+            _outboxItems.AddRange(outboxItems);
+            return Task.FromResult(outboxItems);
         }
     }
 }
