@@ -1,0 +1,1 @@
+docker build -t marekbf3/auctionhouse-sqlserver .\AuctionhouseDatabase
