@@ -57,5 +57,10 @@ namespace Common.Application
         {
             return new RequestStatus(context.CommandId, Status.COMPLETED);
         }
+
+        public static RequestStatus CreateFailed(CommandContext context)
+        {
+            return new RequestStatus(context.CommandId, Status.FAILED);
+        }
     }
 }
