@@ -1,5 +1,6 @@
 ﻿using Auctionhouse.Command.Dto;
 using Auctions.Application.Commands.AddAuctionImage;
+using Auctions.Application.Commands.BuyNow;
 using Auctions.Application.Commands.CreateAuction;
 using Auctions.Application.Commands.RemoveImage;
 using Auctions.Application.Commands.UpdateAuction;
@@ -29,6 +30,7 @@ namespace Auctionhouse.Command
             CreateMap<ResetPasswordCommandDto, ResetPasswordCommand>(MemberList.Source);
             CreateMap<RequestResetPasswordCommandDto, RequestResetPasswordCommand>();
             CreateMap<CheckResetCodeCommandDto, CheckResetCodeCommand>();
+            CreateMap<BuyNowCommandDto, BuyNowCommand>();
 
             CreateMap<AddAuctionImageCommandDto, AddAuctionImageCommand>(MemberList.Source)
                 .ForMember(dto => dto.Img, cfg => cfg.Ignore());

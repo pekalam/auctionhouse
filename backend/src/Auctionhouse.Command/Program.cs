@@ -19,7 +19,10 @@ using Microsoft.OpenApi.Models;
 using QuartzTimeTaskService.AuctionEndScheduler;
 using RabbitMq.EventBus;
 using System.Reflection;
+using UserPayments.Application;
+using Users.Application;
 using XmlCategoryTreeStore;
+using static System.Convert;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +39,8 @@ builder.Services.AddCommon(modules);
 builder.Services.AddAuctionBidsModule();
 builder.Services.AddAuctionsModule(moduleNames);
 builder.Services.AddCategoriesModule();
+builder.Services.AddUserPaymentsModule();
+builder.Services.AddUsersModule();
 builder.Services.AddWebApiAdapters();
 builder.Services.AddAuctionImageConversion();
 builder.Services.AddMongoDbImageDb(builder.Configuration.GetSection("ImageDb").Get<ImageDbSettings>());
@@ -49,7 +54,8 @@ builder.Services.AddCommonWebApi(jwtConfig);
 builder.Services.AddSqlServerEventOutboxStorage(builder.Configuration.GetSection("EventOutboxStorage")["ConnectionString"]);
 builder.Services.AddOutboxProcessorService(new EventOutboxProcessorSettings
 {
-    MinMilisecondsDiff = 1500,
+    MinMilisecondsDiff = ToInt32(builder.Configuration.GetSection(nameof(EventOutboxProcessorSettings))[nameof(EventOutboxProcessorSettings.MinMilisecondsDiff)]),
+    EnableLogging = ToBoolean(builder.Configuration.GetSection(nameof(EventOutboxProcessorSettings))[nameof(EventOutboxProcessorSettings.EnableLogging)]),
 });
 builder.Services.AddHangfireServices(builder.Configuration.GetSection("HangfirePersistence")["ConnectionString"]);
 
@@ -99,7 +105,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddSingleton(new EventBusSettings
+{
+    MaxRedelivery = Convert.ToInt32(builder.Configuration.GetSection(nameof(EventBusSettings))[nameof(EventBusSettings.MaxRedelivery)])
+});
+builder.Services.AddEventRedeliveryProcessorService();
 
 
 var app = builder.Build();

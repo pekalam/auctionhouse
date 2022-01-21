@@ -1,6 +1,7 @@
 ﻿using Auctionhouse.Command.Adapters;
 using Auctionhouse.Command.Dto;
 using Auctions.Application.Commands.AddAuctionImage;
+using Auctions.Application.Commands.BuyNow;
 using Auctions.Application.Commands.CreateAuction;
 using Auctions.Application.Commands.RemoveImage;
 using Auctions.Application.Commands.StartAuctionCreateSession;
@@ -31,6 +32,15 @@ namespace Auctionhouse.Command.Controllers
         public async Task<ActionResult<RequestStatusDto>> CreateAuction([FromBody] CreateAuctionCommandDto commandDto)
         {
             var cmd = _mapper.Map<CreateAuctionCommandDto, CreateAuctionCommand>(commandDto);
+            var status = await _immediateCommandMediator.Send(cmd);
+
+            return this.StatusResponse(status, _mapper.Map<RequestStatusDto>(status));
+        }
+
+        [Authorize(Roles = "User"), HttpPost("buyNow")]
+        public async Task<ActionResult<RequestStatusDto>> BuyAuction([FromBody] BuyNowCommandDto commandDto)
+        {
+            var cmd = _mapper.Map<BuyNowCommandDto, BuyNowCommand>(commandDto);
             var status = await _immediateCommandMediator.Send(cmd);
 
             return this.StatusResponse(status, _mapper.Map<RequestStatusDto>(status));

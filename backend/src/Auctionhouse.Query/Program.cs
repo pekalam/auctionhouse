@@ -11,6 +11,7 @@ using Adapter.MongoDb;
 using Adapter.MongoDb.AuctionImage;
 using Adapter.EfCore.ReadModelNotifications;
 using Adapter.SqlServer.EventOutbox;
+using Common.Application.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +38,12 @@ builder.Services.AddMongoDbImageDb(builder.Configuration.GetSection("ImageDb").G
 builder.Services.AddEfCoreReadModelNotifications(builder.Configuration.GetSection("EfCoreReadModelNotificatitons").Get<EfCoreReadModelNotificaitonsOptions>());
 //TODO remove unnecessar query dependecies
 builder.Services.AddSqlServerEventOutboxStorage(builder.Configuration.GetSection("EventOutboxStorage")["ConnectionString"]);
+builder.Services.AddSingleton(new EventBusSettings
+{
+    MaxRedelivery = Convert.ToInt32(builder.Configuration.GetSection(nameof(EventBusSettings))[nameof(EventBusSettings.MaxRedelivery)])
+});
+builder.Services.AddEventRedeliveryProcessorService();
+
 
 var allowedOrigin = builder.Configuration.GetValue<string>("CORS:AllowedOrigin");
 builder.Services.AddCors(options =>
