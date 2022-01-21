@@ -27,6 +27,7 @@ namespace ReadModel.Core.EventConsumers
             var userReadModel = new UserRead
             {
                 Credits = ev.InitialCredits,
+                Version = ev.AggVersion,
             };
             userReadModel.UserIdentity = new UserIdentityRead(ev.UserId, ev.Username);
 

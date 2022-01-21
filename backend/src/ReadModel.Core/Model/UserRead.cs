@@ -13,7 +13,10 @@ namespace ReadModel.Core.Model
         public List<UserBid> UserBids { get; set; } = new List<UserBid>();
         public UserAddress Address { get; set; }
         [BsonDefaultValue(0)]
+        [BsonRepresentation(BsonType.Decimal128)]
         [JsonConverter(typeof(DecimalRoundingConverter))]
         public decimal Credits { get; set; }
+
+        public long Version { get; set; }
     }
 }
