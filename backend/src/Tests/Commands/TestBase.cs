@@ -120,7 +120,7 @@ namespace FunctionalTests.Commands
 
         }
 
-        protected (bool sagaCompleted, bool allEventsProcessed) CheckSagaCompletedAndAllEventsProcessed(RequestStatus requestStatus)
+        protected (bool sagaCompleted, bool allEventsProcessed) SagaShouldBeCompletedAndAllEventsShouldBeProcessed(RequestStatus requestStatus)
         {
             var eventConfirmations = SagaEventsConfirmationDbContext.SagaEventsConfirmations.FirstOrDefault(e => e.CommandId == requestStatus.CommandId.Id);
             var sagaCompleted = eventConfirmations?.Completed == true;

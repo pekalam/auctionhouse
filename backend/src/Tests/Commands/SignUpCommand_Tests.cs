@@ -28,7 +28,7 @@ namespace FunctionalTests.Commands
 
             AssertEventual(() =>
             {
-                var (sagaCompleted, allEventsProcessed) = CheckSagaCompletedAndAllEventsProcessed(requestStatus);
+                var (sagaCompleted, allEventsProcessed) = SagaShouldBeCompletedAndAllEventsShouldBeProcessed(requestStatus);
                 var createdUser = ReadModelDbContext.UsersReadModel.Find(u => u.UserIdentity.UserName == cmd.Username).SingleOrDefault();
                 var userPaymentsCreated = false;
                 if (createdUser != null)
