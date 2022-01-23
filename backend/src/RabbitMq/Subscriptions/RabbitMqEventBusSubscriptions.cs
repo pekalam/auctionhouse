@@ -89,10 +89,20 @@ namespace RabbitMq.EventBus
             var sub = _bus.PubSub.SubscribeAsync<IAppEvent<Event>>(subscriptionId,
                 async (appEvent, ct) =>
                 {
+                    _logger.LogDebug("Handling event {@eventType} by {@handlerType}", eventType.Name, handlerType.Name);
                     using (var scope = implProvider.Get<IServiceScopeFactory>().CreateScope())
                     {
                         var dispatcher = (IEventDispatcher)scope.ServiceProvider.GetRequiredService(handlerType);
-                        await dispatcher.Dispatch(appEvent);
+                        _logger.LogDebug("Handling event by {@handlerType}", handlerType.Name);
+                        try
+                        {
+                            await dispatcher.Dispatch(appEvent);
+                        }
+                        catch (Exception e)
+                        {
+                            _logger.LogWarning(e, "Event handler {@handlerType} thrown an exception", handlerType.Name);
+                            throw;
+                        }
                     }
                 }, conf =>
                 {
@@ -110,11 +120,22 @@ namespace RabbitMq.EventBus
             var errorQ = _bus.Advanced.QueueDeclare(errorQueueName);
             var errorEx = _bus.Advanced.ExchangeDeclare("ErrorExchange_" + eventType.Name + "_Error_" + subscriptionId, "direct", true);
             _bus.Advanced.Bind(errorEx, errorQ, errorRoutingKey);
-            var errorSubscription = _bus.Advanced.Consume<Error>(errorQ, (err, info) =>
+            var errorSubscription = _bus.Advanced.Consume(errorQ, (Action<IMessage<Error>, MessageReceivedInfo>)((err, info) =>
             {
+                _logger.LogInformation("Received error message in subscription {@subscriptionId} with routing key {@routingKey}", subscriptionId, errorRoutingKey);
+
                 using var scope = _serviceScopeFactory.CreateScope();
                 var errorEventOutboxStore = scope.ServiceProvider.GetRequiredService<IErrorEventOutboxStore>();
 
+                SaveErrorOutboxItem(err, info, errorEventOutboxStore);
+            }));
+            _errorSubscriptions.Add(errorSubscription);
+        }
+
+        private void SaveErrorOutboxItem(IMessage<Error> err, MessageReceivedInfo info, IErrorEventOutboxStore errorEventOutboxStore)
+        {
+            try
+            {
                 errorEventOutboxStore.Save(new ErrorEventOutboxItem
                 {
                     Timestamp = ErrorEventOutboxItemTimestampFactory.CreateTimestamp(),
@@ -122,8 +143,12 @@ namespace RabbitMq.EventBus
                     MessageJson = err.Body.Message,
                     RoutingKey = info.RoutingKey
                 });
-            });
-            _errorSubscriptions.Add(errorSubscription);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Exception caught while saving item in {nameof(IErrorEventOutboxStore)}");
+                throw;
+            }
         }
     }
 }

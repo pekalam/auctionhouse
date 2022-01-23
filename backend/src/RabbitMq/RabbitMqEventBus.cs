@@ -113,7 +113,7 @@ cfg =>
             Bus.Advanced.Consume<Error>(queue, RedeliverMessage);
         }
 
-        private void TryPublish(IAppEvent<Event> @event)
+        private void PublishInternal (IAppEvent<Event> @event)
         {
             try
             {
@@ -129,7 +129,7 @@ cfg =>
         public void Publish<T>(IAppEvent<T> @event) where T : Event
         {
             _logger.LogDebug("Publishing event {@event}", @event);
-            TryPublish(@event);
+            PublishInternal(@event);
         }
 
         public void Publish<T>(IEnumerable<IAppEvent<T>> events) where T : Event

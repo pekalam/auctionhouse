@@ -12,8 +12,11 @@ using Adapter.MongoDb.AuctionImage;
 using Adapter.EfCore.ReadModelNotifications;
 using Adapter.SqlServer.EventOutbox;
 using Common.Application.Events;
+using OpenTelemetry.Trace;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog();
 
 // Add services to the container.
 builder.Services.AddCommon(typeof(ReadModelInstaller).Assembly);
@@ -24,7 +27,7 @@ builder.Services.AddXmlCategoryTreeStore(builder.Configuration.GetSection("XmlCa
 builder.Services.AddCategoriesModule();
 
 
-builder.Services.AddLogging(cfg => cfg.AddConsole());
+builder.Services.AddSerilogLogging(builder.Configuration, "Query");
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -44,6 +47,11 @@ builder.Services.AddSingleton(new EventBusSettings
 });
 builder.Services.AddEventRedeliveryProcessorService();
 
+builder.Services.AddInstrumentationDecorators();
+
+CommonInstaller.AddTracing(b => {
+    b.AddAspNetCoreInstrumentation();
+});
 
 var allowedOrigin = builder.Configuration.GetValue<string>("CORS:AllowedOrigin");
 builder.Services.AddCors(options =>
@@ -64,6 +72,7 @@ var app = builder.Build();
 CommonInstaller.InitAttributeStrategies("ReadModel.Core");
 ReadModelInstaller.InitSubscribers(app.Services);
 XmlCategoryTreeStoreInstaller.Init(app.Services);
+var tracing = CommonInstaller.CreateModuleTracing("Query");
 
 app.UseAuthentication();
 app.UseStaticFiles();
@@ -82,3 +91,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+tracing.Dispose();

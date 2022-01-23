@@ -1,4 +1,5 @@
 ﻿using Core.Common.Domain;
+using System.Diagnostics;
 
 namespace Common.Application.Events
 {
@@ -16,15 +17,32 @@ namespace Common.Application.Events
             _eventBuilder = eventBuilder;
         }
 
-        Task IEventDispatcher.Dispatch(IAppEvent<Event> msg)
+        async Task IEventDispatcher.Dispatch(IAppEvent<Event> msg)
         {
-            var @event = _eventBuilder
-                .WithCommandContext(msg.CommandContext)
-                .WithEvent(msg.Event)
-                .WithRedeliveryCount(msg.RedeliveryCount)
-                .Build<T>();
+            using var activity = Tracing.StartTracing(GetType().Name + "_" + msg.Event.EventName, msg.CommandContext.CorrelationId);
 
-            return Handle(@event);
+            await HandleEvent(msg);
+
+            activity.TraceOkStatus();
+        }
+
+        private async Task HandleEvent(IAppEvent<Event> msg)
+        {
+            try
+            {
+                var @event = _eventBuilder
+                    .WithCommandContext(msg.CommandContext)
+                    .WithEvent(msg.Event)
+                    .WithRedeliveryCount(msg.RedeliveryCount)
+                    .Build<T>();
+
+                await Handle(@event);
+            }
+            catch (Exception)
+            {
+                Activity.Current.TraceErrorStatus("Error while handing message");
+                throw;
+            }
         }
 
         public abstract Task Handle(IAppEvent<T> appEvent);

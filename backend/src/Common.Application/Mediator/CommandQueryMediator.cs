@@ -51,7 +51,7 @@ namespace Common.Application.Mediator
             return requestStatus;
         }
 
-        public async Task<T> SendQuery<T>(IQuery<T> query)
+        public virtual async Task<T> SendQuery<T>(IQuery<T> query)
         {
             if (AttributeStrategies.PreHandleQueryAttributeStrategies.ContainsKey(query.GetType()))
             {

@@ -17,7 +17,7 @@ namespace Adapter.EfCore.ReadModelNotifications
 
         private static DbContextOptionsBuilder ConfigureDbContext(EfCoreReadModelNotificaitonsOptions settings, DbContextOptionsBuilder opt)
         {
-            opt.EnableSensitiveDataLogging(true);
+            //opt.EnableSensitiveDataLogging(true);
             if (settings.Provider.ToLower() == "sqlite")
             {
                 return opt.UseSqlite(settings.ConnectionString);

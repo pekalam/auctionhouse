@@ -1,7 +1,10 @@
-﻿using Common.Application.Events;
+﻿using Common.Application;
+using Common.Application.Events;
 using Common.Application.SagaNotifications;
 using Core.Common.Domain;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace Core.Query.EventHandlers
 {
@@ -38,31 +41,52 @@ namespace Core.Query.EventHandlers
 
         async Task IEventDispatcher.Dispatch(IAppEvent<Event> msg)
         {
-            await Consume(_appEventBuilder
-              .WithEvent(msg.Event)
-              .WithCommandContext(msg.CommandContext)
-              .WithReadModelNotificationsMode(msg.ReadModelNotifications)
-              .WithRedeliveryCount(msg.RedeliveryCount)
-              .Build<T>());
+            using var activity = Tracing.StartTracing(GetType().Name + "_" + msg.Event.EventName, msg.CommandContext.CorrelationId);
 
-            if (msg.ReadModelNotifications == ReadModelNotificationsMode.Saga)
+            await ConsumeEvent(msg);
+            await ProcessNotifications(msg);
+
+            activity.TraceOkStatus();
+        }
+
+        private async Task ProcessNotifications(IAppEvent<Event> msg)
+        {
+            try
             {
-                await _sagaNotifications.Value.MarkEventAsHandled(msg.CommandContext.CorrelationId, msg.Event);
+                if (msg.ReadModelNotifications == ReadModelNotificationsMode.Saga)
+                {
+                    await _sagaNotifications.Value.MarkEventAsHandled(msg.CommandContext.CorrelationId, msg.Event);
+                }
+                if (msg.ReadModelNotifications == ReadModelNotificationsMode.Immediate)
+                {
+                    await _immediateNotifications.Value.NotifyCompleted(msg.CommandContext.CorrelationId);
+                }
             }
-            if (msg.ReadModelNotifications == ReadModelNotificationsMode.Immediate)
+            catch (Exception e)
             {
-                await _immediateNotifications.Value.NotifyCompleted(msg.CommandContext.CorrelationId);
+                Activity.Current.TraceErrorStatus("Event consumer notifications processing error");
+                _logger.LogWarning(e, "Event consumer thrown an exception while processing notifications");
+                throw;
             }
-            // successful event handling always results in completed request status
-            //var requestStatus = RequestStatus.CreateFromCommandContext(msg.CommandContext, Status.COMPLETED);
-            //if (msg.ReadModelNotifications == ReadModelNotificationsMode.Saga)
-            //{
-            //    await _sagaNotificationsFactory().MarkEventAsHandled(msg.CommandContext.CorrelationId, msg.Event);
-            //}
-            //else if (msg.ReadModelNotifications == ReadModelNotificationsMode.Immediate)
-            //{
-            //    _readModelNotificationsFactory().NotifyUser(requestStatus, msg.CommandContext.User);
-            //}
+        }
+
+        private async Task ConsumeEvent(IAppEvent<Event> msg)
+        {
+            try
+            {
+                await Consume(_appEventBuilder
+                  .WithEvent(msg.Event)
+                  .WithCommandContext(msg.CommandContext)
+                  .WithReadModelNotificationsMode(msg.ReadModelNotifications)
+                  .WithRedeliveryCount(msg.RedeliveryCount)
+                  .Build<T>());
+            }
+            catch (Exception e)
+            {
+                Activity.Current.TraceErrorStatus(e.Message);
+                _logger.LogWarning(e, "Event consumer thrown an exception while consuming an event");
+                throw;
+            }
         }
     }
 }

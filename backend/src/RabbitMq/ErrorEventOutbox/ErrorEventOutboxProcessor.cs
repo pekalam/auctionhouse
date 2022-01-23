@@ -65,10 +65,10 @@ namespace Adatper.RabbitMq.EventBus.ErrorEventOutbox
             foreach (var item in unprocessedItems)
             {
                 var jToken = TryParse(item);
-                if(jToken is null)
+                if (jToken is null)
                 {
-                    _logger.LogWarning("Could not parse outbox item");
-                    errorEventOutboxStore.Delete(item);
+                    _logger.LogError("Could not parse outbox item {messageBody}, deleting from outbox", item.MessageJson);
+                    TryDeleteItem(errorEventOutboxStore, item);
                     continue;
                 }
 
@@ -76,26 +76,39 @@ namespace Adatper.RabbitMq.EventBus.ErrorEventOutbox
 
                 if (!currentRedeliveryCount.HasValue)
                 {
-                    _logger.LogWarning("Could not parse outbox item redelivery count");
-                    errorEventOutboxStore.Delete(item);
+                    _logger.LogError("Could not parse outbox item redelivery count");
+                    TryDeleteItem(errorEventOutboxStore, item);
                     continue;
                 }
 
                 if (currentRedeliveryCount == _eventBusSettings.MaxRedelivery)
                 {
-                    errorEventOutboxStore.Delete(item);
+                    _logger.LogError("Message with routing key {@routingKey} reached max redelivery count. Body: {messageBody}", item.RoutingKey, item.MessageJson);
+                    TryDeleteItem(errorEventOutboxStore, item);
                     continue;
                 }
 
                 var messageJson = IncrementRedeliveryCount(jToken, currentRedeliveryCount.Value);
-                _logger.LogDebug("Redelivering {@msg}", messageJson);
+                _logger.LogDebug("Redelivering {@routingKey}", item.RoutingKey);
                 await eventBus.Bus.Advanced.PublishAsync(eventBus.EventExchange,
                     item.RoutingKey,
                     true,
                     item.MessageProperties,
                     Encoding.UTF8.GetBytes(messageJson), ct);
 
+                TryDeleteItem(errorEventOutboxStore, item);
+            }
+        }
+
+        private void TryDeleteItem(IErrorEventOutboxStore errorEventOutboxStore, ErrorEventOutboxItem item)
+        {
+            try
+            {
                 errorEventOutboxStore.Delete(item);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Could not delete item in {nameof(IErrorEventOutboxStore)}");
             }
         }
 

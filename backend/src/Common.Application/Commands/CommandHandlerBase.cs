@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using Core.Common.Domain;
+using System.Diagnostics;
 
 namespace Common.Application.Commands
 {
@@ -109,7 +110,7 @@ namespace Common.Application.Commands
             _eventOutboxSavedItems = dependencies.EventOutboxSavedItems;
         }
 
-        private async Task<RequestStatus> TryHandleCommand(AppCommand<T> request, CancellationToken cancellationToken)
+        private async Task<RequestStatus> HandleCommandInternal(AppCommand<T> request, CancellationToken cancellationToken)
         {
             try
             {
@@ -118,6 +119,7 @@ namespace Common.Application.Commands
             }
             catch (Exception e)
             {
+                Activity.Current.TraceErrorStatus("Command handling error");
                 _logger.LogDebug(e, "CommandHandler error {@request}", request);
                 throw;
             }
@@ -125,6 +127,8 @@ namespace Common.Application.Commands
 
         public virtual async Task<RequestStatus> Handle(AppCommand<T> request, CancellationToken cancellationToken)
         {
+            using var activity = Tracing.StartTracing(typeof(T).Name, request.CommandContext.CorrelationId);
+
             var validationContext = new ValidationContext(request.Command);
             var validationResults = new Collection<ValidationResult>();
 
@@ -135,14 +139,17 @@ namespace Common.Application.Commands
 
                 //when exception is thrown then it should be handled by api
                 //failed status can result in events being sent
-                var status = await TryHandleCommand(request, cancellationToken);
-
+                var requestStatus = await HandleCommandInternal(request, cancellationToken);               
                 await _eventOutboxSender.SendEvents(_eventOutboxSavedItems.SavedOutboxStoreItems);
 
-                return status;
+                if (requestStatus.Status == Status.COMPLETED) Activity.Current.TraceOkStatus();
+                if (requestStatus.Status == Status.FAILED) Activity.Current.TraceErrorStatus();
+                if (requestStatus.Status == Status.PENDING) Activity.Current.TraceUnsetStatus();
+                return requestStatus;
             }
             else
             {
+                Activity.Current.TraceErrorStatus("Invalid command validation results");
                 _logger.LogDebug("Invalid command {validationResults}", validationResults);
                 throw new InvalidCommandException($"Invalid command {request}", request.CommandContext);
             }
@@ -150,13 +157,22 @@ namespace Common.Application.Commands
 
         private async Task RegisterCommandNotifications(AppCommand<T> request) //TODO handle case where already registered or redesign
         {
-            if (_notificationsMode == ReadModelNotificationsMode.Immediate)
+            try
             {
-                await _immediateNotifications.Value.RegisterNew(request.CommandContext.CorrelationId, request.CommandContext.CommandId);
+                if (_notificationsMode == ReadModelNotificationsMode.Immediate)
+                {
+                    await _immediateNotifications.Value.RegisterNew(request.CommandContext.CorrelationId, request.CommandContext.CommandId);
+                }
+                if (_notificationsMode == ReadModelNotificationsMode.Saga)
+                {
+                    await _sagaNotifications.Value.RegisterNewSaga(request.CommandContext.CorrelationId, request.CommandContext.CommandId);
+                }
             }
-            if (_notificationsMode == ReadModelNotificationsMode.Saga)
+            catch (Exception e)
             {
-                await _sagaNotifications.Value.RegisterNewSaga(request.CommandContext.CorrelationId, request.CommandContext.CommandId);
+                Activity.Current.TraceErrorStatus("Notification registration error");
+                _logger.LogWarning(e, "Could not register notifications for command {@request}", request);
+                throw;
             }
         }
 

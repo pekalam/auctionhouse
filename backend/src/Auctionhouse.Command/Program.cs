@@ -16,8 +16,11 @@ using Common.Application.Events;
 using Common.WebAPI;
 using Common.WebAPI.Auth;
 using Microsoft.OpenApi.Models;
+using OpenTelemetry.Trace;
 using QuartzTimeTaskService.AuctionEndScheduler;
 using RabbitMq.EventBus;
+using Serilog;
+using System.Diagnostics;
 using System.Reflection;
 using UserPayments.Application;
 using Users.Application;
@@ -25,6 +28,8 @@ using XmlCategoryTreeStore;
 using static System.Convert;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog();
 
 var moduleNames = new[] {
     "Auctions.Application", "UserPayments.Application", "AuctionBids.Application", "Users.Application"
@@ -96,7 +101,10 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.IsEssential = true;
 });
-builder.Services.AddLogging(cfg => cfg.AddConsole());
+
+
+
+builder.Services.AddSerilogLogging(builder.Configuration, "Command");
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
@@ -111,12 +119,21 @@ builder.Services.AddSingleton(new EventBusSettings
 });
 builder.Services.AddEventRedeliveryProcessorService();
 
+builder.Services.AddInstrumentationDecorators();
+
+Activity.DefaultIdFormat = ActivityIdFormat.W3C;
+Activity.ForceDefaultIdFormat = true;
+CommonInstaller.AddTracing(b => {
+    b.AddAspNetCoreInstrumentation();
+});
 
 var app = builder.Build();
 
 RabbitMqInstaller.InitializeEventSubscriptions(app.Services, modules);
 CommonInstaller.InitAttributeStrategies(moduleNames);
 XmlCategoryTreeStoreInstaller.Init(app.Services);
+
+var tracing = CommonInstaller.CreateModuleTracing("Command");
 
 app.UseAuthentication();
 app.UseStaticFiles();
@@ -138,3 +155,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+tracing.Dispose();
