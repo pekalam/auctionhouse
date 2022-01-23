@@ -55,6 +55,11 @@ namespace AuctionBids.Domain
                 throw new InvalidUserIdException("Auction cannot be raised by owner");
             }
 
+            if(userId == _bids.LastOrDefault()?.UserId)
+            {
+                throw new DomainException("Auction cannot be raised by user who raised it previously");
+            }
+
             Bid bid;
             if (price <= CurrentPrice)
             {
