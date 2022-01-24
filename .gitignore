@@ -23,3 +23,6 @@ backend/src/AuctionhouseDatabase/AuctionhouseDatabase.jfm
 /backend/src/Test.Integration.MediatrCommandHandling
 /backend/src/Test.Integration.CommandHandling.RabbitMQ
 /backend/src/SetupTestDb
+/backend/src/MongoDb/cluster/shards
+/backend/src/MongoDb/node_modules
+/backend/src/MongoDb/package-lock.json
