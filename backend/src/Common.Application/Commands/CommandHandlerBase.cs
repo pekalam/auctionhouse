@@ -127,12 +127,13 @@ namespace Common.Application.Commands
 
         public virtual async Task<RequestStatus> Handle(AppCommand<T> request, CancellationToken cancellationToken)
         {
+            using var logScope = _logger.BeginScope("{CorrelationId}", request.CommandContext.CorrelationId.Value);
             using var activity = Tracing.StartTracing(typeof(T).Name, request.CommandContext.CorrelationId);
 
             var validationContext = new ValidationContext(request.Command);
             var validationResults = new Collection<ValidationResult>();
 
-            _logger.LogTrace("Handling command {name}", typeof(T).Name);
+            _logger.LogDebug("Handling command {name}", typeof(T).Name);
             if (Validator.TryValidateObject(request.Command, validationContext, validationResults, true))
             {
                 await RegisterCommandNotifications(request);

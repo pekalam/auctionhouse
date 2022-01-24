@@ -89,13 +89,15 @@ namespace RabbitMq.EventBus
             var sub = _bus.PubSub.SubscribeAsync<IAppEvent<Event>>(subscriptionId,
                 async (appEvent, ct) =>
                 {
+                    var logger = implProvider.Get<ILogger<RabbitMqEventBusSubscriptions>>();
+                    using var logScope = logger.BeginScope("{CorrelationId}", appEvent.CommandContext.CorrelationId.Value);
                     _logger.LogDebug("Handling event {@eventType} by {@handlerType}", eventType.Name, handlerType.Name);
                     using (var scope = implProvider.Get<IServiceScopeFactory>().CreateScope())
                     {
-                        var dispatcher = (IEventDispatcher)scope.ServiceProvider.GetRequiredService(handlerType);
-                        _logger.LogDebug("Handling event by {@handlerType}", handlerType.Name);
                         try
                         {
+                            var dispatcher = (IEventDispatcher)scope.ServiceProvider.GetRequiredService(handlerType);
+                            _logger.LogDebug("Handling event by {@handlerType}", handlerType.Name);
                             await dispatcher.Dispatch(appEvent);
                         }
                         catch (Exception e)
