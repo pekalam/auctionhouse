@@ -1,0 +1,13 @@
+{
+  "name": "mongo-db",
+  "version": "0.0.0",
+  "description": "MongoDb",
+  "main": "app.js",
+  "author": {
+    "name": ""
+  },
+  "dependencies": {
+    "grunt": "^1.4.1",
+    "handlebars": "^4.7.7"
+  }
+}

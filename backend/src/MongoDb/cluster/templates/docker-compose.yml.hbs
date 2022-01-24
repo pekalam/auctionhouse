@@ -1,0 +1,29 @@
+services:
+  {{#each config_servers}}
+  {{this}}:
+    hostname: {{this}}
+    build:
+      dockerfile: config/Dockerfile
+      context: .
+    command: "--configsvr --replSet configRS --bind_ip_all"   
+  {{/each}}
+  {{#each mongos}}
+  {{this}}:
+    hostname: {{this}}
+    build:
+      dockerfile: mongos/Dockerfile
+      context: .
+    command: ["--wait-for", {{#each ../config_servers}}"{{this}}:32112"{{#if @last}}{{else}}, {{/if}}{{/each}}, {{#each ../nodes}}"{{this}}:32112"{{#if @last}}{{else}}, {{/if}}{{/each}}, "--configdb", "configRS/{{#each ../config_servers}}{{this}}:27019{{#if @last}}{{else}}, {{/if}}{{/each}}", "--bind_ip_all"]
+    ports:
+      {{#if @first}}
+      - "27017:27017"       
+      {{/if}}
+  {{/each}}
+  {{#each nodes}}
+  {{this}}:
+    hostname: {{this}}
+    build:
+      dockerfile: shards/shard_{{this}}/Dockerfile
+      context: .
+    command: [ "--bind_ip_all", "--replSet", "n{{inc @index}}", "--shardsvr" ]      
+  {{/each}}
