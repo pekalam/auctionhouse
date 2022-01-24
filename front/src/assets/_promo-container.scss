@@ -1,4 +1,7 @@
+@import "global";
+
 .promo-container {
+  @include section-shadow;
   background-color: $primaryColor;
   display: table;
   width: 100%;

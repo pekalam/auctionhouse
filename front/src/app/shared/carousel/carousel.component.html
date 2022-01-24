@@ -2,13 +2,13 @@
   <div class="container-center">
     <div class="img-container" [class.fullscreen]="showFullscreen">
       <i *ngIf="showFullscreen" (click)="showFullscreen = false" class="fas fa-window-close cancel-icon"></i>
-      <img #image (load)="onImgLoaded(imgInd)" *ngFor="let imgInd of imgInd" class="img" [src]="imgs[imgInd]"
+      <img (load)="onImgLoaded(imgInd)" *ngFor="let imgInd of imgInd" class="img" [src]="imgs[imgInd]"
         [hidden]="imgInd != shown || loading"/>
       <mat-progress-bar class="loading-bar" *ngIf="loading" mode="buffer"></mat-progress-bar>
     </div>
     <div *ngIf="showFullscreen" class="fullscreen-navig">
       <div class="thumbnail" *ngFor="let imgInd of imgInd">
-        <img #image (click)="onThumbnailClick(imgInd)" (load)="onImgLoaded(imgInd)" [class.selected]="imgInd == shown"
+        <img (click)="onThumbnailClick(imgInd)" (load)="onImgLoaded(imgInd)" [class.selected]="imgInd == shown"
           [src]="thumbnails[imgInd]" />
       </div>
     </div>
@@ -20,7 +20,7 @@
   <div *ngIf="showThumbnails && imgs.length > 1" class="thumbnail-container">
     <div class="thumbnail-overfl">
         <div class="thumbnail" *ngFor="let imgInd of imgInd">
-          <img #image (click)="onThumbnailClick(imgInd)" (load)="onImgLoaded(imgInd)" [class.selected]="imgInd == shown"
+          <img (click)="onThumbnailClick(imgInd)" (load)="onImgLoaded(imgInd)" [class.selected]="imgInd == shown"
             [src]="thumbnails[imgInd]" />
         </div>
     </div>

@@ -1,5 +1,6 @@
 @import "global-vars";
 @import 'breakpoints';
+@import "global";
 
 
 $containerHeight: 560px;
@@ -16,6 +17,7 @@ $containerHeight: 560px;
 }
 
 #categories-container {
+  @include section-shadow;
   height: $containerHeight;
   max-width: 325px;
   background-color: white;

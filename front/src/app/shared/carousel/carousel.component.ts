@@ -7,9 +7,6 @@ import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, 
 })
 export class CarouselComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('image', { static: false })
-  image: ElementRef;
-
   @Input('img-height')
   imgHeight = 250;
   imgs = [];

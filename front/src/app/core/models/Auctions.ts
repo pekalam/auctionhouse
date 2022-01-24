@@ -4,6 +4,7 @@ import { Bid } from './Bid';
 import { Product, Condition } from './Product';
 
 export interface AuctionImage{
+  imgNum: number;
   size1Id: string;
   size2Id: string;
   size3Id: string;

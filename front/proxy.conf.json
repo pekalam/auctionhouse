@@ -8,5 +8,10 @@
     "target": "https://localhost:7203",
     "secure": false,
     "logLevel": "debug"
+  },
+  "/api/s/*": {
+    "target": "https://localhost:7263",
+    "secure": false,
+    "logLevel": "debug"
   }
 }

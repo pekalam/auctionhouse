@@ -1,10 +1,12 @@
 @import 'breakpoints';
+@import 'global-vars';
 
 :host{
   display: block;
   height: 100%;
   width: 100%;
-  padding-top: 40px;
+  box-sizing: border-box;
+  padding: 39px;
 }
 
 .container *{
@@ -27,7 +29,6 @@
   justify-content: center;
   .auction{
     box-sizing: border-box;
-    padding-left: 15px;
     cursor: pointer;
     flex-grow: 1;
     flex-basis: 50%;
@@ -37,7 +38,6 @@
     flex-basis: 50%;
     height: 210px;
     padding-right: 15px;
-    padding-left: 15px;
     box-sizing: border-box;
     @include mobile{
       min-width: 0;
@@ -81,12 +81,15 @@
   display: inline-flex;
   cursor: pointer;
   &:hover{
-    background-color: #eceff138;
+    background-color: $secondaryLightColor;
   }
 }
 
 .progress-container{
-  margin-top: 25px;
+  position: absolute;
+  top: 243px;
+  right: 0;
+  left: 0;
   text-align: center;
   .progress{
     width: 70%;
