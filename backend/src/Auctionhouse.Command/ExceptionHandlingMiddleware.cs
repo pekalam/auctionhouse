@@ -62,6 +62,7 @@ namespace Auctionhouse.Command
 
         private void HandleException(InfrastructureException ex, HttpContext context)
         {
+            _logger.LogWarning(ex, $"Infrastructure exception");
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             context.Response.WriteAsync("Internal server error");
         }
@@ -74,6 +75,7 @@ namespace Auctionhouse.Command
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     break;
                 default:
+                    _logger.LogWarning(ex, $"{nameof(DomainException)} not handled in {nameof(ExceptionHandlingMiddleware)}");
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     break;
             }
