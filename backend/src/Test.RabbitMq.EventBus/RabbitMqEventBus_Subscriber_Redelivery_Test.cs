@@ -3,6 +3,7 @@ using Common.Application;
 using Common.Application.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using RabbitMq.EventBus;
 using System;
@@ -27,14 +28,13 @@ namespace Test.Adapter.RabbitMq.EventBus
         protected static IImplProvider SetupImplProvider(EventBusRedeliveryTestEventConsumer handler)
         {
             var services = new ServiceCollection();
+            services.AddLogging(b => b.AddXUnit());
             services.AddSingleton(handler);
             return AddAdapterServices(services);
         }
 
         protected static IImplProvider AddAdapterServices(ServiceCollection services)
         {
-            services.AddSingleton(Mock.Of<ILogger<RabbitMqEventBus>>());
-            services.AddSingleton(Mock.Of<ILogger<ErrorEventOutboxProcessor>>());
             services.AddRabbitMqEventBus(new()
             {
                 ConnectionString = "host=localhost",
@@ -51,6 +51,7 @@ namespace Test.Adapter.RabbitMq.EventBus
         protected static IImplProvider SetupImplProvider(EventBusRedeliveryTestEventSubscriber handler)
         {
             var services = new ServiceCollection();
+            services.AddLogging(b => b.AddXUnit());
             services.AddSingleton(handler);
             return AddAdapterServices(services);
         }
@@ -84,7 +85,7 @@ namespace Test.Adapter.RabbitMq.EventBus
         [Fact]
         public async Task Redelivers_message_to_consumers_expecte_number_of_times()
         {
-            bus.Publish(scenario.given.eventToSend);
+            await bus.Publish(scenario.given.eventToSend);
 
             var processor = new ErrorEventOutboxProcessor(stubImplProvider.Get<IServiceScopeFactory>(), new EventBusSettings
             {
@@ -119,7 +120,7 @@ namespace Test.Adapter.RabbitMq.EventBus
             {
                 //ConnectionString = TestContextUtils.GetParameterOrDefault("rabbitmq-connection-string", "host=localhost"),
                 ConnectionString = "host=localhost",
-            }, Mock.Of<ILogger<RabbitMqEventBus>>(), stubImplProvider.Get<IServiceScopeFactory>());
+            }, stubImplProvider.Get<ILogger<RabbitMqEventBus>>(), stubImplProvider.Get<IServiceScopeFactory>());
 
             bus.InitEventSubscriptions(stubImplProvider, Assembly.Load("Test.Common.Base"));
             bus.SetupErrorQueueSubscribtion();
@@ -136,7 +137,7 @@ namespace Test.Adapter.RabbitMq.EventBus
         [Fact]
         public async Task Redelivers_message_to_subscriber_expecte_number_of_times()
         {
-            bus.Publish(scenario.given.eventToSend);
+            await bus.Publish(scenario.given.eventToSend);
 
             var processor = new ErrorEventOutboxProcessor(stubImplProvider.Get<IServiceScopeFactory>(), new EventBusSettings
             {

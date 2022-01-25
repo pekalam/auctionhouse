@@ -17,7 +17,7 @@ namespace Common.Application
 {
     public static class Tracing
     {
-        internal static ActivitySource Source { get; private set; }
+        internal static ActivitySource? Source { get; private set; }
 
         internal static void InitializeTracingSource()
         {
@@ -27,7 +27,7 @@ namespace Common.Application
 
         public static Activity? StartTracing(string activityName)
         {
-            var activity = Source.StartActivity(ActivityKind.Internal, name: activityName);
+            var activity = Source?.StartActivity(ActivityKind.Internal, name: activityName);
             return activity;
         }
 
@@ -35,7 +35,7 @@ namespace Common.Application
         {
             var actCtx = new ActivityContext(ActivityTraceId.CreateFromString(correlationId.Value),
             Activity.Current?.SpanId ?? ActivitySpanId.CreateRandom(), ActivityTraceFlags.Recorded);
-            var activity = Source.StartActivity(ActivityKind.Internal, name: activityName, parentContext: actCtx);
+            var activity = Source?.StartActivity(ActivityKind.Internal, name: activityName, parentContext: actCtx);
             return activity;
         }
     }

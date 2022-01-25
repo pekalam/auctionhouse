@@ -107,8 +107,7 @@ namespace Test.Adapter.RabbitMq.EventBus
         }
     }
 
-
-    public class RocksDbErrorEventOutboxStorage_Tests : IDisposable
+    public class RocksDbErrorEventOutboxStorage_Tests : IDisposable //TODO split into separate classes
     {
         const string TestDbPath = @".\testDb";
         RocksDbErrorEventOutboxStorage storage;

@@ -19,14 +19,16 @@ namespace Test.Common.Base.Mocks
         public List<Event> PublishedEvents { get; private set; } = new();
 
 
-        public void Publish<T>(IAppEvent<T> @event) where T : Event
+        public Task Publish<T>(IAppEvent<T> @event) where T : Event
         {
             PublishedEvents.Add(@event.Event);
+            return Task.CompletedTask;
         }
 
-        public void Publish<T>(IEnumerable<IAppEvent<T>> events) where T : Event
+        public Task Publish<T>(IEnumerable<IAppEvent<T>> events) where T : Event
         {
             PublishedEvents.AddRange(@events.Select(e => e.Event));
+            return Task.CompletedTask;
         }
     }
 }

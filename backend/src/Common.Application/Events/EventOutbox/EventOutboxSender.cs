@@ -29,7 +29,7 @@ namespace Common.Application.Events
                     .WithEvent(i.Event)
                     .Build<Event>());
 
-            _eventBus.Publish(appEvents);
+            await _eventBus.Publish(appEvents);
             await _outboxItemStore.UpdateMany(outboxItems.Select(static i =>
             {
                 i.Processed = true;

@@ -8,11 +8,11 @@ namespace Common.Application.Events
         /// <summary>
         /// Sends event to queue named like <see cref="IAppEvent<T>"/>
         /// </summary>
-        void Publish<T>(IAppEvent<T> @event) where T : Event;
+        Task Publish<T>(IAppEvent<T> @event) where T : Event;
         /// <summary>
         /// Sends event to queue named like each <see cref="IAppEvent<T>"/>
         /// </summary>
-        void Publish<T>(IEnumerable<IAppEvent<T>> events) where T : Event;
+        Task Publish<T>(IEnumerable<IAppEvent<T>> events) where T : Event;
         event Action<EventArgs, ILogger> Disconnected;
     }
 }

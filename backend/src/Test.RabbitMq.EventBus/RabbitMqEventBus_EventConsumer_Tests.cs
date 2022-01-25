@@ -7,12 +7,14 @@ using Core.Query.EventHandlers;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using RabbitMq.EventBus;
 using System;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Test.Adapter.RabbitMq.EventBus;
 using Xunit;
 
 namespace Test.RabbitMq.EventBus
@@ -49,7 +51,7 @@ namespace Test.RabbitMq.EventBus
     public class RabbitMqEventBus_EventConsumer_Tests
     {
         [Fact]
-        public void Published_event_gets_handled_by_EventConsumer()
+        public async Task Published_event_gets_handled_by_EventConsumer()
         {
             var failed = false;
             var sem = new SemaphoreSlim(0, 1);
@@ -81,25 +83,23 @@ namespace Test.RabbitMq.EventBus
             {
                 //ConnectionString = TestContextUtils.GetParameterOrDefault("rabbitmq-connection-string", "host=localhost"),
                 ConnectionString = "host=localhost",
-            }, Mock.Of<ILogger<RabbitMqEventBus>>(), stubImplProvider.Object.Get<IServiceScopeFactory>());
-            bus.InitEventConsumers(stubImplProvider.Object, Assembly.Load("Test.Adapter.RabbitMq.EventBus"));
+            }, stubImplProvider.Get<ILogger<RabbitMqEventBus>>(), stubImplProvider.Get<IServiceScopeFactory>());
+            bus.InitEventConsumers(stubImplProvider, Assembly.Load("Test.Adapter.RabbitMq.EventBus"));
 
-            bus.Publish(toPublish);
+            await bus.Publish(toPublish);
 
             if (!sem.Wait(TimeSpan.FromSeconds(60)))
                 Assert.False(true);
             Assert.False(failed);
         }
 
-        private static Mock<IImplProvider> SetupImplProvider(TestHandler handler)
+        private static ImplProviderMock SetupImplProvider(TestHandler handler)
         {
             var serviceCollection = new ServiceCollection();
+            serviceCollection.AddLogging(b => b.AddXUnit());
             serviceCollection.AddSingleton(handler);
             var serviceProvider = serviceCollection.BuildServiceProvider();
-            var stubImplProvider = new Mock<IImplProvider>();
-            stubImplProvider.Setup(provider => provider.Get<IServiceScopeFactory>())
-                .Returns(serviceProvider.GetRequiredService<IServiceScopeFactory>());
-            return stubImplProvider;
+            return new ImplProviderMock(serviceProvider);
         }
     }
 }

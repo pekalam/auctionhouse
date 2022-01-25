@@ -113,11 +113,11 @@ cfg =>
             Bus.Advanced.Consume<Error>(queue, RedeliverMessage);
         }
 
-        private void PublishInternal (IAppEvent<Event> @event)
+        private async Task PublishInternal (IAppEvent<Event> @event)
         {
             try
             {
-                Bus.PubSub.Publish(@event, @event.Event.GetType().Name);
+                await Bus.PubSub.PublishAsync(@event, @event.Event.GetType().Name);
             }
             catch (Exception e)
             {
@@ -126,17 +126,17 @@ cfg =>
             }
         }
 
-        public void Publish<T>(IAppEvent<T> @event) where T : Event
+        public async Task Publish<T>(IAppEvent<T> @event) where T : Event
         {
             _logger.LogDebug("Publishing event {@event}", @event);
-            PublishInternal(@event);
+            await PublishInternal(@event);
         }
 
-        public void Publish<T>(IEnumerable<IAppEvent<T>> events) where T : Event
+        public async Task Publish<T>(IEnumerable<IAppEvent<T>> events) where T : Event
         {
             foreach (var @event in events)
             {
-                Publish(@event);
+                await Publish(@event);
             }
         }
 
