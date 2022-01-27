@@ -15,6 +15,7 @@ using Common.Application;
 using Common.Application.Events;
 using Common.WebAPI;
 using Common.WebAPI.Auth;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Trace;
 using QuartzTimeTaskService.AuctionEndScheduler;
@@ -55,7 +56,8 @@ builder.Services.AddDapperAuctionhouse(builder.Configuration.GetSection("MSSql")
 builder.Services.AddQuartzTimeTaskServiceAuctionEndScheduler(builder.Configuration.GetSection("TimeTaskService").Get<TimeTaskServiceSettings>());
 builder.Services.AddEfCoreReadModelNotifications(builder.Configuration.GetSection("EfCoreReadModelNotificatitons").Get<EfCoreReadModelNotificaitonsOptions>());
 var jwtConfig = builder.Configuration.GetSection("JWT").Get<JwtSettings>();
-builder.Services.AddCommonWebApi(jwtConfig);
+var authBuilder = builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
+builder.Services.AddCommonJwtAuth(jwtConfig, authBuilder);
 builder.Services.AddSqlServerEventOutboxStorage(builder.Configuration.GetSection("EventOutboxStorage")["ConnectionString"]);
 builder.Services.AddOutboxProcessorService(new EventOutboxProcessorSettings
 {
@@ -107,7 +109,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddSerilogLogging(builder.Configuration, "Command");
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddQuartzTimeTaskServiceAuctionEndSchedulerServices();
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

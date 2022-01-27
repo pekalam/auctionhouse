@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QuartzTimeTaskService.AuctionEndScheduler\Adapter.QuartzTimeTaskService.AuctionEndScheduler.csproj" />
+  </ItemGroup>
+
+</Project>

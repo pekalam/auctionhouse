@@ -3,7 +3,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace QuartzTimeTaskService.AuctionEndScheduler
 {
-    public static class TimeTaskServiceAuhorization
+    internal static class TimeTaskServiceAuhorization
     {
         public static bool Authorize(StringValues xApiKeyValues, TimeTaskServiceSettings serviceSettings, ILogger logger)
         {

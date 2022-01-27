@@ -13,6 +13,8 @@ namespace Test.Auctions.Base.Builders
         private AuctionName _name = NAME;
         private string[] _categories = CATEGORY_IDS;
         private bool _buyNowOnly = false;
+        private DateTime? _startDate;
+        private DateTime? _endDate;
 
         public GivenAuctionArgs WithBuyNowOnly(bool buyNowOnly)
         {
@@ -36,8 +38,8 @@ namespace Test.Auctions.Base.Builders
         {
             var auctionArgsBuilder = new AuctionArgs.Builder()
                 .SetBuyNow(_buyNowPrice)
-                .SetStartDate(DateTime.UtcNow.AddMinutes(20))
-                .SetEndDate(DateTime.UtcNow.AddDays(5))
+                .SetStartDate(_startDate ?? DateTime.UtcNow.AddMinutes(20))
+                .SetEndDate(_endDate ?? DateTime.UtcNow.AddDays(5))
                 .SetOwner(_ownerId)
                 .SetProduct(_product)
                 .SetBuyNowOnly(_buyNowOnly)
@@ -47,12 +49,24 @@ namespace Test.Auctions.Base.Builders
             return auctionArgsBuilder.Build();
         }
 
+        internal GivenAuctionArgs WithEndDate(DateTime dateTime)
+        {
+            _endDate = dateTime;
+            return this;
+        }
+
+        internal GivenAuctionArgs WithStartDate(DateTime date)
+        {
+            _startDate = date;
+            return this;
+        }
+
         public AuctionArgs ValidBuyNowAndBid()
         {
             var auctionArgsBuilder = new AuctionArgs.Builder()
                 .SetBuyNow(BUY_NOW_PRICE)
-                .SetStartDate(DateTime.UtcNow.AddMinutes(20))
-                .SetEndDate(DateTime.UtcNow.AddDays(5))
+                .SetStartDate(_startDate ?? DateTime.UtcNow.AddMinutes(20))
+                .SetEndDate(_endDate ?? DateTime.UtcNow.AddDays(5))
                 .SetOwner(UserId.New())
                 .SetProduct(new Product(PRODUCT_NAME, PRODUCT_DESCRIPTION, Condition.New))
                 .SetBuyNowOnly(false)

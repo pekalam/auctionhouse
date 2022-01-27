@@ -1,5 +1,6 @@
 ﻿using Common.Application;
 using Common.WebAPI.Auth;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,14 +11,12 @@ namespace Common.WebAPI
 {
     public static class CommonWebApiInstaller
     {
-        public static void AddCommonWebApi(this IServiceCollection services, JwtSettings jwtConfig)
+        public static void AddCommonJwtAuth(this IServiceCollection services, JwtSettings jwtConfig, AuthenticationBuilder authenticationBuilder)
         {
             services.AddSingleton(jwtConfig);
-            services
-                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(jwtConfig.ConfigureJwt);
             services.AddTransient<JwtService>();
             services.AddTransient<IUserIdentityService, UserIdentityService>();
+            authenticationBuilder.AddJwtBearer(jwtConfig.ConfigureJwt);
         }
 
         public static void AddSerilogLogging(this IServiceCollection services, IConfiguration configuration, string appName)

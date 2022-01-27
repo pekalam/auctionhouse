@@ -1,12 +1,8 @@
 ﻿using Auctions.Domain.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using QuartzTimeTaskService.AuctionEndScheduler;
 using RestEase;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Adapter.QuartzTimeTaskService.AuctionEndScheduler
 {
@@ -21,7 +17,18 @@ namespace Adapter.QuartzTimeTaskService.AuctionEndScheduler
                 return client;
             });
             services.AddSingleton(settings);
-            services.AddTransient<IAuctionEndScheduler, AuctionSchedulerService>();
+            services.AddTransient<IAuctionEndScheduler, QuartzAuctionEndScheduler>();
+        }
+
+        public static void AddQuartzTimeTaskServiceAuctionEndSchedulerServices(this IMvcBuilder builder)
+        {
+            builder.AddApplicationPart(typeof(AuctionEndSchedulerInstaller).Assembly).AddControllersAsServices();
+        }
+
+        public static void AddQuartzTimeTaskServiceAuth(this AuthenticationBuilder builder)
+        {
+            builder.AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(ApiKeyAuthenticationOptions.Scheme,
+                        null);
         }
     }
 }

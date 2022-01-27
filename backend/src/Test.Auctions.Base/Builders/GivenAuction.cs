@@ -16,7 +16,6 @@ namespace Test.Auctions.Base.Builders
 
         public GivenAuction WithAssignedAuctionBidsId(AuctionBidsId? auctionBidsId = null)
         {
-            if (auctionBidsId is null) auctionBidsId = new AuctionBidsId(Guid.NewGuid());
             _auctionBidsId = auctionBidsId;
             return this;
         }
@@ -34,6 +33,7 @@ namespace Test.Auctions.Base.Builders
         public Auction ValidOfTypeBuyNowAndBid(AuctionBidsId? auctionBidsId = null)
         {
             _args = new GivenAuctionArgs().ValidBuyNowAndBid();
+            _auctionBidsId = auctionBidsId ?? new AuctionBidsId(Guid.NewGuid());
             WithAssignedAuctionBidsId(_auctionBidsId);
             return Build();
         }

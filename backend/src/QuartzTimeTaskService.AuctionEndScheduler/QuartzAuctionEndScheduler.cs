@@ -3,12 +3,12 @@ using Auctions.Domain.Services;
 
 namespace QuartzTimeTaskService.AuctionEndScheduler
 {
-    public class AuctionSchedulerService : IAuctionEndScheduler
+    internal class QuartzAuctionEndScheduler : IAuctionEndScheduler
     {
         private readonly ITimeTaskClient _timeTaskClient;
         private readonly TimeTaskServiceSettings _serviceSettings;
 
-        public AuctionSchedulerService(ITimeTaskClient timeTaskClient, TimeTaskServiceSettings serviceSettings)
+        public QuartzAuctionEndScheduler(ITimeTaskClient timeTaskClient, TimeTaskServiceSettings serviceSettings)
         {
             _timeTaskClient = timeTaskClient;
             _timeTaskClient.ApiKey = serviceSettings.ApiKey;

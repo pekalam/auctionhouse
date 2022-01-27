@@ -179,17 +179,38 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{CB7E
 		Add-SagaNotificationsScripts.ps1 = Add-SagaNotificationsScripts.ps1
 		Append-ScriptsToDatabaseProj.ps1 = Append-ScriptsToDatabaseProj.ps1
 		Build-DockerImage.ps1 = Build-DockerImage.ps1
+		Build-FromBackupDockerImage.ps1 = Build-FromBackupDockerImage.ps1
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.UsersDomain", "Test.UsersDomain\Test.UsersDomain.csproj", "{682C5F13-8901-476A-B0D5-D6E553F8CA23}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8C3CAEA9-939E-4F49-B2E7-5E9DEE5E6429}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.CategoriesDomain", "Test.CategoriesDomain\Test.CategoriesDomain.csproj", "{23E05036-AFE1-457F-877B-6984393CF5E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.CategoriesDomain", "Test.CategoriesDomain\Test.CategoriesDomain.csproj", "{23E05036-AFE1-457F-877B-6984393CF5E0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5C8BFF18-65ED-43A6-8743-000662D95A27}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9383D1AB-114E-4B10-AB19-D00A04F083A2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{5FFCFE65-844B-49DF-92BF-56D6A1FD7097}"
+	ProjectSection(SolutionItems) = preProject
+		AuctionhouseDatabase\Dockerfile = AuctionhouseDatabase\Dockerfile
+		AuctionhouseDatabase\Dockerfile-frombackup = AuctionhouseDatabase\Dockerfile-frombackup
+		AuctionhouseDatabase\entrypoint.sh = AuctionhouseDatabase\entrypoint.sh
+		AuctionhouseDatabase\frombackup-entrypoint.sh = AuctionhouseDatabase\frombackup-entrypoint.sh
+		AuctionhouseDatabase\healthcheck.sh = AuctionhouseDatabase\healthcheck.sh
+		..\e2e\bid-command\restore-AuctionhouseDatabase.sql = ..\e2e\bid-command\restore-AuctionhouseDatabase.sql
+		AuctionhouseDatabase\restore-AuctionhouseDatabase.sql = AuctionhouseDatabase\restore-AuctionhouseDatabase.sql
+		AuctionhouseDatabase\wait-for = AuctionhouseDatabase\wait-for
+	EndProjectSection
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "MongoDb", "MongoDb\MongoDb.njsproj", "{835C31F7-1CA9-490C-86C0-41EEA386D86C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuctionEndScheduler", "AuctionEndScheduler", "{FD995697-1077-45A5-9729-4EEFA17A2DBD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.QuartzServiceAuctionEndScheduler", "Test.Adapter.QuartzServiceAuctionEndScheduler\Test.Adapter.QuartzServiceAuctionEndScheduler.csproj", "{D84D3ADD-729B-4B77-8C98-519A65DC42BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockAuctionEndSchedulerEndpointApp", "MockAuctionEndSchedulerEndpointApp\MockAuctionEndSchedulerEndpointApp.csproj", "{2A34BF67-DACF-4682-9475-695045FAF601}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -437,6 +458,18 @@ Global
 		{23E05036-AFE1-457F-877B-6984393CF5E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23E05036-AFE1-457F-877B-6984393CF5E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23E05036-AFE1-457F-877B-6984393CF5E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{835C31F7-1CA9-490C-86C0-41EEA386D86C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{835C31F7-1CA9-490C-86C0-41EEA386D86C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{835C31F7-1CA9-490C-86C0-41EEA386D86C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{835C31F7-1CA9-490C-86C0-41EEA386D86C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D84D3ADD-729B-4B77-8C98-519A65DC42BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D84D3ADD-729B-4B77-8C98-519A65DC42BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D84D3ADD-729B-4B77-8C98-519A65DC42BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D84D3ADD-729B-4B77-8C98-519A65DC42BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A34BF67-DACF-4682-9475-695045FAF601}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A34BF67-DACF-4682-9475-695045FAF601}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A34BF67-DACF-4682-9475-695045FAF601}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A34BF67-DACF-4682-9475-695045FAF601}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -460,7 +493,7 @@ Global
 		{FC0CD23E-9DC9-4BA7-98B1-79C3FCC63FDF} = {5F256B4F-B266-4FC7-AD43-28544B7AC3C6}
 		{FBCD4725-8EA6-45ED-80DC-EA06CD47027C} = {5F256B4F-B266-4FC7-AD43-28544B7AC3C6}
 		{A82DE09D-91E6-4C6A-9341-F6ADE7800B7C} = {5F256B4F-B266-4FC7-AD43-28544B7AC3C6}
-		{5EE29E8F-C7FE-430F-944E-1DBD210FD494} = {2C7F9FB2-0106-45A8-8185-8B58DF359DE2}
+		{5EE29E8F-C7FE-430F-944E-1DBD210FD494} = {FD995697-1077-45A5-9729-4EEFA17A2DBD}
 		{C601EF06-7E1D-41DB-B97F-846265CD097D} = {725AE30B-E139-4A1B-912D-E463DC4C6CE7}
 		{9D788C3F-96DA-46AE-B5EB-02D4346DDF2C} = {5F256B4F-B266-4FC7-AD43-28544B7AC3C6}
 		{6B7A042C-590E-43FB-9D57-91FCC2E8CCA4} = {9D788C3F-96DA-46AE-B5EB-02D4346DDF2C}
@@ -527,6 +560,11 @@ Global
 		{8C3CAEA9-939E-4F49-B2E7-5E9DEE5E6429} = {FBCD4725-8EA6-45ED-80DC-EA06CD47027C}
 		{23E05036-AFE1-457F-877B-6984393CF5E0} = {8C3CAEA9-939E-4F49-B2E7-5E9DEE5E6429}
 		{9383D1AB-114E-4B10-AB19-D00A04F083A2} = {EAD12EB0-674E-406A-A468-B96C896145D6}
+		{5FFCFE65-844B-49DF-92BF-56D6A1FD7097} = {EAD12EB0-674E-406A-A468-B96C896145D6}
+		{835C31F7-1CA9-490C-86C0-41EEA386D86C} = {00AB0266-0388-4EC1-BDE5-0EC6206F28E2}
+		{FD995697-1077-45A5-9729-4EEFA17A2DBD} = {2C7F9FB2-0106-45A8-8185-8B58DF359DE2}
+		{D84D3ADD-729B-4B77-8C98-519A65DC42BF} = {FD995697-1077-45A5-9729-4EEFA17A2DBD}
+		{2A34BF67-DACF-4682-9475-695045FAF601} = {FD995697-1077-45A5-9729-4EEFA17A2DBD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F4E77E2A-13ED-428A-962C-F0BDF00E9A14}

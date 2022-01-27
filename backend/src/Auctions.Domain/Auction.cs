@@ -10,20 +10,35 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Test.DomainModelTests")]
 namespace Auctions.Domain
 {
+    public static class AuctionConstantsFactoryValueProvider
+    {
+        public static Func<string, object?>? TestValueFactory { get; set; }
+    }
 
     public static class AuctionConstantsFactory
     {
+
         public const int DEFAULT_MAX_IMAGES = 6;
         public const int DEFAULT_MAX_TODAY_MIN_OFFSET = 15;
         public const int DEFAULT_MIN_AUCTION_TIME_M = 120;
         public const int DEFAULT_MIN_TAGS = 1;
         public const int DEFAULT_BUY_UNLOCK_TIME = 1000 * 60 * 5;
 
-        internal static int MaxImages { get; set; } = DEFAULT_MAX_IMAGES;
-        internal static int MaxTodayMinOffset { get; set; } = DEFAULT_MAX_TODAY_MIN_OFFSET;
-        internal static int MinAuctionTimeM { get; set; } = DEFAULT_MIN_AUCTION_TIME_M;
-        internal static int MinTags { get; set; } = DEFAULT_MIN_TAGS;
-        internal static int UnlockBuyTime { get; set; } = DEFAULT_BUY_UNLOCK_TIME;
+        public static int MaxImages { get; } 
+            = ((int?)AuctionConstantsFactoryValueProvider.TestValueFactory?.Invoke(nameof(MaxImages))) 
+            ?? DEFAULT_MAX_IMAGES;
+        public static int MaxTodayMinOffset { get; } 
+            = ((int?)AuctionConstantsFactoryValueProvider.TestValueFactory?.Invoke(nameof(MaxTodayMinOffset))) 
+            ?? DEFAULT_MAX_TODAY_MIN_OFFSET;
+        public static int MinAuctionTimeM { get; }
+            = ((int?)AuctionConstantsFactoryValueProvider.TestValueFactory?.Invoke(nameof(MinAuctionTimeM)))
+            ?? DEFAULT_MIN_AUCTION_TIME_M;
+        public static int MinTags { get; } 
+            = ((int?)AuctionConstantsFactoryValueProvider.TestValueFactory?.Invoke(nameof(MinTags)))
+            ?? DEFAULT_MIN_TAGS;
+        public static int UnlockBuyTime { get;  }
+            = ((int?)AuctionConstantsFactoryValueProvider.TestValueFactory?.Invoke(nameof(UnlockBuyTime)))
+            ?? DEFAULT_BUY_UNLOCK_TIME;
     }
 
     public class AuctionId : ValueObject
@@ -541,5 +556,18 @@ namespace Auctions.Domain
             AddUpdateEvent(new AuctionDescriptionChanged(AggregateId, description));
         }
 
+        public void EndAuction()
+        {
+            if (Completed)
+            {
+                throw new DomainException("Cannot end completed auction");
+            }
+            if (Locked)
+            {
+                throw new DomainException("Cannot end locked auction");
+            }
+
+            ApplyEvent(AddEvent(new AuctionEnded() { AuctionId = AggregateId }));
+        }
     }
 }

@@ -91,6 +91,11 @@ namespace Auctions.Domain
             TransactionId = @event.TransactionId;
         }
 
+        private void ApplyEvent(AuctionEnded @event)
+        {
+            Completed = true;
+        }
+
         private void ApplyEvent(AuctionBuyNowPriceChanged ev) => UpdateBuyNowPrice(ev.BuyNowPrice);
         private void ApplyEvent(AuctionUpdateEventGroup group) => group.UpdateEvents.ForEach(ev => Apply(ev));
         private void ApplyEvent(AuctionEndDateChanged ev) => UpdateEndDate(ev.Date);

@@ -52,22 +52,34 @@ namespace Common.Application
             services.AddTransient(typeof(Lazy<>), typeof(LazyInstance<>));
             //services.AddTransient<ISagaNotifications, InMemorySagaNotifications>();
             services.AddTransient<IImplProvider, DefaultDIImplProvider>();
-            services.AddMediatR(commandHandlerAssemblies,
-                    cfg =>
-                    {
-                        cfg.AsTransient();
-                    });
-            services.AddTransient<ImmediateCommandQueryMediator>();
-            services.AddTransient<IUnitOfWorkFactory, DefaultUnitOfWorkFactory>();
 
-            services.AddScoped<EventOutbox>();
-            services.AddTransient<IEventOutbox>(s => s.GetRequiredService<EventOutbox>());
-            services.AddTransient<IEventOutboxSavedItems>(s => s.GetRequiredService<EventOutbox>());
 
-            services.AddTransient<EventOutboxSender>();
-            services.AddTransient<CommandHandlerBaseDependencies>();
             services.AddTransient<EventConsumerDependencies>();
+            services.AddConcurrencyUtils();
+            services.AddCommandHandling<EventOutbox>(commandHandlerAssemblies);
+        }
+
+        public static void AddConcurrencyUtils(this IServiceCollection services)
+        {
+            services.AddTransient<IUnitOfWorkFactory, DefaultUnitOfWorkFactory>();
             services.AddTransient<OptimisticConcurrencyHandler>();
+        }
+
+        public static void AddCommandHandling<TEventOutbox>(this IServiceCollection services, params Assembly[] commandHandlerAssemblies)
+            where TEventOutbox : class, IEventOutbox, IEventOutboxSavedItems
+        {
+            services.AddTransient(typeof(Lazy<>), typeof(LazyInstance<>));
+            services.AddMediatR(commandHandlerAssemblies,
+        cfg =>
+        {
+            cfg.AsTransient();
+        });
+            services.AddScoped<TEventOutbox>();
+            services.AddTransient<IEventOutbox>(s => s.GetRequiredService<TEventOutbox>());
+            services.AddTransient<IEventOutboxSavedItems>(s => s.GetRequiredService<TEventOutbox>());
+            services.AddTransient<EventOutboxSender>();
+            services.AddTransient<ImmediateCommandQueryMediator>();
+            services.AddTransient<CommandHandlerBaseDependencies>();
         }
 
         /// <summary>
