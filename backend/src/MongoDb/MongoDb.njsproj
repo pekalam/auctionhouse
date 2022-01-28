@@ -52,8 +52,6 @@
     <Content Include="cluster\mongos\scripts\update-top-auctions-in-tag-view.sh" />
     <Content Include="cluster\mongos\templates\scripts\init.js.hbs" />
     <Content Include="cluster\mongos\update-cronjob" />
-    <Content Include="common\listen-on-health-port.sh" />
-    <Content Include="common\wait-for" />
     <Content Include="Gruntfile.js">
       <SubType>Code</SubType>
     </Content>
@@ -70,7 +68,6 @@
     <Folder Include="cluster\mongos\templates\scripts\" />
     <Folder Include="cluster\templates\" />
     <Folder Include="cluster\shard\" />
-    <Folder Include="common\" />
     <Folder Include="cluster\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
