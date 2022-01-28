@@ -55,7 +55,7 @@ function Add-PostDeploymentScript {
         [Parameter(Mandatory,Position=0)]
         [String]$srcFile
     )
-    $postDeployScriptContent1 = ":r .\Job_ResetPasswordCode.sql"
+    $postDeployScriptContent1 = "--:r .\Job_ResetPasswordCode.sql"
     Write-Output $postDeployScriptContent1 > "$PSScriptRoot\AuctionhouseDatabase\dbo\Scripts\Script.PostDeployment.sql"
 
     foreach($file in $scripts)

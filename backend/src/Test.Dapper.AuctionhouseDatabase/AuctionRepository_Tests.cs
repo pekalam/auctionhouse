@@ -105,6 +105,8 @@ namespace Test.Dapper.AuctionhouseDatabase
         public void UpdateAuction_updates_auction_with_more_than_1_event_and_find_finds_it()
         {
             var auction = new GivenAuction().ValidOfTypeBuyNowAndBid();
+            auctionRepository.AddAuction(auction);
+            auction.MarkPendingEventsAsHandled();
 
             auction.UpdateDescription("new description");
 

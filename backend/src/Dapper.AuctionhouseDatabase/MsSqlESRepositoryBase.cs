@@ -50,7 +50,7 @@ namespace Adapter.Dapper.AuctionhouseDatabase
 
         protected internal virtual List<Event>? ReadEvents(Guid aggId)
         {
-            var sql = "SELECT e.Data FROM dbo.Events e WHERE e.AggId = @AggId";
+            var sql = "SELECT e.Data FROM dbo.Event e WHERE e.AggId = @AggId ORDER BY Version ASC";
             IEnumerable<string> events;
 
             using (var connection = new SqlConnection(_connectionSettings.ConnectionString))
@@ -71,7 +71,7 @@ namespace Adapter.Dapper.AuctionhouseDatabase
 
         protected internal virtual List<Event>? ReadEvents(Guid aggId, long version)
         {
-            var sql = "SELECT e.Data FROM dbo.Events e WHERE e.AggId = @AggId AND e.Version <= @Version";
+            var sql = "SELECT e.Data FROM dbo.Event e WHERE e.AggId = @AggId AND e.Version <= @Version ORDER BY Version ASC";
 
             IEnumerable<string> events;
 
@@ -92,38 +92,47 @@ namespace Adapter.Dapper.AuctionhouseDatabase
 
         protected internal virtual void AddAggregate(IReadOnlyCollection<Event> pendingEvents, string aggregateId, long aggVersion, string aggregateName)
         {
-            var sp = "dbo.insert_event";
-
-
 
             using var connection = new SqlConnection(_connectionSettings.ConnectionString);
             connection.Open();
-            foreach (var pendingEvent in pendingEvents)
+            AddAggregateInternal(pendingEvents, aggregateId, aggVersion, aggregateName, connection);
+        }
+
+        protected static void AddAggregateInternal(IReadOnlyCollection<Event> pendingEvents, string aggregateId, long aggVersion, string aggregateName, SqlConnection connection, SqlTransaction? trans = null)
+        {
+            var sp = "dbo.add_aggregate";
+
+            var json = JsonConvert.SerializeObject(pendingEvents.First(), new JsonSerializerSettings()
             {
-                var json = JsonConvert.SerializeObject(pendingEvent, new JsonSerializerSettings()
-                {
-                    TypeNameHandling = TypeNameHandling.All
-                });
-                connection.Execute(sp, new
-                {
-                    AggId = aggregateId,
-                    AggName = aggregateName,
-                    pendingEvent.EventName,
-                    Date = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(1)),
-                    Data = json,
-                    ExpectedVersion = -1,
-                    NewVersion = aggVersion
-                }, commandType: CommandType.StoredProcedure);
-            }
+                TypeNameHandling = TypeNameHandling.All
+            });
+            connection.Execute(sp, new
+            {
+                AggId = aggregateId,
+                AggregateName = aggregateName,
+                pendingEvents.First().EventName,
+                Data = json,
+            }, transaction: trans, commandType: CommandType.StoredProcedure);
+            InsertEvents(pendingEvents.Skip(1), aggregateId, aggVersion, connection);
         }
 
         protected internal virtual void UpdateAggregate(IReadOnlyCollection<Event> pendingEvents, string aggregateId, long aggVersion, string aggregateName)
         {
-            var sp = "dbo.insert_event";
-
-
             using var connection = new SqlConnection(_connectionSettings.ConnectionString);
             connection.Open();
+            InsertEvents(pendingEvents, aggregateId, aggVersion, connection);
+        }
+
+        protected static void InsertEvents(IEnumerable<Event> pendingEvents, string aggregateId, long aggVersion, SqlConnection connection)
+        {
+            var eventsCount = pendingEvents.Count();
+            if(aggVersion - eventsCount == 0)
+            {
+                throw new ArgumentException($"Aggregate must be inserted first by calling {nameof(AddAggregate)}");
+            }
+
+            var sp = "dbo.insert_event";
+
             var sent = 0;
             foreach (var pendingEvent in pendingEvents)
             {
@@ -134,12 +143,9 @@ namespace Adapter.Dapper.AuctionhouseDatabase
                 connection.Execute(sp, new
                 {
                     AggId = aggregateId,
-                    AggName = aggregateName,
                     pendingEvent.EventName,
-                    Date = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(1)),
                     Data = json,
-                    ExpectedVersion = aggVersion - pendingEvents.Count + sent,
-                    NewVersion = aggVersion - pendingEvents.Count + sent + 1
+                    ExpectedVersion = aggVersion - eventsCount + sent,
                 }, commandType: CommandType.StoredProcedure);
                 sent++;
             }
@@ -147,12 +153,12 @@ namespace Adapter.Dapper.AuctionhouseDatabase
 
         protected internal virtual void RemoveAggregate(string aggregateId)
         {
-            var sp = "drop_events";
+            var sql = "DELETE FROM Aggregate WHERE AggregateId = @AggregateId";
 
 
             using var connection = new SqlConnection(_connectionSettings.ConnectionString);
             connection.Open();
-            connection.Execute(sp, new { AggId = aggregateId }, commandType: CommandType.StoredProcedure);
+            connection.Execute(sql, new { AggregateId = aggregateId });
         }
     }
 }

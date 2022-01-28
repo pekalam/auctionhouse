@@ -1,0 +1,43 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=84581d45_002D301f_002D42c6_002D8aeb_002D0210ab4cdf38/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Session" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;And&gt;&#xD;
+    &lt;Or&gt;&#xD;
+      &lt;Project Location="C:\Users\Marek\source\repos\Csharp\auctionhouse\backend\src\Test.DomainModelTests" Presentation="&amp;lt;Test.DomainModelTests&amp;gt;" /&gt;&#xD;
+      &lt;TestAncestor&gt;&#xD;
+        &lt;TestId&gt;NUnit3x::45F19B6A-F840-4FCA-8E87-3DB7CD1F3CE8::.NETCoreApp,Version=v3.1::UnitTests.AuthorizationRequiredAttribute_Tests.AuthorizationRequiredAttribute_Tests&lt;/TestId&gt;&#xD;
+        &lt;TestId&gt;NUnit3x::7F73DDC5-6EF1-4D23-8485-5B851D36D39E::.NETCoreApp,Version=v3.1::FunctionalTests.Queries.GetAuctionsQuery_Tests&lt;/TestId&gt;&#xD;
+        &lt;TestId&gt;NUnit3x::7F73DDC5-6EF1-4D23-8485-5B851D36D39E::.NETCoreApp,Version=v3.1::FunctionalTests.Queries.GetSingleAuctionQuery_test&lt;/TestId&gt;&#xD;
+      &lt;/TestAncestor&gt;&#xD;
+      &lt;Project Location="C:\Users\Marek\source\repos\Csharp\auctionhouse\backend\src\Test.FunctionalTests" Presentation="&amp;lt;Test.FunctionalTests&amp;gt;" /&gt;&#xD;
+    &lt;/Or&gt;&#xD;
+    &lt;Or&gt;&#xD;
+      &lt;And&gt;&#xD;
+        &lt;Project Location="C:\Users\Marek\source\repos\Csharp\auctionhouse\backend\src\Test.FunctionalTests" Presentation="&amp;lt;Test.FunctionalTests&amp;gt;" /&gt;&#xD;
+        &lt;Namespace&gt;FunctionalTests.CommandRollback&lt;/Namespace&gt;&#xD;
+      &lt;/And&gt;&#xD;
+      &lt;And&gt;&#xD;
+        &lt;Project Location="C:\Users\Marek\source\repos\Csharp\auctionhouse\backend\src\Test.FunctionalTests" Presentation="&amp;lt;Test.FunctionalTests&amp;gt;" /&gt;&#xD;
+        &lt;Namespace&gt;FunctionalTests.EventHandling&lt;/Namespace&gt;&#xD;
+      &lt;/And&gt;&#xD;
+      &lt;And&gt;&#xD;
+        &lt;Project Location="C:\Users\Marek\source\repos\Csharp\auctionhouse\backend\src\Test.FunctionalTests" Presentation="&amp;lt;Test.FunctionalTests&amp;gt;" /&gt;&#xD;
+        &lt;Namespace&gt;FunctionalTests.Queries&lt;/Namespace&gt;&#xD;
+      &lt;/And&gt;&#xD;
+    &lt;/Or&gt;&#xD;
+  &lt;/And&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ac396f5b_002D87fa_002D4694_002Dbf93_002D790c8d54dbd6/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from &amp;lt;Test.DomainModelTests&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Or&gt;&#xD;
+    &lt;Project Location="C:\Users\Marek\source\repos\Csharp\auctionhouse\backend\src\Test.DomainModelTests" Presentation="&amp;lt;Test.DomainModelTests&amp;gt;" /&gt;&#xD;
+    &lt;TestAncestor&gt;&#xD;
+      &lt;TestId&gt;NUnit3x::45F19B6A-F840-4FCA-8E87-3DB7CD1F3CE8::.NETCoreApp,Version=v3.1::UnitTests.AuthorizationRequiredAttribute_Tests.AuthorizationRequiredAttribute_Tests&lt;/TestId&gt;&#xD;
+      &lt;TestId&gt;NUnit3x::7F73DDC5-6EF1-4D23-8485-5B851D36D39E::.NETCoreApp,Version=v3.1::FunctionalTests.Queries.GetAuctionsQuery_Tests&lt;/TestId&gt;&#xD;
+      &lt;TestId&gt;NUnit3x::7F73DDC5-6EF1-4D23-8485-5B851D36D39E::.NETCoreApp,Version=v3.1::FunctionalTests.Queries.GetSingleAuctionQuery_test&lt;/TestId&gt;&#xD;
+    &lt;/TestAncestor&gt;&#xD;
+    &lt;Project Location="C:\Users\Marek\source\repos\Csharp\auctionhouse\backend\src\Test.FunctionalTests" Presentation="&amp;lt;Test.FunctionalTests&amp;gt;" /&gt;&#xD;
+    &lt;Project Location="C:\Users\Marek\source\repos\Csharp\auctionhouse\backend\src\Test.IntegrationTests" Presentation="&amp;lt;Test.IntegrationTests&amp;gt;" /&gt;&#xD;
+    &lt;Project Location="C:\Users\Marek\source\repos\Csharp\auctionhouse\backend\src\Test.DomainModelTests" Presentation="&amp;lt;tests&amp;gt;\&amp;lt;Test.DomainModelTests&amp;gt;" /&gt;&#xD;
+    &lt;Project Location="C:\Users\Marek\source\repos\Csharp\auctionhouse\backend\src\Test.IntegrationTests" Presentation="&amp;lt;tests&amp;gt;\&amp;lt;Test.IntegrationTests&amp;gt;" /&gt;&#xD;
+    &lt;Project Location="C:\Users\Marek\source\repos\Csharp\auctionhouse\backend\src\Test.FunctionalTests" Presentation="&amp;lt;tests&amp;gt;\&amp;lt;Test.FunctionalTests&amp;gt;" /&gt;&#xD;
+  &lt;/Or&gt;&#xD;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

@@ -21,30 +21,12 @@ namespace Adapter.Dapper.AuctionhouseDatabase.UserPayments_
 
         public UserPayments Add(UserPayments userPayments)
         {
-            var sp = "dbo.insert_event";
             var userIdToAggregateInsert = $"INSERT INTO {UserIdToUserPaymentsTable} (UserId, AggId) VALUES (@UserId, @AggId)";
-
 
             using var connection = new SqlConnection(_connectionSettings.ConnectionString);
             connection.Open();
             using var trans = connection.BeginTransaction();
-            foreach (var pendingEvent in userPayments.PendingEvents)
-            {
-                var json = JsonConvert.SerializeObject(pendingEvent, new JsonSerializerSettings()
-                {
-                    TypeNameHandling = TypeNameHandling.All
-                });
-                connection.Execute(sp, new
-                {
-                    AggId = userPayments.AggregateId.Value,
-                    AggName = "UserPayments",
-                    pendingEvent.EventName,
-                    Date = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(1)),
-                    Data = json,
-                    ExpectedVersion = -1,
-                    NewVersion = userPayments.Version
-                }, transaction: trans, commandType: CommandType.StoredProcedure);
-            }
+            AddAggregateInternal(userPayments.PendingEvents, userPayments.AggregateId.Value.ToString(), userPayments.Version, "UserPayments", connection, trans);
             connection.Execute(userIdToAggregateInsert, new { 
                 UserId=userPayments.UserId.Value,
                 AggId=userPayments.AggregateId.Value,
@@ -63,7 +45,7 @@ namespace Adapter.Dapper.AuctionhouseDatabase.UserPayments_
 
         public Task<UserPayments> WithUserId(UserId id)
         {
-            var sql = $"SELECT e.Data FROM dbo.Events e WHERE e.AggId = (SELECT AggId FROM {UserIdToUserPaymentsTable} WHERE UserId = @UserId)";
+            var sql = $"SELECT e.Data FROM dbo.Event e WHERE e.AggId = (SELECT AggId FROM {UserIdToUserPaymentsTable} WHERE UserId = @UserId) ORDER BY Version ASC";
 
             IEnumerable<string> events;
 

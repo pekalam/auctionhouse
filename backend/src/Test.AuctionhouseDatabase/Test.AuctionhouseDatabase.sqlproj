@@ -221,11 +221,8 @@
     <Build Include="tSQLt\User Defined Types\Private.sql" />
     <Build Include="tSQLt\User Defined Types\AssertStringTable.sql" />
     <Build Include="Security\tSQLt.sql" />
-    <Build Include="test Events_CheckEventDate when too early date returns 0.sql" />
-    <Build Include="test insert_event when expected version lower than 0 and events with given aggId doesnt exists inserts events.sql" />
-    <Build Include="test insert_event when expected version equals 0 and event already exist sets version to newVersion.sql" />
     <Build Include="test insert_event when expected version equals 0 and event already exist and newVersion is null increments version.sql" />
-    <Build Include="test insert_event when expected version equals 0 and event doesnt exists adds new event.sql" />
+    <Build Include="test add_aggregate adds aggregate to aggregate table and inserts event with 1 version.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assemblies\tSQLtCLR.dll" />

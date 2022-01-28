@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[test insert_event when expected version equals 0 and event already exist and newVersion is null increments version]
+﻿CREATE PROCEDURE [dbo].[test insert_event when expected version equals existing inserts new event with incremented version of existing]
 AS
 BEGIN
     declare @count int;
@@ -6,16 +6,18 @@ BEGIN
     declare @version bigint;
     declare @expectedVersion bigint = 2;
 
-    EXEC tSQLt.FakeTable 'dbo.Events';
+    EXEC tSQLt.FakeTable 'dbo.Event';
+    EXEC tSQLt.FakeTable 'dbo.Aggregate';
 
     declare @aggId char(36) = N'10A2C48F-BABC-412C-B9BD-6CAA2B4C36BA';
-    insert into Events(Id, AggId, AggName, EventName, Date, Data, Version) values (NEWID(), @aggId, 'agg1', 'event 1', GETDATE(), '{"a": 1}', 1);
+    insert into Aggregate(AggregateId, AggregateName, Version) VALUES (@aggId, 'test', 1);
+    insert into Event(AggId, EventName, Date, Data, Version) values (@aggId, 'event 1', GETDATE(), '{"a": 1}', 1);
 
     declare @now datetime2 = GETDATE();
-    execute dbo.insert_event @AggId = @aggId, @AggName = 'agg1', @EventName = 'event 1', @Date = @now, @Data = '{"a": 1}', @ExpectedVersion = 0, @NewVersion = NULL
+    execute dbo.insert_event @AggId = @aggId, @EventName = 'event 1', @Data = '{"a": 1}', @ExpectedVersion = 1
 
-    select TOP 1 @version = e.Version from Events e order by e.Version desc;
-    select @count = count(*) from Events e;
+    select TOP 1 @version = e.Version from Event e order by e.Version desc;
+    select @count = count(*) from Event e;
 
     EXEC tSQLt.AssertEquals @expectedVersion, @version;
     EXEC tSQLt.AssertEquals @expectedCount, @count;

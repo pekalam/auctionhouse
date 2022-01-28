@@ -1,16 +1,16 @@
-﻿CREATE TABLE dbo.Events
+﻿CREATE TABLE dbo.Event
 (
-    Id        uniqueidentifier PRIMARY KEY NONCLUSTERED,
-    AggId     uniqueidentifier NOT NULL,
-    AggName   varchar(100)     NOT NULL,
-    EventName varchar(100)     NOT NULL,
-    Date      datetime2        NOT NULL,
-    Data      nvarchar(max)    NOT NULL,
-    Version   bigint           NOT NULL,
+    Id        BIGINT PRIMARY KEY NONCLUSTERED IDENTITY,
+    AggId     UNIQUEIDENTIFIER NOT NULL, --TODO rename aggid to aggregateid
+    EventName VARCHAR(100)     NOT NULL,
+    Date      DATETIME2        NOT NULL,
+    Data      NVARCHAR(MAX)    NOT NULL,
+    Version   BIGINT           NOT NULL,
 
     CONSTRAINT CHK_EventName CHECK (LEN(EventName) > 0),
-    CONSTRAINT CHK_AggName CHECK (LEN(AggName) > 0),
-    CONSTRAINT CHK_Date CHECK (dbo.Event_CheckEventDate(Date) = 1)
+    CONSTRAINT CHK_Data CHECK (LEN(Data) > 0),
+    CONSTRAINT [FK_Events_ToAggregates] FOREIGN KEY ([AggId]) REFERENCES [Aggregate]([AggregateId]) ON DELETE CASCADE,
+    UNIQUE CLUSTERED(AggId, Version) --there can be only one event with some aggregate id and particular version
+    -- possible optimizaiton - use sequantial aggid
 );
 GO
-create clustered index Events_AggIdInd on dbo.Events (AggId, Date asc);
