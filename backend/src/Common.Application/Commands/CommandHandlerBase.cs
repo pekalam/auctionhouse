@@ -32,7 +32,6 @@ namespace Common.Application.Commands
         }
 
         public ILogger<RequestStatus> Logger { get; set; }
-        // subclass provides value of this field to decide which mode should be used when saving command status
         public Lazy<IImmediateNotifications> ImmediateNotifications { get; set; }
         public Lazy<ISagaNotifications> SagaNotifications { get; set; }
         public IEventOutbox EventOutbox { get; set; }

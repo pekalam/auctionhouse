@@ -15,7 +15,7 @@ namespace Core.DomainFramework
             Debug.Assert(typeof(T).AssemblyQualifiedName == GetType().AssemblyQualifiedName);
             Value = value;
         }
-
+        //TODO remove implicit operators for beter safety - avoid unintended invalid comparsion when using == operator
         public static implicit operator Guid(GuidId<T> id) => id.Value;
         // not defininng impliicit Guid->GuidId by purpose. User should use factory method
         public override string ToString() => Value.ToString();
