@@ -2,6 +2,7 @@
 using Common.Application.SagaNotifications;
 using Core.Query.EventHandlers;
 using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
 using ReadModel.Core.Model;
 using Users.Domain.Events;
 using Users.DomainEvents;
@@ -20,7 +21,7 @@ namespace ReadModel.Core.EventConsumers
             _logger = logger;
         }
 
-        public override Task Consume(IAppEvent<UserRegistered> message)
+        public override async Task Consume(IAppEvent<UserRegistered> message)
         {
             UserRegistered ev = message.Event;
 
@@ -31,8 +32,13 @@ namespace ReadModel.Core.EventConsumers
             };
             userReadModel.UserIdentity = new UserIdentityRead(ev.UserId, ev.Username);
 
-            _dbContext.UsersReadModel.InsertOne(userReadModel);
-            return Task.CompletedTask;
+            var exists = (await _dbContext.UsersReadModel.Find(u => u.UserIdentity.UserId == ev.UserId.ToString()).FirstOrDefaultAsync()) != null;
+            if(exists)
+            {
+                return;
+            }
+
+            await _dbContext.UsersReadModel.InsertOneAsync(userReadModel);
         }
     }
 }

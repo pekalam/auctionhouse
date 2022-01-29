@@ -21,7 +21,7 @@ namespace ReadModel.Core.Queries.Auction.SingleAuction
 
             //TODO FindOneAndUpdate
             AuctionRead auction = await _readModelDbContext.AuctionsReadModel
-                .Find(filter)
+                .Find(Builders<AuctionRead>.Filter.And(Builders<AuctionRead>.Filter.AuctionIsNotLocked(), filter))
                 .FirstOrDefaultAsync();
             if (auction == null)
             {

@@ -1,6 +1,7 @@
 ﻿using Common.Application.Events;
 using Core.Query.EventHandlers;
 using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
 using ReadModel.Core.Model;
 using static AuctionBids.DomainEvents.Events.V1;
 
@@ -25,6 +26,12 @@ namespace ReadModel.Core.EventConsumers
                 AuctionId = appEvent.Event.AuctionId.ToString(),
                 OwnerId = appEvent.Event.OwnerId.ToString(),
             };
+
+            var exists = (await _dbContext.AuctionBidsReadModel.Find(m => m.AuctionId == auctionBidsRead.AuctionId).FirstOrDefaultAsync()) != null;
+            if (exists)
+            {
+                return;
+            }
 
             await _dbContext.AuctionBidsReadModel.InsertOneAsync(auctionBidsRead);
         }

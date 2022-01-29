@@ -1,6 +1,7 @@
 ﻿using Common.Application.Events;
 using Core.Query.EventHandlers;
 using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
 using ReadModel.Core.Model;
 using System;
 using System.Collections.Generic;
@@ -22,10 +23,17 @@ namespace ReadModel.Core.EventConsumers
 
         public override async Task Consume(IAppEvent<UserPaymentsCreated> appEvent)
         {
-            await _dbContext.UserPaymentsReadModel.InsertOneAsync(new UserPaymentsRead
+            var userPaymentsRead = new UserPaymentsRead
             {
                 UserId = appEvent.Event.UserId.ToString(),
-            });
+            };
+            var exists = (await _dbContext.UserPaymentsReadModel.Find(u => u.UserId == userPaymentsRead.UserId).FirstOrDefaultAsync()) != null;
+            if (exists)
+            {
+                return;
+            }
+
+            await _dbContext.UserPaymentsReadModel.InsertOneAsync(userPaymentsRead);
         }
     }
 }

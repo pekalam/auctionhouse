@@ -22,6 +22,7 @@ namespace ReadModel.Core.Queries.Auction.Auctions.ByCategory
 
             var filtersArr = new List<FilterDefinition<AuctionRead>>()
             {
+                Builders<AuctionRead>.Filter.AuctionIsNotLocked(),
                 Builders<AuctionRead>.Filter.Eq(f => f.Category.Name, request.CategoryNames[0]),
                 Builders<AuctionRead>.Filter.Eq(f => f.Category.SubCategory.Name, request.CategoryNames[1]),
                 Builders<AuctionRead>.Filter.Eq(f => f.Category.SubCategory.SubCategory.Name, request.CategoryNames[2]),

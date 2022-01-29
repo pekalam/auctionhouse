@@ -35,10 +35,16 @@ namespace ReadModel.Core.EventConsumers
 
         public override async Task Consume(IAppEvent<AuctionCreated> appEvent)
         {
+            var exists = (await _dbContext.AuctionsReadModel.Find(a => a.AuctionId == appEvent.Event.AuctionId.ToString()).FirstOrDefaultAsync()) != null;
+            if (exists)
+            {
+                return;
+            }
+
             var category = _categoryBuilder.FromCategoryIdList(appEvent.Event.Category.ToList());
             if (category is null)
             {
-                throw null;
+                throw new NullReferenceException("Invalid categories for auctionCreated event");
             }
             var categoryRead = CategoryRead.FromCategory(category);
 
@@ -51,6 +57,8 @@ namespace ReadModel.Core.EventConsumers
             }
             auctionRead.Owner.UserName = userName;
             auctionRead.Category = categoryRead;
+
+            
 
             _dbContext.AuctionsReadModel
                 .WithWriteConcern(new WriteConcern(mode: "majority", journal: true))

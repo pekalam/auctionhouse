@@ -37,7 +37,7 @@ namespace Core.Query.EventHandlers.AuctionUpdateHandlers
             var category = _categoryBuilder.FromCategoryIdList(ev.Categories.ToList());
             if (category is null)
             {
-                throw null;
+                throw new NullReferenceException("Invalid categories for auctionCategoriesChanged event");
             }
 
             var categoryRead = CategoryRead.FromCategory(category);
@@ -69,7 +69,7 @@ namespace Core.Query.EventHandlers.AuctionUpdateHandlers
             return Builders<AuctionRead>.Update.Set(read => read.Product.Description, ev.Description);
         }
 
-        public override Task Consume(IAppEvent<AuctionUpdateEventGroup> appEvent)
+        public override async Task Consume(IAppEvent<AuctionUpdateEventGroup> appEvent)
         {
             var filter = Builders<AuctionRead>.Filter.Eq(f => f.AuctionId, appEvent.Event.AggregateId.ToString());
             var updates = new List<UpdateDefinition<AuctionRead>>();
@@ -78,8 +78,7 @@ namespace Core.Query.EventHandlers.AuctionUpdateHandlers
 
             var update = Builders<AuctionRead>.Update.Combine(updates);
 
-            _dbContext.AuctionsReadModel.UpdateMany(filter, update);
-            return Task.CompletedTask;
+            await _dbContext.AuctionsReadModel.UpdateManyAsync(filter, update);
         }
     }
 }

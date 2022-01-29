@@ -20,7 +20,7 @@ namespace ReadModel.Core.Queries.Auction.MostViewed
             var mapper = MapperConfigHolder.Configuration.CreateMapper();
 
             var result = await _dbContext.AuctionsReadModel
-                .Find(model => !model.Archived && model.Views > MostViewedAuctionsQuery.VIEWS_MIN)
+                .Find(model => !model.Locked && !model.Archived && model.Views > MostViewedAuctionsQuery.VIEWS_MIN)
                 .Project(model => mapper.Map<MostViewedAuctionsResult>(model))
                 .Limit(MostViewedAuctionsQuery.AUCTIONS_LIMIT)
                 .ToListAsync();
