@@ -104,7 +104,7 @@ export class SignUpPageComponent implements OnInit {
       };
       this.signUpCommand
         .execute(commandArgs)
-        .subscribe((v) => this.router.navigate(['/sign-in']), (err: HttpErrorResponse) => this.handleSignUpError(err));
+        .subscribe((v) => v.status == 'COMPLETED' ? this.router.navigate(['/sign-in']) : this.router.navigateByUrl('/error'), (err: HttpErrorResponse) => this.handleSignUpError(err));
     }
   }
 
