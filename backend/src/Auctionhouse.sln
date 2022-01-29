@@ -139,7 +139,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Auctionhouse.CommandSt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.EfCore.ReadModelNotifications.SetupTestDb", "SetupTestDb\Adapter.EfCore.ReadModelNotifications.SetupTestDb.csproj", "{C8FECAFC-E541-441B-A19B-991D4959D7F6}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventOutbox", "EventOutbox", "{D54B2273-CB0E-46DC-8B5D-B70D72226EDF}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventOutboxStorage", "EventOutboxStorage", "{D54B2273-CB0E-46DC-8B5D-B70D72226EDF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.SqlServer.EventOutboxStorage", "Adapter.SqlServer.EventOutbox\Adapter.SqlServer.EventOutboxStorage.csproj", "{0CE3CE42-E1A0-4804-AF03-D3AD01FFD3EB}"
 EndProject
