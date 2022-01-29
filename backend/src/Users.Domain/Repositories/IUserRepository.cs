@@ -7,5 +7,6 @@ namespace Users.Domain.Repositories
         User AddUser(User user);
         User FindUser(UserId userId);
         void UpdateUser(User user);
+        void DeleteUser(UserId userId);
     }
 }

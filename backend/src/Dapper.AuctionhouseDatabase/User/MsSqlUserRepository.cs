@@ -17,6 +17,11 @@ namespace Adapter.Dapper.AuctionhouseDatabase
             return user;
         }
 
+        public void DeleteUser(UserId userId)
+        {
+            RemoveAggregate(userId.Value.ToString());
+        }
+
         public User? FindUser(UserId userId)
         {
             List<Event>? aggEvents = ReadEvents(userId);

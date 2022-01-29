@@ -22,8 +22,6 @@ namespace Users.Application.Commands.SignUp.AssignUserPayments
 
         protected override async Task<RequestStatus> HandleCommand(AppCommand<AssignUserPaymentsCommand> request, IEventOutbox eventOutbox, CancellationToken cancellationToken)
         {
-            using var uow = _unitOfWorkFactory.Begin();
-
             var user = _users.FindUser(new(request.Command.UserId));
             if (user is null)
             {
@@ -31,7 +29,9 @@ namespace Users.Application.Commands.SignUp.AssignUserPayments
             }
 
             user.AssignUserPayments(new(request.Command.UserPaymentsId));
+            if (user.PendingEvents.Count == 0) return RequestStatus.CreateCompleted(request.CommandContext); //idempotency
 
+            using var uow = _unitOfWorkFactory.Begin();
             _users.UpdateUser(user);
             await eventOutbox.SaveEvents(user.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Saga);
             //await _sagaNotifications.AddUnhandledEvents(request.CommandContext.CorrelationId, user.PendingEvents); //TODO this should be explicit

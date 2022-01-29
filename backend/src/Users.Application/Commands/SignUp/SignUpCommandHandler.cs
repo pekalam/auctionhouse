@@ -58,7 +58,6 @@ namespace Users.Application.Commands.SignUp
             var user = User.Create(username, 1000);
 
             var response = RequestStatus.CreatePending(request.CommandContext);
-            response.MarkAsCompleted();
             var userAuth = new UserAuthenticationData()
             {
                 Password = request.Command.Password,
@@ -72,7 +71,7 @@ namespace Users.Application.Commands.SignUp
                 _userAuthenticationDataRepository.AddUserAuth(userAuth);
                 _userRepository.AddUser(user);
                 await StartSaga(request, user);
-                // user created should not be condirmed
+                // user created should not be confirmed
                 await eventOutbox.SaveEvents(user.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
                 user.MarkPendingEventsAsHandled();
                 

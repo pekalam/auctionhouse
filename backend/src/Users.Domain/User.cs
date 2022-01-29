@@ -73,9 +73,9 @@ namespace Core.Common.Domain.Users
 
         public void AssignUserPayments(UserPaymentsId userPaymentsId)
         {
-            if(UserPaymentsId != null)
+            if(UserPaymentsId is not null)
             {
-                throw new DomainException("UserPayments already assigned");
+                return;
             }
 
             UserPaymentsId = userPaymentsId;

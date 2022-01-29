@@ -19,6 +19,11 @@ namespace Test.Users.Base.Mocks
             return user;
         }
 
+        public void DeleteUser(UserId userId)
+        {
+            _users.Remove(userId);
+        }
+
         public User? FindUser(UserId userId)
         {
             return _users.ContainsKey(userId.Value) ? _users[userId] : null;

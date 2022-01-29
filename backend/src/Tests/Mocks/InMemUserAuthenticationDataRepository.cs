@@ -18,6 +18,11 @@ namespace FunctionalTests.Mocks
             return userAuthenticationData;
         }
 
+        public void DeleteUserAuth(Guid id)
+        {
+            _users.Remove(id);
+        }
+
         public UserAuthenticationData FindUserAuth(string userName)
         {
             return _users.Values.FirstOrDefault(x => x.UserName == userName);

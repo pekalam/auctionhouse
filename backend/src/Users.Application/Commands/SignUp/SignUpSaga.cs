@@ -4,6 +4,7 @@ using Common.Application.Commands;
 using Common.Application.Events;
 using Common.Application.Mediator;
 using Common.Application.SagaNotifications;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,10 +25,20 @@ namespace Users.Application.Commands.SignUp
         public const string CmdContextParamName = "CommandContext";
 
         private readonly Lazy<ImmediateCommandQueryMediator> _mediator;
+        private readonly Lazy<IUserRepository> _users;
+        private readonly Lazy<IUserAuthenticationDataRepository> _userAuthenticationData;
+        private readonly Lazy<IUnitOfWorkFactory> _uowFactory;
+        private readonly Lazy<ILogger<SignUpSaga>> _logger;
+        private readonly Lazy<ISagaNotifications> _sagaNotifications;
 
-        public SignUpSaga(Lazy<ImmediateCommandQueryMediator> mediator)
+        public SignUpSaga(Lazy<ImmediateCommandQueryMediator> mediator, Lazy<IUserRepository> users, Lazy<IUserAuthenticationDataRepository> userAuthenticationData, Lazy<IUnitOfWorkFactory> uowFactory, Lazy<ILogger<SignUpSaga>> logger, Lazy<ISagaNotifications> sagaNotifications)
         {
             _mediator = mediator;
+            _users = users;
+            _userAuthenticationData = userAuthenticationData;
+            _uowFactory = uowFactory;
+            _logger = logger;
+            _sagaNotifications = sagaNotifications;
         }
 
         private CommandContext GetCommandContext(ISagaContext context)
@@ -45,9 +56,15 @@ namespace Users.Application.Commands.SignUp
             return Task.CompletedTask;
         }
 
-        public Task CompensateAsync(UserPaymentsCreated message, ISagaContext context)
+        public async Task CompensateAsync(UserPaymentsCreated message, ISagaContext context)
         {
-            return Task.CompletedTask;
+            using(var uow = _uowFactory.Value.Begin())
+            {
+                _users.Value.DeleteUser(new(message.UserId)); //delete should be idempotent
+                _userAuthenticationData.Value.DeleteUserAuth(message.UserId); //delete should be idempotent
+                await _sagaNotifications.Value.MarkSagaAsFailed(GetCommandContext(context).CorrelationId);
+                uow.Commit();
+            }
         }
 
         public Task HandleAsync(UserCreated message, ISagaContext context)

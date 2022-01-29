@@ -27,7 +27,7 @@ namespace Adapter.Dapper.AuctionhouseDatabase
 
         public UserAuthenticationData FindUserAuth(string userName)
         {
-            var sql = "SELECT UserId, Username, Password, Email FROM dbo.AuthData WHERE Username = @Username";
+            var sql = "SELECT UserId, Username, Password, Email FROM dbo.AuthData WHERE Username = @Username COLLATE SQL_Latin1_General_CP1_CS_AS";
 
             using var connection = new SqlConnection(_connectionSettings.ConnectionString);
             connection.Open();
@@ -83,6 +83,29 @@ namespace Adapter.Dapper.AuctionhouseDatabase
                 if (affected <= 0)
                 {
                     throw new Exception();
+                }
+            }
+            catch (Exception e)
+            {
+                throw new InfrastructureException($"{nameof(UpdateUserAuth)} thrown an exception while updating db", e);
+            }
+        }
+
+        public void DeleteUserAuth(Guid id)
+        {
+            var sql = "DELETE FROM dbo.AuthData WHERE UserId = @UserId";
+
+            try
+            {
+                using var connection = new SqlConnection(_connectionSettings.ConnectionString);
+                connection.Open();
+                var affected = connection.Execute(sql, new
+                {
+                    UserId = id.ToString(),
+                });
+                if (affected <= 0)
+                {
+                    throw new ArgumentException();
                 }
             }
             catch (Exception e)

@@ -11,14 +11,7 @@ namespace Core.Common.Domain.Users
     {
         protected override void Apply(Event @event)
         {
-            try
-            {
-                this.AsDynamic().ApplyEvent(@event);
-            }
-            catch (Exception)
-            {
-                throw new DomainException($"Unrecognized event: {@event.EventName}");
-            }
+            this.AsDynamic().ApplyEvent(@event);
         }
 
         protected override UserUpdateEventGroup CreateUpdateEventGroup()

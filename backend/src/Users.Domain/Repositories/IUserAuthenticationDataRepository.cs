@@ -10,5 +10,6 @@ namespace Users.Domain.Repositories
         UserAuthenticationData AddUserAuth(UserAuthenticationData userAuthenticationData);
         UserAuthenticationData FindUserAuthByEmail(string email);
         void UpdateUserAuth(UserAuthenticationData userAuthenticationData);
+        void DeleteUserAuth(Guid id);
     }
 }
