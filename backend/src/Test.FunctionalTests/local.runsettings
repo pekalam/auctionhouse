@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RunSettings>
-	<!-- Parameters used by tests at runtime -->
-	<TestRunParameters>
-		<Parameter name="sqlserver" value="Data Source=.;Initial Catalog=es;Integrated Security=True;" />
-	<Parameter name="rabbitmq-connection-string" value="host=localhost" />
-	<Parameter name="mongodb-connection-string" value="mongodb://localhost:27017" />
-	</TestRunParameters>
-</RunSettings>

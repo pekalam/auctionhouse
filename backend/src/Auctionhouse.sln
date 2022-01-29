@@ -2,10 +2,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.31911.260
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.FunctionalTests", "Test.FunctionalTests\Test.FunctionalTests.csproj", "{7F73DDC5-6EF1-4D23-8485-5B851D36D39E}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.UnitTests", "Test.UnitTests\Test.UnitTests.csproj", "{45F19B6A-F840-4FCA-8E87-3DB7CD1F3CE8}"
-EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "AuctionhouseDatabase", "AuctionhouseDatabase\AuctionhouseDatabase.sqlproj", "{31D723E0-FB8D-4C1A-8200-68570D4ED3A8}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Test.AuctionhouseDatabase", "Test.AuctionhouseDatabase\Test.AuctionhouseDatabase.sqlproj", "{4DD3B832-93FD-4D4B-9CE7-D4AF44D182E3}"
@@ -14,8 +10,6 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Test.AuctionhouseDatabase",
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.DomainFramework", "Core.DomainFramework\Common.DomainFramework.csproj", "{F7720E68-77D4-401B-B4C6-348CDC8DFB81}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "oldtests", "oldtests", "{43ED7127-AEF4-4CB5-BB7E-F16504A51079}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.AuctionBids_.Domain", "Test.AuctionBids.Domain\Test.AuctionBids_.Domain.csproj", "{0468B76C-CB81-40F0-B979-28A85D0B97D2}"
 EndProject
@@ -210,7 +204,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuctionEndScheduler", "Auct
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.QuartzServiceAuctionEndScheduler", "Test.Adapter.QuartzServiceAuctionEndScheduler\Test.Adapter.QuartzServiceAuctionEndScheduler.csproj", "{D84D3ADD-729B-4B77-8C98-519A65DC42BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockAuctionEndSchedulerEndpointApp", "MockAuctionEndSchedulerEndpointApp\MockAuctionEndSchedulerEndpointApp.csproj", "{2A34BF67-DACF-4682-9475-695045FAF601}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockAuctionEndSchedulerEndpointApp", "MockAuctionEndSchedulerEndpointApp\MockAuctionEndSchedulerEndpointApp.csproj", "{2A34BF67-DACF-4682-9475-695045FAF601}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -218,14 +212,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7F73DDC5-6EF1-4D23-8485-5B851D36D39E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7F73DDC5-6EF1-4D23-8485-5B851D36D39E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7F73DDC5-6EF1-4D23-8485-5B851D36D39E}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{7F73DDC5-6EF1-4D23-8485-5B851D36D39E}.Release|Any CPU.Build.0 = Debug|Any CPU
-		{45F19B6A-F840-4FCA-8E87-3DB7CD1F3CE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{45F19B6A-F840-4FCA-8E87-3DB7CD1F3CE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{45F19B6A-F840-4FCA-8E87-3DB7CD1F3CE8}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{45F19B6A-F840-4FCA-8E87-3DB7CD1F3CE8}.Release|Any CPU.Build.0 = Debug|Any CPU
 		{31D723E0-FB8D-4C1A-8200-68570D4ED3A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{31D723E0-FB8D-4C1A-8200-68570D4ED3A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31D723E0-FB8D-4C1A-8200-68570D4ED3A8}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
@@ -475,8 +461,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{7F73DDC5-6EF1-4D23-8485-5B851D36D39E} = {43ED7127-AEF4-4CB5-BB7E-F16504A51079}
-		{45F19B6A-F840-4FCA-8E87-3DB7CD1F3CE8} = {43ED7127-AEF4-4CB5-BB7E-F16504A51079}
 		{31D723E0-FB8D-4C1A-8200-68570D4ED3A8} = {EAD12EB0-674E-406A-A468-B96C896145D6}
 		{4DD3B832-93FD-4D4B-9CE7-D4AF44D182E3} = {9383D1AB-114E-4B10-AB19-D00A04F083A2}
 		{F7720E68-77D4-401B-B4C6-348CDC8DFB81} = {9D788C3F-96DA-46AE-B5EB-02D4346DDF2C}
