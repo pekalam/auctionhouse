@@ -32,6 +32,8 @@ namespace ReadModel.Core.EventConsumers
                     UserId = appEvent.Event.BuyerId.ToString(),
                     UserName = buyerName,
                 })
+                .Set(a => a.Completed, true)
+                .Set(a => a.Bought, true)
                 .Set(a => a.Archived, true)
                 .Set(a => a.EndDate, appEvent.Event.EndDate);
 
