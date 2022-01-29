@@ -91,7 +91,7 @@ cfg =>
         }
 
 
-        private void RedeliverMessage(IMessage<Error> message, MessageReceivedInfo info)
+        private void HandleErrorMessage(IMessage<Error> message, MessageReceivedInfo info)
         {
             try
             {
@@ -110,7 +110,7 @@ cfg =>
         {
             var errorQueueName = "EasyNetQ_Default_Error_Queue";
             var queue = Bus.Advanced.QueueDeclare(errorQueueName);
-            Bus.Advanced.Consume<Error>(queue, RedeliverMessage);
+            Bus.Advanced.Consume<Error>(queue, HandleErrorMessage);
         }
 
         private async Task PublishInternal (IAppEvent<Event> @event)
