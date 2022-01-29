@@ -14,7 +14,7 @@ services:
     ports:
       - '27017:27017'
     build:
-      context: ../src/Test.FunctionalTests
+      context: ../src/MongoDb/standalone
       dockerfile: Dockerfile-mongo-standalone-replicaset
 
   sql_server:
