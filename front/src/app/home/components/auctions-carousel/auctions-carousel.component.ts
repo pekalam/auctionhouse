@@ -66,8 +66,12 @@ export class AuctionsCarouselComponent implements OnInit, OnDestroy {
   }
 
   private rotate() {
+    const previousAuction = this.currentAuction;
     this.currentAuction = (this.currentAuction + 1) % this.auctions.length;
     if(!Number.isFinite(this.currentAuction)){
+      return;
+    }
+    if(previousAuction == this.currentAuction) { 
       return;
     }
     this.changeAuction(1000);

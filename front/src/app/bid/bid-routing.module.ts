@@ -8,7 +8,7 @@ import { AuctionResolver } from '../core/resolvers/auction.resolver';
 const routes: Routes = [
   {
     path: 'createbid', component: BidCreatePageComponent,
-    resolve: { auction: AuctionResolver }, canActivate: [AuthGuard, /*ServerConnectionGuard*/]
+    resolve: { auction: AuctionResolver }, canActivate: [AuthGuard, ServerConnectionGuard]
   },
 ];
 

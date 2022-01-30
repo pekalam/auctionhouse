@@ -3,6 +3,6 @@ export interface Bid {
   bidId: string;
   auctionId: string;
   userIdentity: UserIdentity;
-  price: number;
+  price: string;
   dateCreated: Date;
 }

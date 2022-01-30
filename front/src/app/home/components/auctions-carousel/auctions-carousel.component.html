@@ -5,7 +5,7 @@
     </div>
     <div class="auction" [routerLink]="['/auction']" [queryParams]="{auctionId: auctions[currentAuction].auctionId}">
       <p class="auction-title">{{auctions[currentAuction].auctionName}}</p>
-      <p class="current-price">{{auctions[currentAuction].actualPrice | currency}}</p>
+      <p class="current-price">{{auctions[currentAuction].actualPrice}}</p>
       <p class="views">Views: {{auctions[currentAuction].views}}</p>
     </div>
   </div>

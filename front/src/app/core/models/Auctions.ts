@@ -19,8 +19,8 @@ export interface AuctionListModel{
   category: Category;
   startDate: Date;
   endDate: Date;
-  buyNowPrice: number;
-  actualPrice: number;
+  buyNowPrice: string;
+  actualPrice: string;
   totalBids: number;
   buyNowOnly: boolean;
   condition: Condition;
@@ -36,8 +36,8 @@ export interface Auction {
   startDate: Date;
   endDate: Date;
   buyNowOnly: boolean;
-  buyNowPrice: number;
-  actualPrice: number;
+  buyNowPrice: string;
+  actualPrice: string;
   winningBid: Bid;
   completed: boolean;
   buyer: UserIdentity;

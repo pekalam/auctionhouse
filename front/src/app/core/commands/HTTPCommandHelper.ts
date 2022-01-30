@@ -1,4 +1,4 @@
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { RequestStatus, WSCommandStatusService } from '../services/WSCommandStatusService';
 import { catchError, switchMap, filter, tap } from 'rxjs/operators';
 import { LoadingService } from '../services/LoadingService';
@@ -24,6 +24,9 @@ export class HTTPCommandHelper {
       }),
       switchMap((response: RequestStatus) => {
         console.log(response);
+        if(!response){
+          return throwError('Received empty command status response')
+        }
         if (response.status === 'COMPLETED') {
           if(showLoading) this.loadingService.setLoading(false);
           return of(response);

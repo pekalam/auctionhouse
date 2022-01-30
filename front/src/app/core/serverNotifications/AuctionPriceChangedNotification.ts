@@ -1,6 +1,13 @@
 import { Bid } from '../models/Bid';
-export const AuctionPriceChangedNotification_Name = 'AuctionPriceChanged';
+
+export function AuctionPriceChangedNotificationName(auctionId: string){
+  return `AuctionPriceChanged-${auctionId}`;
+}
 
 export interface AuctionPriceChangedNotification {
-  winningBid: Bid;
+  newPrice: string;
+  auctionId: string;
+  bidId: string;
+  winnerId: string;
+  dateCreated: Date;
 }

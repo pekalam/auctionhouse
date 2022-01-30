@@ -22,11 +22,11 @@
       <div class="info-container">
         <span>
           <span class="prop-title">Current price:</span>
-          <b> {{auction.actualPrice | currency}}</b>
+          <b> {{auction.actualPrice}}</b>
         </span>
         <span>
           <span class="prop-title">Buy now price:</span>
-          <b> {{auction.buyNowPrice | currency}}</b>
+          <b> {{auction.buyNowPrice}}</b>
         </span>
       </div>
       <hr>
@@ -41,7 +41,7 @@
       </div>
       <div class="buttons-container" *ngIf="showAuctionButtons && !readOnly">
         <button class="buynow-btn" (click)="onBuyNow()"
-          [disabled]="auction.buyNowPrice == 0.0">Buy now</button>
+          [disabled]="auction.buyNowPrice == null">Buy now</button>
         <button class="bid-btn" (click)="onBid()" [disabled]="auction.buyNowOnly">Bid</button>
       </div>
 

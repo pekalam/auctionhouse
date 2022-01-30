@@ -1,4 +1,4 @@
-import { Subject, Observable, of } from 'rxjs';
+import { Subject, Observable, of, throwError } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { RequestStatus } from './WSCommandStatusService';
@@ -6,7 +6,7 @@ import { catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { setTimeout } from 'timers';
 
-export const MAX_RETRY = 3;
+export const MAX_RETRY = 4;
 export const INTERVAL_SEC = 1000;
 
 @Injectable({
@@ -33,8 +33,18 @@ export class HTTPCommandStatusService {
 
 
   private setRetryTimeout(func: () => void, commandId: string, intervalSec: number, retry: number) {
-    const timeout = window.setTimeout(func, intervalSec * retry);
+    const timeout = window.setTimeout(func, this.calcIntervalSec(intervalSec, retry));
     this.handlerMap.set(commandId, timeout);
+  }
+
+  private calcIntervalSec(configuredInterval: number, retry: number){
+    if((retry-1) * configuredInterval >= 3000){
+      //if already waited at least 3sec then wait interval * (2,3,4,5 etc.. until max retry)
+      var mul = (retry - Math.floor(3000 / configuredInterval));
+      mul = mul < 2 ? 2 : mul + 1; 
+      return configuredInterval * mul;
+    }
+    return configuredInterval;
   }
 
   setupServerMessageHandler(commandId: string,
@@ -46,11 +56,15 @@ export class HTTPCommandStatusService {
     const timeoutFunc = () => {
       this.sendCommandStatusRequest(commandId).subscribe((status) => {
         console.log(status);
+        if(!status){
+          statusSubj.error('Received empty status');
+          return;
+        }
         if (status.status === 'PENDING') {
           retry++;
           if (retry === maxRetry) {
             this.clearHandlerInterval(commandId);
-            statusSubj.error(null);
+            statusSubj.error('Reached max timeout');
           } else {
             this.setRetryTimeout(timeoutFunc, commandId, intervalSec, retry);
           }
@@ -64,7 +78,7 @@ export class HTTPCommandStatusService {
           retry++;
           if (retry === maxRetry) {
             this.clearHandlerInterval(commandId);
-            statusSubj.error(null);
+            statusSubj.error('Reached max timeout');
           } else {
             this.setRetryTimeout(timeoutFunc, commandId, intervalSec, retry);
           }

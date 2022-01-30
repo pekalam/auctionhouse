@@ -3,7 +3,6 @@ import { Subject, Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { AuthenticationStateService } from './AuthenticationStateService';
 import { distinctUntilChanged, map, first } from 'rxjs/operators';
-import { AuctionPriceChangedNotification_Name } from '../serverNotifications/AuctionPriceChangedNotification';
 import { environment } from '../../../environments/environment';
 
 export interface RequestStatus {
@@ -66,10 +65,6 @@ export class WSCommandStatusService {
     this.connection.on('failed', (requestStatus: RequestStatus) =>
       this.handleServerMessage(requestStatus));
 
-
-    this.connection.on(AuctionPriceChangedNotification_Name,
-      (values: any) => this.handleServerNotification(AuctionPriceChangedNotification_Name, values));
-
     this.connection.start().then(() => {
       console.log('connection initialized');
       this.connectionStartedSubj.next(true);
@@ -79,7 +74,7 @@ export class WSCommandStatusService {
     });
   }
 
-  private closeConnection() {
+  closeConnection() {
     if (this.connection) {
       this.connection.stop().then(() => {
         console.log('connection closed');
@@ -132,6 +127,7 @@ export class WSCommandStatusService {
 
   deleteServerNotificationHandler(notificationName: string) {
     if (this.notificationHandlerMap.has(notificationName)) {
+      this.connection.off(notificationName);
       this.notificationHandlerMap.delete(notificationName);
     } else {
       throw Error(`Notification handler for ${notificationName} does not exist`);
@@ -140,6 +136,8 @@ export class WSCommandStatusService {
 
   setupServerNotificationHandler<T>(notificationName: string): Observable<T> {
     const newSubj = new Subject<T>();
+    this.connection.on(notificationName,
+      (values: any) => this.handleServerNotification(notificationName, values));
     this.notificationHandlerMap.set(notificationName, newSubj);
     return newSubj.asObservable();
   }

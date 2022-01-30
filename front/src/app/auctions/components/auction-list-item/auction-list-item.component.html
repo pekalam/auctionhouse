@@ -13,18 +13,18 @@
           <div class="current-price-div" *ngIf="!auction.buyNowOnly">
             <span class="current-price-title">Current price</span>
             <br>
-            <span class="currentprice"> {{auction.actualPrice | currency}}</span>
+            <span class="currentprice"> {{auction.actualPrice}}</span>
           </div>
           <div class="current-price-div" *ngIf="auction.buyNowOnly">
             <span class="current-price-title buynow">Buy now price</span>
             <br>
-            <span class="currentprice"> {{auction.buyNowPrice | currency}}</span>
+            <span class="currentprice"> {{auction.buyNowPrice}}</span>
           </div>
 
-          <div class="buynowprice-div" *ngIf="!auction.buyNowOnly" [appVisible]="auction.buyNowPrice == 0.0">
+          <div class="buynowprice-div" *ngIf="!auction.buyNowOnly" [appVisible]="auction.buyNowPrice == null">
             <span class="buynowtext">Buy now price</span>
             <br>
-            <span class="buynowprice"> {{auction.buyNowPrice | currency}}</span>
+            <span class="buynowprice"> {{auction.buyNowPrice}}</span>
           </div>
           <div class="totalbids-div" [appVisible]="auction.buyNowOnly">
             <span>Total bids: {{auction.totalBids}}</span>
