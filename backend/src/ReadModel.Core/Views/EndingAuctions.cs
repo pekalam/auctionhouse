@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 using ReadModel.Core.Model;
 
 namespace ReadModel.Core.Views

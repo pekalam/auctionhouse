@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using Newtonsoft.Json;
 
 namespace ReadModel.Core.Model
 {
@@ -25,9 +25,11 @@ namespace ReadModel.Core.Model
         public DateTime EndDate { get; set; }
 
         public bool BuyNowOnly { get; set; }
+
         [BsonDefaultValue(0)]
         [JsonConverter(typeof(DecimalRoundingConverter))]
         public decimal BuyNowPrice { get; set; }
+
         [BsonDefaultValue(0)]
         [JsonConverter(typeof(DecimalRoundingConverter))]
         public decimal ActualPrice { get; set; }
@@ -37,12 +39,14 @@ namespace ReadModel.Core.Model
 
         [BsonDefaultValue(false)] public bool Completed { get; set; }
         [BsonDefaultValue(false)] public bool Canceled { get; set; }
+
         public bool Bought { get; set; }
         public UserIdentityRead Buyer { get; set; }
         public BidRead WinningBid { get; set; }
 
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime DateCreated { get; set; }
+
         [BsonDefaultValue(false)]
         public bool Archived { get; set; }
 
@@ -50,6 +54,7 @@ namespace ReadModel.Core.Model
         [JsonIgnore]
         public long Version { get; set; }
 
+        [JsonIgnore]
         public bool Locked { get; set; }
     }
 }

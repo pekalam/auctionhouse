@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
-using Newtonsoft.Json;
 
 namespace ReadModel.Core.Model
 {

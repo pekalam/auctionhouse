@@ -1,22 +1,20 @@
 ﻿using System;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace ReadModel.Core.Model
 {
     public class DecimalRoundingConverter : JsonConverter<decimal>
     {
-        public override void WriteJson(JsonWriter writer, decimal value, JsonSerializer serializer)
-        {
-            var rounded = decimal.Round(value, 2, MidpointRounding.AwayFromZero);
-            writer.WriteValue(rounded);
-        }
-
-        public override decimal ReadJson(JsonReader reader, Type objectType, decimal existingValue, bool hasExistingValue,
-            JsonSerializer serializer)
+        public override decimal Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }
 
-        public override bool CanRead => false;
+        public override void Write(Utf8JsonWriter writer, decimal value, JsonSerializerOptions options)
+        {
+            var rounded = decimal.Round(value, 2, MidpointRounding.AwayFromZero);
+            writer.WriteStringValue(rounded.ToString());
+        }
     }
 }
