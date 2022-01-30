@@ -29,3 +29,4 @@ backend/src/AuctionhouseDatabase/AuctionhouseDatabase.jfm
 /backend/src/AuctionhouseDatabase/testbackups
 /backend/src/MongoDb/testbackups
 /backend/src/ArchTests
+/backend/src/Test.AuctionhouseDatabase/Test.AuctionhouseDatabase.jfm
