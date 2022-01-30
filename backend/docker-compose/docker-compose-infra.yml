@@ -1,7 +1,6 @@
 services:
 
   quartz_web_task_service:
-    container_name: quartz_web_task_service
     image: marekbf3/quartz-web-task-service
     ports:
       - '5001:80'
@@ -10,7 +9,6 @@ services:
       - "ManagmentKey=testm"
 
   mongodb:
-    container_name: mongodb
     ports:
       - '27017:27017'
     build:
@@ -18,7 +16,6 @@ services:
       dockerfile: Dockerfile-mongo-standalone-replicaset
 
   sql_server:
-    container_name: sql_server
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=Qwerty1234
@@ -30,7 +27,6 @@ services:
       test: "sqlcmd -S 127.0.0.1 -U sa -P 'Qwerty1234' -d AuctionhouseDatabase -Q 'select distinct 1 from dbo.Events' && sqlcmd -S 127.0.0.1 -U sa -P 'Qwerty1234' -d AuctionhouseDatabase -Q 'select distinct 1 from dbo.AuthData'"
 
   rabbitmq:
-    container_name: rabbitmq
     image: rabbitmq:3-management
     ports:
       - '5672:5672'
