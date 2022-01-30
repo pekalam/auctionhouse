@@ -27,6 +27,7 @@ namespace FunctionalTests.Commands
     using Polly;
     using ReadModel.Core;
     using ReadModel.Core.Model;
+    using ReadModel.Core.Services;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -210,8 +211,8 @@ namespace FunctionalTests.Commands
                 services.AddTransient<IOutboxItemFinder, InMemoryPostProcessOutboxItemService>();
 
                 services.AddSingleton<IEventBus>(s => new InMemoryEventBusDecorator(s.GetRequiredService<RabbitMqEventBus>()));
-
-
+                services.AddSingleton(Mock.Of<IBidRaisedNotifications>());
+                
                 AddServices(services);
             });
         }

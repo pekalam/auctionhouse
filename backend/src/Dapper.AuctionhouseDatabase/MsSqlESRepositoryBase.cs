@@ -95,10 +95,10 @@ namespace Adapter.Dapper.AuctionhouseDatabase
 
             using var connection = new SqlConnection(_connectionSettings.ConnectionString);
             connection.Open();
-            AddAggregateInternal(pendingEvents, aggregateId, aggVersion, aggregateName, connection);
+            AddAggregateCore(pendingEvents, aggregateId, aggVersion, aggregateName, connection);
         }
 
-        protected static void AddAggregateInternal(IReadOnlyCollection<Event> pendingEvents, string aggregateId, long aggVersion, string aggregateName, SqlConnection connection, SqlTransaction? trans = null)
+        protected static void AddAggregateCore(IReadOnlyCollection<Event> pendingEvents, string aggregateId, long aggVersion, string aggregateName, SqlConnection connection, SqlTransaction? trans = null)
         {
             var sp = "dbo.add_aggregate";
 

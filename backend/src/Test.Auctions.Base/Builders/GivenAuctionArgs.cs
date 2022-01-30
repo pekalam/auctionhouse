@@ -34,6 +34,12 @@ namespace Test.Auctions.Base.Builders
             return this;
         }
 
+        public GivenAuctionArgs WithOwner(UserId ownerId)
+        {
+            _ownerId = ownerId;
+            return this;
+        }
+
         public AuctionArgs Build()
         {
             var auctionArgsBuilder = new AuctionArgs.Builder()

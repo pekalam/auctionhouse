@@ -8,8 +8,10 @@ using Auctions.Application.Commands.StartAuctionCreateSession;
 using Auctions.Application.Commands.UpdateAuction;
 using AutoMapper;
 using Common.Application.Mediator;
+using Core.Command.Bid;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Web.Dto.Commands;
 
 namespace Auctionhouse.Command.Controllers
 {
@@ -73,6 +75,19 @@ namespace Auctionhouse.Command.Controllers
                 ImgNum = commandDto.ImgNum,
                 Extension = commandDto.Img.FileName.GetFileExtensionOrThrow400()
             };
+            var status = await _immediateCommandMediator.Send(cmd);
+
+            return this.StatusResponse(status, _mapper.Map<RequestStatusDto>(status));
+        }
+
+        [Authorize(Roles = "User"), HttpPost("raiseBid")]
+        public async Task<ActionResult<RequestStatusDto>> RaiseBid([FromBody] RaiseBidCommandDto commandDto)
+        {
+            if(!Guid.TryParse(commandDto.AuctionId, out var auctionId))
+            {
+                return BadRequest();
+            }
+            var cmd = new RaiseBidCommand(auctionId, commandDto.Price);
             var status = await _immediateCommandMediator.Send(cmd);
 
             return this.StatusResponse(status, _mapper.Map<RequestStatusDto>(status));

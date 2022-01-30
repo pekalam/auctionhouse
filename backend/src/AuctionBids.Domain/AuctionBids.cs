@@ -55,7 +55,7 @@ namespace AuctionBids.Domain
                 throw new InvalidUserIdException("Auction cannot be raised by owner");
             }
 
-            if(userId == _bids.LastOrDefault()?.UserId)
+            if(userId == _bids.Where(b => b.Accepted).LastOrDefault()?.UserId)
             {
                 throw new DomainException("Auction cannot be raised by user who raised it previously");
             }
@@ -156,7 +156,7 @@ namespace AuctionBids.Domain
                     _bids.First(b => b.Id == e.BidId).ApplyInternal(e);
                     break;
                 default:
-                    break;
+                    throw new NotImplementedException();
             }
         }
     }

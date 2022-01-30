@@ -37,12 +37,12 @@ namespace Test.AuctionBids_.Domain
 
         private static AuctionId GivenValidAuctionId()
         {
-            return AuctionId.New();
+            return new AuctionId(Guid.NewGuid());
         }
 
         private static UserId GivenValidUserId()
         {
-            return UserId.New();
+            return new UserId(Guid.NewGuid());
         }
 
         [Fact]
@@ -164,6 +164,20 @@ namespace Test.AuctionBids_.Domain
             var bid = GivenAcceptedBid(newWinner);
 
             Assert.Throws<DomainException>(() => GivenAcceptedBid(newWinner));
+        }
+
+        [Fact]
+        public void Same_user_that_created_unaccpeted_bid_previously_can_raise_bid_if_didnt_create_previous_accepted()
+        {
+            var user1 = GivenValidUserId();
+            _ = GivenAcceptedBid(user1);
+            var user2 = GivenValidUserId();
+
+            var unacceptedBid = auctionBids.TryRaise(user2, auctionBids.CurrentPrice);
+            var acceptedBid = auctionBids.TryRaise(user2, auctionBids.CurrentPrice + 1);
+
+            unacceptedBid.Accepted.Should().BeFalse();
+            acceptedBid.Accepted.Should().BeTrue();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Auctionhouse.Command.Dto;
 using Common.Application;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Auctionhouse.Command
 {
@@ -15,7 +16,7 @@ namespace Auctionhouse.Command
             }
             else
             {
-                return controller.StatusCode(500, dto);
+                return controller.StatusCode((int)HttpStatusCode.BadRequest, dto);
             }
         }
     }

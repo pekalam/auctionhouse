@@ -14,6 +14,9 @@ using Adapter.SqlServer.EventOutbox;
 using Common.Application.Events;
 using OpenTelemetry.Trace;
 using Serilog;
+using Auctionhouse.Query;
+using ReadModel.Core.Services;
+using Auctionhouse.Query.Adapters;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog();
@@ -49,6 +52,9 @@ builder.Services.AddSingleton(new EventBusSettings
 builder.Services.AddEventRedeliveryProcessorService();
 
 builder.Services.AddInstrumentationDecorators();
+
+builder.Services.AddSignalR();
+builder.Services.AddTransient<IBidRaisedNotifications, BidRaisedNotifications>();
 
 CommonInstaller.AddTracing(b => {
     b.AddAspNetCoreInstrumentation();
@@ -86,9 +92,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors();
 
 app.UseAuthorization();
 
+app.MapHub<ApplicationHub>("/app");
 app.MapControllers();
 
 app.Run();

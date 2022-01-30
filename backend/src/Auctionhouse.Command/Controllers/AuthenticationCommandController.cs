@@ -44,9 +44,15 @@ namespace Auctionhouse.Command.Controllers
             var response = await _mediator.Send(cmd);
             if (response.Status == Status.COMPLETED)
             {
-                var userId = (Guid)response.ExtraData["UserId"];
+                var userId = (Guid)response.ExtraData!["UserId"];
                 var username = (string)response.ExtraData["Username"];
                 var token = _jwtService.IssueToken(userId, username);
+
+                HttpContext.Response.Cookies.Append("IdToken", token, new()
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                });
 
                 return Ok(token);
             }
@@ -54,6 +60,19 @@ namespace Auctionhouse.Command.Controllers
             {
                 return Forbid();
             }
+        }
+
+        [HttpPost()]
+        public IActionResult SignOut_()
+        {
+
+            if (!HttpContext.Request.Cookies.ContainsKey("IdToken"))
+            {
+                return BadRequest();
+            }
+
+            HttpContext.Response.Cookies.Delete("IdToken");
+            return Ok();
         }
 
         [HttpPost("changePassword")]

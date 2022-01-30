@@ -22,6 +22,11 @@ namespace AuctionBids.Application.Commands.CreateAuctionBids
         {
             var auctionBids = AuctionBids.CreateNew(new(request.Command.AuctionId), new(request.Command.Owner));
 
+            if (_allAuctionBids.WithAuctionId(new(request.Command.AuctionId)) is not null)
+            {
+                return RequestStatus.CreateCompleted(request.CommandContext);
+            }
+
             using (var uow = _unitOfWorkFactory.Begin())
             {
                 _allAuctionBids.Add(auctionBids);

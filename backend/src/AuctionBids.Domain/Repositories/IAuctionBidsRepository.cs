@@ -6,5 +6,6 @@ namespace AuctionBids.Domain.Repositories
     {
         AuctionBids? WithAuctionId(AuctionId auctionId);
         void Add(AuctionBids auctionBids);
+        void Update(AuctionBids auctionBids);
     }
 }

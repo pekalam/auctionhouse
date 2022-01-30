@@ -6,7 +6,7 @@ using AuctionBids.Domain.Repositories;
 namespace FunctionalTests.Mocks
 {
     using AuctionBids.Domain;
-    using AuctionBidsAuctionId = AuctionBids.Domain.Shared.AuctionId;
+    using AuctionBids.Domain.Shared;
 
     public class InMemoryAuctionBidsRepository : IAuctionBidsRepository
     {
@@ -19,10 +19,14 @@ namespace FunctionalTests.Mocks
             _auctions[auctionBids.AggregateId] = auctionBids;
         }
 
-
-        public AuctionBids WithAuctionId(AuctionBidsAuctionId auctionId)
+        void IAuctionBidsRepository.Update(AuctionBids auctionBids)
         {
-            throw new NotImplementedException();
+            _auctions[auctionBids.AggregateId] = auctionBids;
+        }
+
+        public AuctionBids? WithAuctionId(AuctionId auctionId)
+        {
+            return _auctions.Values.FirstOrDefault(a => a.AuctionId.Value == auctionId.Value);
         }
     }
 }

@@ -42,7 +42,8 @@ namespace ReadModel.Core.Model
 
         public bool Bought { get; set; }
         public UserIdentityRead Buyer { get; set; }
-        public BidRead WinningBid { get; set; }
+        public BidRead? WinningBid { get; set; }
+        public UserIdentityRead? Winner { get; set; }
 
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime DateCreated { get; set; }

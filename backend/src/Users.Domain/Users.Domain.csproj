@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="Test.UsersDomain"/>
+    <InternalsVisibleTo Include="FunctionalTests"/>
   </ItemGroup>
 
   <ItemGroup>

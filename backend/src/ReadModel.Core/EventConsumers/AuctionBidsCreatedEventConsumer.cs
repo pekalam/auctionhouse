@@ -25,6 +25,7 @@ namespace ReadModel.Core.EventConsumers
             {
                 AuctionId = appEvent.Event.AuctionId.ToString(),
                 OwnerId = appEvent.Event.OwnerId.ToString(),
+                AuctionBidsId = appEvent.Event.AuctionBidsId.ToString(),
             };
 
             var exists = (await _dbContext.AuctionBidsReadModel.Find(m => m.AuctionId == auctionBidsRead.AuctionId).FirstOrDefaultAsync()) != null;

@@ -203,7 +203,6 @@ namespace Auctions.Domain
         public AuctionName Name { get; private set; }
         public bool BuyNowOnly { get; private set; }
         public BuyNowPrice? BuyNowPrice { get; private set; }
-        public decimal ActualPrice { get; private set; }
         public AuctionDate StartDate { get; private set; }
         public AuctionDate EndDate { get; private set; }
         public UserId Owner { get; private set; }

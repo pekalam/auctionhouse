@@ -5,26 +5,62 @@ namespace Adapter.Dapper.AuctionhouseDatabase
 {
     using AuctionBids.Domain;
     using Core.Common.Domain;
+    using global::Dapper;
+    using Microsoft.Data.SqlClient;
 
     internal class MsSqlAuctionBidsRepository : MsSqlESRepositoryBaseExceptionDecorator, IAuctionBidsRepository
     {
+        private const string AggregateName = "AuctionBids";
+        private const string AuctionIdToAuctionBidsIdTable = "[dbo].[AuctionIdToAuctionBidsId]";
+
+        private readonly MsSqlConnectionSettings _connectionSettings; //TODO
+
         public MsSqlAuctionBidsRepository(MsSqlConnectionSettings connectionSettings) : base(connectionSettings)
         {
+            _connectionSettings = connectionSettings;
         }
 
         public void Add(AuctionBids auctionBids)
         {
-            AddAggregate(auctionBids.PendingEvents, auctionBids.AggregateId.ToString()!, auctionBids.Version, "AuctionBids");
+            var auctionIdToAuctionBidsIdInsert = $"INSERT INTO {AuctionIdToAuctionBidsIdTable} (AuctionId, AggregateId) VALUES (@AuctionId, @AggregateId)";
+            
+            using var connection = new SqlConnection(_connectionSettings.ConnectionString);
+            connection.Open();
+            using var trans = connection.BeginTransaction();
+            AddAggregateCore(auctionBids.PendingEvents, auctionBids.AggregateId.ToString()!, auctionBids.Version, AggregateName, connection, trans);
+            connection.Execute(auctionIdToAuctionBidsIdInsert, new
+            {
+                AuctionId = auctionBids.AuctionId.ToString(),
+                AggregateId = auctionBids.AggregateId.ToString(),
+            }, transaction: trans);
+            trans.Commit();
+        }
+
+        public void Update(AuctionBids auctionBids)
+        {
+            UpdateAggregate(auctionBids.PendingEvents, auctionBids.AggregateId.ToString(), auctionBids.Version, AggregateName);
         }
 
         public AuctionBids? WithAuctionId(AuctionId auctionId)
         {
-            List<Event>? events = ReadEvents(auctionId.Value);
-            if (events == null)
+            var sql = $"SELECT e.Data FROM dbo.Event e WHERE e.AggId = (SELECT AggregateId FROM {AuctionIdToAuctionBidsIdTable} WHERE AuctionId = @AuctionId) ORDER BY Version ASC";
+
+            IEnumerable<string> events;
+
+            using (var connection = new SqlConnection(_connectionSettings.ConnectionString))
             {
-                return null;
+                connection.Open();
+                events = connection.Query<string>(sql,
+                    new { AuctionId = auctionId.Value.ToString() });
+                if (events.Count() == 0)
+                {
+                    return null;
+                }
             }
-            return AuctionBids.FromEvents(events);
+
+            var aggEvents = DeserializeEvents(events);
+            var auctionBids = AuctionBids.FromEvents(aggEvents);
+            return auctionBids;
         }
     }
 }

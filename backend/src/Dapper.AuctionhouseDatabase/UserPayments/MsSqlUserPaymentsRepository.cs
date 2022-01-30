@@ -12,7 +12,7 @@ namespace Adapter.Dapper.AuctionhouseDatabase.UserPayments_
     internal class MsSqlUserPaymentsRepository : MsSqlESRepositoryBaseExceptionDecorator, IUserPaymentsRepository
     {
         private readonly MsSqlConnectionSettings _connectionSettings;
-        private const string UserIdToUserPaymentsTable = "[dbo].[UserIdToUserPaymentsEventId]";
+        private const string UserIdToUserPaymentsTable = "[dbo].[UserIdToUserPaymentsId]";
 
         public MsSqlUserPaymentsRepository(MsSqlConnectionSettings connectionSettings) : base(connectionSettings)
         {
@@ -26,7 +26,7 @@ namespace Adapter.Dapper.AuctionhouseDatabase.UserPayments_
             using var connection = new SqlConnection(_connectionSettings.ConnectionString);
             connection.Open();
             using var trans = connection.BeginTransaction();
-            AddAggregateInternal(userPayments.PendingEvents, userPayments.AggregateId.Value.ToString(), userPayments.Version, "UserPayments", connection, trans);
+            AddAggregateCore(userPayments.PendingEvents, userPayments.AggregateId.Value.ToString(), userPayments.Version, "UserPayments", connection, trans);
             connection.Execute(userIdToAggregateInsert, new { 
                 UserId=userPayments.UserId.Value,
                 AggId=userPayments.AggregateId.Value,
