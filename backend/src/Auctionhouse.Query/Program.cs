@@ -1,64 +1,57 @@
+using Adapter.EfCore.ReadModelNotifications;
+using Adapter.MongoDb;
+using Adapter.MongoDb.AuctionImage;
+using Auctionhouse.Query;
+using Auctionhouse.Query.Adapters;
+using Categories.Domain;
 using Common.Application;
+using Common.WebAPI;
+using Common.WebAPI.Auth;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using OpenTelemetry.Trace;
 using RabbitMq.EventBus;
 using ReadModel.Core;
 using ReadModel.Core.Model;
-using XmlCategoryTreeStore;
-using Categories.Domain;
-using Common.WebAPI.Auth;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Common.WebAPI;
-using Adapter.MongoDb;
-using Adapter.MongoDb.AuctionImage;
-using Adapter.EfCore.ReadModelNotifications;
-using Adapter.SqlServer.EventOutbox;
-using Common.Application.Events;
-using OpenTelemetry.Trace;
-using Serilog;
-using Auctionhouse.Query;
 using ReadModel.Core.Services;
-using Auctionhouse.Query.Adapters;
+using Serilog;
+using XmlCategoryTreeStore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog();
 
-// Add services to the container.
-builder.Services.AddCommon(typeof(ReadModelInstaller).Assembly);
+//MODULES
+builder.Services.AddCommonQueryDependencies(typeof(ReadModelInstaller).Assembly);
 var rabbitMqSettings = builder.Configuration.GetSection("RabbitMq").Get<RabbitMqSettings>();
 var mongoDbSettings = builder.Configuration.GetSection("MongoDb").Get<MongoDbSettings>();
 builder.Services.AddReadModel(mongoDbSettings, rabbitMqSettings);
-builder.Services.AddXmlCategoryTreeStore(builder.Configuration.GetSection("XmlCategoryTreeStore").Get<XmlCategoryNameStoreSettings>());
 builder.Services.AddCategoriesModule();
 
+//ADAPTERS
+builder.Services.AddXmlCategoryTreeStore(builder.Configuration.GetSection("XmlCategoryTreeStore").Get<XmlCategoryNameStoreSettings>());
+builder.Services.AddMongoDbImageDb(builder.Configuration.GetSection("ImageDb").Get<ImageDbSettings>());
+builder.Services.AddEfCoreReadModelNotifications(builder.Configuration.GetSection("EfCoreReadModelNotificatitons").Get<EfCoreReadModelNotificaitonsOptions>());
+builder.Services.AddTransient<IBidRaisedNotifications, BidRaisedNotifications>();
 
+//WEB API SERVICES
+//jwt auth
+var jwtConfig = builder.Configuration.GetSection("JWT").Get<JwtSettings>();
+var authBuilder = builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
+builder.Services.AddCommonJwtAuth(jwtConfig, authBuilder);
+//logging and tracing
 builder.Services.AddSerilogLogging(builder.Configuration, "Query");
+builder.Services.AddTracing(b =>
+{
+    b.AddAspNetCoreInstrumentation();
+});
+
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddControllers();
-var jwtConfig = builder.Configuration.GetSection("JWT").Get<JwtSettings>();
-var authBuilder = builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
-builder.Services.AddCommonJwtAuth(jwtConfig, authBuilder);
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddMongoDbImageDb(builder.Configuration.GetSection("ImageDb").Get<ImageDbSettings>());
-builder.Services.AddEfCoreReadModelNotifications(builder.Configuration.GetSection("EfCoreReadModelNotificatitons").Get<EfCoreReadModelNotificaitonsOptions>());
-//TODO remove unnecessar query dependecies
-builder.Services.AddSqlServerEventOutboxStorage(builder.Configuration.GetSection("EventOutboxStorage")["ConnectionString"]);
-builder.Services.AddSingleton(new EventBusSettings
-{
-    MaxRedelivery = Convert.ToInt32(builder.Configuration.GetSection(nameof(EventBusSettings))[nameof(EventBusSettings.MaxRedelivery)])
-});
-builder.Services.AddEventRedeliveryProcessorService();
-
-builder.Services.AddInstrumentationDecorators();
-
 builder.Services.AddSignalR();
-builder.Services.AddTransient<IBidRaisedNotifications, BidRaisedNotifications>();
 
-CommonInstaller.AddTracing(b => {
-    b.AddAspNetCoreInstrumentation();
-});
 
 var allowedOrigin = builder.Configuration.GetValue<string>("CORS:AllowedOrigin");
 builder.Services.AddCors(options =>
@@ -76,7 +69,6 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-CommonInstaller.InitAttributeStrategies("ReadModel.Core");
 ReadModelInstaller.InitSubscribers(app.Services);
 XmlCategoryTreeStoreInstaller.Init(app.Services);
 var tracing = CommonInstaller.CreateModuleTracing("Query");

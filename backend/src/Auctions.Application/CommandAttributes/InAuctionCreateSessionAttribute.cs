@@ -20,9 +20,9 @@ namespace Auctions.Application.CommandAttributes
 
         public int Order => 1;
 
-        public static void LoadAuctionCreateSessionCommandMembers(params string[] assemblyNames)
+        public static void LoadAuctionCreateSessionCommandMembers(params Assembly[] assemblies)
         {
-            var commandMembers = assemblyNames.Select(s => Assembly.Load(s))
+            var commandMembers = assemblies
                 .Select(assembly =>
                     assembly.GetTypes()
                         .Where(type => type.GetInterfaces().Contains(typeof(ICommand)))

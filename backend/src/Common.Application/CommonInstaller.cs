@@ -10,39 +10,41 @@ using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using System.Diagnostics;
 using System.Reflection;
 
 namespace Common.Application
 {
-    public static class Tracing
-    {
-        internal static ActivitySource? Source { get; private set; }
-
-        internal static void InitializeTracingSource()
-        {
-            var assemblyName = Assembly.GetEntryAssembly()!.GetName().Name;
-            Source = new ActivitySource(assemblyName!);
-        }
-
-        public static Activity? StartTracing(string activityName)
-        {
-            var activity = Source?.StartActivity(ActivityKind.Internal, name: activityName);
-            return activity;
-        }
-
-        public static Activity? StartTracing(string activityName, CorrelationId correlationId)
-        {
-            var actCtx = new ActivityContext(ActivityTraceId.CreateFromString(correlationId.Value),
-            Activity.Current?.SpanId ?? ActivitySpanId.CreateRandom(), ActivityTraceFlags.Recorded);
-            var activity = Source?.StartActivity(ActivityKind.Internal, name: activityName, parentContext: actCtx);
-            return activity;
-        }
-    }
 
     public static class CommonInstaller
     {
-        public static void AddCommon(this IServiceCollection services, params Assembly[] commandHandlerAssemblies)
+        /// <summary>
+        /// Registers common dependencies for query application
+        /// </summary>
+        public static void AddCommonQueryDependencies(this IServiceCollection services, params Assembly[] commandHandlerAssemblies)
+        {
+            if (commandHandlerAssemblies.Length == 0)
+            {
+                throw new ArgumentException($"{nameof(commandHandlerAssemblies)} cannot be an empty array");
+            }
+
+            services.AddTransient(typeof(Lazy<>), typeof(LazyInstance<>));
+            services.AddTransient<IImplProvider, DefaultDIImplProvider>();
+            services.AddTransient<EventConsumerDependencies>();
+
+            services.AddMediatR(commandHandlerAssemblies,
+cfg =>
+            {
+                cfg.AsTransient();
+            });
+            services.AddTransient<ImmediateCommandQueryMediator>();
+            AttributeStrategies.LoadQueryAttributeStrategies(commandHandlerAssemblies);
+            AuthorizationRequiredAttribute.LoadSignedInUserCmdAndQueryMembers(commandHandlerAssemblies);
+        }
+
+        /// <summary>
+        /// Registers common dependencies for command application
+        /// </summary>
+        public static void AddCommonCommandDependencies(this IServiceCollection services, params Assembly[] commandHandlerAssemblies)
         {
             if(commandHandlerAssemblies.Length == 0)
             {
@@ -50,13 +52,13 @@ namespace Common.Application
             }
 
             services.AddTransient(typeof(Lazy<>), typeof(LazyInstance<>));
-            //services.AddTransient<ISagaNotifications, InMemorySagaNotifications>();
             services.AddTransient<IImplProvider, DefaultDIImplProvider>();
 
 
-            services.AddTransient<EventConsumerDependencies>();
             services.AddConcurrencyUtils();
             services.AddCommandHandling<EventOutbox>(commandHandlerAssemblies);
+            AttributeStrategies.LoadCommandAttributeStrategies(commandHandlerAssemblies);
+            AuthorizationRequiredAttribute.LoadSignedInUserCmdAndQueryMembers(commandHandlerAssemblies);
         }
 
         public static void AddConcurrencyUtils(this IServiceCollection services)
@@ -82,15 +84,6 @@ namespace Common.Application
             services.AddTransient<CommandHandlerBaseDependencies>();
         }
 
-        /// <summary>
-        /// This method addds decorators used in instrumentation. Should be invoked after adding adapters
-        /// </summary>
-        public static void AddInstrumentationDecorators(this IServiceCollection services)
-        {
-            services.Decorate<ISagaNotifications, TracedSagaNotifications>();
-            services.Decorate<IImmediateNotifications, TracedImmediateNotifications>();
-        }
-
         public static void AddOutboxProcessorService(this IServiceCollection services, EventOutboxProcessorSettings outboxProcessorSettings)
         {
             services.AddSingleton(outboxProcessorSettings);
@@ -100,10 +93,13 @@ namespace Common.Application
 
 
         private static TracerProviderBuilder? _tracerProviderBuilder;
-        public static void AddTracing(Action<TracerProviderBuilder>? action = null)
+
+        public static void AddTracing(this IServiceCollection services, Action<TracerProviderBuilder>? action = null)
         {
             Tracing.InitializeTracingSource();
             _tracerProviderBuilder = Sdk.CreateTracerProviderBuilder();
+            services.Decorate<ISagaNotifications, TracedSagaNotifications>();
+            services.Decorate<IImmediateNotifications, TracedImmediateNotifications>();
             action?.Invoke(_tracerProviderBuilder);
         }
 
@@ -114,20 +110,6 @@ namespace Common.Application
                 .AddZipkinExporter()
                 .AddSource(Tracing.Source.Name)
                 .Build();
-        }
-
-        
-
-        public static void InitAttributeStrategies(params string[] commandAssemblyNames)
-        {
-            if(commandAssemblyNames.Length == 0)
-            {
-                throw new ArgumentException(nameof(commandAssemblyNames));
-            }
-
-            AttributeStrategies.LoadCommandAttributeStrategies(commandAssemblyNames);
-            AttributeStrategies.LoadQueryAttributeStrategies(commandAssemblyNames);
-            AuthorizationRequiredAttribute.LoadSignedInUserCmdAndQueryMembers(commandAssemblyNames);
         }
     }
 }

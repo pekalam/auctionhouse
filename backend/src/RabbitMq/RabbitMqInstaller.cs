@@ -17,7 +17,7 @@ namespace RabbitMq.EventBus
             services.AddSingleton<IEventBus>(s => s.GetRequiredService<RabbitMqEventBus>());
         }
 
-        public static void AddEventRedeliveryProcessorService(this IServiceCollection services)
+        public static void AddErrorEventRedeliveryProcessorService(this IServiceCollection services)
         {
             services.AddHostedService<ErrorEventOutboxProcessor>();
         }

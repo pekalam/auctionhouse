@@ -162,6 +162,7 @@ namespace Test.ReadModel.Integration
         private AuctionRead GivenAuctionRead()
         {
             var fixture = new Fixture();
+            fixture.Customize<BidRead>(opt => opt.Without(b => b.Id));
             fixture.Customize<AuctionRead>(opt => opt
                 .Without(a => a.Id)
                 .Without(a => a.Category)

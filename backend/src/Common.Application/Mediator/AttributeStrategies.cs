@@ -9,11 +9,11 @@ namespace Common.Application.Mediator
         internal static Dictionary<Type, List<Action<IImplProvider, CommandContext, ICommand>>> PreHandleCommandAttributeStrategies = null!;
         internal static Dictionary<Type, List<Action<IImplProvider, CommandContext, ICommand>>> PostHandleCommandAttributeStrategies = null!;
 
-        public static void LoadCommandAttributeStrategies(params string[] commandsAssemblyNames)
+        public static void LoadCommandAttributeStrategies(params Assembly[] commandAssemblies)
         {
             PreHandleCommandAttributeStrategies = new Dictionary<Type, List<Action<IImplProvider, CommandContext, ICommand>>>();
             PostHandleCommandAttributeStrategies = new Dictionary<Type, List<Action<IImplProvider, CommandContext, ICommand>>>();
-            var commandAttributes = commandsAssemblyNames.SelectMany(n => Assembly.Load(n).GetTypes())
+            var commandAttributes = commandAssemblies.SelectMany(a => a.GetTypes())
                 .Where(type => type.GetInterfaces().Contains(typeof(ICommand)))
                 .Where(type => type.GetCustomAttributes(typeof(ICommandAttribute), false).Length > 0)
                 .Select(type => new
@@ -40,11 +40,11 @@ namespace Common.Application.Mediator
         internal static Dictionary<Type, List<Action<IImplProvider, IQuery>>> PreHandleQueryAttributeStrategies = null!;
         internal static Dictionary<Type, List<Action<IImplProvider, IQuery>>> PostHandleQueryAttributeStrategies = null!;
 
-        public static void LoadQueryAttributeStrategies(params string[] commandsAssemblyNames)
+        public static void LoadQueryAttributeStrategies(params Assembly[] commandAssemblies)
         {
             PreHandleQueryAttributeStrategies = new();
             PostHandleQueryAttributeStrategies = new();
-            var queryAttributes = commandsAssemblyNames.SelectMany(n => Assembly.Load(n).GetTypes())
+            var queryAttributes = commandAssemblies.SelectMany(a => a.GetTypes())
                 .Where(type => type.GetInterfaces().Contains(typeof(IQuery)))
                 .Where(type => type.GetCustomAttributes(typeof(IQueryAttribute), false).Length > 0)
                 .Select(type => new

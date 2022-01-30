@@ -8,14 +8,10 @@ namespace Auctions.Application
 {
     public static class AuctionsInstaller
     {
-        public static void AddAuctionsModule(this IServiceCollection services, params string[] commandAssemblyNames)
+        public static void AddAuctionsModule(this IServiceCollection services)
         {
-            if (commandAssemblyNames.Length == 0)
-            {
-                throw new ArgumentException(nameof(commandAssemblyNames));
-            }
-            InAuctionCreateSessionAttribute.LoadAuctionCreateSessionCommandMembers(commandAssemblyNames);
-            SaveTempAuctionImageAttribute.LoadImagePathCommandMembers(commandAssemblyNames);
+            InAuctionCreateSessionAttribute.LoadAuctionCreateSessionCommandMembers(typeof(AuctionsInstaller).Assembly);
+            SaveTempAuctionImageAttribute.LoadImagePathCommandMembers(typeof(AuctionsInstaller).Assembly);
             services.AddTransient<AuctionImageService>();
             services.AddTransient<CreateAuctionService>();
             services.AddTransient<AuctionUnlockService>();

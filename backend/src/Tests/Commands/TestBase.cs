@@ -21,9 +21,11 @@ namespace FunctionalTests.Commands
     using Auctions.Domain;
     using Categories.Domain;
     using Common.Application.Commands;
+    using Common.Application.Commands.Attributes;
     using Common.Application.Events;
     using Common.Application.Mediator;
     using Core.Common.Domain;
+    using Core.Query.EventHandlers;
     using Polly;
     using ReadModel.Core;
     using ReadModel.Core.Model;
@@ -82,7 +84,6 @@ namespace FunctionalTests.Commands
             ServiceProvider = BuildConfiguredServiceProvider();
 
             RabbitMqInstaller.InitializeEventSubscriptions(ServiceProvider, assemblyNames.Select(n => Assembly.Load(n)).ToArray());
-            CommonInstaller.InitAttributeStrategies(assemblyNames);
             EfCoreReadModelNotificationsInstaller.Initialize(ServiceProvider);
             ReadModelInstaller.InitSubscribers(ServiceProvider);
             XmlCategoryTreeStoreInstaller.Init(ServiceProvider);
@@ -141,8 +142,14 @@ namespace FunctionalTests.Commands
         {
             return DiTestUtils.CreateServiceProvider((services) =>
             {
-                services.AddCommon(assemblyNames.Select(n => Assembly.Load(n)).ToArray());
-                services.AddAuctionsModule(assemblyNames);
+                var commandHandlerAssemblies = assemblyNames.Select(n => Assembly.Load(n)).ToArray();
+                //missing query dependencies
+                services.AddCommonCommandDependencies(commandHandlerAssemblies);
+                services.AddTransient<EventConsumerDependencies>();
+                AttributeStrategies.LoadQueryAttributeStrategies(commandHandlerAssemblies);
+                //
+
+                services.AddAuctionsModule();
                 services.AddAuctionBidsModule();
                 services.AddUserPaymentsModule();
                 services.AddUsersModule();

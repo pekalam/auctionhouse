@@ -6,6 +6,7 @@ using Common.Application.Commands;
 using FluentAssertions;
 using Moq;
 using System.Linq;
+using System.Reflection;
 using Xunit;
 
 namespace Test.Auctions.Application.InAuctionCreateSessionAttr
@@ -22,7 +23,7 @@ namespace Test.Auctions.Application.InAuctionCreateSessionAttr
         [Fact]
         public void Loads_commands_and_their_members_to_internal_map()
         {
-            InAuctionCreateSessionAttribute.LoadAuctionCreateSessionCommandMembers("Test.Auctions.Application");
+            InAuctionCreateSessionAttribute.LoadAuctionCreateSessionCommandMembers(Assembly.Load("Test.Auctions.Application"));
 
             var internalMap = InAuctionCreateSessionAttribute._auctionCreateSessionCommandProperties;
 
@@ -35,7 +36,7 @@ namespace Test.Auctions.Application.InAuctionCreateSessionAttr
         [Fact]
         public void Should_set_create_session_parameter()
         {
-            InAuctionCreateSessionAttribute.LoadAuctionCreateSessionCommandMembers("Test.Auctions.Application");
+            InAuctionCreateSessionAttribute.LoadAuctionCreateSessionCommandMembers(Assembly.Load("Test.Auctions.Application"));
             var attr = new InAuctionCreateSessionAttribute();
 
             var testSession = AuctionCreateSession.CreateSession(UserId.New());

@@ -4,6 +4,7 @@ using Common.Application.Queries;
 using FluentAssertions;
 using System;
 using System.Linq;
+using System.Reflection;
 using Xunit;
 
 namespace UnitTests.AuthorizationRequiredAttribute_Tests
@@ -44,7 +45,7 @@ namespace UnitTests.AuthorizationRequiredAttribute_Tests
         [Fact]
         public void Loads_commands_and_queries_using_valid_combination_of_attributes_to_property_map()
         {
-            AuthorizationRequiredAttribute.LoadSignedInUserCmdAndQueryMembers("Test.Common.Application");
+            AuthorizationRequiredAttribute.LoadSignedInUserCmdAndQueryMembers(Assembly.Load("Test.Common.Application"));
 
             foreach (var cmdToProp in AuthorizationRequiredAttribute._signedInUserCommandProperties)
             {

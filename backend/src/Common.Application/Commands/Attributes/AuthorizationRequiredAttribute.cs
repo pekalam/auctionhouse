@@ -11,9 +11,9 @@ namespace Common.Application.Commands.Attributes
         internal static HashSet<Type> _commandsWithAttr;
         internal static HashSet<Type> _queriesWithAttr;
 
-        public static void LoadSignedInUserCmdAndQueryMembers(params string[] assemblyNames)
+        public static void LoadSignedInUserCmdAndQueryMembers(params Assembly[] assemblies)
         {
-            var commandMembers = assemblyNames.Select(s => Assembly.Load(s))
+            var commandMembers = assemblies
                 .Select(assembly =>
                     assembly.GetTypes()
                         .Where(type => type.GetInterfaces().Contains(typeof(ICommand)) || type.GetInterfaces().Contains(typeof(IQuery)))
@@ -52,12 +52,12 @@ namespace Common.Application.Commands.Attributes
                 }
             }
 
-            _commandsWithAttr =new(assemblyNames.Select(s => Assembly.Load(s))
+            _commandsWithAttr = new(assemblies
                 .SelectMany(assembly => assembly.GetTypes()
                     .Where(type => type.GetInterfaces().Contains(typeof(ICommand))
                             && type.GetCustomAttribute<AuthorizationRequiredAttribute>() != null
                     )));
-            _queriesWithAttr = new(assemblyNames.Select(s => Assembly.Load(s))
+            _queriesWithAttr = new(assemblies
                 .SelectMany(assembly => assembly.GetTypes()
                     .Where(type => type.GetInterfaces().Contains(typeof(IQuery))
                             && type.GetCustomAttribute<AuthorizationRequiredAttribute>() != null

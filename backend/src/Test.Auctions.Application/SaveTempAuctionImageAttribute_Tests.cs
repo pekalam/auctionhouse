@@ -7,6 +7,7 @@ using FluentAssertions;
 using Moq;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Xunit;
 
 namespace Test.Auctions.Application.SaveTempAuctionImageAttr
@@ -25,7 +26,7 @@ namespace Test.Auctions.Application.SaveTempAuctionImageAttr
         [Fact]
         public void LoadImagePathCommandMembers_loads_valid_commands()
         {
-            SaveTempAuctionImageAttribute.LoadImagePathCommandMembers("Test.Auctions.Application");
+            SaveTempAuctionImageAttribute.LoadImagePathCommandMembers(Assembly.Load("Test.Auctions.Application"));
 
             SaveTempAuctionImageAttribute._auctionImagePathCommandProperties.Count.Should().Be(1);
             var validPath = SaveTempAuctionImageAttribute._auctionImagePathCommandProperties.First();
@@ -43,7 +44,7 @@ namespace Test.Auctions.Application.SaveTempAuctionImageAttr
         [Fact]
         public void SaveImage_saves_auction_img_and_sets_img_to_null()
         {
-            SaveTempAuctionImageAttribute.LoadImagePathCommandMembers("Test.Auctions.Application");
+            SaveTempAuctionImageAttribute.LoadImagePathCommandMembers(Assembly.Load("Test.Auctions.Application"));
 
             var stubTempFileService = new Mock<ITempFileService>();
             stubTempFileService.Setup(f => f.SaveAsTempFile(It.IsAny<Stream>())).Returns("TempFile");

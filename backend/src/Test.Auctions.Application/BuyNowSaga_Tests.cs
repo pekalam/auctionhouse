@@ -154,7 +154,7 @@ namespace Test.Auctions.Application
         private void SetupServices(IEventBus eventBus, out Mock<IAuctionPaymentVerification> paymentVerification, out ServiceProvider serviceProvider)
         {
             var serviceCollection = new ServiceCollection();
-            serviceCollection.AddCommon(new[] { Assembly.Load("Auctions.Application") });
+            serviceCollection.AddCommonCommandDependencies(new[] { Assembly.Load("Auctions.Application") });
 
             serviceCollection.AddChronicle(b => b.UseInMemoryPersistence());
             paymentVerification = new Mock<IAuctionPaymentVerification>();
@@ -180,7 +180,6 @@ f.Verification(It.IsAny<Auction>(), It.IsAny<UserId>(), It.IsAny<string>()))
             //serviceCollection.AddTransient<EventBusHelper>(s => new EventBusHelper(eventBus, new TestAppEventBuilder()));
             serviceProvider = serviceCollection.BuildServiceProvider();
 
-            CommonInstaller.InitAttributeStrategies("Auctions.Application");
         }
     }
 
