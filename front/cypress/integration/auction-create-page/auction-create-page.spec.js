@@ -138,9 +138,31 @@ class AddImagesPageObj {
   }
 }
 
-function listenForRequestCompletion() {
+function listenForRequestCompletion(commandId) {
   return new Promise((resolve, reject) => {
-    let jwt = localStorage.getItem("user");
+    
+    var maxStatusFetch = 60;
+    var interval = setInterval(async () => {
+      const response = await fetch('https://localhost:7263/api/s/status/' + commandId)
+      const json = await response.json()
+      console.log(json)
+      if(json['status'] == 'COMPLETED'){
+        clearInterval(interval)
+        resolve();
+      }
+      if(json['status'] == 'FAILED'){
+        clearInterval(interval)
+        resolve(); 
+      }
+
+      maxStatusFetch--;
+      if(maxStatusFetch < 0){
+        clearInterval(interval)
+        reject();
+      }
+    }, 1000)
+
+/*     let jwt = localStorage.getItem("user");
     console.log(jwt);
 
     let connection = new signalR.HubConnectionBuilder()
@@ -175,7 +197,7 @@ function listenForRequestCompletion() {
       .catch(err => {
         console.log(err);
         throw err;
-      });
+      }); */
   });
 }
 
@@ -184,12 +206,12 @@ describe("Auction create page steps", function() {
     cy.server();
     cy.route({
       method: "POST",
-      url: "/api/signin"
+      url: "/api/c/signin"
     }).as("api");
 
     cy.visit("http://localhost:4200/sign-in");
 
-    cy.get("input[formcontrolname=username]").type("test");
+    cy.get("input[formcontrolname=username]").type("test1");
     cy.get("input[formcontrolname=password]").type("pass");
     cy.get("#sign-in-button")
       .click()
@@ -204,10 +226,8 @@ describe("Auction create page steps", function() {
     cy.server();
     cy.route({
       method: "POST",
-      url: "/api/createAuction"
+      url: "/api/c/createAuction"
     }).as("api");
-
-    let prom = listenForRequestCompletion("auctionCreated");
 
     cy.url().should("eq", "http://localhost:4200/home");
     cy.get("#sell-btn").click();
@@ -242,7 +262,9 @@ describe("Auction create page steps", function() {
       .click()
       .then(_ => {
         cy.wait("@api")
-          .then(xhr => {
+          .then({timeout: 15000}, xhr => {
+            console.log(xhr.responseBody)
+
             assert.equal(
               xhr.status,
               200,
@@ -254,9 +276,9 @@ describe("Auction create page steps", function() {
               );
               assert.fail();
             }, 7000);
-            return prom;
+            return listenForRequestCompletion(xhr.responseBody.commandId);
           })
-          .then(result => {
+          .then({timeout: 15000}, result => {
             console.log("RESOLVED: " + result.correlationId);
             clearTimeout(timeout);
           });
