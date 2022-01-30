@@ -9,6 +9,20 @@ builder.Services.AddScoped<CommandStatusService>();
 var serviceOpt = builder.Configuration.GetSection("CommandStatusServiceOptions").Get<CommandStatusServiceOptions>();
 builder.Services.AddSingleton(serviceOpt);
 
+var allowedOrigin = builder.Configuration.GetValue<string>("CORS:AllowedOrigin");
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()
+            .WithOrigins(allowedOrigin);
+    });
+});
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -20,6 +34,7 @@ if (app.Environment.IsDevelopment() || app.Environment.EnvironmentName == "Test"
 
 app.UseHttpsRedirection();
 
+app.UseCors();
 
 app.MapGet("/api/s/status/{commandId}", async (string commandId, CommandStatusService statusService) =>
 {
