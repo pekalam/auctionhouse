@@ -4,6 +4,7 @@ import { distinctUntilChanged } from 'rxjs/operators';
 import { UserIdentity } from '../models/UserIdentity';
 import * as jwtDecode from 'jwt-decode';
 import { Router } from '@angular/router';
+import { SignOutCommand } from '../commands/auth/SignOutCommand';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,7 @@ export class AuthenticationStateService {
   protected currentUserSubject = new ReplaySubject<UserIdentity | null>(0);
   public currentUser = this.currentUserSubject.asObservable().pipe(distinctUntilChanged());
 
-  constructor(private router: Router) {
+  constructor(private signOutCommand: SignOutCommand) {
     this.isAuthenticatedSubject.next(false);
     this.currentUserSubject.next(null);
   }
@@ -64,9 +65,24 @@ export class AuthenticationStateService {
     }
   }
 
-  logout() {
+  async logout() {
+    try {
+      await this.signOutCommand.execute();
+    } 
+    catch (error) 
+    {
+      // bad request is result of cookie removal
+      if(error.status == 400){ //TODO this error handling logic should be encapsulated in command and it should return here appropriate result
+        this.removeLocalAuthData()
+        return;
+      }
+      throw error;
+    }
+    this.removeLocalAuthData();
+  }
+
+  removeLocalAuthData(){
     localStorage.removeItem('user');
     this.notifyObservers(false, null);
-    this.router.navigateByUrl('home');
   }
 }

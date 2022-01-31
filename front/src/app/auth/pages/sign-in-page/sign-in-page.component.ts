@@ -37,7 +37,7 @@ export class SignInPageComponent implements OnInit {
 
     if (this.form.valid) {
       this.signInCommand
-        .execute(this.form.value.username, this.form.value.password)
+        .execute(this.form.value.username, this.form.value.password) //TODO more elegant solution would be to use promise
         .subscribe((userIdentity) => {
           console.log(this.redirect);
 

@@ -78,7 +78,7 @@ export class AuctionEditPageComponent implements OnInit, OnDestroy {
     this.auctionDataFormValues = {
       auction: !this.auction.buyNowOnly,
       buyNow: this.auction.buyNowOnly || this.auction.buyNowPrice != null,
-      buyNowPrice: this.auction.buyNowPrice,
+      buyNowPrice: Number.parseFloat(this.auction.buyNowPrice),
       name: this.auction.name,
       endDate: this.auction.endDate,
       startDate: this.auction.startDate
@@ -98,7 +98,7 @@ export class AuctionEditPageComponent implements OnInit, OnDestroy {
   private createUpdateCommandArgsFromAuction(): UpdateAuctionCommandArgs {
     return {
       auctionId: this.auction.auctionId,
-      buyNowPrice: this.auction.buyNowPrice,
+      buyNowPrice: Number.parseFloat(this.auction.buyNowPrice),
       category: [this.auction.category.name, this.auction.category.subCategory.name, this.auction.category.subCategory.subCategory.name],
       description: this.auction.product.description,
       endDate: this.auction.endDate,

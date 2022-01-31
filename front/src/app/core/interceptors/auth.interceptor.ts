@@ -6,9 +6,12 @@ import {
   HttpHeaders
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { flatMap, map } from 'rxjs/operators';
+import { Observable, empty, throwError, EMPTY } from 'rxjs';
+import { flatMap, map, tap, catchError } from 'rxjs/operators';
 import { AuthenticationStateService } from '../services/AuthenticationStateService';
+import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { LoadingService } from '../services/LoadingService';
 
 
 @Injectable({
@@ -21,17 +24,30 @@ export class AuthInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    const authHeader = this.authStateService.getAuthorizationHttpHeader();
+    const authHeader = null;//this.authStateService.getAuthorizationHttpHeader();
 
-    if (authHeader) {
+/*     if (authHeader) {
       const request = req.clone({
         setHeaders: {
           Authorization: authHeader
         }
       });
       return next.handle(request);
-    }
-    return next.handle(req);
+    } */
+    return next.handle(req).pipe(
+      tap((h) => {
+        console.log(h);
+        
+      })
+      ,catchError((err: HttpErrorResponse) => {
+      if(err.status == 401){
+        console.log('Token is probably expired');
+        this.authStateService.removeLocalAuthData();
+      }
+      return throwError(err);
+    })); 
+
+    
 
   }
 }

@@ -31,6 +31,9 @@ export class ErrorInterceptor implements HttpInterceptor {
       case 404:
         this.router.navigateByUrl('/not-found');
         break;
+      case 401:
+        this.router.navigateByUrl('/sign-in', { state: { redirect: this.router.url } });
+        break;
       default:
         return false;
     }
@@ -46,9 +49,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 
     return next.handle(req).pipe(catchError((err: HttpErrorResponse) => {
       console.log(err);
-      if (this.handleError(err)) {
-        return EMPTY;
-      }
+      this.handleError(err);
       return throwError(err);
     }));
 

@@ -4,6 +4,8 @@ import { MatMenuModule, MatMenuTrigger } from '@angular/material';
 import { TopAuctionsByTagQuery, TopAuctionsQueryResult, TopAuctionQueryItem } from '../../core/queries/TopAuctionsByTagQuery';
 import { Subject, Observable } from 'rxjs';
 import { distinctUntilChanged, debounceTime, switchMap, tap, map } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { LoadingService } from 'src/app/core/services/LoadingService';
 
 @Component({
   selector: 'app-navigation',
@@ -15,7 +17,7 @@ export class NavigationComponent implements OnInit {
   username: string;
   isAuthenticated = false;
 
-  constructor(public authenticationStateService: AuthenticationStateService, private tagsQuery: TopAuctionsByTagQuery) {
+  constructor(private router: Router, public authenticationStateService: AuthenticationStateService, private loadingService: LoadingService) {
     this.authenticationStateService.currentUser.subscribe((user) => {
       if (user) {
         this.username = user.userName;
@@ -27,7 +29,10 @@ export class NavigationComponent implements OnInit {
   ngOnInit() {
   }
 
-  onLogout() {
-    this.authenticationStateService.logout();
+  async onLogout() {
+    this.loadingService.setLoading(true);
+    await this.authenticationStateService.logout();
+    this.loadingService.setLoading(false);
+    this.router.navigateByUrl('home');
   }
 }
