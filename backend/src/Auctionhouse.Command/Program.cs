@@ -51,7 +51,8 @@ builder.Services.AddUsersModule();
 builder.Services.AddWebApiAdapters();
 builder.Services.AddAuctionImageConversion();
 builder.Services.AddMongoDbImageDb(builder.Configuration.GetSection("ImageDb").Get<ImageDbSettings>());
-builder.Services.AddRabbitMq(builder.Configuration.GetSection("RabbitMq").Get<RabbitMqSettings>());
+builder.Services.AddRabbitMq(builder.Configuration.GetSection("RabbitMq").Get<RabbitMqSettings>(),
+    eventSubscriptionAssemblies: modules);
 builder.Services.AddXmlCategoryTreeStore(builder.Configuration.GetSection("XmlCategoryTreeStore").Get<XmlCategoryNameStoreSettings>());
 builder.Services.AddDapperAuctionhouse(builder.Configuration.GetSection("MSSql").Get<MsSqlConnectionSettings>());
 builder.Services.AddQuartzTimeTaskServiceAuctionEndScheduler(builder.Configuration.GetSection("TimeTaskService").Get<TimeTaskServiceSettings>());
@@ -132,7 +133,6 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-RabbitMqInstaller.InitializeEventSubscriptions(app.Services, modules);
 XmlCategoryTreeStoreInstaller.Init(app.Services);
 
 var tracing = CommonInstaller.CreateModuleTracing("Command");

@@ -21,12 +21,13 @@ builder.Host.UseSerilog();
 
 //MODULES
 builder.Services.AddCommonQueryDependencies(typeof(ReadModelInstaller).Assembly);
-var rabbitMqSettings = builder.Configuration.GetSection("RabbitMq").Get<RabbitMqSettings>();
 var mongoDbSettings = builder.Configuration.GetSection("MongoDb").Get<MongoDbSettings>();
-builder.Services.AddReadModel(mongoDbSettings, rabbitMqSettings);
+builder.Services.AddReadModel(mongoDbSettings);
 builder.Services.AddCategoriesModule();
 
 //ADAPTERS
+var rabbitMqSettings = builder.Configuration.GetSection("RabbitMq").Get<RabbitMqSettings>();
+builder.Services.AddRabbitMq(rabbitMqSettings, eventConsumerAssemblies: new[] { typeof(ReadModelInstaller).Assembly });
 builder.Services.AddXmlCategoryTreeStore(builder.Configuration.GetSection("XmlCategoryTreeStore").Get<XmlCategoryNameStoreSettings>());
 builder.Services.AddMongoDbImageDb(builder.Configuration.GetSection("ImageDb").Get<ImageDbSettings>());
 builder.Services.AddEfCoreReadModelNotifications(builder.Configuration.GetSection("EfCoreReadModelNotificatitons").Get<EfCoreReadModelNotificaitonsOptions>());
@@ -69,7 +70,6 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-ReadModelInstaller.InitSubscribers(app.Services);
 XmlCategoryTreeStoreInstaller.Init(app.Services);
 var tracing = CommonInstaller.CreateModuleTracing("Query");
 

@@ -85,7 +85,7 @@ namespace FunctionalTests.Commands
 
             RabbitMqInstaller.InitializeEventSubscriptions(ServiceProvider, assemblyNames.Select(n => Assembly.Load(n)).ToArray());
             EfCoreReadModelNotificationsInstaller.Initialize(ServiceProvider);
-            ReadModelInstaller.InitSubscribers(ServiceProvider);
+            RabbitMqInstaller.InitializeEventConsumers(ServiceProvider, typeof(ReadModelInstaller).Assembly);
             XmlCategoryTreeStoreInstaller.Init(ServiceProvider);
             ReadModelDbContext = ServiceProvider.GetRequiredService<ReadModelDbContext>();
 
@@ -200,9 +200,6 @@ namespace FunctionalTests.Commands
                 {
                     ConnectionString = "mongodb://localhost:27017",
                     DatabaseName = "appDb"
-                }, new RabbitMqSettings
-                {
-                    ConnectionString = "host=localhost",
                 });
                 services.AddEventConsumers(typeof(ReadModelInstaller));
                 services.AddAutoMapper(typeof(Auctionhouse.Query.QueryMapperProfile).Assembly);

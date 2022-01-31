@@ -1,20 +1,35 @@
-﻿using Adatper.RabbitMq.EventBus.ErrorEventOutbox;
+﻿using Adatper.RabbitMq.EventBus;
+using Adatper.RabbitMq.EventBus.ErrorEventOutbox;
 using Common.Application;
 using Common.Application.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace RabbitMq.EventBus
 {
     public static class RabbitMqInstaller
     {
-        public static void AddRabbitMq(this IServiceCollection services, RabbitMqSettings rabbitMqSettings)
+        public static void AddRabbitMq(this IServiceCollection services, RabbitMqSettings rabbitMqSettings, 
+            Assembly[]? eventSubscriptionAssemblies = null,
+            Assembly[]? eventConsumerAssemblies = null)
         {
             services.AddTransient<IAppEventBuilder, AppEventRabbitMQBuilder>();
             services.AddRabbitMqEventBus(rabbitMqSettings);
             services.AddErrorEventOutbox(new());
             services.AddSingleton<IEventBus>(s => s.GetRequiredService<RabbitMqEventBus>());
+
+            if(eventSubscriptionAssemblies != null || eventConsumerAssemblies != null)
+            {
+                Debug.Assert((eventConsumerAssemblies != null && eventConsumerAssemblies.Length > 0) ||
+                    (eventSubscriptionAssemblies != null && eventSubscriptionAssemblies.Length > 0));
+
+                services.AddHostedService((provider) =>
+                {
+                    return new RabbitMqSubscriptionInitializer(eventSubscriptionAssemblies, eventConsumerAssemblies, provider);
+                });
+            }
         }
 
         public static void AddErrorEventRedeliveryProcessorService(this IServiceCollection services)
@@ -37,22 +52,10 @@ namespace RabbitMq.EventBus
             services.AddTransient<IErrorEventOutboxUnprocessedItemsFinder, RocksDbErrorEventOutboxStorage>();
         }
 
-        public static void InitializeEventSubscriptions(IServiceProvider serviceProvider)
-        {
-            var eventBus = serviceProvider.GetRequiredService<RabbitMqEventBus>();
-            eventBus.InitEventSubscriptions(serviceProvider.GetRequiredService<IImplProvider>(), Assembly.GetCallingAssembly());
-        }
-
         public static void InitializeEventSubscriptions(IServiceProvider serviceProvider, params Assembly[] assemblies)
         {
             var eventBus = serviceProvider.GetRequiredService<RabbitMqEventBus>();
             eventBus.InitEventSubscriptions(serviceProvider.GetRequiredService<IImplProvider>(), assemblies);
-        }
-
-        public static void InitializeEventConsumers(IServiceProvider serviceProvider)
-        {
-            var eventBus = serviceProvider.GetRequiredService<RabbitMqEventBus>();
-            eventBus.InitEventConsumers(serviceProvider.GetRequiredService<IImplProvider>(), Assembly.GetCallingAssembly());
         }
 
         public static void InitializeEventConsumers(IServiceProvider serviceProvider, params Assembly[] assemblies)
