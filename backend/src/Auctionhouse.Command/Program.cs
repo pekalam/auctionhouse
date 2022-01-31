@@ -133,8 +133,6 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-XmlCategoryTreeStoreInstaller.Init(app.Services);
-
 var tracing = CommonInstaller.CreateModuleTracing("Command");
 
 app.UseIdTokenManager();

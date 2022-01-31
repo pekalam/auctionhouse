@@ -1,4 +1,5 @@
-﻿using Core.Common.Domain.Categories;
+﻿using Adapter.XmlCategoryTreeStore;
+using Core.Common.Domain.Categories;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace XmlCategoryTreeStore
@@ -9,6 +10,10 @@ namespace XmlCategoryTreeStore
         {
             services.AddSingleton(settings);
             services.AddSingleton<ICategoryTreeStore, XmlCategoryTreeStore>();
+            services.AddHostedService(provider =>
+            {
+                return new XmlCategoryTreeInitializer(provider);
+            });
         }
 
         public static void Init(IServiceProvider serviceProvider)

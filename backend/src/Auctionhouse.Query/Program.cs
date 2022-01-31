@@ -70,7 +70,6 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-XmlCategoryTreeStoreInstaller.Init(app.Services);
 var tracing = CommonInstaller.CreateModuleTracing("Query");
 
 app.UseIdTokenManager();
