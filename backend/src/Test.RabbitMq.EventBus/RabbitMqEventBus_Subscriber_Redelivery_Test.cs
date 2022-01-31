@@ -68,6 +68,13 @@ namespace Test.Adapter.RabbitMq.EventBus
 
         public RabbitMqEventBus_EventConsumer_Redelivery_Tests()
         {
+            if (RocksDbErrorEventOutboxStorage.db.IsValueCreated)
+            {
+                RocksDbErrorEventOutboxStorage.db.Value.Dispose();
+                Directory.Delete(TestDbPath, true);
+                RocksDbErrorEventOutboxStorage.InitializeRocksDb();
+            }
+
             scenario = EventBusRedeliveryAdapterContract.EventConsumerRedeliveryScenario;
             stubImplProvider = SetupImplProvider(scenario.given.eventConsumer);
             bus = stubImplProvider.Get<RabbitMqEventBus>();
@@ -78,8 +85,6 @@ namespace Test.Adapter.RabbitMq.EventBus
         public void Dispose()
         {
             bus.Dispose();
-            RocksDbErrorEventOutboxStorage.db.Value.Dispose();
-            Directory.Delete(TestDbPath, true);
         }
 
         [Fact]
@@ -114,6 +119,13 @@ namespace Test.Adapter.RabbitMq.EventBus
 
         public RabbitMqEventBus_Subscriber_Redelivery_Test()
         {
+            if (RocksDbErrorEventOutboxStorage.db.IsValueCreated)
+            {
+                RocksDbErrorEventOutboxStorage.db.Value.Dispose();
+                Directory.Delete(TestDbPath, true);
+                RocksDbErrorEventOutboxStorage.InitializeRocksDb();
+            }
+
             scenario = EventBusRedeliveryAdapterContract.EventSubscriberRedeliveryScenario;
             stubImplProvider = SetupImplProvider(scenario.given.eventSubscriber);
             bus = new RabbitMqEventBus(new RabbitMqSettings()
@@ -129,8 +141,6 @@ namespace Test.Adapter.RabbitMq.EventBus
         public void Dispose()
         {
             bus.Dispose();
-            RocksDbErrorEventOutboxStorage.db.Value.Dispose();
-            Directory.Delete(TestDbPath, true);
         }
 
 

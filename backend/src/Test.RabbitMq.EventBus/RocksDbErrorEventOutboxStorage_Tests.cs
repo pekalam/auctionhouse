@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Test.Common.Base.Mocks.Events;
 using Xunit;
@@ -107,13 +108,21 @@ namespace Test.Adapter.RabbitMq.EventBus
         }
     }
 
-    public class RocksDbErrorEventOutboxStorage_Tests : IDisposable //TODO split into separate classes
+    [Collection(nameof(RedeliveryTestCollection))]
+    public class RocksDbErrorEventOutboxStorage_Tests //TODO split into separate classes
     {
         const string TestDbPath = @".\testDb";
         RocksDbErrorEventOutboxStorage storage;
 
         public RocksDbErrorEventOutboxStorage_Tests()
         {
+            if (RocksDbErrorEventOutboxStorage.db.IsValueCreated)
+            {
+                RocksDbErrorEventOutboxStorage.db.Value.Dispose();
+                Directory.Delete(TestDbPath, true);
+                RocksDbErrorEventOutboxStorage.InitializeRocksDb();
+            }
+
             OpenWrite().Dispose();
             RocksDbErrorEventOutboxStorage.Options = new RocksDbOptions
             {
@@ -130,12 +139,6 @@ namespace Test.Adapter.RabbitMq.EventBus
         private static RocksDb OpenReadOnly()
         {
             return RocksDb.OpenReadOnly(new DbOptions().SetCreateIfMissing(true), TestDbPath, true);
-        }
-
-        public void Dispose()
-        {
-            RocksDbErrorEventOutboxStorage.db.Value.Dispose();
-            Directory.Delete(TestDbPath, true);
         }
         
         private static byte[] GetSavedItem(ErrorEventOutboxItem errorEventOutboxItem)

@@ -13,11 +13,16 @@ namespace Adatper.RabbitMq.EventBus.ErrorEventOutbox
         private static readonly byte[] KeyZeroBytes = 0L.ToBytes();
 
         public static RocksDbOptions Options { get; set; } = new();
-        internal static readonly Lazy<RocksDb> db;
+        internal static Lazy<RocksDb> db;
+
+        internal static void InitializeRocksDb()
+        {
+            db = new(() => OpenDb(), LazyThreadSafetyMode.ExecutionAndPublication);
+        }
 
         static RocksDbErrorEventOutboxStorage()
         {
-            db = new(() => OpenDb(), LazyThreadSafetyMode.ExecutionAndPublication);
+            InitializeRocksDb();
         }
 
         private static RocksDb OpenDb()
