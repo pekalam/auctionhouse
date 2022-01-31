@@ -234,6 +234,11 @@ namespace FunctionalTests.Commands
         public virtual void Dispose()
         {
             _modelUserReadTestHelper.Dispose();
+            var eventBusDecorator = (InMemoryEventBusDecorator)ServiceProvider.GetRequiredService<IEventBus>();
+            if(eventBusDecorator._eventBus is RabbitMqEventBus rabbit)
+            {
+                rabbit.Dispose();
+            }
         }
     }
 

@@ -143,6 +143,7 @@ cfg =>
         public void Dispose()
         {
             CancelSubscriptions();
+            _bus.Advanced.Dispose();
             _bus.Dispose();
         }
 

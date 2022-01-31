@@ -18,6 +18,8 @@ using Xunit.Abstractions;
 
 namespace FunctionalTests.Commands
 {
+    [Collection(nameof(CommandTestsCollection))]
+    [Trait("Category", "Functional")]
     public class RaiseBidCommand_Tests : TestBase
     {
         public RaiseBidCommand_Tests(ITestOutputHelper outputHelper) : base(outputHelper, "ReadModel.Core", "AuctionBids.Application", "Auctions.Application", "UserPayments.Application", "Users.Application")

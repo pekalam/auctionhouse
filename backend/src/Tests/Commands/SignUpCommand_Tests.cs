@@ -12,7 +12,9 @@ using Xunit.Abstractions;
 
 namespace FunctionalTests.Commands
 {
-    public class SignUpCommandTests : TestBase, IDisposable
+    [Collection(nameof(CommandTestsCollection))]
+    [Trait("Category", "Functional")]
+    public class SignUpCommandTests : TestBase
     {
         public SignUpCommandTests(ITestOutputHelper outputHelper) : base(outputHelper,
             "UserPayments.Application", "Users.Application")

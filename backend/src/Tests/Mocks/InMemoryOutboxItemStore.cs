@@ -36,7 +36,7 @@ namespace FunctionalTests.Mocks
 
     internal class InMemoryEventBusDecorator : IEventBus
     {
-        private readonly IEventBus _eventBus;
+        internal readonly IEventBus _eventBus;
 
         public InMemoryEventBusDecorator(IEventBus eventBus)
         {

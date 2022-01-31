@@ -24,7 +24,7 @@ namespace FunctionalTests.Commands
 {
     [Collection(nameof(CommandTestsCollection))]
     [Trait("Category", "Functional")]
-    public class UpdateAuctionCommand_Tests : TestBase, IDisposable
+    public class UpdateAuctionCommand_Tests : TestBase
     {
         private readonly InMemoryAuctionRepository auctions;
         private readonly InMemoryAuctionBidsRepository auctionBids;
@@ -37,8 +37,9 @@ namespace FunctionalTests.Commands
             auctionBids = (InMemoryAuctionBidsRepository)ServiceProvider.GetRequiredService<IAuctionBidsRepository>();
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
+            base.Dispose();
             TruncateReadModelNotificaitons(ServiceProvider);
         }
 
