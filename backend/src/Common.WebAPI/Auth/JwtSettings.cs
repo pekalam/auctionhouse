@@ -4,11 +4,13 @@ using System.Text;
 
 namespace Common.WebAPI.Auth
 {
+
     public class JwtSettings
     {
         public string SymetricKey { get; set; }
         public string Issuer { get; set; }
         public string Audience { get; set; }
+        public int ExpireTimeSec { get; set; } = 60 * 5; //5MIN
 
         public void ConfigureJwt(JwtBearerOptions options)
         {
@@ -18,16 +20,24 @@ namespace Common.WebAPI.Auth
             {
                 OnMessageReceived = context =>
                 {
-                    var path = context.HttpContext.Request.Path;
-                    if (path.StartsWithSegments("/app"))
+                    if (!context.HttpContext.EndpointRequiresAuthorization())
                     {
-                        var token = context.Request.Query["token"];
-                        if (!string.IsNullOrEmpty(token))
-                        {
-                            context.Token = token;
-                        }
+                        return Task.CompletedTask;
                     }
 
+                    if (context.HttpContext.IsIdTokenDeactivated())
+                    {
+                        context.Token = null;
+                    }
+                    else
+                    {
+                        context.Token = context.Request.Cookies["IdToken"]; //TODO is bearer header ignored??
+                    }
+                    return Task.CompletedTask;
+                },
+                OnAuthenticationFailed = context =>
+                {
+                    context.Response.Cookies.Delete("IdToken");
                     return Task.CompletedTask;
                 }
             };
@@ -40,10 +50,11 @@ namespace Common.WebAPI.Auth
                 ValidateIssuer = true,
                 ValidIssuer = Issuer,
                 ValidAudience = Audience,
-                ValidateLifetime = false,
+                ValidateLifetime = true,
                 IssuerSigningKey =
                     new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(SymetricKey))
+                        Encoding.UTF8.GetBytes(SymetricKey)),
+                ClockSkew = TimeSpan.Zero,
             };
     }
 }

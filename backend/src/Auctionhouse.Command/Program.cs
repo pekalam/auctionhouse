@@ -84,7 +84,7 @@ builder.Services.AddTracing(b => {
     b.AddAspNetCoreInstrumentation();
 });
 
-builder.Services.AddDistributedMemoryCache();
+builder.Services.AddCacheServices(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -137,6 +137,8 @@ XmlCategoryTreeStoreInstaller.Init(app.Services);
 
 var tracing = CommonInstaller.CreateModuleTracing("Command");
 
+app.UseIdTokenManager();
+app.UseIdTokenSlidingExpiration();
 app.UseAuthentication();
 app.UseStaticFiles();
 app.UseSession();

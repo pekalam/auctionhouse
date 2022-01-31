@@ -1,6 +1,7 @@
 ﻿using Auctionhouse.Command.Dto;
 using AutoMapper;
 using Common.Application;
+using Common.Application.Commands;
 using Common.Application.Mediator;
 using Common.WebAPI.Auth;
 using Microsoft.AspNetCore.Mvc;
@@ -21,12 +22,14 @@ namespace Auctionhouse.Command.Controllers
         private readonly ImmediateCommandQueryMediator _mediator;
         private readonly JwtService _jwtService;
         private readonly IMapper _mapper;
+        private readonly Lazy<IIdTokenManager> _idTokenManager;
 
-        public AuthenticationCommandController(ImmediateCommandQueryMediator immediateCommandMediator, JwtService jwtService, IMapper mapper)
+        public AuthenticationCommandController(ImmediateCommandQueryMediator immediateCommandMediator, JwtService jwtService, IMapper mapper, Lazy<IIdTokenManager> idTokenManager)
         {
             _mediator = immediateCommandMediator;
             _jwtService = jwtService;
             _mapper = mapper;
+            _idTokenManager = idTokenManager;
         }
 
         [HttpPost("signup")]
@@ -62,14 +65,15 @@ namespace Auctionhouse.Command.Controllers
             }
         }
 
-        [HttpPost()]
-        public IActionResult SignOut_()
+        [HttpPost("signout")]
+        public async Task<IActionResult> SignOut_Async()
         {
-
-            if (!HttpContext.Request.Cookies.ContainsKey("IdToken"))
+            if (!HttpContext.Request.Cookies.ContainsKey("IdToken") || HttpContext.Request.Cookies["IdToken"] == null)
             {
                 return BadRequest();
             }
+            var token = HttpContext.Request.Cookies["IdToken"]!;
+            await _idTokenManager.Value.DeactivateToken(token, CancellationToken.None);
 
             HttpContext.Response.Cookies.Delete("IdToken");
             return Ok();

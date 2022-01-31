@@ -2,6 +2,7 @@
 using Common.WebAPI.Auth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
@@ -11,8 +12,28 @@ namespace Common.WebAPI
 {
     public static class CommonWebApiInstaller
     {
+        public static void AddCacheServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = configuration.GetConnectionString("Redis");
+                options.InstanceName = "AuctionhouseCache";
+            });
+        }
+
+        public static void UseIdTokenManager(this WebApplication webApplication)
+        {
+            webApplication.UseMiddleware<IdTokenManagerMiddleware>();
+        }
+
+        public static void UseIdTokenSlidingExpiration(this WebApplication webApplication)
+        {
+            webApplication.UseMiddleware<IdTokenSlidingExpirationMiddleware>();
+        }
+
         public static void AddCommonJwtAuth(this IServiceCollection services, JwtSettings jwtConfig, AuthenticationBuilder authenticationBuilder)
         {
+            services.AddTransient<IIdTokenManager, IdTokenManager>();
             services.AddSingleton(jwtConfig);
             services.AddTransient<JwtService>();
             services.AddTransient<IUserIdentityService, UserIdentityService>();

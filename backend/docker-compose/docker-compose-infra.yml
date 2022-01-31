@@ -44,3 +44,8 @@ services:
     ports:
         - '8011:80'
         - '5341:5341'
+
+  redis:
+    image: redis
+    ports:
+      - '6379:6379'

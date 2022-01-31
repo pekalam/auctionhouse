@@ -51,7 +51,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
-
+builder.Services.AddCacheServices(builder.Configuration);
 
 var allowedOrigin = builder.Configuration.GetValue<string>("CORS:AllowedOrigin");
 builder.Services.AddCors(options =>
@@ -73,6 +73,8 @@ ReadModelInstaller.InitSubscribers(app.Services);
 XmlCategoryTreeStoreInstaller.Init(app.Services);
 var tracing = CommonInstaller.CreateModuleTracing("Query");
 
+app.UseIdTokenManager();
+app.UseIdTokenSlidingExpiration();
 app.UseAuthentication();
 app.UseStaticFiles();
 
