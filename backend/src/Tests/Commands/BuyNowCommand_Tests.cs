@@ -19,6 +19,7 @@ namespace FunctionalTests.Commands
     using Auctions.Domain;
     using Core.Common.Domain;
     using Core.Common.Domain.Users;
+    using MongoDB.Driver;
     using Test.Auctions.Base.Mocks;
     using Test.Users.Base.Mocks;
     using UserPayments.Domain;
@@ -96,13 +97,15 @@ namespace FunctionalTests.Commands
                 var expectedEventsAssertion = ExpectedEventsShouldBePublished(SuccessExpectedEvents);
                 var paymentCompletedAssertion = PaymentStatusShouldBe(user, buyNowCommand, PaymentStatus.Completed);
                 var userCreditsAssertion = UserCreditsShouldBe(initialCredits - createAuctionCommand.BuyNowPrice!, user);
+                var userReadCreditsAssertion = UserReadCreditsShouldBe(initialCredits - createAuctionCommand.BuyNowPrice!, user);
 
                 return sagaCompleted &&
                 allEventsProcessed &&
                 auctionAssertion &&
                 expectedEventsAssertion &&
                 paymentCompletedAssertion &&
-                userCreditsAssertion;
+                userCreditsAssertion &&
+                userReadCreditsAssertion;
             });
         }
 
@@ -128,11 +131,13 @@ namespace FunctionalTests.Commands
                 var expectedEventsAssertion = ExpectedEventsShouldBePublished(FailureExpectedEvents);
                 var paymentStatusAssertion = PaymentStatusShouldBe(user, buyNowCommand, PaymentStatus.Failed);
                 var userCreditsAssertion = UserCreditsShouldBe(initialCredits, user);
+                var userReadCreditsAssertion = UserReadCreditsShouldBe(initialCredits, user);
 
                 return auctionAssertion &&
                 expectedEventsAssertion &&
                 paymentStatusAssertion &&
-                userCreditsAssertion;
+                userCreditsAssertion &&
+                userReadCreditsAssertion;
             });
         }
 
@@ -153,6 +158,12 @@ namespace FunctionalTests.Commands
                 return !auctionLocked && idEqual;
             });
             InMemoryEventBusDecorator.ClearSentEvents();
+        }
+
+        private bool UserReadCreditsShouldBe(decimal credits, User user)
+        {
+            var userRead = ReadModelDbContext.UsersReadModel.Find(u => u.UserIdentity.UserId == user.AggregateId.ToString()).FirstOrDefault();
+            return userRead?.Credits == credits;
         }
 
         private bool AuctionShouldBeCompleted(BuyNowCommand buyNowCommand)

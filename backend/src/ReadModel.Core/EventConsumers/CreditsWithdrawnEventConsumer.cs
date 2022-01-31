@@ -3,12 +3,6 @@ using Core.Query.EventHandlers;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using ReadModel.Core.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Users.Domain.Events;
 using Users.DomainEvents;
 
 namespace ReadModel.Core.EventConsumers
@@ -29,7 +23,7 @@ namespace ReadModel.Core.EventConsumers
                 .Eq(u => u.UserIdentity.UserId, appEvent.Event.UserId.ToString());
             var versionFilter = filterBuilder.Lt(f => f.Version, appEvent.Event.AggVersion);
             var update = Builders<UserRead>.Update
-                .Inc(u => u.Credits, appEvent.Event.Amount > 0 ? -appEvent.Event.Amount : 0m)
+                .Set(u => u.Credits, appEvent.Event.AccountBalance)
                 .Set(u => u.Version, appEvent.Event.AggVersion);
 
             await _dbContext.UsersReadModel

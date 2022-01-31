@@ -142,7 +142,7 @@ namespace Core.Common.Domain.Users
             }
 
             
-            ApplyEvent(AddEvent(new CreditsWithdrawn(lockedFunds.Amount, AggregateId,lockedFundsId.Value)));
+            ApplyEvent(AddEvent(new CreditsWithdrawn(lockedFunds.Amount, AggregateId,lockedFundsId.Value, Credits)));
         }
         private void ApplyEvent(CreditsWithdrawn ev)
         {
