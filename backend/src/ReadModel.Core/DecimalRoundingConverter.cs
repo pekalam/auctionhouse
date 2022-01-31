@@ -14,7 +14,7 @@ namespace ReadModel.Core.Model
         public override void Write(Utf8JsonWriter writer, decimal value, JsonSerializerOptions options)
         {
             var rounded = decimal.Round(value, 2, MidpointRounding.AwayFromZero);
-            writer.WriteStringValue(rounded.ToString());
+            writer.WriteStringValue(rounded.ToString(rounded % 1 == 0 ? "F0" : "F2"));
         }
     }
 }
