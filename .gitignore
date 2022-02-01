@@ -30,3 +30,9 @@ backend/src/AuctionhouseDatabase/AuctionhouseDatabase.jfm
 /backend/src/MongoDb/testbackups
 /backend/src/ArchTests
 /backend/src/Test.AuctionhouseDatabase/Test.AuctionhouseDatabase.jfm
+
+.vs/slnx.sqlite
+
+.vs/VSWorkspaceState.json
+
+.vscode/settings.json
