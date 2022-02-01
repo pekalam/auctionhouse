@@ -160,7 +160,7 @@ namespace FunctionalTests.Commands
                 services.AddSingleton<IAuctionRepository, InMemoryAuctionRepository>();
                 services.AddSingleton<IAuctionBidsRepository, InMemoryAuctionBidsRepository>();
                 services.AddSingleton<IUserRepository, InMemoryUserRepository>();
-                services.AddTransient<IConvertCategoryNamesToRootToLeafIds, ConvertCategoryNamesToRootToLeafIdsMock>();
+                services.AddTransient<ICategoryNamesToTreeIdsConversion, ConvertCategoryNamesToRootToLeafIdsMock>();
                 services.AddTransient(s => Mock.Of<ILogger<CreateAuctionCommandHandler>>());
                 services.AddTransient<CreateAuctionService>();
                 services.AddTransient<IAuctionEndScheduler, AuctionEndSchedulerMock>();

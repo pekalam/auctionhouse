@@ -14,11 +14,11 @@ namespace Auctions.Application.Commands.UpdateAuction
     {
         private readonly IAuctionRepository _auctions;
         private readonly ILogger<UpdateAuctionCommandHandler> _logger;
-        private readonly IConvertCategoryNamesToRootToLeafIds _convertCategoryNamesToIds;
+        private readonly ICategoryNamesToTreeIdsConversion _convertCategoryNamesToIds;
         private readonly OptimisticConcurrencyHandler _optimisticConcurrencyHandler;
 
         public UpdateAuctionCommandHandler(IAuctionRepository auctions, ILogger<UpdateAuctionCommandHandler> logger,
-            CommandHandlerBaseDependencies dependencies, IConvertCategoryNamesToRootToLeafIds convertCategoryNamesToIds,
+            CommandHandlerBaseDependencies dependencies, ICategoryNamesToTreeIdsConversion convertCategoryNamesToIds,
             OptimisticConcurrencyHandler optimisticConcurrencyHandler)
             : base(ReadModelNotificationsMode.Immediate, dependencies)
         {

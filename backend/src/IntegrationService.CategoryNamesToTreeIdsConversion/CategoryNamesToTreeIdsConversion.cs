@@ -1,15 +1,16 @@
 ﻿using Auctions.Domain.Services;
 using Core.Common.Domain.Categories;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Auctionhouse.Command.Adapters
+namespace IntegrationService.CategoryNamesToTreeIdsConversion
 {
     using Auctions.Domain;
 
-    internal class ConvertCategoryNamesToRootToLeafIds : IConvertCategoryNamesToRootToLeafIds
+    internal class CategoryNamesToTreeIdsConversion : ICategoryNamesToTreeIdsConversion
     {
         private readonly CategoryBuilder _categoryBuilder;
 
-        public ConvertCategoryNamesToRootToLeafIds(CategoryBuilder categoryBuilder)
+        public CategoryNamesToTreeIdsConversion(CategoryBuilder categoryBuilder)
         {
             _categoryBuilder = categoryBuilder;
         }
@@ -28,6 +29,14 @@ namespace Auctionhouse.Command.Adapters
             while (current is not null);
 
             return Task.FromResult(categoryIds.ToArray());
+        }
+    }
+
+    public static class CategoryNamesToTreeIdsConversionInstaller
+    {
+        public static void AddCategoryNamesToTreeIdsConversion(this IServiceCollection services)
+        {
+            services.AddTransient<ICategoryNamesToTreeIdsConversion, CategoryNamesToTreeIdsConversion>();
         }
     }
 }

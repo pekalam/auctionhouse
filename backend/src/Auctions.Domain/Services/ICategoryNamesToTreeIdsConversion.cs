@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Auctions.Domain.Services
 {
-    public interface IConvertCategoryNamesToRootToLeafIds
+    /// <summary>
+    /// Converts names of categories to sequence of category ids coming from tree root to leaf
+    /// </summary>
+    public interface ICategoryNamesToTreeIdsConversion
     {
         Task<CategoryId[]> ConvertNames(string[] categoryNames);
     }

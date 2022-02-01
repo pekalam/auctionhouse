@@ -7,7 +7,7 @@ using static Test.Auctions.Base.Builders.AuctionTestConstants;
 
 namespace Test.Auctions.Base.Mocks
 {
-    internal class TestConvertCategoryNamesToRootToLeafIds : IConvertCategoryNamesToRootToLeafIds
+    internal class TestConvertCategoryNamesToRootToLeafIds : ICategoryNamesToTreeIdsConversion
     {
         public Task<CategoryId[]> ConvertNames(string[] categoryNames)
         {

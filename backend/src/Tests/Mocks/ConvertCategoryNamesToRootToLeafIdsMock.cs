@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace FunctionalTests.Mocks
 {
-    public class ConvertCategoryNamesToRootToLeafIdsMock : IConvertCategoryNamesToRootToLeafIds
+    public class ConvertCategoryNamesToRootToLeafIdsMock : ICategoryNamesToTreeIdsConversion
     {
         public Task<CategoryId[]> ConvertNames(string[] categoryNames)
         {

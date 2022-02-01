@@ -14,20 +14,20 @@ namespace Auctions.Application.Commands.CreateAuction
 {
     public class CreateAuctionCommandHandler : CommandHandlerBase<CreateAuctionCommand>
     {
-        public readonly ILogger<CreateAuctionCommandHandler> _logger;
-        private readonly IConvertCategoryNamesToRootToLeafIds _convertCategoryNames;
+        private readonly ILogger<CreateAuctionCommandHandler> _logger;
+        private readonly ICategoryNamesToTreeIdsConversion _categoryNamesToTreeIdsConversion;
         private readonly ISagaCoordinator _sagaCoordinator;
         private readonly CreateAuctionService _createAuctionService;
         private readonly IUnitOfWorkFactory _uow;
         private readonly IAuctionRepository _auctions;
 
 
-        public CreateAuctionCommandHandler(ILogger<CreateAuctionCommandHandler> logger, IConvertCategoryNamesToRootToLeafIds convertCategoryNames,
+        public CreateAuctionCommandHandler(ILogger<CreateAuctionCommandHandler> logger, ICategoryNamesToTreeIdsConversion categoryNamesToTreeIdsConversion,
             ISagaCoordinator sagaCoordinator, CreateAuctionService createAuctionService, IUnitOfWorkFactory uow, CommandHandlerBaseDependencies dependencies, IAuctionRepository auctions)
             : base(ReadModelNotificationsMode.Saga, dependencies)
         {
             _logger = logger;
-            _convertCategoryNames = convertCategoryNames;
+            _categoryNamesToTreeIdsConversion = categoryNamesToTreeIdsConversion;
             _sagaCoordinator = sagaCoordinator;
             _createAuctionService = createAuctionService;
             _uow = uow;
@@ -69,7 +69,7 @@ namespace Auctions.Application.Commands.CreateAuction
                 .SetName(request.Name)
                 .SetBuyNowOnly(request.BuyNowOnly)
                 .SetOwner(owner);
-            builder = await builder.SetCategories(request.Category.ToArray(), _convertCategoryNames);
+            builder = await builder.SetCategories(request.Category.ToArray(), _categoryNamesToTreeIdsConversion);
             if (request.BuyNowPrice != null)
             {
                 builder.SetBuyNow(request.BuyNowPrice.Value);

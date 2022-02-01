@@ -93,7 +93,7 @@ namespace Auctions.Domain
                 return this;
             }
 
-            public async Task<Builder> SetCategories(string[] categoryNames, IConvertCategoryNamesToRootToLeafIds convertCategoryNamesToIds)
+            public async Task<Builder> SetCategories(string[] categoryNames, ICategoryNamesToTreeIdsConversion convertCategoryNamesToIds)
             {
                 args.Categories = await convertCategoryNamesToIds.ConvertNames(categoryNames);
                 return this;
