@@ -9,4 +9,8 @@ Write-Host "db content description:"
 Get-Content ".\AuctionhouseDatabase\$backupFolder\description.txt"
 Write-Host "`r`n"
 
-docker build -f .\AuctionhouseDatabase\Dockerfile-frombackup --build-arg BACKUP_LOCATION="$backupFolder" -t marekbf3/auctionhouse-sqlserver-backup:"$($args[0])" .\AuctionhouseDatabase
+xcopy 'AuctionhouseDatabase\bin\Debug\*' AuctionhouseDatabase.Docker\buildArtifacts /i /y
+
+docker build --target frombackup --build-arg BACKUP_LOCATION="$backupFolder" -t marekbf3/auctionhouse-sqlserver-backup:"$($args[0])" .\AuctionhouseDatabase.Docker
+
+Remove-Item -Recurse .\AuctionhouseDatabase.Docker\buildArtifacts

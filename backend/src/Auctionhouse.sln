@@ -187,14 +187,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5C8BFF18
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{5FFCFE65-844B-49DF-92BF-56D6A1FD7097}"
 	ProjectSection(SolutionItems) = preProject
-		AuctionhouseDatabase\Dockerfile = AuctionhouseDatabase\Dockerfile
-		AuctionhouseDatabase\Dockerfile-frombackup = AuctionhouseDatabase\Dockerfile-frombackup
-		AuctionhouseDatabase\entrypoint.sh = AuctionhouseDatabase\entrypoint.sh
-		AuctionhouseDatabase\frombackup-entrypoint.sh = AuctionhouseDatabase\frombackup-entrypoint.sh
-		AuctionhouseDatabase\healthcheck.sh = AuctionhouseDatabase\healthcheck.sh
-		..\e2e\bid-command\restore-AuctionhouseDatabase.sql = ..\e2e\bid-command\restore-AuctionhouseDatabase.sql
-		AuctionhouseDatabase\restore-AuctionhouseDatabase.sql = AuctionhouseDatabase\restore-AuctionhouseDatabase.sql
-		AuctionhouseDatabase\wait-for = AuctionhouseDatabase\wait-for
+		AuctionhouseDatabase.Docker\Dockerfile = AuctionhouseDatabase.Docker\Dockerfile
+		AuctionhouseDatabase.Docker\entrypoint.sh = AuctionhouseDatabase.Docker\entrypoint.sh
+		AuctionhouseDatabase.Docker\frombackup-entrypoint.sh = AuctionhouseDatabase.Docker\frombackup-entrypoint.sh
+		AuctionhouseDatabase.Docker\healthcheck.sh = AuctionhouseDatabase.Docker\healthcheck.sh
+		AuctionhouseDatabase.Docker\restore-AuctionhouseDatabase.sql = AuctionhouseDatabase.Docker\restore-AuctionhouseDatabase.sql
+		AuctionhouseDatabase.Docker\wait-for = AuctionhouseDatabase.Docker\wait-for
 	EndProjectSection
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "MongoDb", "MongoDb\MongoDb.njsproj", "{835C31F7-1CA9-490C-86C0-41EEA386D86C}"
@@ -211,13 +209,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntegrationServices", "Inte
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuctionPaymentVerification", "AuctionPaymentVerification", "{CEA3D5B6-99BF-4CB1-AA7B-F9F1C6924A16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationService.AuctionPaymentVerification", "IntegrationService.AuctionPaymentVerification\IntegrationService.AuctionPaymentVerification.csproj", "{BB0F9FDF-9751-4B93-8F50-091D83CAC7B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationService.AuctionPaymentVerification", "IntegrationService.AuctionPaymentVerification\IntegrationService.AuctionPaymentVerification.csproj", "{BB0F9FDF-9751-4B93-8F50-091D83CAC7B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.UserPaymentsBase", "Test.UserPayments.Base\Test.UserPaymentsBase.csproj", "{F132EF37-BB5F-497F-B7E8-99858BB90E20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.UserPaymentsBase", "Test.UserPayments.Base\Test.UserPaymentsBase.csproj", "{F132EF37-BB5F-497F-B7E8-99858BB90E20}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CategoryNamesToTreeIdsConversion", "CategoryNamesToTreeIdsConversion", "{4EED55A6-C808-4F7F-90C2-AA559E0353D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationService.CategoryNamesToTreeIdsConversion", "IntegrationService.CategoryNamesToTreeIdsConversion\IntegrationService.CategoryNamesToTreeIdsConversion.csproj", "{E870F142-D7B8-43A8-B614-3A3751A0C30E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationService.CategoryNamesToTreeIdsConversion", "IntegrationService.CategoryNamesToTreeIdsConversion\IntegrationService.CategoryNamesToTreeIdsConversion.csproj", "{E870F142-D7B8-43A8-B614-3A3751A0C30E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "container-scripts", "container-scripts", "{30ADC9D6-3AB9-41BC-BF7D-60BAC785D706}"
+	ProjectSection(SolutionItems) = preProject
+		AuctionhouseDatabase.Docker\container-scripts\listen-on-health-port.sh = AuctionhouseDatabase.Docker\container-scripts\listen-on-health-port.sh
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -579,6 +582,7 @@ Global
 		{F132EF37-BB5F-497F-B7E8-99858BB90E20} = {8DC5F62A-D2B2-4C3A-9483-A65C9EBC8514}
 		{4EED55A6-C808-4F7F-90C2-AA559E0353D4} = {F9610672-19F2-45CD-8C5B-E48E944D3858}
 		{E870F142-D7B8-43A8-B614-3A3751A0C30E} = {4EED55A6-C808-4F7F-90C2-AA559E0353D4}
+		{30ADC9D6-3AB9-41BC-BF7D-60BAC785D706} = {5FFCFE65-844B-49DF-92BF-56D6A1FD7097}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F4E77E2A-13ED-428A-962C-F0BDF00E9A14}
