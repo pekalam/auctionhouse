@@ -13,6 +13,7 @@ namespace Test.Dapper.AuctionhouseDatabase
     using Adapter.Dapper.AuctionhouseDatabase.UserPayments_;
     using FluentAssertions;
     using UserPayments.Domain;
+    using Test.UserPaymentsBase;
 
     [Trait("Category", "Integration")]
     public class UserPaymentsRepository_Tests
@@ -63,7 +64,7 @@ namespace Test.Dapper.AuctionhouseDatabase
             userPaymentsRepo.Add(userPayments);
             userPayments.MarkPendingEventsAsHandled();
 
-            userPayments.CreateBidPayment(TransactionId.New(), 10m, "test");
+            userPayments.CreateBidPayment(TransactionId.New(), 10m, new GivenPaymentMethod().Build());
             userPaymentsRepo.Update(userPayments);
             userPayments.MarkPendingEventsAsHandled();
 

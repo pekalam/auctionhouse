@@ -12,7 +12,7 @@ namespace UserPayments.Domain.Events
 
         public decimal Amount { get; set; }
 
-        public string PaymentMethod { get; set; }
+        public string PaymentMethodName { get; set; }
 
         public BidPaymentCreated() : base("bidPaymentCreated")
         {

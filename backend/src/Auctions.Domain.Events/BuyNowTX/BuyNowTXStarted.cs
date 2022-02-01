@@ -11,7 +11,7 @@ namespace Auctions.DomainEvents
                 public Guid TransactionId { get; set; }
                 public Guid AuctionId { get; set; }
                 public Guid BuyerId { get; set; }
-                public string PaymentMethod { get; set; }
+                public string PaymentMethodName { get; set; }
                 public decimal Price { get; set; }
 
                 public BuyNowTXStarted() : base("buyNowTXStarted")

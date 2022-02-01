@@ -8,6 +8,6 @@ namespace UserPayments.Application.Commands.CreateBuyNowPayment
         public Guid BuyerId { get; set; }
         public Guid TransactionId { get; set; }
         public decimal Amount { get; set; }
-        public string PaymentMethod { get; set; }
+        public string PaymentMethodName { get; set; }
     }
 }

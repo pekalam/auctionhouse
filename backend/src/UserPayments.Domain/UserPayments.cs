@@ -38,14 +38,14 @@ namespace UserPayments.Domain
 
         public static UserPayments CreateNew(UserId userId) => new UserPayments(UserPaymentsId.New(), new Payment[0], userId);
 
-        public Payment CreateBuyNowPayment(TransactionId transactionId, decimal amount, string paymentMethod, PaymentTargetId? paymentTargetId = null)
+        public Payment CreateBuyNowPayment(TransactionId transactionId, decimal amount, PaymentMethod paymentMethod, PaymentTargetId? paymentTargetId = null)
         {
             var payment = Payment.CreateNew(this, transactionId, UserId, PaymentType.BuyNow, amount, paymentMethod, paymentTargetId);
             _payments.Add(payment);
             return payment;
         }
 
-        public Payment CreateBidPayment(TransactionId transactionId, decimal amount, string paymentMethod) //TODO payment method value object
+        public Payment CreateBidPayment(TransactionId transactionId, decimal amount, PaymentMethod paymentMethod)
         {
             var payment = Payment.CreateNew(this, transactionId, UserId, PaymentType.Bid, amount, paymentMethod);
             _payments.Add(payment);

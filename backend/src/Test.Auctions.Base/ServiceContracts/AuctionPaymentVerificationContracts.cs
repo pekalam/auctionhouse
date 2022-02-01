@@ -7,7 +7,7 @@ namespace Test.Auctions.Base.ServiceContracts
         public Auction auction; public UserId buyer; public string paymentMethod;
     }
 
-    public record AuctionPaymentVerificationScenario(AuctionPaymentVerificationContractArgs Given, bool Expected);
+    public record AuctionPaymentVerificationScenario(AuctionPaymentVerificationContractArgs Given, Task<bool> Expected);
 
 
     public static class AuctionPaymentVerificationContracts
@@ -16,7 +16,7 @@ namespace Test.Auctions.Base.ServiceContracts
         {
             var given = new AuctionPaymentVerificationContractArgs { auction = auction, buyer = userId, paymentMethod = "test" };
             var expected = true;
-            return new(given, expected);
+            return new(given, Task.FromResult(expected));
         }
     }
 }

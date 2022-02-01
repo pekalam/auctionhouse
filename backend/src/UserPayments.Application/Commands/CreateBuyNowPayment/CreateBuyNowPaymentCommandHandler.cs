@@ -33,7 +33,7 @@ namespace UserPayments.Application.Commands.CreateBuyNowPayment
                 if (repeats > 0) userPayments = await _userPayments.WithUserId(new UserId(request.Command.BuyerId));
 
                 var payment = userPayments.CreateBuyNowPayment(new TransactionId(request.Command.TransactionId),
-                                request.Command.Amount, request.Command.PaymentMethod, paymentTargetId: new PaymentTargetId(request.Command.AuctionId));
+                                request.Command.Amount, new(request.Command.PaymentMethodName), paymentTargetId: new PaymentTargetId(request.Command.AuctionId));
 
                 using (var uow = uowFactory.Begin())
                 {

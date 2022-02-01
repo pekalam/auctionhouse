@@ -44,11 +44,12 @@ namespace Test.Auctions.Application
         [Fact]
         public async Task Should_be_completed_when_valid_events_are_published()
         {
-            SetupServices(eventBus, out var paymentVerification, out var serviceProvider);
 
             var auction = new GivenAuction().ValidOfTypeBuyNowAndBid();
+            var buyerId = new UserId(this.buyerId);
+            SetupServices(eventBus, auction, buyerId, out var paymentVerification, out var serviceProvider);
 
-            await auction.Buy(new UserId(buyerId), paymentMethod, paymentVerification.Object, Mock.Of<IAuctionUnlockScheduler>());
+            await auction.Buy(buyerId, paymentMethod, paymentVerification.Object, Mock.Of<IAuctionUnlockScheduler>());
             var transactionId = auction.TransactionId;
             _auctions.AddAuction(auction);
             auction.MarkPendingEventsAsHandled();
@@ -57,7 +58,7 @@ namespace Test.Auctions.Application
 
             await sagaCoordinator.ProcessAsync(new BuyNowTXStarted
             {
-                PaymentMethod = paymentMethod,
+                PaymentMethodName = paymentMethod,
                 BuyerId = buyerId,
                 AuctionId = auction.AggregateId,
                 TransactionId = transactionId.Value,
@@ -86,20 +87,22 @@ namespace Test.Auctions.Application
         [InlineData(true)]
         public async Task Should_run_compensation_actions_when_payment_failure_event_is_sent(bool concurrentScenario)
         {
-            SetupServices(eventBus, out var paymentVerification, out var serviceProvider);
 
             var auction = new GivenAuction().ValidOfTypeBuyNowAndBid();
+            var buyerId = new UserId(this.buyerId);
+            SetupServices(eventBus, auction, buyerId, out var paymentVerification, out var serviceProvider);
 
-            await auction.Buy(new UserId(buyerId), paymentMethod, paymentVerification.Object, Mock.Of<IAuctionUnlockScheduler>());
+            await auction.Buy(buyerId, paymentMethod, paymentVerification.Object, Mock.Of<IAuctionUnlockScheduler>());
             var transactionId = auction.TransactionId;
             _auctions.AddAuction(auction);
             auction.MarkPendingEventsAsHandled();
 
             SetupSagaContextAndCoordinator(serviceProvider, auction, correlationId, commandContext, transactionId, out var ctx, out var sagaCoordinator);
 
+
             await sagaCoordinator.ProcessAsync(new BuyNowTXStarted
             {
-                PaymentMethod = paymentMethod,
+                PaymentMethodName = paymentMethod,
                 BuyerId = buyerId,
                 AuctionId = auction.AggregateId,
                 TransactionId = transactionId.Value,
@@ -111,7 +114,8 @@ namespace Test.Auctions.Application
             {
                 var user2 = UserId.New();
                 auction.Unlock(auction.LockIssuer);
-                await auction.Buy(user2, "test", paymentVerification.Object, Mock.Of<IAuctionUnlockScheduler>());
+                var paymentVerificationForUser2 = new GivenAuctionPaymentVerification().CreateValidMock(auction, user2);
+                await auction.Buy(user2, "test", paymentVerificationForUser2.Object, Mock.Of<IAuctionUnlockScheduler>());
                 auction.MarkPendingEventsAsHandled();
             }
 
@@ -151,16 +155,13 @@ namespace Test.Auctions.Application
             sagaCoordinator = serviceProvider.GetRequiredService<ISagaCoordinator>();
         }
 
-        private void SetupServices(IEventBus eventBus, out Mock<IAuctionPaymentVerification> paymentVerification, out ServiceProvider serviceProvider)
+        private void SetupServices(IEventBus eventBus, Auction auction, UserId buyerId, out Mock<IAuctionPaymentVerification> paymentVerification, out ServiceProvider serviceProvider)
         {
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddCommonCommandDependencies(new[] { Assembly.Load("Auctions.Application") });
 
             serviceCollection.AddChronicle(b => b.UseInMemoryPersistence());
-            paymentVerification = new Mock<IAuctionPaymentVerification>();
-            paymentVerification.Setup(f =>
-f.Verification(It.IsAny<Auction>(), It.IsAny<UserId>(), It.IsAny<string>()))
-.Returns(Task.FromResult(true));
+            paymentVerification = new GivenAuctionPaymentVerification().CreateValidMock(auction, buyerId);
             serviceCollection.AddTransient(typeof(Lazy<>), typeof(LazyInstance<>));
             serviceCollection.AddSingleton<IAuctionRepository>(_auctions);
             serviceCollection.AddTransient<IAuctionUnlockScheduler>(s => Mock.Of<IAuctionUnlockScheduler>());

@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace Test.UserPayments_.Domain
 {
+    using Test.UserPaymentsBase;
     using UserPayments.Domain;
     using UserPayments.Domain.Events;
     using UserPayments.Domain.Shared;
@@ -16,7 +17,6 @@ namespace Test.UserPayments_.Domain
         private TransactionId _transactionId = TransactionId.New();
         private UserId _userId = UserId.New();
         private UserPayments _userPayments;
-        private string _paymentMethod = "paymentMethod1";
 
         public UnitTest1()
         {
@@ -28,7 +28,7 @@ namespace Test.UserPayments_.Domain
         public void Test1()
         {
             _userPayments.MarkPendingEventsAsHandled();
-            var payment = _userPayments.CreateBidPayment(_transactionId, 10m, _paymentMethod);
+            var payment = _userPayments.CreateBidPayment(_transactionId, 10m, new GivenPaymentMethod().Build());
 
             _userPayments.PendingEvents.First().Should().BeOfType<BidPaymentCreated>();
             _userPayments.PendingEvents.Count.Should().Be(1);
@@ -39,7 +39,7 @@ namespace Test.UserPayments_.Domain
             payment.Status.Should().Be(PaymentStatus.InProgress);
             payment.Type.Should().Be(PaymentType.Bid);
             payment.Id.Should().NotBe(Guid.Empty);
-            payment.PaymentMethod.Should().Be(_paymentMethod);
+            payment.PaymentMethod.Should().Be(new GivenPaymentMethod().Build());
         }
 
         [Fact]
@@ -47,7 +47,8 @@ namespace Test.UserPayments_.Domain
         {
             var paymentTargetId = Guid.NewGuid();
             _userPayments.MarkPendingEventsAsHandled();
-            var payment = _userPayments.CreateBuyNowPayment(_transactionId, 10m, _paymentMethod, new PaymentTargetId(paymentTargetId));
+            var paymentMethod = new GivenPaymentMethod().Build();
+            var payment = _userPayments.CreateBuyNowPayment(_transactionId, 10m, paymentMethod, new PaymentTargetId(paymentTargetId));
 
             _userPayments.PendingEvents.First().Should().BeOfType<BuyNowPaymentCreated>();
             _userPayments.PendingEvents.Count.Should().Be(1);
@@ -58,7 +59,7 @@ namespace Test.UserPayments_.Domain
             payment.Status.Should().Be(PaymentStatus.InProgress);
             payment.Type.Should().Be(PaymentType.BuyNow);
             payment.Id.Should().NotBe(Guid.Empty);
-            payment.PaymentMethod.Should().Be(_paymentMethod);
+            payment.PaymentMethod.Should().Be(paymentMethod);
             payment.PaymentTargetId.Value.Should().Be(paymentTargetId);
         }
 
@@ -74,8 +75,9 @@ namespace Test.UserPayments_.Domain
         [Fact]
         public void Test3()
         {
-            _userPayments.CreateBuyNowPayment(_transactionId, 10m, _paymentMethod);
-            _userPayments.CreateBidPayment(_transactionId, 10m, _paymentMethod);
+            var paymentMethod = new GivenPaymentMethod().Build();
+            _userPayments.CreateBuyNowPayment(_transactionId, 10m, paymentMethod);
+            _userPayments.CreateBidPayment(_transactionId, 10m, paymentMethod);
 
             AssertIsRecreated();
         }
@@ -83,7 +85,8 @@ namespace Test.UserPayments_.Domain
         [Fact]
         public void Test4()
         {
-            var payment = _userPayments.CreateBuyNowPayment(_transactionId, 10m, _paymentMethod);
+            var paymentMethod = new GivenPaymentMethod().Build();
+            var payment = _userPayments.CreateBuyNowPayment(_transactionId, 10m, paymentMethod);
 
             _userPayments.ConfirmPayment(payment.Id);
             _userPayments.CompletePayment(payment.Id);

@@ -10,7 +10,7 @@ namespace UserPayments.Domain.Events
         public Guid? PaymentTargetId { get; set; }
 
         public decimal Amount { get; set; }
-        public string PaymentMethod { get; set; }
+        public string PaymentMethodName { get; set; }
 
         public BuyNowPaymentCreated() : base("buyNowPaymentCreated")
         {

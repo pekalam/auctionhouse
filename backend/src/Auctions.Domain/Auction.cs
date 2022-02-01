@@ -6,8 +6,6 @@ using Core.DomainFramework;
 using System.Collections;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Test.IntegrationTests")]
-[assembly: InternalsVisibleTo("Test.DomainModelTests")]
 namespace Auctions.Domain
 {
     public static class AuctionConstantsFactoryValueProvider
@@ -391,7 +389,7 @@ namespace Auctions.Domain
         {
             Lock(lockIssuerId);
 
-            ApplyEvent(AddEvent(new Events.V1.BuyNowTXStarted { TransactionId = Guid.NewGuid(), Price = BuyNowPrice.Value, AuctionId = AggregateId, BuyerId = lockIssuerId, PaymentMethod = paymentMethod, }));
+            ApplyEvent(AddEvent(new Events.V1.BuyNowTXStarted { TransactionId = Guid.NewGuid(), Price = BuyNowPrice.Value, AuctionId = AggregateId, BuyerId = lockIssuerId, PaymentMethodName = paymentMethod, }));
         }
 
         private void TryCancelScheduledAuctionUnlock(IAuctionUnlockScheduler auctionUnlockScheduler)

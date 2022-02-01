@@ -53,7 +53,7 @@ namespace Test.AuctionsDomain
             txStartedEvent.AuctionId.Should().Be(auction.AggregateId);
             txStartedEvent.BuyerId.Should().Be(buyerId);
             txStartedEvent.Price.Should().Be(auction.BuyNowPrice);
-            txStartedEvent.PaymentMethod.Should().Be(auctionPaymentVerificationScenario.Given.paymentMethod);
+            txStartedEvent.PaymentMethodName.Should().Be(auctionPaymentVerificationScenario.Given.paymentMethod);
             txStartedEvent.TransactionId.Should().NotBe(Guid.Empty);
         }
 

@@ -26,7 +26,7 @@ namespace UserPayments.Application.EventSubscriptions
                 AuctionId = appEvent.Event.AuctionId,
                 BuyerId = appEvent.Event.BuyerId,
                 TransactionId = appEvent.Event.TransactionId,
-                PaymentMethod = appEvent.Event.PaymentMethod,
+                PaymentMethodName = appEvent.Event.PaymentMethodName,
                 Amount = appEvent.Event.Price,
             };
             await _mediator.Send(cmd, appEvent.CommandContext);

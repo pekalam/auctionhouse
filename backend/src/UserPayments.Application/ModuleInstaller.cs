@@ -1,10 +1,7 @@
 ﻿using Common.Application;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using UserPayments.Domain.Repositories;
+using UserPayments.Domain.Services;
 
 namespace UserPayments.Application
 {
@@ -13,6 +10,8 @@ namespace UserPayments.Application
         public static void AddUserPaymentsModule(this IServiceCollection services)
         {
             services.AddEventSubscribers(typeof(ModuleInstaller));
+            services.AddTransient<IPaymentMethodRepository, InMemoryPaymentMethodRepository>();
+            services.AddTransient<PaymentMethodVerificationService>();
         }
     }
 }

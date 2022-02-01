@@ -207,6 +207,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockAuctionEndSchedulerEndp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DatabaseProject", "DatabaseProject", "{53FD876C-BB2D-4313-A9C0-0B13D9C56EF0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntegrationServices", "IntegrationServices", "{F9610672-19F2-45CD-8C5B-E48E944D3858}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuctionPaymentVerification", "AuctionPaymentVerification", "{CEA3D5B6-99BF-4CB1-AA7B-F9F1C6924A16}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationService.AuctionPaymentVerification", "IntegrationService.AuctionPaymentVerification\IntegrationService.AuctionPaymentVerification.csproj", "{BB0F9FDF-9751-4B93-8F50-091D83CAC7B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.UserPaymentsBase", "Test.UserPayments.Base\Test.UserPaymentsBase.csproj", "{F132EF37-BB5F-497F-B7E8-99858BB90E20}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -457,6 +465,14 @@ Global
 		{2A34BF67-DACF-4682-9475-695045FAF601}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A34BF67-DACF-4682-9475-695045FAF601}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A34BF67-DACF-4682-9475-695045FAF601}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB0F9FDF-9751-4B93-8F50-091D83CAC7B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB0F9FDF-9751-4B93-8F50-091D83CAC7B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB0F9FDF-9751-4B93-8F50-091D83CAC7B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB0F9FDF-9751-4B93-8F50-091D83CAC7B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F132EF37-BB5F-497F-B7E8-99858BB90E20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F132EF37-BB5F-497F-B7E8-99858BB90E20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F132EF37-BB5F-497F-B7E8-99858BB90E20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F132EF37-BB5F-497F-B7E8-99858BB90E20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -550,6 +566,9 @@ Global
 		{D84D3ADD-729B-4B77-8C98-519A65DC42BF} = {FD995697-1077-45A5-9729-4EEFA17A2DBD}
 		{2A34BF67-DACF-4682-9475-695045FAF601} = {FD995697-1077-45A5-9729-4EEFA17A2DBD}
 		{53FD876C-BB2D-4313-A9C0-0B13D9C56EF0} = {EAD12EB0-674E-406A-A468-B96C896145D6}
+		{CEA3D5B6-99BF-4CB1-AA7B-F9F1C6924A16} = {F9610672-19F2-45CD-8C5B-E48E944D3858}
+		{BB0F9FDF-9751-4B93-8F50-091D83CAC7B7} = {CEA3D5B6-99BF-4CB1-AA7B-F9F1C6924A16}
+		{F132EF37-BB5F-497F-B7E8-99858BB90E20} = {8DC5F62A-D2B2-4C3A-9483-A65C9EBC8514}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F4E77E2A-13ED-428A-962C-F0BDF00E9A14}

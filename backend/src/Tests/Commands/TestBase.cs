@@ -26,6 +26,7 @@ namespace FunctionalTests.Commands
     using Common.Application.Mediator;
     using Core.Common.Domain;
     using Core.Query.EventHandlers;
+    using IntegrationService.AuctionPaymentVerification;
     using Polly;
     using ReadModel.Core;
     using ReadModel.Core.Model;
@@ -38,6 +39,7 @@ namespace FunctionalTests.Commands
     using Test.Users.Base.Mocks;
     using UserPayments.Application;
     using UserPayments.Domain.Repositories;
+    using UserPayments.Domain.Services;
     using Users.Application;
     using Users.Domain.Repositories;
     using XmlCategoryTreeStore;
@@ -173,11 +175,7 @@ namespace FunctionalTests.Commands
                     ConnectionString = @"Data Source=127.0.0.1;Initial Catalog=AuctionhouseDatabase;MultipleActiveResultSets=True;TrustServerCertificate=True;User ID=sa;Password=Qwerty1234;",
                 });
 
-                var paymentVerification = new Mock<IAuctionPaymentVerification>();
-                paymentVerification
-                .Setup(f => f.Verification(It.IsAny<Auction>(), It.IsAny<UserId>(), It.IsAny<string>()))
-                .Returns(Task.FromResult(true));
-                services.AddTransient<IAuctionPaymentVerification>(s => paymentVerification.Object);
+                services.AddTransient<IAuctionPaymentVerification, AuctionPaymentVerification>();
                 services.AddTransient<IAuctionUnlockScheduler>(s => Mock.Of<IAuctionUnlockScheduler>());
 
                 services.AddSingleton<IUserPaymentsRepository>(s => new InMemortUserPaymentsRepository());

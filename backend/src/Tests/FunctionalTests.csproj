@@ -33,6 +33,7 @@
     <ProjectReference Include="..\Auctionhouse.Query\Auctionhouse.Query.csproj" />
     <ProjectReference Include="..\Auctions.Application\Auctions.Application.csproj" />
     <ProjectReference Include="..\Categories.Domain\Categories.Domain.csproj" />
+    <ProjectReference Include="..\IntegrationService.AuctionPaymentVerification\IntegrationService.AuctionPaymentVerification.csproj" />
     <ProjectReference Include="..\RabbitMq\Adatper.RabbitMq.EventBus.csproj" />
     <ProjectReference Include="..\ReadModel.Core\ReadModel.Core.csproj" />
     <ProjectReference Include="..\Test.Auctions.Base\Test.Auctions.Base.csproj" />

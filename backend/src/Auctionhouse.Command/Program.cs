@@ -15,6 +15,7 @@ using Common.Application;
 using Common.Application.Events;
 using Common.WebAPI;
 using Common.WebAPI.Auth;
+using IntegrationService.AuctionPaymentVerification;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Trace;
@@ -59,6 +60,7 @@ builder.Services.AddQuartzTimeTaskServiceAuctionEndScheduler(builder.Configurati
 builder.Services.AddEfCoreReadModelNotifications(builder.Configuration.GetSection("EfCoreReadModelNotificatitons").Get<EfCoreReadModelNotificaitonsOptions>());
 builder.Services.AddSqlServerEventOutboxStorage(builder.Configuration.GetSection("EventOutboxStorage")["ConnectionString"]);
 builder.Services.AddHangfireServices(builder.Configuration.GetSection("HangfirePersistence")["ConnectionString"]);
+builder.Services.AddAuctionPaymentVerification();
 //OUTBOX PROCESSOR BG SERVICE
 builder.Services.AddOutboxProcessorService(new EventOutboxProcessorSettings
 {

@@ -9,7 +9,10 @@ using static UserPayments.DomainEvents.Events.V1;
 
 namespace FunctionalTests.Commands
 {
+    using Auctions.Domain.Services;
+    using Microsoft.Extensions.DependencyInjection;
     using MongoDB.Driver;
+    using Test.Auctions.Base.Builders;
     using UserPayments.Domain;
     using UserPayments.Domain.Events;
     using Users.DomainEvents;
@@ -34,9 +37,15 @@ namespace FunctionalTests.Commands
         {
         }
 
+        protected override void AddServices(IServiceCollection services)
+        {
+            base.AddServices(services);
+            services.AddTransient(s => new GivenAuctionPaymentVerification().CreateAlwaysValidMock().Object);
+        }
+
         [Fact]
         public async Task BuyNowCommand_creates_failed_payment_and_cancels_buynowtx_when_user_doesnt_have_enought_credits()
-        //TODO: this case should be handled in BuyNowCommandHandler rather than asynchronously because it's too chatty and results in temporarily locked auction
+        //case when there is not enough credits at the time the request is handled by UserPayments
         {
             var createAuctionCommand = GivenCreateAuctionCommand().Build();
             await CreateAuction(createAuctionCommand);

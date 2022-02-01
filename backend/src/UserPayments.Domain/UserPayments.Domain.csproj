@@ -11,8 +11,4 @@
     <ProjectReference Include="..\UserPayments.DomainEvents\UserPayments.DomainEvents.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>

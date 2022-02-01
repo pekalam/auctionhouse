@@ -11,7 +11,6 @@ namespace Auctionhouse.Command.Adapters
         public static void AddWebApiAdapters(this IServiceCollection services)
         {
             services.AddTransient<JwtService>();
-            services.AddTransient<IAuctionPaymentVerification, AuctionPaymentVerification>();
             services.AddTransient<ITempFileService, TempFileService>();
             services.AddTransient<IResetLinkSenderService, ResetLinkSenderService>();
             services.AddTransient<IAuctionCreateSessionStore, AuctionCreateSessionStore>();
