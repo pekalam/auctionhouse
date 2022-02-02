@@ -1,5 +1,5 @@
 create database AuctionhouseDatabase on
-(filename = N'/AuctionhouseDatabase.mdf'),
-(filename = N'/AuctionhouseDatabase_log.ldf')
+(filename = N'/var/opt/mssql/data/AuctionhouseDatabase.mdf'),
+(filename = N'/var/opt/mssql/data/AuctionhouseDatabase_log.ldf')
 FOR ATTACH
 go

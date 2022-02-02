@@ -6,6 +6,10 @@ set -e
 
 wait-for 0.0.0.0:1433 -t 240
 
+echo "Copying database files to sql server data folder"
+cp /AuctionhouseDatabase.mdf /var/opt/mssql/data
+cp /AuctionhouseDatabase_log.ldf /var/opt/mssql/data
+
 echo "Creating auctionhouseDatabase db..."
 
 success=1
