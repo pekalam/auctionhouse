@@ -23,13 +23,15 @@ namespace Auctionhouse.Command.Controllers
         private readonly JwtService _jwtService;
         private readonly IMapper _mapper;
         private readonly Lazy<IIdTokenManager> _idTokenManager;
+        private readonly IWebHostEnvironment _hostEnv;
 
-        public AuthenticationCommandController(ImmediateCommandQueryMediator immediateCommandMediator, JwtService jwtService, IMapper mapper, Lazy<IIdTokenManager> idTokenManager)
+        public AuthenticationCommandController(ImmediateCommandQueryMediator immediateCommandMediator, JwtService jwtService, IMapper mapper, Lazy<IIdTokenManager> idTokenManager, IWebHostEnvironment hostEnv)
         {
             _mediator = immediateCommandMediator;
             _jwtService = jwtService;
             _mapper = mapper;
             _idTokenManager = idTokenManager;
+            _hostEnv = hostEnv;
         }
 
         [HttpPost("signup")]
@@ -54,7 +56,7 @@ namespace Auctionhouse.Command.Controllers
                 HttpContext.Response.Cookies.Append("IdToken", token, new()
                 {
                     HttpOnly = true,
-                    Secure = true,
+                    Secure = !_hostEnv.IsDevelopment(),
                 });
 
                 return Ok(token);
