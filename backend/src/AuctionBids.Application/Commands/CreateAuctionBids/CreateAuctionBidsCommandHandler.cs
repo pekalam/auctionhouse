@@ -6,6 +6,7 @@ using Common.Application.Events;
 namespace AuctionBids.Application.Commands.CreateAuctionBids
 {
     using AuctionBids.Domain;
+    using Core.DomainFramework;
 
     public class CreateAuctionBidsCommandHandler : CommandHandlerBase<CreateAuctionBidsCommand>
     {
@@ -21,7 +22,7 @@ namespace AuctionBids.Application.Commands.CreateAuctionBids
         protected override async Task<RequestStatus> HandleCommand(AppCommand<CreateAuctionBidsCommand> request, IEventOutbox eventOutbox, CancellationToken cancellationToken)
         {
             var auctionBids = AuctionBids.CreateNew(new(request.Command.AuctionId), new(request.Command.Owner));
-
+            // try to detect if already called - happy path
             if (_allAuctionBids.WithAuctionId(new(request.Command.AuctionId)) is not null)
             {
                 return RequestStatus.CreateCompleted(request.CommandContext);
@@ -29,13 +30,29 @@ namespace AuctionBids.Application.Commands.CreateAuctionBids
 
             using (var uow = _unitOfWorkFactory.Begin())
             {
-                _allAuctionBids.Add(auctionBids);
+                if (!TryAddAuctionBids(auctionBids)) //try to detect if already called - pessimistic path
+                {
+                    return RequestStatus.CreateCompleted(request.CommandContext);
+                }
                 await eventOutbox.SaveEvents(auctionBids.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Saga);
                 uow.Commit();
             }
             auctionBids.MarkPendingEventsAsHandled();
 
             return RequestStatus.CreateCompleted(request.CommandContext);
+        }
+
+        private bool TryAddAuctionBids(AuctionBids auctionBids)
+        {
+            try
+            {
+                _allAuctionBids.Add(auctionBids);
+                return true;
+            }
+            catch (ConcurrentInsertException e)
+            {
+                return false;
+            }
         }
     }
 }

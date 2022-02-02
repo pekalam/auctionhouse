@@ -3,6 +3,7 @@ using UserPayments.Domain.Shared;
 
 namespace Adapter.Dapper.AuctionhouseDatabase.UserPayments_
 {
+    using Core.DomainFramework;
     using global::Dapper;
     using Microsoft.Data.SqlClient;
     using Newtonsoft.Json;
@@ -27,10 +28,18 @@ namespace Adapter.Dapper.AuctionhouseDatabase.UserPayments_
             connection.Open();
             using var trans = connection.BeginTransaction();
             AddAggregateCore(userPayments.PendingEvents, userPayments.AggregateId.Value.ToString(), userPayments.Version, "UserPayments", connection, trans);
-            connection.Execute(userIdToAggregateInsert, new { 
-                UserId=userPayments.UserId.Value,
-                AggId=userPayments.AggregateId.Value,
-            }, transaction: trans);
+            try
+            {
+                connection.Execute(userIdToAggregateInsert, new
+                {
+                    UserId = userPayments.UserId.Value,
+                    AggId = userPayments.AggregateId.Value,
+                }, transaction: trans);
+            }
+            catch (SqlException e) when (e.Number == 2627)
+            {
+                throw new ConcurrentInsertException($"Detected concurrent insert of {nameof(UserPayments)}", e);
+            }
             trans.Commit();
 
             return userPayments;

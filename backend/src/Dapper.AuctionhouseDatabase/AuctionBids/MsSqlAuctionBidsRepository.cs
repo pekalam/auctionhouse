@@ -5,6 +5,7 @@ namespace Adapter.Dapper.AuctionhouseDatabase
 {
     using AuctionBids.Domain;
     using Core.Common.Domain;
+    using Core.DomainFramework;
     using global::Dapper;
     using Microsoft.Data.SqlClient;
 
@@ -28,12 +29,19 @@ namespace Adapter.Dapper.AuctionhouseDatabase
             connection.Open();
             using var trans = connection.BeginTransaction();
             AddAggregateCore(auctionBids.PendingEvents, auctionBids.AggregateId.ToString()!, auctionBids.Version, AggregateName, connection, trans);
-            connection.Execute(auctionIdToAuctionBidsIdInsert, new
+            try
             {
-                AuctionId = auctionBids.AuctionId.ToString(),
-                AggregateId = auctionBids.AggregateId.ToString(),
-            }, transaction: trans);
-            trans.Commit();
+                connection.Execute(auctionIdToAuctionBidsIdInsert, new
+                {
+                    AuctionId = auctionBids.AuctionId.ToString(),
+                    AggregateId = auctionBids.AggregateId.ToString(),
+                }, transaction: trans);
+                trans.Commit();
+            }
+            catch (SqlException e) when (e.Number == 2627)
+            {
+                throw new ConcurrentInsertException($"Detected concurrent insert of {nameof(AuctionBids)}", e);
+            }
         }
 
         public void Update(AuctionBids auctionBids)

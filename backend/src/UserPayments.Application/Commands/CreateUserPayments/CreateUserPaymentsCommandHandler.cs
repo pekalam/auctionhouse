@@ -5,6 +5,7 @@ using UserPayments.Domain.Repositories;
 
 namespace UserPayments.Application.Commands.CreateUserPayments
 {
+    using Core.DomainFramework;
     using UserPayments.Domain;
 
     public class CreateUserPaymentsCommandHandler : CommandHandlerBase<CreateUserPaymentsCommand>
@@ -21,8 +22,8 @@ namespace UserPayments.Application.Commands.CreateUserPayments
         protected override async Task<RequestStatus> HandleCommand(AppCommand<CreateUserPaymentsCommand> request, IEventOutbox eventOutbox, CancellationToken cancellationToken)
         {
             var existing = await _allUserPayments.WithUserId(new(request.Command.UserId));
-
-            if(existing is not null)
+            // try to detect if already called - happy path
+            if(existing is not null) 
             {
                 return RequestStatus.CreateCompleted(request.CommandContext);
             }
@@ -31,13 +32,29 @@ namespace UserPayments.Application.Commands.CreateUserPayments
 
             using(var uow = _unitOfWorkFactory.Begin())
             {
-                _allUserPayments.Add(userPayments);
+                if (!TryAddUserPayments(userPayments)) // try to detect if already called - pesimistic path (handling db exceptions)
+                {
+                    return RequestStatus.CreateCompleted(request.CommandContext);
+                }
                 await eventOutbox.SaveEvents(userPayments.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Saga);
                 uow.Commit();
             }
             userPayments.MarkPendingEventsAsHandled();
 
             return RequestStatus.CreateCompleted(request.CommandContext);
+        }
+
+        private bool TryAddUserPayments(UserPayments userPayments)
+        {
+            try
+            {
+                _allUserPayments.Add(userPayments);
+                return true;
+            }
+            catch (ConcurrentInsertException e)
+            {
+                return false;
+            }
         }
     }
 }
