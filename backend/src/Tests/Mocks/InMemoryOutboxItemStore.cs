@@ -37,6 +37,7 @@ namespace FunctionalTests.Mocks
     internal class InMemoryEventBusDecorator : IEventBus
     {
         internal readonly IEventBus _eventBus;
+        internal readonly SemaphoreSlim _sem = new(1,1);
 
         public InMemoryEventBusDecorator(IEventBus eventBus)
         {
@@ -52,7 +53,7 @@ namespace FunctionalTests.Mocks
 
         public async Task Publish<T>(IAppEvent<T> @event) where T : Event
         {
-            Monitor.Enter(_eventBus);
+            _sem.Wait();
             try
             {
                 _sentEvents.Add(@event);
@@ -60,13 +61,13 @@ namespace FunctionalTests.Mocks
             }
             finally
             {
-                Monitor.Exit(_eventBus);
+                _sem.Release();
             }
         }
 
         public async Task Publish<T>(IEnumerable<IAppEvent<T>> events) where T : Event
         {
-            Monitor.Enter(_eventBus);
+            _sem.Wait();
             try
             {
                 _sentEvents.AddRange(events);
@@ -74,7 +75,7 @@ namespace FunctionalTests.Mocks
             }
             finally
             {
-                Monitor.Exit(_eventBus);
+                _sem.Release();
             }
         }
     }

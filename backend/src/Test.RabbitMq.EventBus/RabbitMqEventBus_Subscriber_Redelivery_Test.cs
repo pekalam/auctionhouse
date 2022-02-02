@@ -37,7 +37,7 @@ namespace Test.Adapter.RabbitMq.EventBus
         {
             services.AddRabbitMqEventBus(new()
             {
-                ConnectionString = "host=localhost",
+                ConnectionString = RabbitMqSettings.SampleRabbitMqConnectionString,
             });
             services.AddErrorEventOutbox(new()
             {
@@ -132,7 +132,7 @@ namespace Test.Adapter.RabbitMq.EventBus
             bus = new RabbitMqEventBus(new RabbitMqSettings()
             {
                 //ConnectionString = TestContextUtils.GetParameterOrDefault("rabbitmq-connection-string", "host=localhost"),
-                ConnectionString = "host=localhost",
+                ConnectionString = RabbitMqSettings.SampleRabbitMqConnectionString,
             }, stubImplProvider.Get<ILogger<RabbitMqEventBus>>(), stubImplProvider.Get<IServiceScopeFactory>());
 
             bus.InitEventSubscriptions(stubImplProvider, Assembly.Load("Test.Common.Base"));

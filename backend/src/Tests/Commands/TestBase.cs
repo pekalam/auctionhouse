@@ -189,7 +189,7 @@ namespace FunctionalTests.Commands
 
                 services.AddRabbitMq(rabbitMqSettings: new RabbitMqSettings
                 {
-                    ConnectionString = "host=localhost"
+                    ConnectionString = RabbitMqSettings.SampleRabbitMqConnectionString,
                 });
 
                 services.AddTransient<IImplProvider>((p) => new ImplProviderMock(p));

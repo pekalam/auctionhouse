@@ -17,6 +17,7 @@ namespace RabbitMq.EventBus
             Assembly[]? eventConsumerAssemblies = null)
         {
             rabbitMqSettings ??= configuration!.GetSection(nameof(RabbitMqSettings)).Get<RabbitMqSettings>();
+            rabbitMqSettings.ValidateSettings();
             services.AddTransient<IAppEventBuilder, AppEventRabbitMQBuilder>();
             services.AddRabbitMqEventBus(rabbitMqSettings);
             services.AddErrorEventOutbox(new());

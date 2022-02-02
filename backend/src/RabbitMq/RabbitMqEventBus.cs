@@ -35,6 +35,7 @@ namespace RabbitMq.EventBus
 
         public RabbitMqEventBus(RabbitMqSettings settings, ILogger<RabbitMqEventBus> logger, IServiceScopeFactory serviceScopeFactory)
         {
+            settings.ValidateSettings();
             _settings = settings;
             _logger = logger;
             _serviceScopeFactory = serviceScopeFactory;

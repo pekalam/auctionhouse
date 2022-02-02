@@ -79,7 +79,7 @@ namespace Test.RabbitMq.EventBus
             var bus = new RabbitMqEventBus(new RabbitMqSettings()
             {
                 //ConnectionString = TestContextUtils.GetParameterOrDefault("rabbitmq-connection-string", "host=localhost"),
-                ConnectionString = "host=localhost",
+                ConnectionString = RabbitMqSettings.SampleRabbitMqConnectionString,
             }, stubImplProvider.Get<ILogger<RabbitMqEventBus>>(), stubImplProvider.Get<IServiceScopeFactory>());
             bus.InitEventSubscriptions(stubImplProvider, Assembly.Load("Test.Adapter.RabbitMq.EventBus"));
 
