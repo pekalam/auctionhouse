@@ -3,12 +3,16 @@
 namespace Adapter.EfCore.ReadModelNotifications
 {
     using Common.Application.SagaNotifications;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 
     public static class EfCoreReadModelNotificationsInstaller
     {
-        public static void AddEfCoreReadModelNotifications(this IServiceCollection services, EfCoreReadModelNotificaitonsOptions settings)
+        public static void AddEfCoreReadModelNotifications(this IServiceCollection services, IConfiguration? configuration = null, 
+            EfCoreReadModelNotificaitonsOptions? settings = null)
         {
+            settings ??= configuration!.GetSection(nameof(EfCoreReadModelNotificaitonsOptions)).Get<EfCoreReadModelNotificaitonsOptions>();
+            services.AddSingleton(settings);
             services.AddDbContext<SagaEventsConfirmationDbContext>(opt =>
                 ConfigureDbContext(settings, opt));
             services.AddTransient<ISagaNotifications, EfCoreSagaNotifications>();

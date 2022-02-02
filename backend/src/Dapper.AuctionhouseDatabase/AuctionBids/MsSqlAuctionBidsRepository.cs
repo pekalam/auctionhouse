@@ -13,9 +13,9 @@ namespace Adapter.Dapper.AuctionhouseDatabase
         private const string AggregateName = "AuctionBids";
         private const string AuctionIdToAuctionBidsIdTable = "[dbo].[AuctionIdToAuctionBidsId]";
 
-        private readonly MsSqlConnectionSettings _connectionSettings; //TODO
+        private readonly AuctionhouseRepositorySettings _connectionSettings; //TODO
 
-        public MsSqlAuctionBidsRepository(MsSqlConnectionSettings connectionSettings) : base(connectionSettings)
+        public MsSqlAuctionBidsRepository(AuctionhouseRepositorySettings connectionSettings) : base(connectionSettings)
         {
             _connectionSettings = connectionSettings;
         }

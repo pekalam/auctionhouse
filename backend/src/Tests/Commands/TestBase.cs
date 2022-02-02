@@ -169,7 +169,7 @@ namespace FunctionalTests.Commands
 
                 services.AddTransient<IAuctionImageConversion>((s) => Mock.Of<IAuctionImageConversion>());
 
-                services.AddEfCoreReadModelNotifications(new EfCoreReadModelNotificaitonsOptions
+                services.AddEfCoreReadModelNotifications(settings: new EfCoreReadModelNotificaitonsOptions
                 {
                     Provider = "sqlserver",
                     ConnectionString = @"Data Source=127.0.0.1;Initial Catalog=AuctionhouseDatabase;MultipleActiveResultSets=True;TrustServerCertificate=True;User ID=sa;Password=Qwerty1234;",
@@ -187,7 +187,7 @@ namespace FunctionalTests.Commands
                     c.SetMinimumLevel(LogLevel.Debug);
                 });
 
-                services.AddRabbitMq(new RabbitMqSettings
+                services.AddRabbitMq(rabbitMqSettings: new RabbitMqSettings
                 {
                     ConnectionString = "host=localhost"
                 });
@@ -202,7 +202,7 @@ namespace FunctionalTests.Commands
                 services.AddEventConsumers(typeof(ReadModelInstaller));
                 services.AddAutoMapper(typeof(Auctionhouse.Query.QueryMapperProfile).Assembly);
                 services.AddCategoriesModule();
-                services.AddXmlCategoryTreeStore(new XmlCategoryNameStoreSettings
+                services.AddXmlCategoryTreeStore(settings: new XmlCategoryNameStoreSettings
                 {
     CategoriesFilePath = "C:\\Users\\Marek\\source\\repos\\Csharp\\auctionhouse\\backend\\src\\Xml.CategoryTreeStore\\_Categories-xml-data\\categories.xml",
     SchemaFilePath = "C:\\Users\\Marek\\source\\repos\\Csharp\\auctionhouse\\backend\\src\\Xml.CategoryTreeStore\\_Categories-xml-data\\categories.xsd"

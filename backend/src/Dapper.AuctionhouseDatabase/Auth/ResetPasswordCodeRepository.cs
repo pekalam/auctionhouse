@@ -8,9 +8,9 @@ namespace Adapter.Dapper.AuctionhouseDatabase
 {
     internal class ResetPasswordCodeRepository : IResetPasswordCodeRepository
     {
-        private readonly MsSqlConnectionSettings _settings;
+        private readonly AuctionhouseRepositorySettings _settings;
 
-        public ResetPasswordCodeRepository(MsSqlConnectionSettings settings)
+        public ResetPasswordCodeRepository(AuctionhouseRepositorySettings settings)
         {
             _settings = settings;
         }

@@ -7,7 +7,7 @@ namespace Adapter.Dapper.AuctionhouseDatabase
 {
     internal class MsSqlUserRepository : MsSqlESRepositoryBaseExceptionDecorator, IUserRepository
     {
-        public MsSqlUserRepository(MsSqlConnectionSettings connectionSettings) : base(connectionSettings)
+        public MsSqlUserRepository(AuctionhouseRepositorySettings connectionSettings) : base(connectionSettings)
         {
         }
 

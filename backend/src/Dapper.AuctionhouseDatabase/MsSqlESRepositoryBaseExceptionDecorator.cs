@@ -8,7 +8,7 @@ namespace Adapter.Dapper.AuctionhouseDatabase
     {
         private readonly MsSqlESRepositoryBase _base;
 
-        public MsSqlESRepositoryBaseExceptionDecorator(MsSqlConnectionSettings connectionSettings) : base(connectionSettings)
+        public MsSqlESRepositoryBaseExceptionDecorator(AuctionhouseRepositorySettings connectionSettings) : base(connectionSettings)
         {
             _base = new MsSqlESRepositoryBase(connectionSettings);
         }

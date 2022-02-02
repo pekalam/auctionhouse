@@ -11,10 +11,10 @@ namespace Adapter.Dapper.AuctionhouseDatabase.UserPayments_
 
     internal class MsSqlUserPaymentsRepository : MsSqlESRepositoryBaseExceptionDecorator, IUserPaymentsRepository
     {
-        private readonly MsSqlConnectionSettings _connectionSettings;
+        private readonly AuctionhouseRepositorySettings _connectionSettings;
         private const string UserIdToUserPaymentsTable = "[dbo].[UserIdToUserPaymentsId]";
 
-        public MsSqlUserPaymentsRepository(MsSqlConnectionSettings connectionSettings) : base(connectionSettings)
+        public MsSqlUserPaymentsRepository(AuctionhouseRepositorySettings connectionSettings) : base(connectionSettings)
         {
             _connectionSettings = connectionSettings;
         }

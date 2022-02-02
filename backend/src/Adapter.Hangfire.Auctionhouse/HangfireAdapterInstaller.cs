@@ -4,6 +4,7 @@ using Hangfire;
 
 namespace Adapter.Hangfire_.Auctionhouse
 {
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 
     internal class SqlServerSettings
@@ -13,8 +14,9 @@ namespace Adapter.Hangfire_.Auctionhouse
 
     public static class HangfireAdapterInstaller
     {
-        public static void AddHangfireServices(this IServiceCollection services, string connectionString)
+        public static void AddHangfireServices(this IServiceCollection services, IConfiguration? configuration = null, string? connectionString = null)
         {
+            connectionString ??= configuration!.GetSection(nameof(Hangfire))["ConnectionString"];
             services.AddTransient<AutomaticRetryAttribute>(s => new AutomaticRetryAttribute());
             services.AddSingleton(new SqlServerSettings
             {

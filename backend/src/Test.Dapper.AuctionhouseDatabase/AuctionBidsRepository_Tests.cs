@@ -17,7 +17,7 @@ namespace Test.Dapper.AuctionhouseDatabase
 
         public AuctionBidsRepository_Tests()
         {
-            var serverOpt = new MsSqlConnectionSettings()
+            var serverOpt = new AuctionhouseRepositorySettings()
             {
                 ConnectionString = "Server=127.0.0.1;Database=AuctionhouseDatabase;TrustServerCertificate=True;User ID=sa;Password=Qwerty1234;"
             };

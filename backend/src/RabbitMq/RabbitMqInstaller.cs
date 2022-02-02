@@ -2,6 +2,7 @@
 using Adatper.RabbitMq.EventBus.ErrorEventOutbox;
 using Common.Application;
 using Common.Application.Events;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
@@ -11,10 +12,11 @@ namespace RabbitMq.EventBus
 {
     public static class RabbitMqInstaller
     {
-        public static void AddRabbitMq(this IServiceCollection services, RabbitMqSettings rabbitMqSettings, 
+        public static void AddRabbitMq(this IServiceCollection services, IConfiguration? configuration = null, RabbitMqSettings? rabbitMqSettings = null, 
             Assembly[]? eventSubscriptionAssemblies = null,
             Assembly[]? eventConsumerAssemblies = null)
         {
+            rabbitMqSettings ??= configuration!.GetSection(nameof(RabbitMqSettings)).Get<RabbitMqSettings>();
             services.AddTransient<IAppEventBuilder, AppEventRabbitMQBuilder>();
             services.AddRabbitMqEventBus(rabbitMqSettings);
             services.AddErrorEventOutbox(new());

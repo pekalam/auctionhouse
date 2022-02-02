@@ -8,9 +8,9 @@ namespace Adapter.Dapper.AuctionhouseDatabase
 {
     internal class UserAuthenticationDataRepository : IUserAuthenticationDataRepository
     {
-        private readonly MsSqlConnectionSettings _connectionSettings;
+        private readonly AuctionhouseRepositorySettings _connectionSettings;
 
-        public UserAuthenticationDataRepository(MsSqlConnectionSettings connectionSettings)
+        public UserAuthenticationDataRepository(AuctionhouseRepositorySettings connectionSettings)
         {
             _connectionSettings = connectionSettings;
         }

@@ -17,7 +17,7 @@ namespace Test.Dapper.AuctionhouseDatabase
 
         public AuctionRepository_Tests()
         {
-            var serverOpt = new MsSqlConnectionSettings()
+            var serverOpt = new AuctionhouseRepositorySettings()
             {
                 //ConnectionString = TestContextUtils.GetParameterOrDefault("sqlserver",
                 //"Data Source=.;Initial Catalog=AuctionhouseDatabase;Integrated Security=False;User ID=sa;PWD=Qwerty1234;")

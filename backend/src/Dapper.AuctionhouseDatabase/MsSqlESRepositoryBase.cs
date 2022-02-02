@@ -9,9 +9,9 @@ namespace Adapter.Dapper.AuctionhouseDatabase
 {
     internal class MsSqlESRepositoryBase
     {
-        private MsSqlConnectionSettings _connectionSettings;
+        private AuctionhouseRepositorySettings _connectionSettings;
 
-        public MsSqlESRepositoryBase(MsSqlConnectionSettings connectionSettings)
+        public MsSqlESRepositoryBase(AuctionhouseRepositorySettings connectionSettings)
         {
             _connectionSettings = connectionSettings;
         }

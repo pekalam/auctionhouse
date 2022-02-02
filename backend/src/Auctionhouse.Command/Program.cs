@@ -52,15 +52,14 @@ builder.Services.AddUsersModule();
 //ADAPTERS
 builder.Services.AddWebApiAdapters();
 builder.Services.AddAuctionImageConversion();
-builder.Services.AddMongoDbImageDb(builder.Configuration.GetSection("ImageDb").Get<ImageDbSettings>());
-builder.Services.AddRabbitMq(builder.Configuration.GetSection("RabbitMq").Get<RabbitMqSettings>(),
-    eventSubscriptionAssemblies: modules);
-builder.Services.AddXmlCategoryTreeStore(builder.Configuration.GetSection("XmlCategoryTreeStore").Get<XmlCategoryNameStoreSettings>());
-builder.Services.AddDapperAuctionhouse(builder.Configuration.GetSection("MSSql").Get<MsSqlConnectionSettings>());
-builder.Services.AddQuartzTimeTaskServiceAuctionEndScheduler(builder.Configuration.GetSection("TimeTaskService").Get<TimeTaskServiceSettings>());
-builder.Services.AddEfCoreReadModelNotifications(builder.Configuration.GetSection("EfCoreReadModelNotificatitons").Get<EfCoreReadModelNotificaitonsOptions>());
-builder.Services.AddSqlServerEventOutboxStorage(builder.Configuration.GetSection("EventOutboxStorage")["ConnectionString"]);
-builder.Services.AddHangfireServices(builder.Configuration.GetSection("HangfirePersistence")["ConnectionString"]);
+builder.Services.AddMongoDbImageDb(builder.Configuration);
+builder.Services.AddRabbitMq(builder.Configuration, eventSubscriptionAssemblies: modules);
+builder.Services.AddXmlCategoryTreeStore(builder.Configuration);
+builder.Services.AddAuctionhouseDatabaseRepositories(builder.Configuration);
+builder.Services.AddQuartzTimeTaskServiceAuctionEndScheduler(builder.Configuration);
+builder.Services.AddEfCoreReadModelNotifications(builder.Configuration);
+builder.Services.AddSqlServerEventOutboxStorage(builder.Configuration);
+builder.Services.AddHangfireServices(builder.Configuration);
 
 //INTEGRATION SERVICES
 builder.Services.AddAuctionPaymentVerification();

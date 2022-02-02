@@ -26,11 +26,10 @@ builder.Services.AddReadModel(mongoDbSettings);
 builder.Services.AddCategoriesModule();
 
 //ADAPTERS
-var rabbitMqSettings = builder.Configuration.GetSection("RabbitMq").Get<RabbitMqSettings>();
-builder.Services.AddRabbitMq(rabbitMqSettings, eventConsumerAssemblies: new[] { typeof(ReadModelInstaller).Assembly });
-builder.Services.AddXmlCategoryTreeStore(builder.Configuration.GetSection("XmlCategoryTreeStore").Get<XmlCategoryNameStoreSettings>());
-builder.Services.AddMongoDbImageDb(builder.Configuration.GetSection("ImageDb").Get<ImageDbSettings>());
-builder.Services.AddEfCoreReadModelNotifications(builder.Configuration.GetSection("EfCoreReadModelNotificatitons").Get<EfCoreReadModelNotificaitonsOptions>());
+builder.Services.AddRabbitMq(builder.Configuration, eventConsumerAssemblies: new[] { typeof(ReadModelInstaller).Assembly });
+builder.Services.AddXmlCategoryTreeStore(builder.Configuration);
+builder.Services.AddMongoDbImageDb(builder.Configuration);
+builder.Services.AddEfCoreReadModelNotifications(builder.Configuration);
 builder.Services.AddTransient<IBidRaisedNotifications, BidRaisedNotifications>();
 
 //WEB API SERVICES

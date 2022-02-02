@@ -4,14 +4,14 @@ using Core.Common.Domain;
 
 namespace Adapter.Dapper.AuctionhouseDatabase
 {
-    public class MsSqlConnectionSettings
+    public class AuctionhouseRepositorySettings
     {
         public string ConnectionString { get; set; }
     }
 
     internal class MsSqlAuctionRepository : MsSqlESRepositoryBaseExceptionDecorator, IAuctionRepository
     {
-        public MsSqlAuctionRepository(MsSqlConnectionSettings connectionSettings) : base(connectionSettings)
+        public MsSqlAuctionRepository(AuctionhouseRepositorySettings connectionSettings) : base(connectionSettings)
         {
         }
 

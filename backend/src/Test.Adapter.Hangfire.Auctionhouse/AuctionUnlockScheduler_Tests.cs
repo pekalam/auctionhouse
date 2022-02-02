@@ -87,7 +87,7 @@ namespace Test.Adapter.Hangfire.Auctionhouse
                     services.AddTransient<IEventOutbox>(s => Mock.Of<IEventOutbox>());
                     services.AddTransient<IUnitOfWorkFactory>(s => UnitOfWorkFactoryMock.Instance.Object);
                     services.AddTransient<AuctionUnlockService>();
-                    services.AddHangfireServices(ConnectionString);
+                    services.AddHangfireServices(connectionString: ConnectionString);
                 })
                 .Build();
             HangfireAdapterInstaller.Initialize(host.Services);
