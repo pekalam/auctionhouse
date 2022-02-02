@@ -8,76 +8,7 @@ namespace Adapter.EfCore.ReadModelNotifications
     using Common.Application.Commands;
     using System.Threading.Tasks;
     using Core.Common.Domain;
-    using System.ComponentModel.DataAnnotations.Schema;
     using Microsoft.Extensions.DependencyInjection;
-
-    internal class DbSagaEventsConfirmation
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
-        public string CommandId { get; set; } = null!;
-        public string CorrelationId { get; set; } = null!;
-        public bool Completed { get; set; }
-        public bool Failed { get; set; }
-    }
-
-    internal class DbSagaEventToConfirm
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
-        public string CorrelationId { get; set; } = null!;
-        public string EventName { get; set; } = null!;
-        public bool Processed { get; set; }
-    }
-
-    internal static class SagaEventsConfirmationAssembler
-    {
-        public static SagaEventsConfirmation FromDbEntity(DbSagaEventsConfirmation dbEntity, DbSagaEventToConfirm[]? eventsToConfirm = null)
-        {
-            var unprocessedEvents = eventsToConfirm?.Where(e => !e.Processed).Select(e => e.EventName) ?? Enumerable.Empty<string>();
-            var processedEvents = eventsToConfirm?.Where(e => e.Processed).Select(e => e.EventName) ?? Enumerable.Empty<string>();
-            return new SagaEventsConfirmation(new CorrelationId(dbEntity.CorrelationId),
-                new CommandId(dbEntity.CommandId),
-                new HashSet<string>(unprocessedEvents),
-                new HashSet<string>(processedEvents), dbEntity.Completed,
-                dbEntity.Failed);
-        }
-
-        public static DbSagaEventsConfirmation ToDbEntity(long id, SagaEventsConfirmation confirmations)
-        {
-            return new DbSagaEventsConfirmation
-            {
-                Id = id,
-                CorrelationId = confirmations.CorrelationId.Value,
-                CommandId = confirmations.CommandId.Id,
-                Completed = confirmations.IsCompleted,
-                Failed = confirmations.IsFailed,
-            };
-        }
-    }
-
-    internal class SagaEventsConfirmationDbContext : DbContext
-    {
-        public SagaEventsConfirmationDbContext()
-        {
-
-        }
-
-        public SagaEventsConfirmationDbContext(DbContextOptions<SagaEventsConfirmationDbContext> options) : base(options)
-        {
-        }
-
-        public DbSet<DbSagaEventsConfirmation> SagaEventsConfirmations { get; private set; } = null!;
-        public DbSet<DbSagaEventToConfirm> SagaEventsToConfirm { get; private set; } = null!;
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
-#if TEST
-            optionsBuilder.UseSqlServer("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Marek\\source\\repos\\Csharp\\auctionhouse\\backend\\src\\Tests\\FunctionalTestsServer.mdf;Integrated Security=True");
-#endif
-        }
-    }
 
     internal class EfCoreSagaNotifications : ISagaNotifications, IImmediateNotifications
     {
@@ -253,11 +184,5 @@ namespace Adapter.EfCore.ReadModelNotifications
             
             return;
         }
-    }
-
-    public class EfCoreReadModelNotificaitonsOptions
-    {
-        public string ConnectionString { get; set; } = null!;
-        public string Provider { get; set; } = "sqlite";
     }
 }

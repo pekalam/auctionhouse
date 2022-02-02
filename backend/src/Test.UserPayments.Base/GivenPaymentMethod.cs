@@ -2,11 +2,6 @@
 
 namespace Test.UserPaymentsBase
 {
-    public class Class1
-    {
-
-    }
-
     public class TestPaymentMethodConstants
     {
         public const string Name = "test";
