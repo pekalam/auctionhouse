@@ -32,7 +32,7 @@ namespace Auctionhouse.Command.Controllers
             var cmd = new UserAddAuctionImageCommand(Guid.Parse(commandDto.AuctionId), new FileStreamAccessor(commandDto.Img), commandDto.Img.FileName.GetFileExtensionOrThrow400());
             var status = await _mediator.Send(cmd);
 
-            return this.StatusResponse(status, _mapper.Map<RequestStatusDto>(status));
+            return this.StatusResponse(status);
         }
 
         [Authorize(Roles = "User"), HttpPost("userReplaceAuctionImage")]
@@ -42,7 +42,7 @@ namespace Auctionhouse.Command.Controllers
             var cmd = new UserReplaceAuctionImageCommand(Guid.Parse(commandDto.AuctionId), new FileStreamAccessor(commandDto.Img), commandDto.ImgNum, commandDto.Img.FileName.GetFileExtensionOrThrow400());
             var status = await _mediator.Send(cmd);
 
-            return this.StatusResponse(status, _mapper.Map<RequestStatusDto>(status));
+            return this.StatusResponse(status);
         }
 
         [Authorize(Roles = "User"), HttpPost("userRemoveAuctionImage")]
@@ -51,7 +51,7 @@ namespace Auctionhouse.Command.Controllers
             var cmd = new UserRemoveAuctionImageCommand(Guid.Parse(commandDto.AuctionId), commandDto.ImgNum);
             var status = await _mediator.Send(cmd);
 
-            return this.StatusResponse(status, _mapper.Map<RequestStatusDto>(status));
+            return this.StatusResponse(status);
         }
 
         [Authorize(Roles = "User"), HttpPost("userUpdateAuction")]
@@ -60,7 +60,7 @@ namespace Auctionhouse.Command.Controllers
             var cmd = _mapper.Map<UpdateAuctionCommand>(commandDto);
             var status = await _mediator.Send(cmd);
 
-            return this.StatusResponse(status, _mapper.Map<RequestStatusDto>(status));
+            return this.StatusResponse(status);
         }
     }
 }

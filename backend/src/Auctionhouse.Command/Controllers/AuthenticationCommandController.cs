@@ -37,7 +37,7 @@ namespace Auctionhouse.Command.Controllers
         {
             var cmd = _mapper.Map<SignUpCommandDto, SignUpCommand>(signUpCommandDto);
             var status = await _mediator.Send(cmd);
-            return this.StatusResponse(status, (RequestStatusDto)status);
+            return this.StatusResponse(status);
         }
 
         [HttpPost("signin")]
@@ -84,7 +84,7 @@ namespace Auctionhouse.Command.Controllers
         {
             var cmd = _mapper.Map<ChangePasswordCommandDto, ChangePasswordCommand>(commandDto);
             var status = await _mediator.Send(cmd);
-            return this.StatusResponse(status, (RequestStatusDto)status);
+            return this.StatusResponse(status);
         }
 
         [HttpPost("resetPassword")]
@@ -93,7 +93,7 @@ namespace Auctionhouse.Command.Controllers
             var cmd = _mapper.Map<ResetPasswordCommandDto, ResetPasswordCommand>(commandDto);
             var status = await _mediator.Send(cmd);
 
-            return this.StatusResponse(status, (RequestStatusDto)status);
+            return this.StatusResponse(status);
         }
 
         [HttpPost("requestResetPassword")]
@@ -103,7 +103,7 @@ namespace Auctionhouse.Command.Controllers
             var cmd = _mapper.Map<RequestResetPasswordCommandDto, RequestResetPasswordCommand>(commandDto);
             var status = await _mediator.Send(cmd);
 
-            return this.StatusResponse(status, (RequestStatusDto)status);
+            return this.StatusResponse(status);
         }
 
         [HttpPost("checkResetCode")]
@@ -112,7 +112,7 @@ namespace Auctionhouse.Command.Controllers
             var cmd = _mapper.Map<CheckResetCodeCommandDto, CheckResetCodeCommand>(commandDto);
             var status = await _mediator.Send(cmd);
 
-            return this.StatusResponse(status, (RequestStatusDto)status);
+            return this.StatusResponse(status);
         }
     }
 }

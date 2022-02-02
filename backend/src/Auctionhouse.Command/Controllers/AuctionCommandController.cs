@@ -36,7 +36,7 @@ namespace Auctionhouse.Command.Controllers
             var cmd = _mapper.Map<CreateAuctionCommandDto, CreateAuctionCommand>(commandDto);
             var status = await _immediateCommandMediator.Send(cmd);
 
-            return this.StatusResponse(status, _mapper.Map<RequestStatusDto>(status));
+            return this.StatusResponse(status);
         }
 
         [Authorize(Roles = "User"), HttpPost("buyNow")]
@@ -45,7 +45,7 @@ namespace Auctionhouse.Command.Controllers
             var cmd = _mapper.Map<BuyNowCommandDto, BuyNowCommand>(commandDto);
             var status = await _immediateCommandMediator.Send(cmd);
 
-            return this.StatusResponse(status, _mapper.Map<RequestStatusDto>(status));
+            return this.StatusResponse(status);
         }
 
         [Authorize(Roles = "User"), HttpPost("startCreateSession")]
@@ -54,7 +54,7 @@ namespace Auctionhouse.Command.Controllers
             var cmd = new StartAuctionCreateSessionCommand();
             var status = await _immediateCommandMediator.Send(cmd);
 
-            return this.StatusResponse(status, _mapper.Map<RequestStatusDto>(status));
+            return this.StatusResponse(status);
         }
 
         [Authorize(Roles = "User"), HttpPost("removeAuctionImage")]
@@ -63,7 +63,7 @@ namespace Auctionhouse.Command.Controllers
             var cmd = new RemoveImageCommand(commandDto.ImgNum);
             var status = await _immediateCommandMediator.Send(cmd);
 
-            return this.StatusResponse(status, _mapper.Map<RequestStatusDto>(status));
+            return this.StatusResponse(status);
         }
 
         [Authorize(Roles = "User"), HttpPost("addAuctionImage")]
@@ -77,7 +77,7 @@ namespace Auctionhouse.Command.Controllers
             };
             var status = await _immediateCommandMediator.Send(cmd);
 
-            return this.StatusResponse(status, _mapper.Map<RequestStatusDto>(status));
+            return this.StatusResponse(status);
         }
 
         [Authorize(Roles = "User"), HttpPost("raiseBid")]
@@ -90,7 +90,7 @@ namespace Auctionhouse.Command.Controllers
             var cmd = new RaiseBidCommand(auctionId, commandDto.Price);
             var status = await _immediateCommandMediator.Send(cmd);
 
-            return this.StatusResponse(status, _mapper.Map<RequestStatusDto>(status));
+            return this.StatusResponse(status);
         }
     }
 }
