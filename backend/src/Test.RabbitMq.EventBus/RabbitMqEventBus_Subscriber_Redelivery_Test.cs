@@ -85,6 +85,7 @@ namespace Test.Adapter.RabbitMq.EventBus
         public void Dispose()
         {
             bus.Dispose();
+            RabbitMqUtils.PurgeQueues();
         }
 
         [Fact]
@@ -141,6 +142,7 @@ namespace Test.Adapter.RabbitMq.EventBus
         public void Dispose()
         {
             bus.Dispose();
+            RabbitMqUtils.PurgeQueues();
         }
 
 
