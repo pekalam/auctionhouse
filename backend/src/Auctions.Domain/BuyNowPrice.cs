@@ -5,15 +5,20 @@ namespace Auctions.Domain
 {
     public class BuyNowPrice : ValueObject
     {
-        public const int MIN_VALUE = 0;
+        public const decimal MIN_VALUE = 0.00m;
+        public const decimal MAX_VALUE = 100_000_000m;
 
         public decimal Value { get; }
 
-        public BuyNowPrice(decimal value)
+        public BuyNowPrice(decimal value) //TODO money type for multi currency support
         {
-            if (value < MIN_VALUE)
+            if (decimal.Round(value, 2, MidpointRounding.ToZero) <= MIN_VALUE)
             {
                 throw new DomainException("Too low buy now price value");
+            }
+            if(decimal.Round(value, 2, MidpointRounding.ToZero) > MAX_VALUE)
+            {
+                throw new DomainException("Price is too high");
             }
             Value = value;
         }
