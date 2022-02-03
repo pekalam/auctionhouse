@@ -4,36 +4,17 @@ using System.Text;
 
 namespace Common.WebAPI.Auth
 {
-
-    public class JwtSettings
+    internal static class JwtConfiguration
     {
-        public string SymetricKey { get; set; }
-        public string Issuer { get; set; }
-        public string Audience { get; set; }
-        public int ExpireTimeSec { get; set; } = 60 * 5; //5MIN
-
-        public void ConfigureJwt(JwtBearerOptions options)
+        public static void ConfigureJwt(JwtBearerOptions options, JwtSettings settings)
         {
-            options.Audience = Audience;
-            options.TokenValidationParameters = TokenValidationParameters;
+            options.Audience = settings.Audience;
+            options.TokenValidationParameters = settings.TokenValidationParameters;
             options.Events = new JwtBearerEvents()
             {
                 OnMessageReceived = context =>
                 {
-                    if (!context.HttpContext.EndpointRequiresAuthorization())
-                    {
-                        return Task.CompletedTask;
-                    }
-
-                    if (context.HttpContext.IsIdTokenDeactivated())
-                    {
-                        context.Token = null;
-                    }
-                    else
-                    {
-                        context.Token = context.Request.Cookies["IdToken"]; //TODO is bearer header ignored??
-                    }
-                    return Task.CompletedTask;
+                    return AssignTokenFromMsgContext(context);
                 },
                 OnAuthenticationFailed = context =>
                 {
@@ -42,6 +23,33 @@ namespace Common.WebAPI.Auth
                 }
             };
         }
+
+        private static Task AssignTokenFromMsgContext(MessageReceivedContext context)
+        {
+            if (!context.HttpContext.EndpointRequiresAuthorization()) //TODO does it mean that it should be ignored in other requests?
+            {
+                return Task.CompletedTask;
+            }
+
+            if (context.HttpContext.IsIdTokenDeactivated())
+            {
+                context.Token = null;
+            }
+            else
+            {
+                context.Token = context.Request.Cookies["IdToken"]; //TODO is bearer header ignored??
+            }
+            return Task.CompletedTask;
+        }
+    }
+
+
+    public class JwtSettings
+    {
+        public string SymetricKey { get; set; }
+        public string Issuer { get; set; }
+        public string Audience { get; set; }
+        public int ExpireTimeSec { get; set; } = 60 * 5; //5MIN
 
         public TokenValidationParameters TokenValidationParameters =>
             new TokenValidationParameters()

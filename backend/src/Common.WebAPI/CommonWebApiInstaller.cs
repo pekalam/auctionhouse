@@ -37,7 +37,7 @@ namespace Common.WebAPI
             services.AddSingleton(jwtConfig);
             services.AddTransient<JwtService>();
             services.AddTransient<IUserIdentityService, UserIdentityService>();
-            authenticationBuilder.AddJwtBearer(jwtConfig.ConfigureJwt);
+            authenticationBuilder.AddJwtBearer(opt => JwtConfiguration.ConfigureJwt(opt, jwtConfig));
         }
 
         public static void AddSerilogLogging(this IServiceCollection services, IConfiguration configuration, string appName)
