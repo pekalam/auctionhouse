@@ -188,6 +188,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5C8BFF18
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{5FFCFE65-844B-49DF-92BF-56D6A1FD7097}"
 	ProjectSection(SolutionItems) = preProject
+		AuctionhouseDatabase.Docker\docker_setup.sql = AuctionhouseDatabase.Docker\docker_setup.sql
 		AuctionhouseDatabase.Docker\Dockerfile = AuctionhouseDatabase.Docker\Dockerfile
 		AuctionhouseDatabase.Docker\entrypoint.sh = AuctionhouseDatabase.Docker\entrypoint.sh
 		AuctionhouseDatabase.Docker\frombackup-entrypoint.sh = AuctionhouseDatabase.Docker\frombackup-entrypoint.sh
@@ -222,6 +223,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "container-scripts", "contai
 	ProjectSection(SolutionItems) = preProject
 		AuctionhouseDatabase.Docker\container-scripts\listen-on-health-port.sh = AuctionhouseDatabase.Docker\container-scripts\listen-on-health-port.sh
 	EndProjectSection
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{BE26E8CD-5DC2-48A5-B97E-5CA3B935FEB3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -485,6 +488,10 @@ Global
 		{E870F142-D7B8-43A8-B614-3A3751A0C30E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E870F142-D7B8-43A8-B614-3A3751A0C30E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E870F142-D7B8-43A8-B614-3A3751A0C30E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE26E8CD-5DC2-48A5-B97E-5CA3B935FEB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE26E8CD-5DC2-48A5-B97E-5CA3B935FEB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE26E8CD-5DC2-48A5-B97E-5CA3B935FEB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE26E8CD-5DC2-48A5-B97E-5CA3B935FEB3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

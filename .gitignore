@@ -36,3 +36,4 @@ backend/src/AuctionhouseDatabase/AuctionhouseDatabase.jfm
 .vs/VSWorkspaceState.json
 
 .vscode/settings.json
+/backend/src/Envoy/ssl

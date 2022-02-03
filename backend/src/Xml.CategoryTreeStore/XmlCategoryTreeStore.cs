@@ -8,6 +8,30 @@ namespace XmlCategoryTreeStore
     {
         public string CategoriesFilePath { get; set; }
         public string SchemaFilePath { get; set; }
+
+        internal void Invalidate()
+        {
+            string ReplaceDirSeparator(string path)
+            {
+                var systemDirSeparator = Path.DirectorySeparatorChar.ToString();
+                if (path.Contains(@"\") && @"\" != systemDirSeparator)
+                {
+                    return path.Replace(@"\", systemDirSeparator);
+                }
+                if (path.Contains(@"\\") && @"\\" != systemDirSeparator)
+                {
+                    return path.Replace(@"\\", systemDirSeparator);
+                }
+                if (path.Contains(@"/") && @"/" != systemDirSeparator)
+                {
+                    return path.Replace(@"/", systemDirSeparator);
+                }
+                return path;
+            }
+            CategoriesFilePath = ReplaceDirSeparator(CategoriesFilePath);
+            SchemaFilePath = ReplaceDirSeparator(SchemaFilePath);
+        }
+
     }
 
     internal class XmlCategoryTreeStore : ICategoryTreeStore
@@ -19,6 +43,7 @@ namespace XmlCategoryTreeStore
         {
             var cwd = Directory.GetCurrentDirectory();
             _categoryNameServiceSettings = categoryNameServiceSettings;
+            _categoryNameServiceSettings.Invalidate();
         }
 
         private CategoryTreeNode ReadCategory(XmlReader xmlReader)

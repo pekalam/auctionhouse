@@ -32,7 +32,7 @@ if (app.Environment.IsDevelopment() || app.Environment.EnvironmentName == "Test"
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseCors();
 

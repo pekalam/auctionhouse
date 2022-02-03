@@ -30,13 +30,16 @@ if [ $retry -eq 0 ]; then
 	exit 128
 fi
 
+db_exists=`/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'Qwerty1234' -Q "IF DB_ID('AuctionhouseDatabase') IS NOT NULL print 'exists'"`
 
-echo "Setting up db..."
-/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -i create.sql
-echo "AuctionhouseDatabase created"
-sleep 5
+if ! [ "$db_exists" == "exists" ]; then
+	echo "Setting up db..."
+	/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -i create.sql
+	echo "AuctionhouseDatabase created"
+	sleep 5
+fi
 
-echo "AuctionhouseDatabase started"
+echo "AuctionhouseDatabase is ready"
 /container-scripts/listen-on-health-port.sh &
 
 wait

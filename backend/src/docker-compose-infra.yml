@@ -1,5 +1,13 @@
 services:
 
+  envoy1:
+    ports:
+      - "10000:10000"
+    image: envoyproxy/envoy-dev:fe17c1c95e26fbd34266b7a8c1f1acd7d78ba41a
+    volumes:
+      - ./Envoy/envoy-local.yaml:/etc/envoy/envoy.yaml
+      - ./Envoy/ssl/:/etc/ssl
+
   quartz_web_task_service:
     image: marekbf3/quartz-web-task-service
     ports:
@@ -12,7 +20,7 @@ services:
     ports:
       - '27017:27017'
     build:
-      context: ../src/MongoDb/standalone
+      context: ./MongoDb/standalone
       dockerfile: Dockerfile-mongo-standalone-replicaset
 
   sql_server:
