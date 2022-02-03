@@ -41,7 +41,7 @@ builder.Services.AddCommonJwtAuth(jwtConfig, authBuilder);
 builder.Services.AddSerilogLogging(builder.Configuration, "Query");
 builder.Services.AddTracing(b =>
 {
-    b.AddAspNetCoreInstrumentation();
+    //b.AddAspNetCoreInstrumentation();
 });
 
 builder.Services.AddHttpContextAccessor();

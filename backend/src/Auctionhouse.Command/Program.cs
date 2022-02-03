@@ -87,7 +87,7 @@ builder.Services.AddSerilogLogging(builder.Configuration, "Command");
 Activity.DefaultIdFormat = ActivityIdFormat.W3C;
 Activity.ForceDefaultIdFormat = true;
 builder.Services.AddTracing(b => {
-    b.AddAspNetCoreInstrumentation();
+    //b.AddAspNetCoreInstrumentation();
 });
 
 builder.Services.AddCacheServices(builder.Configuration);
