@@ -22,16 +22,14 @@ namespace Auctionhouse.Command.Controllers
         private readonly ImmediateCommandQueryMediator _mediator;
         private readonly JwtService _jwtService;
         private readonly IMapper _mapper;
-        private readonly Lazy<IIdTokenManager> _idTokenManager;
-        private readonly IWebHostEnvironment _hostEnv;
+        private readonly Lazy<IIdTokenManager> _idTokenManager; //TODO consider use of virtual proxy due to low cohesion in this controller
 
-        public AuthenticationCommandController(ImmediateCommandQueryMediator immediateCommandMediator, JwtService jwtService, IMapper mapper, Lazy<IIdTokenManager> idTokenManager, IWebHostEnvironment hostEnv)
+        public AuthenticationCommandController(ImmediateCommandQueryMediator immediateCommandMediator, JwtService jwtService, IMapper mapper, Lazy<IIdTokenManager> idTokenManager)
         {
             _mediator = immediateCommandMediator;
             _jwtService = jwtService;
             _mapper = mapper;
             _idTokenManager = idTokenManager;
-            _hostEnv = hostEnv;
         }
 
         [HttpPost("signup")]
@@ -52,12 +50,7 @@ namespace Auctionhouse.Command.Controllers
                 var userId = (Guid)response.ExtraData!["UserId"];
                 var username = (string)response.ExtraData["Username"];
                 var token = _jwtService.IssueToken(userId, username);
-
-                HttpContext.Response.Cookies.Append("IdToken", token, new()
-                {
-                    HttpOnly = true,
-                    Secure = !_hostEnv.IsDevelopment(),
-                });
+                _jwtService.SetCookie(token, HttpContext.Response);
 
                 return Ok(token);
             }

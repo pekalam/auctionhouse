@@ -20,7 +20,7 @@ namespace Common.WebAPI.Auth
             {
                 if(jwtService.TryExtendLifetimeOfToken(idToken, out var newToken))
                 {
-                    context.Response.Cookies.Append("IdToken", newToken!);
+                    jwtService.SetCookie(newToken!, context.Response);
                 }
             }
 

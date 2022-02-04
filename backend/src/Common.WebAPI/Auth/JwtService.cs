@@ -1,4 +1,7 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -8,10 +11,12 @@ namespace Common.WebAPI.Auth
     public class JwtService
     {
         private readonly JwtSettings _jwtSettings;
+        private readonly IWebHostEnvironment _hostEnv;
 
-        public JwtService(JwtSettings settings)
+        public JwtService(JwtSettings settings, IWebHostEnvironment hostEnv)
         {
             _jwtSettings = settings;
+            _hostEnv = hostEnv;
         }
 
         public string GetUserIdFromToken(string token)
@@ -49,6 +54,15 @@ namespace Common.WebAPI.Auth
                 claims: claims, signingCredentials: creds, notBefore: issuedAt, expires: expires);
             
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public void SetCookie(string token, HttpResponse response)
+        {
+            response.Cookies.Append("IdToken", token, new()
+            {
+                HttpOnly = true,
+                Secure = !_hostEnv.IsDevelopment(),
+            });
         }
 
         public bool TryExtendLifetimeOfToken(string token, out string? newToken)
