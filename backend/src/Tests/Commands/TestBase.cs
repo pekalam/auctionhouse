@@ -17,9 +17,12 @@ namespace FunctionalTests.Commands
 {
     using Adapter.EfCore.ReadModelNotifications;
     using AuctionBids.Application;
+    using Auctions.Application.Commands.BuyNow;
     using Auctions.Application.Commands.StartAuctionCreateSession;
     using Auctions.Domain;
     using Categories.Domain;
+    using Chronicle.Integrations.SQLServer;
+    using ChronicleEfCoreStorage;
     using Common.Application.Commands;
     using Common.Application.Commands.Attributes;
     using Common.Application.Events;
@@ -41,6 +44,7 @@ namespace FunctionalTests.Commands
     using UserPayments.Domain.Repositories;
     using UserPayments.Domain.Services;
     using Users.Application;
+    using Users.Application.Commands.SignUp;
     using Users.Domain.Repositories;
     using XmlCategoryTreeStore;
     using Xunit;
@@ -85,6 +89,7 @@ namespace FunctionalTests.Commands
             this.assemblyNames = assemblyNames;
             ServiceProvider = BuildConfiguredServiceProvider();
 
+            ChronicleEfCoreIntegrationInitializer.Initialize(ServiceProvider);
             RabbitMqInstaller.InitializeEventSubscriptions(ServiceProvider, assemblyNames.Select(n => Assembly.Load(n)).ToArray());
             EfCoreReadModelNotificationsInstaller.Initialize(ServiceProvider);
             RabbitMqInstaller.InitializeEventConsumers(ServiceProvider, typeof(ReadModelInstaller).Assembly);
@@ -155,6 +160,13 @@ namespace FunctionalTests.Commands
                 services.AddAuctionBidsModule();
                 services.AddUserPaymentsModule();
                 services.AddUsersModule();
+                services.AddChronicleSQLServerStorage((sagaType) => sagaType switch
+                {
+                    nameof(BuyNowSaga) => typeof(BuyNowSaga),
+                    nameof(CreateAuctionSaga) => typeof(CreateAuctionSaga),
+                    nameof(SignUpSaga) => typeof(SignUpSaga),
+                    _ => throw new NotImplementedException(),
+                }, @"Data Source=127.0.0.1;Initial Catalog=AuctionhouseDatabase;MultipleActiveResultSets=True;TrustServerCertificate=True;User ID=sa;Password=Qwerty1234;");
 
                 services.AddSingleton<IAuctionCreateSessionStore, InMemAuctionCreateSessionStore>();
                 services.AddSingleton<IAuctionRepository, InMemoryAuctionRepository>();

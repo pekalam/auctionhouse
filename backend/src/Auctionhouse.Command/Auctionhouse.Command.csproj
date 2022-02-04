@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Adapter.AuctionImageConversion\Adapter.AuctionImageConversion.csproj" />
+    <ProjectReference Include="..\Adapter.ChronicleEfCoreStorage\ChronicleEfCoreStorage.csproj" />
     <ProjectReference Include="..\Adapter.EfCore.SagaEventsConfirmation\Adapter.EfCore.ReadModelNotifications.csproj" />
     <ProjectReference Include="..\Adapter.Hangfire.Auctionhouse\Adapter.Hangfire_.Auctionhouse.csproj" />
     <ProjectReference Include="..\Adapter.MongoDb\Adapter.MongoDb.AuctionImageRepository.csproj" />

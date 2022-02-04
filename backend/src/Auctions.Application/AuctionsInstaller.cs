@@ -16,10 +16,6 @@ namespace Auctions.Application
             services.AddTransient<CreateAuctionService>();
             services.AddTransient<AuctionUnlockService>();
             services.AddEventSubscribers(typeof(AuctionsInstaller));
-            services.AddChronicle(build =>
-            {
-                build.UseInMemoryPersistence();
-            });
         }
     }
 }

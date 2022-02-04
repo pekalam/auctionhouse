@@ -14,10 +14,6 @@ namespace Users.Application
         public static void AddUsersModule(this IServiceCollection services)
         {
             services.AddEventSubscribers(typeof(ModuleInstaller));
-            services.AddChronicle(build =>
-            {
-                build.UseInMemoryPersistence();
-            });
         }
     }
 }

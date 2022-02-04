@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Adapter.ChronicleEfCoreStorage\ChronicleEfCoreStorage.csproj" />
     <ProjectReference Include="..\Adapter.EfCore.SagaEventsConfirmation\Adapter.EfCore.ReadModelNotifications.csproj" />
     <ProjectReference Include="..\AuctionBids.Application\AuctionBids.Application.csproj" />
     <ProjectReference Include="..\Auctionhouse.Query\Auctionhouse.Query.csproj" />

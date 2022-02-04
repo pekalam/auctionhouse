@@ -11,6 +11,7 @@ using Auctionhouse.Command;
 using Auctionhouse.Command.Adapters;
 using Auctions.Application;
 using Categories.Domain;
+using ChronicleEfCoreStorage;
 using Common.Application;
 using Common.Application.Events;
 using Common.WebAPI;
@@ -48,6 +49,7 @@ builder.Services.AddAuctionsModule();
 builder.Services.AddCategoriesModule();
 builder.Services.AddUserPaymentsModule();
 builder.Services.AddUsersModule();
+builder.Services.AddChronicleSQLServerStorage(SagaTypeSerialization.GetSagaType, builder.Configuration.GetSection(nameof(AuctionhouseRepositorySettings)).Get<AuctionhouseRepositorySettings>().ConnectionString);
 
 //ADAPTERS
 builder.Services.AddWebApiAdapters();

@@ -9,13 +9,13 @@ using UserPaymentsEvents = UserPayments.DomainEvents.Events;
 
 namespace Auctions.Application.Commands.BuyNow
 {
-    internal class BuyNowSagaData
+    public class BuyNowSagaData
     {
         public Guid AuctionId { get; set; }
         public Guid TransactionId { get; set; }
     }
 
-    internal class BuyNowSaga : Saga<BuyNowSagaData>,
+    public class BuyNowSaga : Saga<BuyNowSagaData>,
         ISagaStartAction<Events.V1.BuyNowTXStarted>,
         ISagaAction<UserPaymentsEvents.V1.BuyNowPaymentConfirmed>,
         ISagaAction<UserPaymentsEvents.V1.BuyNowPaymentFailed>
