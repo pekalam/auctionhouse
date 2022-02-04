@@ -24,6 +24,7 @@ namespace Adatper.RabbitMq.EventBus.ErrorEventOutbox
     }
 
     [JsonSerializable(typeof(ErrorEventOutboxItem))]
+    [JsonSerializable(typeof(String))]
     internal partial class ErrorEventOutboxJsonSerializerContext : JsonSerializerContext
     {
     }

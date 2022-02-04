@@ -25,6 +25,22 @@ namespace Test.Adapter.RabbitMq.EventBus
 
     public class RabbitMqEventBusRedeliveryTestBase
     {
+        const string TestDbPath = @".\testDb";
+
+        public RabbitMqEventBusRedeliveryTestBase()
+        {
+            if (RocksDbErrorEventOutboxStorage.db.IsValueCreated)
+            {
+                RocksDbErrorEventOutboxStorage.db.Value.Dispose();
+                Directory.Delete(TestDbPath, true);
+                RocksDbErrorEventOutboxStorage.InitializeRocksDb();
+            }
+            else
+            {
+                RockdbUtils.ClearOutboxItems();
+            }
+        }
+
         protected static IImplProvider SetupImplProvider(EventBusRedeliveryTestEventConsumer handler)
         {
             var services = new ServiceCollection();
@@ -61,20 +77,12 @@ namespace Test.Adapter.RabbitMq.EventBus
     [Collection(nameof(RedeliveryTestCollection))]
     public class RabbitMqEventBus_EventConsumer_Redelivery_Tests : RabbitMqEventBusRedeliveryTestBase, IDisposable
     {
-        const string TestDbPath = @".\testDb";
         EventBusRedeliveryAdapterConsumerScenario scenario;
         RabbitMqEventBus bus;
         IImplProvider stubImplProvider;
 
         public RabbitMqEventBus_EventConsumer_Redelivery_Tests()
         {
-            if (RocksDbErrorEventOutboxStorage.db.IsValueCreated)
-            {
-                RocksDbErrorEventOutboxStorage.db.Value.Dispose();
-                Directory.Delete(TestDbPath, true);
-                RocksDbErrorEventOutboxStorage.InitializeRocksDb();
-            }
-
             scenario = EventBusRedeliveryAdapterContract.EventConsumerRedeliveryScenario;
             stubImplProvider = SetupImplProvider(scenario.given.eventConsumer);
             bus = stubImplProvider.Get<RabbitMqEventBus>();
@@ -113,20 +121,12 @@ namespace Test.Adapter.RabbitMq.EventBus
     [Collection(nameof(RedeliveryTestCollection))]
     public class RabbitMqEventBus_Subscriber_Redelivery_Test : RabbitMqEventBusRedeliveryTestBase, IDisposable
     {
-        const string TestDbPath = @".\testDb";
         EventBusRedeliveryAdapterSubscriberScenario scenario;
         RabbitMqEventBus bus;
         IImplProvider stubImplProvider;
 
         public RabbitMqEventBus_Subscriber_Redelivery_Test()
         {
-            if (RocksDbErrorEventOutboxStorage.db.IsValueCreated)
-            {
-                RocksDbErrorEventOutboxStorage.db.Value.Dispose();
-                Directory.Delete(TestDbPath, true);
-                RocksDbErrorEventOutboxStorage.InitializeRocksDb();
-            }
-
             scenario = EventBusRedeliveryAdapterContract.EventSubscriberRedeliveryScenario;
             stubImplProvider = SetupImplProvider(scenario.given.eventSubscriber);
             bus = new RabbitMqEventBus(new RabbitMqSettings()

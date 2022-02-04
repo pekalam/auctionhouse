@@ -21,7 +21,10 @@ namespace Test.Adapter.RabbitMq.EventBus
     {
         private readonly TestAppEventBuilder _appEventBuilder = new();
 
-        private MessageProperties messageProperties = new();
+        private MessageProperties messageProperties = new()
+        {
+            DeliveryMode = 1,
+        };
         private string messageJson;
         private string routingKey = "route";
         private long timestamp = 1;

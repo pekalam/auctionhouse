@@ -90,11 +90,12 @@ namespace Adatper.RabbitMq.EventBus.ErrorEventOutbox
 
                 var messageJson = IncrementRedeliveryCount(jToken, currentRedeliveryCount.Value);
                 _logger.LogDebug("Redelivering {@routingKey}", item.RoutingKey);
-                await eventBus.Bus.Advanced.PublishAsync(eventBus.EventExchange,
-                    item.RoutingKey,
-                    true,
-                    item.MessageProperties,
-                    Encoding.UTF8.GetBytes(messageJson), ct);
+                if (item.MessageProperties.DeliveryMode != 0) //fixes invalid messages 
+                {
+                    await eventBus.Bus.Advanced.PublishAsync(eventBus.EventExchange, item.RoutingKey,
+                        true, item.MessageProperties, Encoding.UTF8.GetBytes(messageJson), ct);
+                }
+
 
                 TryDeleteItem(errorEventOutboxStore, item);
             }
