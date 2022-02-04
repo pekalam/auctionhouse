@@ -87,7 +87,7 @@ static_resources:
     lb_policy: round_robin
     hosts:
     - socket_address:
-        address: auctionhouse.command
+        address: command
         port_value: 80
   - name: auctionhouse_query
     connect_timeout: 0.25s
@@ -95,7 +95,7 @@ static_resources:
     lb_policy: round_robin
     hosts:
     - socket_address:
-        address: auctionhouse.query
+        address: query
         port_value: 80
   - name: auctionhouse_commandstatus
     connect_timeout: 0.25s
@@ -103,5 +103,5 @@ static_resources:
     lb_policy: round_robin
     hosts:
     - socket_address:
-        address: auctionhouse.commandstatus
+        address: commandstatus
         port_value: 80

@@ -1,7 +1,7 @@
 version: '3.4'
 
 services:
-  auctionhouse.command:
+  command:
     environment:
       - ASPNETCORE_URLS=http://+:80
     ports:

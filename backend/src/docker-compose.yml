@@ -1,7 +1,7 @@
 version: '3.4'
 
 services:
-  auctionhouse.command:
+  command:
     image: ${DOCKER_REGISTRY-}auctionhousecommand
     build:
       context: .
@@ -20,7 +20,7 @@ services:
     ports:
         - '7203:80'
 
-  auctionhouse.query:
+  query:
     image: ${DOCKER_REGISTRY-}auctionhousequery
     build:
       context: .
@@ -39,7 +39,7 @@ services:
     ports:
         - '7070:80'
 
-  auctionhouse.commandstatus:
+  commandstatus:
     image: ${DOCKER_REGISTRY-}auctionhousecommandstatus
     build:
       context: .
@@ -74,6 +74,7 @@ services:
       - "ManagmentKey=testm"
 
   mongodb:
+    image: ${DOCKER_REGISTRY-}auctionhouse-mongodb-standalone
     ports:
       - '27017:27017'
     build:
@@ -88,8 +89,6 @@ services:
     ports:
       - '1433:1433'
     image: marekbf3/auctionhouse-sqlserver
-    healthcheck:
-      test: "sqlcmd -S 127.0.0.1 -U sa -P 'Qwerty1234' -d AuctionhouseDatabase -Q 'select distinct 1 from dbo.Events' && sqlcmd -S 127.0.0.1 -U sa -P 'Qwerty1234' -d AuctionhouseDatabase -Q 'select distinct 1 from dbo.AuthData'"
 
   rabbitmq:
     image: rabbitmq:3-management

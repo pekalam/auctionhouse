@@ -8,7 +8,7 @@ RUN chmod +x /bin/wait-for
 
 COPY healthcheck.sh /bin/healthcheck.sh
 RUN chmod +x /bin/healthcheck.sh
-HEALTHCHECK --start-period=10m --interval=50s --retries=2 CMD healthcheck.sh || exit 1
+HEALTHCHECK --interval=30s --retries=2 CMD healthcheck.sh || exit 1
 
 COPY docker_setup.sql .
 COPY buildArtifacts/AuctionhouseDatabase_Create.sql create.sql
