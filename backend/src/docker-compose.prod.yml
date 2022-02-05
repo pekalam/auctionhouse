@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  front:
+    image: pekalam/auctionhouse-front
+    ports:
+      - '80:80'
+      - '4430:443'
+  query:
+    environment:
+      - CORS__AllowedOrigins=https://pekalam.me
+  commandstatus:
+    environment:
+      - CORS__AllowedOrigins=https://pekalam.me
+  envoy1:
+    ports:
+      - "443:10000"

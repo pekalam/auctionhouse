@@ -10,8 +10,31 @@ static_resources:
       socket_address:
         address: 0.0.0.0
         port_value: 10000
+    listener_filters:
+    - name: envoy.listener.tls_inspector
+      config: {}
     filter_chains:
-    - filters:
+    - filter_chain_match:
+        transport_protocol: raw_buffer
+      filters:
+      - name: envoy.http_connection_manager
+        config:
+          stat_prefix: ingress_http
+          codec_type: auto
+          route_config:
+            name: local_redirect
+            virtual_hosts:
+            - name: local_http
+              domains: ["*"]
+              routes:
+              - match: { prefix: "/" }
+                redirect: { https_redirect: true }
+          http_filters:
+          - name: envoy.router
+            config: {}
+    - filter_chain_match:
+        transport_protocol: tls
+      filters:
       - name: envoy.http_connection_manager
         config:
           codec_type: auto
@@ -41,26 +64,14 @@ static_resources:
                 route:
                   auto_host_rewrite: true
                   cluster: auctionhouse_commandstatus
+              - name: "front"
+                match:
+                  prefix: "/"
+                route:
+                  auto_host_rewrite: true
+                  cluster: front
           http_filters:
           - name: envoy.router
-          access_log:
-          - name: envoy.file_access_log
-            filter:
-              not_health_check_filter: {}
-            config:
-              json_format:
-                time: "%START_TIME%"
-                protocol: "%PROTOCOL%"
-                duration: "%DURATION%"
-                request_method: "%REQ(:METHOD)%"
-                request_host: "%REQ(HOST)%"
-                path: "%REQ(X-ENVOY-ORIGINAL-PATH?:PATH)%"
-                response_flags: "%RESPONSE_FLAGS%"
-                route_name: "%ROUTE_NAME%"
-                upstream_host: "%UPSTREAM_HOST%"
-                upstream_cluster: "%UPSTREAM_CLUSTER%"
-                upstream_local_address: "%UPSTREAM_LOCAL_ADDRESS%"
-              path: "/tmp/access.log"
       transport_socket:
         name: envoy.transport_sockets.tls
         typed_config:
@@ -105,3 +116,15 @@ static_resources:
     - socket_address:
         address: host.docker.internal
         port_value: 5263
+  - name: front
+    connect_timeout: 0.25s
+    type: strict_dns
+    lb_policy: round_robin
+    hosts:
+    - socket_address:
+        address: host.docker.internal
+        port_value: 4400
+    transport_socket:
+      name: envoy.transport_sockets.tls
+      typed_config:
+        "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
