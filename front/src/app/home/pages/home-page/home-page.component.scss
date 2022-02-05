@@ -19,7 +19,24 @@
   flex-direction: column;
 }
 
+@keyframes hide-animation {
+  from {
+    opacity: 1;
+  }
 
+  to {
+    opacity: 0;
+  }
+}
+
+.hide-animation-active{
+  animation-name: hide-animation;
+  animation-duration: 1s;
+}
+
+.hide{
+  display: none;
+}
 
 .promo2 {
   display: flex;

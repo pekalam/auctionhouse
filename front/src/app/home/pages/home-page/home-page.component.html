@@ -1,13 +1,46 @@
 <div id="home-container">
   <app-categories></app-categories>
   <div class="dyn-promo">
+    <div id="demo-container" class="promo-container" [class.hide-animation-active]="showDemoAnim" [class.hide]="!showDemoMode" style="position: relative;">
+      <!--<div style="position: absolute; background-color: red; top: 0; bottom: 0; width: 100%; z-index: 10000; "></div>-->
+
+      <div class="promo-title-container">
+        <h3 class="promo-title">Demo mode</h3>
+        <hr>
+      </div>
+      <div class="promo">
+        <div style="display: flex; justify-content: end; margin-top: 10px;">
+          <div style="flex-grow: 1; max-width: 500px; padding-left: 10px;">
+            <p style="padding-top: 9px;">App is running in read-only mode.</p>
+          </div>
+          <div style="flex-grow: 1; white-space: nowrap; text-align: end;">
+            <div style="padding-right: 20px; width: 20%; display: inline-flex; justify-content: end; position: relative; box-sizing: border-box;">
+              <mat-spinner [class.hide]="!showLoading" [diameter]="20" style="margin-top: 22px; position: absolute; bottom: 1px;"></mat-spinner>
+              <i matTooltip="" [class.hide]="!showCodeOk" class="fas fa-check"
+                style="color: green; position: absolute; bottom: 2px;"></i>
+              <i matTooltip="" [class.hide]="!showCodeInvalid" class="fas fa-times"
+                style="color: red; position: absolute; bottom: 2px; margin-right: 4px;"></i>
+            </div>
+            <form [formGroup]="demoCodeForm" (ngSubmit)="onDemoCodeSubmit()" style="max-width: 400px;display: inline-block;width: 80%;">
+              <mat-form-field appearance="fill" style="width: 100%;">
+                <mat-label>Enter code to disable demo mode</mat-label>
+                <input matInput formControlName="code" [readOnly]="codeEnterSuccess" (keyup)="onDemoCodeChange()">
+              </mat-form-field>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
     <div class="promo-container">
       <div class="promo-title-container">
         <h3 class="promo-title">Most viewed</h3>
         <hr>
       </div>
       <div class="promo">
-        <app-auctions-carousel class="auctions-carousel" *ngIf="mostViewedAuctions" [auctions]="mostViewedAuctions" [rotateTime]="10000">
+        <app-auctions-carousel class="auctions-carousel" *ngIf="mostViewedAuctions" [auctions]="mostViewedAuctions"
+          [rotateTime]="10000">
         </app-auctions-carousel>
       </div>
     </div>

@@ -9,6 +9,8 @@ import { AuctionsCarouselComponent } from './components/auctions-carousel/auctio
 import { HomeRoutingModule } from './home-routing.module';
 import { RecentlyViewedComponent } from './components/recently-viewed/recently-viewed.component';
 import { EndingAuctionsComponent } from './components/ending-auctions/ending-auctions.component';
+import { MaterialModule } from '../material.module';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -19,7 +21,9 @@ import { EndingAuctionsComponent } from './components/ending-auctions/ending-auc
     RouterModule,
     LayoutModule,
     SharedModule,
-    HomeRoutingModule
+    HomeRoutingModule,
+    MaterialModule,
+    ReactiveFormsModule,
   ]
 })
 export class HomeModule { }

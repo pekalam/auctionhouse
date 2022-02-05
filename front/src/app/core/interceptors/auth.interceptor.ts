@@ -7,7 +7,7 @@ import {
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, empty, throwError, EMPTY } from 'rxjs';
-import { flatMap, map, tap, catchError } from 'rxjs/operators';
+import { flatMap, map, tap, catchError, filter } from 'rxjs/operators';
 import { AuthenticationStateService } from '../services/AuthenticationStateService';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -34,12 +34,18 @@ export class AuthInterceptor implements HttpInterceptor {
       });
       return next.handle(request);
     } */
+
     return next.handle(req).pipe(
+      //@ts-ignore
       tap((h) => {
         console.log(h);
         
       })
       ,catchError((err: HttpErrorResponse) => {
+        if(req.url.endsWith("/api/c/demoCode") && err.status == 503){
+          return throwError(err);
+        }
+
       if(err.status == 401){
         console.log('Token is probably expired');
         this.authStateService.removeLocalAuthData();
