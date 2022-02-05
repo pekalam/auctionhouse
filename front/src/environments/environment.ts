@@ -5,8 +5,8 @@
 export const environment = {
   production: false,
   hmr: false,
-  API_URL: '',
-  WS_URL: 'https://localhost:7070'
+  API_URL: 'https://localhost:10000',
+  WS_URL: 'https://localhost:10000'
 };
 
 /*

@@ -37,3 +37,4 @@ backend/src/AuctionhouseDatabase/AuctionhouseDatabase.jfm
 
 .vscode/settings.json
 /backend/src/Envoy/ssl
+/backend/Adapter.ChronicleEfCoreStorage/obj

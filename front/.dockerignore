@@ -1,0 +1,5 @@
+cypress/
+.vscode/
+dist/
+e2e/
+node_modules/
