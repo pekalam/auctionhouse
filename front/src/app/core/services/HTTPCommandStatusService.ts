@@ -4,7 +4,6 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { RequestStatus } from './WSCommandStatusService';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { setTimeout } from 'timers';
 
 export const MAX_RETRY = 4;
 export const INTERVAL_SEC = 1000;
