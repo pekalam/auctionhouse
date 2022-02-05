@@ -9,6 +9,7 @@ using Adapter.SqlServer.EventOutbox;
 using AuctionBids.Application;
 using Auctionhouse.Command;
 using Auctionhouse.Command.Adapters;
+using Auctionhouse.Command.Controllers;
 using Auctions.Application;
 using Categories.Domain;
 using ChronicleEfCoreStorage;
@@ -50,6 +51,9 @@ builder.Services.AddCategoriesModule();
 builder.Services.AddUserPaymentsModule();
 builder.Services.AddUsersModule();
 builder.Services.AddChronicleSQLServerStorage(SagaTypeSerialization.GetSagaType, builder.Configuration.GetSection(nameof(AuctionhouseRepositorySettings)).Get<AuctionhouseRepositorySettings>().ConnectionString);
+
+//DEMO MODE
+builder.Services.AddOptions<DemoModeOptions>().Bind(builder.Configuration.GetSection("DemoMode"));
 
 //ADAPTERS
 builder.Services.AddWebApiAdapters();
@@ -147,6 +151,7 @@ app.UseIdTokenSlidingExpiration();
 app.UseAuthentication();
 app.UseStaticFiles();
 app.UseSession();
+app.UseMiddleware<DemoModeMiddleware>();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
