@@ -9,7 +9,7 @@ builder.Services.AddScoped<CommandStatusService>();
 var serviceOpt = builder.Configuration.GetSection("CommandStatusServiceOptions").Get<CommandStatusServiceOptions>();
 builder.Services.AddSingleton(serviceOpt);
 
-var allowedOrigin = builder.Configuration.GetValue<string>("CORS:AllowedOrigin");
+var allowedOrigins = builder.Configuration.GetValue<string>("CORS:AllowedOrigins").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
@@ -18,7 +18,7 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials()
-            .WithOrigins(allowedOrigin);
+            .WithOrigins(allowedOrigins);
     });
 });
 

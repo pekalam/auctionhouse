@@ -1,5 +1,3 @@
 {
-  "CORS": {
-    "AllowedOrigin": "http://localhost:4200"
-  }
+
 }
