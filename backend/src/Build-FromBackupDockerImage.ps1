@@ -14,7 +14,7 @@ $backupDest = "AuctionhouseDatabase.Docker\testbackups\$($args[0])"
 xcopy "$backupFolder\*" "$backupDest\" /i /y
 
 
-docker build --target frombackup --build-arg BACKUP_LOCATION="testbackups/$($args[0])/" -t marekbf3/auctionhouse-sqlserver-backup:"$($args[0])" .\AuctionhouseDatabase.Docker
+docker build --target frombackup --build-arg BACKUP_LOCATION="testbackups/$($args[0])/" -t pekalam/auctionhouse-sqlserver-backup:"$($args[0])" .\AuctionhouseDatabase.Docker
 
 Remove-Item -Recurse .\AuctionhouseDatabase.Docker\buildArtifacts
 Remove-Item -Recurse "$backupDest"

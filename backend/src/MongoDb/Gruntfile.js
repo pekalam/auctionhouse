@@ -15,7 +15,7 @@ module.exports = function (grunt) {
     grunt.initConfig({
         cluster: {
             all: {
-                mongos: ["db-mongos1"],
+                mongos: ["mongodb"],
                 config_servers: ["db-config1"],
                 nodes: ["db-node1", "db-node2", "db-node3"]
             }

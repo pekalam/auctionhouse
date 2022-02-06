@@ -1,4 +1,4 @@
-FROM marekbf3/auctionhouse-sqlserver
+FROM pekalam/auctionhouse-sqlserver
 COPY restore-AuctionhouseDatabase.sql ./
 COPY frombackup-entrypoint.sh /bin/sqlserver-entrypoint.sh
 RUN chmod +x /bin/sqlserver-entrypoint.sh

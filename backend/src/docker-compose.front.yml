@@ -12,6 +12,3 @@ services:
   commandstatus:
     environment:
       - CORS__AllowedOrigins=https://localhost:10000
-  envoy1:
-    ports:
-      - "10000:10000"

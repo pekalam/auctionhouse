@@ -3,7 +3,9 @@ services:
   envoy1:
     ports:
       - "10000:10000"
-    image: envoyproxy/envoy-dev:fe17c1c95e26fbd34266b7a8c1f1acd7d78ba41a
+    image: pekalam/auctionhouse-envoy1
+    build:
+      context: ./Envoy
     volumes:
       - ./Envoy/envoy-local.yaml:/etc/envoy/envoy.yaml
       - ./Envoy/ssl/:/etc/ssl
@@ -17,7 +19,7 @@ services:
       - "ManagmentKey=testm"
 
   mongodb:
-    image: ${DOCKER_REGISTRY-}auctionhouse-mongodb-standalone
+    image: pekalam/auctionhouse-mongodb-standalone
     ports:
       - '27017:27017'
     build:
@@ -31,7 +33,7 @@ services:
       - MSSQL_AGENT_ENABLED=True
     ports:
       - '1433:1433'
-    image: marekbf3/auctionhouse-sqlserver
+    image: pekalam/auctionhouse-sqlserver
 
 
   rabbitmq:

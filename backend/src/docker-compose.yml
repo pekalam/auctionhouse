@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   command:
-    image: ${DOCKER_REGISTRY-}auctionhousecommand
+    image: pekalam/auctionhousecommand
     build:
       context: .
       dockerfile: Auctionhouse.Command/Dockerfile
@@ -21,7 +21,7 @@ services:
         - '7203:80'
 
   query:
-    image: ${DOCKER_REGISTRY-}auctionhousequery
+    image: pekalam/auctionhousequery
     build:
       context: .
       dockerfile: Auctionhouse.Query/Dockerfile
@@ -40,7 +40,7 @@ services:
         - '7070:80'
 
   commandstatus:
-    image: ${DOCKER_REGISTRY-}auctionhousecommandstatus
+    image: pekalam/auctionhousecommandstatus
     build:
       context: .
       dockerfile: Auctionhouse.CommandStatusCheck/Dockerfile
@@ -58,12 +58,19 @@ services:
 
 ## INFRASTRUCTURE
   envoy1:
+    image: pekalam/auctionhouse-envoy1
     ports:
-      - "10000:10000"
-    image: envoyproxy/envoy-dev:fe17c1c95e26fbd34266b7a8c1f1acd7d78ba41a
-    volumes:
-      - ./Envoy/envoy.yaml:/etc/envoy/envoy.yaml
-      - ./Envoy/ssl/:/etc/ssl
+      - '10000:10000'
+    build:
+      context: ./Envoy
+
+  mongodb:
+    image: pekalam/auctionhouse-mongodb-standalone
+    ports:
+      - '27017:27017'
+    build:
+      context: ../src/MongoDb/standalone
+      dockerfile: Dockerfile-mongo-standalone-replicaset
 
   quartz_web_task_service:
     image: marekbf3/quartz-web-task-service
@@ -73,22 +80,14 @@ services:
       - "ClientKey=testk"
       - "ManagmentKey=testm"
 
-  mongodb:
-    image: ${DOCKER_REGISTRY-}auctionhouse-mongodb-standalone
-    ports:
-      - '27017:27017'
-    build:
-      context: ../src/MongoDb/standalone
-      dockerfile: Dockerfile-mongo-standalone-replicaset
-
   sql_server:
+    image: pekalam/auctionhouse-sqlserver
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=Qwerty1234
       - MSSQL_AGENT_ENABLED=True
     ports:
       - '1433:1433'
-    image: marekbf3/auctionhouse-sqlserver
 
   rabbitmq:
     image: rabbitmq:3-management

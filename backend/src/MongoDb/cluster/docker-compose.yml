@@ -5,8 +5,8 @@ services:
       dockerfile: config/Dockerfile
       context: .
     command: "--configsvr --replSet configRS --bind_ip_all"   
-  db-mongos1:
-    hostname: db-mongos1
+  mongodb:
+    hostname: mongodb
     build:
       dockerfile: mongos/Dockerfile
       context: .
