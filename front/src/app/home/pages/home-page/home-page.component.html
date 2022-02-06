@@ -22,7 +22,7 @@
                 style="color: red; position: absolute; bottom: 2px; margin-right: 4px;"></i>
             </div>
             <form [formGroup]="demoCodeForm" (ngSubmit)="onDemoCodeSubmit()" style="max-width: 400px;display: inline-block;width: 80%;">
-              <mat-form-field appearance="fill" style="width: 100%;">
+              <mat-form-field appearance="fill" style="width: 100%; max-width: 100%;">
                 <mat-label>Enter code to disable demo mode</mat-label>
                 <input matInput formControlName="code" [readOnly]="codeEnterSuccess" (keyup)="onDemoCodeChange()">
               </mat-form-field>

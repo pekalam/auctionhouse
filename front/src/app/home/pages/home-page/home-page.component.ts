@@ -46,7 +46,8 @@ export class HomePageComponent implements OnInit {
       await this.submitDemoCode(v)
     });
     if(document.cookie){
-      this.showDemoMode = document.cookie.match(/^.*demoModeDisabled\=true.*$/).length > 0 == false;      
+      const cookieMatch = document.cookie.match(/^.*demoModeDisabled\=true.*$/);
+      this.showDemoMode = !(cookieMatch && cookieMatch.length > 0);      
     }
   }
 
