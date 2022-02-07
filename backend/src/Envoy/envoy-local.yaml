@@ -21,13 +21,22 @@ static_resources:
         config:
           stat_prefix: ingress_http
           codec_type: auto
+          upgrade_configs:
+          - upgrade_type: websocket
           route_config:
             name: local_redirect
             virtual_hosts:
             - name: local_http
               domains: ["*"]
               routes:
-              - match: { prefix: "/" }
+              - name: "query_ws"
+                match:
+                  prefix: "/app"
+                route:
+                  auto_host_rewrite: true
+                  cluster: auctionhouse_query
+              - name: catch_all
+                match: { prefix: "/" }
                 redirect: { https_redirect: true }
           http_filters:
           - name: envoy.router
@@ -39,6 +48,8 @@ static_resources:
         config:
           codec_type: auto
           stat_prefix: ingress_http
+          upgrade_configs:
+          - upgrade_type: websocket
           route_config:
             name: auctionhouse_backend_route
             virtual_hosts:
@@ -55,6 +66,12 @@ static_resources:
               - name: "query"
                 match:
                   prefix: "/api/q/"
+                route:
+                  auto_host_rewrite: true
+                  cluster: auctionhouse_query
+              - name: "query_ws"
+                match:
+                  prefix: "/app/"
                 route:
                   auto_host_rewrite: true
                   cluster: auctionhouse_query
