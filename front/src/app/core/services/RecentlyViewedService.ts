@@ -56,6 +56,7 @@ export class RecentlyViewedService {
     this.authenticationStateService.currentUser.pipe(
       first()
     ).subscribe((user) => {
+      if(user)
       this._addRecentlyViewed(user.userId, auction);
     });
     this.authenticationStateService.checkIsAuthenticated();
