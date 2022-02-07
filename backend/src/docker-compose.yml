@@ -61,6 +61,7 @@ services:
     image: pekalam/auctionhouse-envoy1
     ports:
       - '10000:10000'
+      - '8001:8001'
     build:
       context: ./Envoy
 
