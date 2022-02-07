@@ -25,7 +25,9 @@ export class EndingAuctionsComponent implements OnInit, OnDestroy {
 
 
   private calcTimeLeft(endDate: Date): Date {
-    return new Date(endDate.getTime() - new Date().getTime());
+    var date = new Date(endDate.getTime() - new Date().getTime());
+    date.setTime(date.getTime() + date.getTimezoneOffset() * 60000);
+    return date;
   }
 
   private updateTimers() {
@@ -46,7 +48,8 @@ export class EndingAuctionsComponent implements OnInit, OnDestroy {
           queryResult: a,
           timeLeft: this.calcTimeLeft(new Date(a.endDate))
         } as EndingAuction;
-      });
+      })
+      .filter(a => a.timeLeft.getTime() > 0);
       this.timerInterval = setInterval(() => this.updateTimers(), 1000);
     });
   }
