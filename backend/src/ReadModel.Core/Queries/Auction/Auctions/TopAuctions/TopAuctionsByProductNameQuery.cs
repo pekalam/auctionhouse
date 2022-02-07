@@ -4,7 +4,7 @@ using ReadModel.Core.Views;
 
 namespace ReadModel.Core.Queries.Auction.TopAuctionsByTag
 {
-    public class TopAuctionsByProductNameQuery : IQuery<TopAuctionsByProductName>
+    public class TopAuctionsByProductNameQuery : IQuery<TopAuctionsByProductName[]>
     {
         public const int MAX_PER_PAGE = 20;
 

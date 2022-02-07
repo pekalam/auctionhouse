@@ -18,8 +18,8 @@ export class TopAuctionsByProductNameQuery {
   constructor(private httpClient: HttpClient) {
   }
 
-  execute(productName: string, page: number): Observable<TopAuctionsByProductNameQueryResult>{
+  execute(productName: string, page: number): Observable<TopAuctionsByProductNameQueryResult[]>{
     const url = `${environment.API_URL}/api/q/topAuctionsByProductName?product-name=${productName}&page=${page}`;
-    return this.httpClient.get<TopAuctionsByProductNameQueryResult>(url, {});
+    return this.httpClient.get<TopAuctionsByProductNameQueryResult[]>(url, {});
   }
 }

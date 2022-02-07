@@ -1,4 +1,5 @@
 ﻿using Auctionhouse.Query.Queries;
+using Auctions.Domain;
 using Auctions.DomainEvents;
 using AutoMapper;
 using ReadModel.Core.Model;
@@ -56,6 +57,7 @@ namespace Auctionhouse.Query
                     Name = e.ProductName,
                     Description = e.ProductDescription,
                     Condition = e.ProductCondition,
+                    CanonicalName = Product.CanonicalizeProductName(e.ProductName),
                 }))
                 .ForMember(r => r.AuctionImages, opt => opt.MapFrom(e => e.AuctionImagesSize1Id
                 .Select((id, i) => id != null ? new AuctionImageRead

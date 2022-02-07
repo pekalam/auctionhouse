@@ -18,7 +18,7 @@ export class SearchBarComponent implements OnInit {
 
   private searchVal = new Subject<string>();
   private byTagResults: Observable<TopAuctionsQueryResult>;
-  private byProductNameResults: Observable<TopAuctionsByProductNameQueryResult>;
+  private byProductNameResults: Observable<TopAuctionsByProductNameQueryResult[]>;
 
 
   auctionsByTag: TopAuctionQueryItem[] = [];
@@ -28,7 +28,6 @@ export class SearchBarComponent implements OnInit {
 
   auctionsByProductName: TopAuctionQueryItem[] = [];
   totalByProductName = 0;
-  productName;
   byProcuctLoading = false;
 
   constructor(private tagsQuery: TopAuctionsByTagQuery, private topAuctionsByProductNameQuery: TopAuctionsByProductNameQuery,
@@ -68,9 +67,8 @@ export class SearchBarComponent implements OnInit {
         this.auctionsByProductName = [];
         return;
       }
-      this.auctionsByProductName = v.auctions;
-      this.totalByProductName = v.total;
-      this.productName = v.canonicalName;
+      this.auctionsByProductName = v.map(v => v.auctions).reduce((prev, curr) => prev.concat(curr), []);
+      this.totalByProductName = v.reduce((prev, curr) => prev + curr.total, 0);
     }, (err) => { this.byProcuctLoading = false; });
   }
 

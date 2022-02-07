@@ -84,7 +84,7 @@ namespace Auctionhouse.Query.Controllers
         }
 
         [HttpGet("topAuctionsByProductName")]
-        public async Task<ActionResult<TopAuctionsByProductName>> TopAuctionsByProductName(
+        public async Task<ActionResult<TopAuctionsByProductName[]>> TopAuctionsByProductName(
             [FromQuery] TopAuctionsByProductNameDto queryDto)
         {
             var query = _mapper.Map<TopAuctionsByProductNameQuery>(queryDto);
