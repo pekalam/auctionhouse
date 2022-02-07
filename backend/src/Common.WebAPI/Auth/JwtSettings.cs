@@ -36,6 +36,10 @@ namespace Common.WebAPI.Auth
                 context.Token = null;
                 context.Fail(new Exception());
             }
+            else if(context.HttpContext.Request.Path.StartsWithSegments(new Microsoft.AspNetCore.Http.PathString("/app")))
+            {
+                context.Token = context.Request.Query["token"];
+            }
             else
             {
                 context.Token = context.Request.Cookies["IdToken"]; //TODO is bearer header ignored??

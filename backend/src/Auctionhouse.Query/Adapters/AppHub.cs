@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Auctionhouse.Query
 {
-    //[Authorize(Roles = "User")]
+    [Authorize(Roles = "User")]
     public class ApplicationHub : Hub
     {
     }
