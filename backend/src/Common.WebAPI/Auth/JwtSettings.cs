@@ -49,7 +49,7 @@ namespace Common.WebAPI.Auth
         public string SymetricKey { get; set; }
         public string Issuer { get; set; }
         public string Audience { get; set; }
-        public int ExpireTimeSec { get; set; } = 60 * 5; //5MIN
+        public int ExpireTimeSec { get; set; } = 60 * 45; //45MIN
 
         public TokenValidationParameters TokenValidationParameters =>
             new TokenValidationParameters()
