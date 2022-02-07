@@ -3,19 +3,19 @@
     <h3>Account balance:</h3>
     <p><i class="fas fa-money-bill-alt"></i>&nbsp;&nbsp;{{userData.credits}} credits</p>
   </div>
-  <div class="balance-form">
+  <div class="balance-form" style="color: gray;">
     <h3>Buy credits</h3>
     <form id="balance-form" (ngSubmit)="onBalanceFormSubmit()" [formGroup]="balanceForm">
       <div class="offer-container">
-        <button class="buy-btn" mat-raised-button color="primary" (click)="onBuyCreditsClick(15)">Buy</button>
+        <button class="buy-btn" mat-raised-button color="primary" (click)="onBuyCreditsClick(15)" disabled>Buy</button>
         <mat-card class="credits-offer">15 Credits</mat-card>
       </div>
       <div class="offer-container">
-        <button class="buy-btn" mat-raised-button color="primary" (click)="onBuyCreditsClick(40)">Buy</button>
+        <button class="buy-btn" mat-raised-button color="primary" (click)="onBuyCreditsClick(40)" disabled>Buy</button>
         <mat-card class="credits-offer" >40 Credits</mat-card>
       </div>
       <div class="offer-container">
-        <button class="buy-btn" mat-raised-button color="primary" (click)="onBuyCreditsClick(100)">Buy</button>
+        <button class="buy-btn" mat-raised-button color="primary" (click)="onBuyCreditsClick(100)" disabled>Buy</button>
         <mat-card class="credits-offer">100 Credits</mat-card>
       </div>
     </form>
