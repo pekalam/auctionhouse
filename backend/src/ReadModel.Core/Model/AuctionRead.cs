@@ -27,10 +27,12 @@ namespace ReadModel.Core.Model
         public bool BuyNowOnly { get; set; }
 
         [BsonDefaultValue(0)]
+        [BsonRepresentation(BsonType.Decimal128)]
         [JsonConverter(typeof(DecimalRoundingConverter))]
         public decimal? BuyNowPrice { get; set; }
 
         [BsonDefaultValue(0)]
+        [BsonRepresentation(BsonType.Decimal128)]
         [JsonConverter(typeof(DecimalRoundingConverter))]
         public decimal ActualPrice { get; set; }
         public int TotalBids { get; set; }

@@ -60,7 +60,7 @@ namespace ReadModel.Core.Queries.Auction.Auctions
             if (request.AuctionTypeQuery == AuctionTypeQuery.Auction)
             {
                 var f1 = Builders<AuctionRead>.Filter.Eq(f => f.BuyNowOnly, false);
-                var f2 = Builders<AuctionRead>.Filter.Eq(f => f.BuyNowPrice, 0);
+                var f2 = Builders<AuctionRead>.Filter.Eq(f => f.BuyNowPrice, null);
                 filtersArr.Add(Builders<AuctionRead>.Filter.And(f1, f2));
             }
 

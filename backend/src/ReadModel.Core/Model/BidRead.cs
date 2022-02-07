@@ -13,6 +13,8 @@ namespace ReadModel.Core.Model
         public string BidId { get; set; }
         public string AuctionId { get; set; }
         public UserIdentityRead UserIdentity { get; set; }
+
+        [BsonRepresentation(BsonType.Decimal128)]
         [JsonConverter(typeof(DecimalRoundingConverter))]
         public decimal Price { get; set; }
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
@@ -29,6 +31,8 @@ namespace ReadModel.Core.Model
         public string OwnerId { get; set; }
         public string? WinnerId { get; set; }
         public string? WinnerBidId { get; set; }
+
+        [BsonRepresentation(BsonType.Decimal128)]
         [JsonConverter(typeof(DecimalRoundingConverter))]
         public decimal CurrentPrice { get; set; }
         [JsonIgnore]

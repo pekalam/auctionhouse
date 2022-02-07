@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System.Text.Json.Serialization;
 
 namespace ReadModel.Core.Model
 {
@@ -6,6 +8,8 @@ namespace ReadModel.Core.Model
     {
         public string AuctionId { get; set; }
         public string AuctionName { get; set; }
+
+        [BsonRepresentation(BsonType.Decimal128)]
         [JsonConverter(typeof(DecimalRoundingConverter))]
         public decimal Price { get; set; }
         public DateTime DateCreated { get; set; }
