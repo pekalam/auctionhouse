@@ -5,9 +5,9 @@
 export const environment = {
   production: false,
   hmr: false,
-  API_URL: '',
-  WS_URL: '',
-  serverDemoModeEnabled: true,
+  API_URL: window['API_URL'] || '',
+  WS_URL: window['WS_URL'] || '',
+  serverDemoModeEnabled: window['serverDemoModeEnabled'] || true,
 };
 
 /*
