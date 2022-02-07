@@ -224,8 +224,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "container-scripts", "contai
 		AuctionhouseDatabase.Docker\container-scripts\listen-on-health-port.sh = AuctionhouseDatabase.Docker\container-scripts\listen-on-health-port.sh
 	EndProjectSection
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{BE26E8CD-5DC2-48A5-B97E-5CA3B935FEB3}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChronicleEfCoreStorage", "Adapter.ChronicleEfCoreStorage\ChronicleEfCoreStorage.csproj", "{6756D564-8FCE-4D48-A7BE-92271A854B69}"
 EndProject
 Global
@@ -490,10 +488,6 @@ Global
 		{E870F142-D7B8-43A8-B614-3A3751A0C30E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E870F142-D7B8-43A8-B614-3A3751A0C30E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E870F142-D7B8-43A8-B614-3A3751A0C30E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BE26E8CD-5DC2-48A5-B97E-5CA3B935FEB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BE26E8CD-5DC2-48A5-B97E-5CA3B935FEB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BE26E8CD-5DC2-48A5-B97E-5CA3B935FEB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BE26E8CD-5DC2-48A5-B97E-5CA3B935FEB3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6756D564-8FCE-4D48-A7BE-92271A854B69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6756D564-8FCE-4D48-A7BE-92271A854B69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6756D564-8FCE-4D48-A7BE-92271A854B69}.Release|Any CPU.ActiveCfg = Release|Any CPU
