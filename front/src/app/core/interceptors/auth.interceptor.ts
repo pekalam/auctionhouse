@@ -42,9 +42,6 @@ export class AuthInterceptor implements HttpInterceptor {
         
       })
       ,catchError((err: HttpErrorResponse) => {
-        if(req.url.endsWith("/api/c/demoCode") && err.status == 503){
-          return throwError(err);
-        }
 
       if(err.status == 401){
         console.log('Token is probably expired');

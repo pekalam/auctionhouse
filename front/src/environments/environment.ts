@@ -6,7 +6,8 @@ export const environment = {
   production: false,
   hmr: false,
   API_URL: '',
-  WS_URL: ''
+  WS_URL: '',
+  serverDemoModeEnabled: true,
 };
 
 /*

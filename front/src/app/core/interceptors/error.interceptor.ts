@@ -12,6 +12,7 @@ import { AuthenticationStateService } from '../services/AuthenticationStateServi
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LoadingService } from '../services/LoadingService';
+import { isDemoModeDisabled } from '../utils/DemoModeUtils';
 
 
 @Injectable({
@@ -35,7 +36,14 @@ export class ErrorInterceptor implements HttpInterceptor {
         this.router.navigateByUrl('/not-found');
         break;
       case 401:
-        this.router.navigateByUrl('/sign-in', { state: { redirect: this.router.url } });
+        if(!isDemoModeDisabled()){
+          this.router.navigateByUrl('/error', { state: { msg: 'Please disable demo mode at home page' } });
+        }
+        else if(this.router.url != '/sign-in'){
+          this.router.navigateByUrl('/sign-in', { state: { redirect: this.router.url } });
+        }else{
+          return false;
+        }
         break;
       default:
         return false;
@@ -54,8 +62,10 @@ export class ErrorInterceptor implements HttpInterceptor {
         return throwError(err);
       }
       console.log(err);
-      this.handleError(err);
-      return throwError(err);
+
+      if(!this.handleError(err)){
+        return throwError(err);
+      }
     }));
 
   }

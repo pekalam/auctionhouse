@@ -9,6 +9,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject, Observable, empty, EMPTY } from 'rxjs';
 import { debounceTime, switchMap, catchError, tap } from 'rxjs/operators';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { isDemoModeDisabled } from 'src/app/core/utils/DemoModeUtils';
 
 @Component({
   selector: 'app-home-page',
@@ -45,10 +46,7 @@ export class HomePageComponent implements OnInit {
       this.showCodeOk = this.showCodeInvalid = false;
       await this.submitDemoCode(v)
     });
-    if(document.cookie){
-      const cookieMatch = document.cookie.match(/^.*demoModeDisabled\=true.*$/);
-      this.showDemoMode = !(cookieMatch && cookieMatch.length > 0);      
-    }
+    this.showDemoMode = !isDemoModeDisabled();      
   }
 
   ngOnInit() {

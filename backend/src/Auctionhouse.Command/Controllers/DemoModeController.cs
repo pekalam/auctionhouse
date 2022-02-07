@@ -25,6 +25,7 @@ namespace Auctionhouse.Command.Controllers
             if(dto.DemoCode == _demoModeOptions.CurrentValue.DemoCode)
             {
                 HttpContext.Session.SetString(DemoModeMiddleware.DemoModeDisabledKey, "true");
+                HttpContext.Response.Cookies.Append(DemoModeMiddleware.DemoModeDisabledKey, "true");
 
                 return Ok();
             }
@@ -50,13 +51,14 @@ namespace Auctionhouse.Command.Controllers
                 return;
             }
 
-            if (context.Request.Path.Value != "/api/c/demoCode" && context.Session.GetString(DemoModeDisabledKey) != "true")
+            var demoModeDisabled = context.Session.GetString(DemoModeDisabledKey) == "true";
+            if (context.Request.Path.Value != "/api/c/demoCode" && !demoModeDisabled)
             {
                 context.Response.Cookies.Append(DemoModeDisabledKey, "false");
                 context.Response.StatusCode = 401;
                 return;
             }
-            else
+            else if(demoModeDisabled)
             {
                 context.Response.Cookies.Append(DemoModeDisabledKey, "true");
             }
