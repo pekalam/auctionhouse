@@ -31,7 +31,11 @@ export class ServerConnectionGuard implements CanActivate {
         reject(false);
       });
       this.loadingService.setLoading(true);
-      this.serverMessageService.ensureConnected();
+      try {
+        this.serverMessageService.ensureConnected();        
+      } catch (error) {
+        this.loadingService.setLoading(false);
+      }
     });
   }
 
