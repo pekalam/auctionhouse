@@ -1,35 +1,13 @@
-SQL Server:&nbsp;&nbsp;&nbsp;[![Build Status](https://dev.azure.com/marekbf3/auctionhouse/_apis/build/status/pekalam.auctionhouse?branchName=sqlserver)](https://dev.azure.com/marekbf3/auctionhouse/_build/latest?definitionId=1&branchName=sqlserver)
+(2022 update)\
+**!!Work in progress - some functionalities are not working!!!**\
 
-Eventstore:&nbsp;&nbsp;&nbsp;[![Build Status](https://dev.azure.com/marekbf3/auctionhouse/_apis/build/status/pekalam.auctionhouse?branchName=eventstore)](https://dev.azure.com/marekbf3/auctionhouse/_build/latest?definitionId=1&branchName=eventstore)
+# Introduction
+
+Fake web shop that provides functionality such as buying items, selling items and creating auctions. 
+It is created using CQRS and event sourcing patterns and it is using ports and adapters architecture. System is split into query and command operations that are reading and writing from separate databases. Query database is being synchronized with command database by using event bus.
+
+## C4 Container diagram
+
+![ScreenShot](https://raw.githubusercontent.com/pekalam/auctionhouse/rewrite/docs/img/Auctionhouse_C4_2.png)
 
 
-**Frontend**
-
-Angular8 + material components
-
-**Backend**
-
-**CQRS and Event sourcing**
-
-![ScreenShot](https://raw.githubusercontent.com/pekalam/auctionhouse/master/docs/img/Arch.png)
-
-**Package level overview**
-
-![ScreenShot](https://raw.githubusercontent.com/pekalam/auctionhouse/master/docs/img/PackageOverview.png)
-
-**Description of each package:**
-
-- **Core.Common**:
-    - domain model
-    - interfaces, base classes, services for Core.Command/Query
-    - interfaces (ports) for Infrastructure and Web packages
-- **Core.Command**:
-    - commands (use cases)
-- **Core.Query**:
-    - queries (use cases)
-- **Infrastructure**:
-    - adapters for Core.Common ports
-    - bootstraps application (DI, initialization of services)
-- **Web**:
-    - web api for frontend
-    - adapters for Core.Common ports
