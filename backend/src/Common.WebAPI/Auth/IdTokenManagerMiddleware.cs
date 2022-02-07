@@ -25,6 +25,14 @@ namespace Common.WebAPI.Auth
         public async Task InvokeAsync(HttpContext context, IIdTokenManager idTokenManager)
         {
             var idToken = context.Request.Cookies["IdToken"];
+            if(context.Request.Headers.TryGetValue("Authorization", out var authorization) && authorization.Count > 0)
+            {
+                var authorizationValue = authorization.First();
+                if(authorizationValue.IndexOf("Bearer ") == 0)
+                {
+                    idToken = authorizationValue.Substring("Bearer ".Length);
+                }
+            }
             if (idToken != null)
             {
                 context.Items[TokenDeactivatedKey] = await idTokenManager.CheckIsDeactivated(idToken, CancellationToken.None);

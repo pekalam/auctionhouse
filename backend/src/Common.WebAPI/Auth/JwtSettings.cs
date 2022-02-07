@@ -34,6 +34,7 @@ namespace Common.WebAPI.Auth
             if (context.HttpContext.IsIdTokenDeactivated())
             {
                 context.Token = null;
+                context.Fail(new Exception());
             }
             else
             {
