@@ -74,40 +74,40 @@ namespace Auctionhouse.Command.Controllers
             return Ok();
         }
 
-        [HttpPost("changePassword")]
-        public async Task<ActionResult<RequestStatusDto>> ChangePassword([FromBody] ChangePasswordCommandDto commandDto)
-        {
-            var cmd = _mapper.Map<ChangePasswordCommandDto, ChangePasswordCommand>(commandDto);
-            var status = await _mediator.Send(cmd);
-            return this.StatusResponse(status);
-        }
+        //[HttpPost("changePassword")]
+        //public async Task<ActionResult<RequestStatusDto>> ChangePassword([FromBody] ChangePasswordCommandDto commandDto)
+        //{
+        //    var cmd = _mapper.Map<ChangePasswordCommandDto, ChangePasswordCommand>(commandDto);
+        //    var status = await _mediator.Send(cmd);
+        //    return this.StatusResponse(status);
+        //}
 
-        [HttpPost("resetPassword")]
-        public async Task<ActionResult<RequestStatusDto>> ResetPassword([FromBody] ResetPasswordCommandDto commandDto)
-        {
-            var cmd = _mapper.Map<ResetPasswordCommandDto, ResetPasswordCommand>(commandDto);
-            var status = await _mediator.Send(cmd);
+        //[HttpPost("resetPassword")]
+        //public async Task<ActionResult<RequestStatusDto>> ResetPassword([FromBody] ResetPasswordCommandDto commandDto)
+        //{
+        //    var cmd = _mapper.Map<ResetPasswordCommandDto, ResetPasswordCommand>(commandDto);
+        //    var status = await _mediator.Send(cmd);
 
-            return this.StatusResponse(status);
-        }
+        //    return this.StatusResponse(status);
+        //}
 
-        [HttpPost("requestResetPassword")]
-        public async Task<ActionResult<RequestStatusDto>> RequestResetPassword(
-            [FromBody] RequestResetPasswordCommandDto commandDto)
-        {
-            var cmd = _mapper.Map<RequestResetPasswordCommandDto, RequestResetPasswordCommand>(commandDto);
-            var status = await _mediator.Send(cmd);
+        //[HttpPost("requestResetPassword")]
+        //public async Task<ActionResult<RequestStatusDto>> RequestResetPassword(
+        //    [FromBody] RequestResetPasswordCommandDto commandDto)
+        //{
+        //    var cmd = _mapper.Map<RequestResetPasswordCommandDto, RequestResetPasswordCommand>(commandDto);
+        //    var status = await _mediator.Send(cmd);
 
-            return this.StatusResponse(status);
-        }
+        //    return this.StatusResponse(status);
+        //}
 
-        [HttpPost("checkResetCode")]
-        public async Task<ActionResult<RequestStatusDto>> CheckResetCode([FromBody] CheckResetCodeCommandDto commandDto)
-        {
-            var cmd = _mapper.Map<CheckResetCodeCommandDto, CheckResetCodeCommand>(commandDto);
-            var status = await _mediator.Send(cmd);
+        //[HttpPost("checkResetCode")]
+        //public async Task<ActionResult<RequestStatusDto>> CheckResetCode([FromBody] CheckResetCodeCommandDto commandDto)
+        //{
+        //    var cmd = _mapper.Map<CheckResetCodeCommandDto, CheckResetCodeCommand>(commandDto);
+        //    var status = await _mediator.Send(cmd);
 
-            return this.StatusResponse(status);
-        }
+        //    return this.StatusResponse(status);
+        //}
     }
 }
