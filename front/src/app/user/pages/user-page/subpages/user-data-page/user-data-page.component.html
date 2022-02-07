@@ -3,11 +3,11 @@
     <div>
       <h2>Account</h2>
       <mat-form-field>
-        <input matInput placeholder="Username" [value]="userData.username">
+        <input matInput placeholder="Username" [value]="userData.username" [readonly]="true" disabled>
       </mat-form-field>
       <div class="change-field-container" *ngIf="!editPassword">
         <mat-form-field>
-          <input matInput placeholder="Password" value="*****" [readonly]="true">
+          <input matInput placeholder="Password" value="*****" [readonly]="true" disabled>
         </mat-form-field>
         <button (click)="editPassword = true">
           Change
