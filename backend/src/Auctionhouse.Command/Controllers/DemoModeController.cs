@@ -55,7 +55,7 @@ namespace Auctionhouse.Command.Controllers
             if (context.Request.Path.Value != "/api/c/demoCode" && !demoModeDisabled)
             {
                 context.Response.Cookies.Append(DemoModeDisabledKey, "false");
-                context.Response.StatusCode = 401;
+                context.Response.StatusCode = 412;
                 return;
             }
             else if(demoModeDisabled)

@@ -35,11 +35,15 @@ export class ErrorInterceptor implements HttpInterceptor {
       case 404:
         this.router.navigateByUrl('/not-found');
         break;
-      case 401:
+      case 412:
         if(!isDemoModeDisabled()){
           this.router.navigateByUrl('/error', { state: { msg: 'Please disable demo mode at home page' } });
+        }else{
+          this.router.navigateByUrl('/error', { state: { msg: 'Server could not handle this request' } });
         }
-        else if(this.router.url != '/sign-in'){
+        break;
+      case 401:
+        if(this.router.url != '/sign-in'){
           this.router.navigateByUrl('/sign-in', { state: { redirect: this.router.url } });
         }else{
           return false;
