@@ -28,7 +28,7 @@ namespace ReadModel.Core.Model
 
         [BsonDefaultValue(0)]
         [JsonConverter(typeof(DecimalRoundingConverter))]
-        public decimal BuyNowPrice { get; set; }
+        public decimal? BuyNowPrice { get; set; }
 
         [BsonDefaultValue(0)]
         [JsonConverter(typeof(DecimalRoundingConverter))]
