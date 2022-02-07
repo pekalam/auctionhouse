@@ -11,6 +11,6 @@ namespace Auctionhouse.Query.Queries
 
         [FromQuery(Name = "sort")] public UserAuctionsSorting Sorting { get; set; }
 
-        [FromQuery(Name = "dir")] public UserAuctionsSorting SortingDirection { get; set; }
+        [FromQuery(Name = "dir")] public UserAuctionsSortDir SortingDirection { get; set; }
     }
 }
