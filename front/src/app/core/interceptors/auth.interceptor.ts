@@ -46,6 +46,9 @@ export class AuthInterceptor implements HttpInterceptor {
       if(err.status == 401){
         console.log('Token is probably expired');
         this.authStateService.removeLocalAuthData();
+        if(req.url == "/api/c/signout"){ //expired token when trying to signout
+          return;
+        }
       }
       return throwError(err);
     })); 
