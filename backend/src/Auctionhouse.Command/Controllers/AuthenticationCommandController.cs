@@ -4,6 +4,7 @@ using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Mediator;
 using Common.WebAPI.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Users.Application.Commands.ChangePassword;
 using Users.Application.Commands.CheckResetCode;
@@ -60,8 +61,8 @@ namespace Auctionhouse.Command.Controllers
             }
         }
 
-        [HttpPost("signout")]
-        public async Task<IActionResult> SignOut_Async()
+        [Authorize(Roles = "User"), HttpPost("signout")]
+        public async Task<IActionResult> SignOut()
         {
             if (!HttpContext.Request.Cookies.ContainsKey("IdToken") || HttpContext.Request.Cookies["IdToken"] == null)
             {
@@ -74,13 +75,13 @@ namespace Auctionhouse.Command.Controllers
             return Ok();
         }
 
-        //[HttpPost("changePassword")]
-        //public async Task<ActionResult<RequestStatusDto>> ChangePassword([FromBody] ChangePasswordCommandDto commandDto)
-        //{
-        //    var cmd = _mapper.Map<ChangePasswordCommandDto, ChangePasswordCommand>(commandDto);
-        //    var status = await _mediator.Send(cmd);
-        //    return this.StatusResponse(status);
-        //}
+        [Authorize(Roles = "User"), HttpPost("changePassword")]
+        public async Task<ActionResult<RequestStatusDto>> ChangePassword([FromBody] ChangePasswordCommandDto commandDto)
+        {
+            var cmd = _mapper.Map<ChangePasswordCommandDto, ChangePasswordCommand>(commandDto);
+            var status = await _mediator.Send(cmd);
+            return this.StatusResponse(status);
+        }
 
         //[HttpPost("resetPassword")]
         //public async Task<ActionResult<RequestStatusDto>> ResetPassword([FromBody] ResetPasswordCommandDto commandDto)
