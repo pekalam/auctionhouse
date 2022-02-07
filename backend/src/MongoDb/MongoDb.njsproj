@@ -57,6 +57,21 @@
     </Content>
     <Content Include="package.json" />
     <Content Include="README.md" />
+    <Content Include="standalone\scripts\common_tags_view_update.js" />
+    <Content Include="standalone\Dockerfile-mongo-standalone-replicaset" />
+    <Content Include="standalone\scripts\ending_auctions_update.js" />
+    <Content Include="standalone\init-collections.js" />
+    <Content Include="standalone\init.js" />
+    <Content Include="standalone\mongo-standalone-entrypoint.sh" />
+    <Content Include="standalone\scripts\remove_unasigned_auction_images.js" />
+    <Content Include="standalone\scripts\remove_unasigned_auction_images.sh" />
+    <Content Include="standalone\scripts\top_auctions_by_product_name_update.js" />
+    <Content Include="standalone\scripts\top_auctions_in_tag_view_update.js" />
+    <Content Include="standalone\scripts\update-common-tags-view.sh" />
+    <Content Include="standalone\update-cronjob" />
+    <Content Include="standalone\scripts\update-ending-auctions-view.sh" />
+    <Content Include="standalone\scripts\update-top-auctions-by-product-name.sh" />
+    <Content Include="standalone\scripts\update-top-auctions-in-tag-view.sh" />
     <Content Include="temp.hbs" />
   </ItemGroup>
   <ItemGroup>
@@ -69,6 +84,8 @@
     <Folder Include="cluster\templates\" />
     <Folder Include="cluster\shard\" />
     <Folder Include="cluster\" />
+    <Folder Include="standalone\" />
+    <Folder Include="standalone\scripts\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
 </Project>

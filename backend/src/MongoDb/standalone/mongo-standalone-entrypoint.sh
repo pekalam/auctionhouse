@@ -34,6 +34,17 @@ mongo appDb /root/init-collections.js
 
 echo "mongodb initialized"
 
+echo "setting cronjob"
+crontab /root/update-cronjob
+echo "starting cron"
+cron
+
+echo "running update scripts..."
+./scripts/update-top-auctions-in-tag-view.sh
+./scripts/update-common-tags-view.sh
+./scripts/update-top-auctions-by-product-name.sh
+
+
 nc -l -s 0.0.0.0 -p 32112 &
 
 fg %1
