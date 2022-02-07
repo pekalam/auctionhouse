@@ -38,7 +38,7 @@ export interface Auction {
   buyNowOnly: boolean;
   buyNowPrice: string;
   actualPrice: string;
-  winningBid: Bid;
+  winningBid?: Bid;
   completed: boolean;
   buyer: UserIdentity;
   bought: boolean;

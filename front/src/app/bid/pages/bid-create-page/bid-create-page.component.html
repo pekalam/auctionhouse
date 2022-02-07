@@ -17,7 +17,7 @@
           <input matInput type="number" placeholder="Your offer" formControlName="price"/>
         </mat-form-field>
         <br>
-        <button id="submit-btn" type="submit">Submit bid</button>
+        <button id="submit-btn" type="submit" [disabled]="disableSubmitButton">Submit bid</button>
       </form>
     </div>
   </div>

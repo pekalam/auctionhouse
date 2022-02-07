@@ -20,7 +20,7 @@
     <ng-container matColumnDef="state">
       <th mat-header-cell *matHeaderCellDef> State </th>
       <td mat-cell *matCellDef="let bid">
-        <p class="bid-action"
+        <p style="display: none;" class="bid-action"
           *ngIf="!bid.auctionCompleted && !bid.auctionCanceled && !bid.bidCanceled && bid.canBeCanceled">
           <i class="fas fa-minus-circle"></i>
           <span (click)="onCancelBidClick(bid)">Cancel</span>

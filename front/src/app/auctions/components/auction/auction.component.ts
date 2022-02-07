@@ -21,9 +21,11 @@ export class AuctionComponent implements OnInit, OnDestroy {
       this.thumbnails = auction.auctionImages.filter(img => img != null).map(img => this.auctionImageQuery.execute(img.size3Id));
       this.checkCanShowButtons();
       this.setDaysLeft();
-      this.calculateAuctionTime();
-      this.clearAuctionTimeCalcInterval();
-      this.timeoutHandle = setInterval(() => { this.calculateAuctionTime(); });
+      if(!auction.archived){
+        this.calculateAuctionTime();
+        this.clearAuctionTimeCalcInterval();
+        this.timeoutHandle = setInterval(() => { this.calculateAuctionTime(); });
+      }
       this.readOnly = auction.archived;
     }
   }

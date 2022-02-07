@@ -5,9 +5,10 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { RaiseBidCommand } from "../../../core/commands/auction/RaiseBidCommand";
 import { RequestStatus, WSCommandStatusService } from 'src/app/core/services/WSCommandStatusService';
 import { Subscription } from 'rxjs';
-import { first } from 'rxjs/operators';
+import { first, take } from 'rxjs/operators';
 import { AuctionPriceChangedNotificationName, AuctionPriceChangedNotification } from '../../../core/serverNotifications/AuctionPriceChangedNotification';
 import { Bid } from '../../../core/models/Bid';
+import { AuthenticationStateService } from 'src/app/core/services/AuthenticationStateService';
 
 
 @Component({
@@ -20,11 +21,13 @@ export class BidCreatePageComponent implements OnInit, OnDestroy {
   form = new FormGroup({
     price: new FormControl('', [Validators.required])
   });
+  disableSubmitButton: boolean = false;
 
-  constructor(private activatedRoute: ActivatedRoute, private raiseBidCommand: RaiseBidCommand, private router: Router, private wsCommandStatusService: WSCommandStatusService) {
-    this.activatedRoute.data.subscribe((data) => {
+  constructor(private activatedRoute: ActivatedRoute, private raiseBidCommand: RaiseBidCommand, private router: Router, private wsCommandStatusService: WSCommandStatusService, private authenticationStateService: AuthenticationStateService) {
+    this.activatedRoute.data.subscribe(async (data: {auction: Auction}) => {
       this.auction = data.auction;
       this.form.controls.price.setValue(this.auction.winningBid ? (Number.parseFloat(this.auction.winningBid.price) + 1).toString() : '');
+      await this.updateSubmitButton();
     });
     this.wsCommandStatusService
       .setupServerNotificationHandler<AuctionPriceChangedNotification>(AuctionPriceChangedNotificationName(this.auction.auctionId))
@@ -39,12 +42,26 @@ export class BidCreatePageComponent implements OnInit, OnDestroy {
     this.wsCommandStatusService.closeConnection();
   }
 
-  onAuctionPriceChangedNotification(values: AuctionPriceChangedNotification) {
+  private async updateSubmitButton(){
+    if(!this.auction.winningBid){
+      return;
+    }
+    const currentUser = await this.authenticationStateService.currentUser.pipe(take(1)).toPromise();
+    this.disableSubmitButton = this.auction.winningBid && currentUser.userId == this.auction.winningBid.userIdentity.userId;
+  }
+
+  async onAuctionPriceChangedNotification(values: AuctionPriceChangedNotification) {
     console.log(`New price: ${values.newPrice}`);
-    this.auction.winningBid.price = values.newPrice;
-    this.auction.winningBid.bidId = values.bidId;
-    this.auction.winningBid.userIdentity.userId = values.winnerId; //TODO name
-    this.auction.winningBid.dateCreated = values.dateCreated; //TODO name
+    this.auction.winningBid = {
+      auctionId: this.auction.auctionId,
+      bidId: values.bidId,
+      dateCreated: values.dateCreated,
+      price: values.newPrice,
+      userIdentity: {
+        userId: values.winnerId,
+        userName: null, //TODO
+      },
+    }
 
     window.requestAnimationFrame(function () {
       document.getElementById('auction-price-box').style.cssText = '';
@@ -54,6 +71,7 @@ export class BidCreatePageComponent implements OnInit, OnDestroy {
       })
     })
 
+    await this.updateSubmitButton();
   }
 
   onBidSubmit() {
@@ -63,7 +81,7 @@ export class BidCreatePageComponent implements OnInit, OnDestroy {
         .execute(this.auction.auctionId, this.form.value.price)
         .subscribe((msg: RequestStatus) => {
           if (msg.status === 'COMPLETED') {
-            this.router.navigate(['/auction'], { queryParams: { auctionId: this.auction.auctionId } });
+            //this.router.navigate(['/auction'], { queryParams: { auctionId: this.auction.auctionId } });
           } else {
             console.log('error ' + msg);
             this.router.navigate(['/error']);
