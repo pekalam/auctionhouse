@@ -72,6 +72,9 @@ services:
     build:
       context: ../src/MongoDb/standalone
       dockerfile: Dockerfile-mongo-standalone-replicaset
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
 
   quartz_web_task_service:
     image: marekbf3/quartz-web-task-service
@@ -89,6 +92,8 @@ services:
       - MSSQL_AGENT_ENABLED=True
     ports:
       - '1433:1433'
+    volumes:
+      - sqlserver_data:/var/opt/mssql
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -113,3 +118,8 @@ services:
     image: redis
     ports:
       - '6379:6379'
+  
+volumes:
+  mongodb_data:
+  mongodb_config:
+  sqlserver_data:

@@ -2,12 +2,12 @@ FROM mongo
 RUN apt-get update
 RUN apt-get -y install netcat
 RUN apt-get -y install cron
-COPY ["mongo-standalone-entrypoint.sh", "/root"]
-COPY ["init.js", "/root"]
-COPY ["init-collections.js", "/root"]
 EXPOSE 32112
-RUN chmod +x /root/mongo-standalone-entrypoint.sh
 COPY ["scripts", "/scripts/"]
 COPY update-cronjob /root
 EXPOSE 32112
-ENTRYPOINT ["/root/mongo-standalone-entrypoint.sh"]
+CMD [ "--replSet", "rs0", "--bind_ip_all" ]
+COPY ["mongo-standalone-init.sh", "/docker-entrypoint-initdb.d/"]
+COPY ["mongo-standalone-entry.sh", "/bin"]
+RUN chmod +x "/bin/mongo-standalone-entry.sh"
+ENTRYPOINT [ "mongo-standalone-entry.sh" ]
