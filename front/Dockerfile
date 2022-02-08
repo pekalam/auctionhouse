@@ -19,3 +19,8 @@ COPY --from=build /usr/local/app/dist/front /usr/share/nginx/html
 RUN mkdir /usr/share/nginx/html/front_config && touch /usr/share/nginx/html/front_config/config.js
 
 EXPOSE 80 443
+COPY custom_entrypoint.sh /custom_entrypoint.sh
+RUN chmod +x /custom_entrypoint.sh
+
+ENTRYPOINT [ "/custom_entrypoint.sh" ]
+CMD [ "nginx", "-g", "daemon off;" ]
