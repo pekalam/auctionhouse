@@ -36,7 +36,6 @@ backend/src/AuctionhouseDatabase/AuctionhouseDatabase.jfm
 .vs/VSWorkspaceState.json
 
 .vscode/settings.json
-/backend/src/Envoy/ssl
 /backend/Adapter.ChronicleEfCoreStorage/obj
 backend/src/docker-compose.prod.certs.yml
 backend/src/docker-compose.front.certs.yml
