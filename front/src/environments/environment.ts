@@ -7,7 +7,7 @@ export const environment = {
   hmr: false,
   API_URL: window['API_URL'] || '',
   WS_URL: window['WS_URL'] || '',
-  serverDemoModeEnabled: window['serverDemoModeEnabled'] || true,
+  serverDemoModeEnabled: (window.hasOwnProperty('serverDemoModeEnabled') ? window['serverDemoModeEnabled'] : true),
 };
 
 /*

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Subject, Observable, of } from 'rxjs';
+import { Subject, Observable, of, EMPTY } from 'rxjs';
 import { TopAuctionsQueryResult, TopAuctionQueryItem, TopAuctionsByTagQuery } from 'src/app/core/queries/TopAuctionsByTagQuery';
 import { switchMap, distinctUntilChanged, debounceTime, catchError } from 'rxjs/operators';
 import { TopAuctionsByProductNameQuery, TopAuctionsByProductNameQueryResult } from '../../core/queries/TopAuctionsByProductNameQuery';
@@ -57,7 +57,7 @@ export class SearchBarComponent implements OnInit {
       debounceTime(500),
       switchMap((s) => {
         this.byProcuctLoading = true;
-        return this.topAuctionsByProductNameQuery.execute(s, 0);
+        return this.topAuctionsByProductNameQuery.execute(s, 0).pipe(catchError((err) => EMPTY));
       })
     );
 
