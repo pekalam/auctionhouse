@@ -60,7 +60,7 @@ namespace Adatper.RabbitMq.EventBus.ErrorEventOutbox
             var unprocessedItems = errorEventOutboxUnprocesseItems.FindUnprocessed(10);
             if(unprocessedItems.Length > 0)
             {
-                _logger.LogDebug("Found {@length} outbox items to process", unprocessedItems.Length);
+                _logger.LogInformation("Found {@length} outbox items to process", unprocessedItems.Length);
             }
             foreach (var item in unprocessedItems)
             {
@@ -89,7 +89,7 @@ namespace Adatper.RabbitMq.EventBus.ErrorEventOutbox
                 }
 
                 var messageJson = IncrementRedeliveryCount(jToken, currentRedeliveryCount.Value);
-                _logger.LogDebug("Redelivering {@routingKey}", item.RoutingKey);
+                _logger.LogInformation("Redelivering {@routingKey}", item.RoutingKey);
                 if (item.MessageProperties.DeliveryMode != 0) //fixes invalid messages 
                 {
                     await eventBus.Bus.Advanced.PublishAsync(eventBus.EventExchange, item.RoutingKey,

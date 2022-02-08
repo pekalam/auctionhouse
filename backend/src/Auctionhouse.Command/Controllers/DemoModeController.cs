@@ -29,7 +29,7 @@ namespace Auctionhouse.Command.Controllers
 
                 return Ok();
             }
-            return Unauthorized();
+            return StatusCode(412);
         }
     }
 

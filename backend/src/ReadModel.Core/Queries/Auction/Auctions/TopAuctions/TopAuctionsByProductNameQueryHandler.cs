@@ -18,6 +18,10 @@ namespace ReadModel.Core.Queries.Auction.TopAuctionsByTag
 
         protected async override Task<TopAuctionsByProductName[]> HandleQuery(TopAuctionsByProductNameQuery request, CancellationToken cancellationToken)
         {
+            if(string.IsNullOrWhiteSpace(request.ProductName))
+            { 
+                return Array.Empty<TopAuctionsByProductName>();
+            }
             var productName = request.ProductName.Trim();
             var canonicalName = new string(Product.CanonicalizeProductName(productName)
                 .Where(c => char.IsLetterOrDigit(c)).ToArray()); //TODO prevent product name from containing invalid chars
