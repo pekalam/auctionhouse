@@ -83,6 +83,9 @@ cd front
 npx ng serve
 ```
 6. Open http://localhost:4200
+7. Trust self-signed certificate provided with repository \
+or \
+Open (https://localhost:10000/api/q/categories / any other endpoint that doesn't require authorization) and click "proceed to (unsafe)" (Chrome)
 
 ## E2E tests
 
