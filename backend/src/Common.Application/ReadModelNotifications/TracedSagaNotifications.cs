@@ -15,7 +15,7 @@ namespace Common.Application.ReadModelNotifications
              {
                  ((Activity?)state)?.Dispose();
                  return t;
-             }, activity, TaskContinuationOptions.ExecuteSynchronously); //exec synchronously to avoid calling continuation on new thread
+             }, activity, TaskContinuationOptions.ExecuteSynchronously).Unwrap(); //exec synchronously to avoid calling continuation on new thread
         }
     }
 

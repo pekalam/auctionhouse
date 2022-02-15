@@ -14,16 +14,11 @@ namespace Common.Application
             Source = new ActivitySource(assemblyName!);
         }
 
-        public static Activity? StartTracing(string activityName)
-        {
-            var activity = Source?.StartActivity(ActivityKind.Internal, name: activityName);
-            return activity;
-        }
-
         public static Activity? StartTracing(string activityName, CorrelationId correlationId)
         {
             var actCtx = new ActivityContext(ActivityTraceId.CreateFromString(correlationId.Value),
-            Activity.Current?.SpanId ?? ActivitySpanId.CreateRandom(), ActivityTraceFlags.Recorded);
+            //Activity.Current?.SpanId ?? 
+            ActivitySpanId.CreateRandom(), ActivityTraceFlags.Recorded);
             var activity = Source?.StartActivity(ActivityKind.Internal, name: activityName, parentContext: actCtx);
             return activity;
         }
