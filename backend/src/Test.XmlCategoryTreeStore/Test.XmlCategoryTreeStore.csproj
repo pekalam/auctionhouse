@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Xml.CategoryTreeStore\Adapter.XmlCategoryTreeStore.csproj" />
+    <ProjectReference Include="..\Adapter.XmlCategoryTreeStore\Adapter.XmlCategoryTreeStore.csproj" />
   </ItemGroup>
 
   <ItemGroup>

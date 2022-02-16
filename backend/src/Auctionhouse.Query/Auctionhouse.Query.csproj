@@ -26,15 +26,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Adapter.EfCore.SagaEventsConfirmation\Adapter.EfCore.ReadModelNotifications.csproj" />
-    <ProjectReference Include="..\Adapter.MongoDb\Adapter.MongoDb.AuctionImageRepository.csproj" />
-    <ProjectReference Include="..\Adapter.SqlServer.EventOutbox\Adapter.SqlServer.EventOutboxStorage.csproj" />
+    <ProjectReference Include="..\Adapter.EfCore.ReadModelNotifications\Adapter.EfCore.ReadModelNotifications.csproj" />
+    <ProjectReference Include="..\Adapter.MongoDb.AuctionImageRepository\Adapter.MongoDb.AuctionImageRepository.csproj" />
+    <ProjectReference Include="..\Adapter.SqlServer.EventOutboxStorage\Adapter.SqlServer.EventOutboxStorage.csproj" />
     <ProjectReference Include="..\Categories.Domain\Categories.Domain.csproj" />
     <ProjectReference Include="..\Common.Application\Common.Application.csproj" />
     <ProjectReference Include="..\Common.WebAPI\Common.WebAPI.csproj" />
-    <ProjectReference Include="..\RabbitMq\Adatper.RabbitMq.EventBus.csproj" />
+    <ProjectReference Include="..\Adatper.RabbitMq.EventBus\Adatper.RabbitMq.EventBus.csproj" />
     <ProjectReference Include="..\ReadModel.Core\ReadModel.Core.csproj" />
-    <ProjectReference Include="..\Xml.CategoryTreeStore\Adapter.XmlCategoryTreeStore.csproj" />
+    <ProjectReference Include="..\Adapter.XmlCategoryTreeStore\Adapter.XmlCategoryTreeStore.csproj" />
   </ItemGroup>
 
 </Project>

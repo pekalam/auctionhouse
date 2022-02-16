@@ -10,10 +10,9 @@ RUN apt-get install -y ncat
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["Auctionhouse.Query/Auctionhouse.Query.csproj", "Auctionhouse.Query/"]
-COPY ["Adapter.EfCore.SagaEventsConfirmation/Adapter.EfCore.ReadModelNotifications.csproj", "Adapter.EfCore.SagaEventsConfirmation/"]
+COPY ["Adatper.RabbitMq.EventBus/Adatper.RabbitMq.EventBus.csproj", "Adatper.RabbitMq.EventBus/"]
 COPY ["Common.Application/Common.Application.csproj", "Common.Application/"]
 COPY ["Core.DomainFramework/Common.DomainFramework.csproj", "Core.DomainFramework/"]
-COPY ["Adapter.SqlServer.EventOutbox/Adapter.SqlServer.EventOutboxStorage.csproj", "Adapter.SqlServer.EventOutbox/"]
 COPY ["ReadModel.Core/ReadModel.Core.csproj", "ReadModel.Core/"]
 COPY ["Users.Domain/Users.Domain.csproj", "Users.Domain/"]
 COPY ["Users.DomainEvents/Users.DomainEvents.csproj", "Users.DomainEvents/"]
@@ -23,10 +22,11 @@ COPY ["AuctionBids.DomainEvents/AuctionBids.DomainEvents.csproj", "AuctionBids.D
 COPY ["Categories.Domain/Categories.Domain.csproj", "Categories.Domain/"]
 COPY ["UserPayments.Domain/UserPayments.Domain.csproj", "UserPayments.Domain/"]
 COPY ["UserPayments.DomainEvents/UserPayments.DomainEvents.csproj", "UserPayments.DomainEvents/"]
-COPY ["Adapter.MongoDb/Adapter.MongoDb.AuctionImageRepository.csproj", "Adapter.MongoDb/"]
-COPY ["Xml.CategoryTreeStore/Adapter.XmlCategoryTreeStore.csproj", "Xml.CategoryTreeStore/"]
-COPY ["RabbitMq/Adatper.RabbitMq.EventBus.csproj", "RabbitMq/"]
+COPY ["Adapter.EfCore.ReadModelNotifications/Adapter.EfCore.ReadModelNotifications.csproj", "Adapter.EfCore.ReadModelNotifications/"]
+COPY ["Adapter.SqlServer.EventOutboxStorage/Adapter.SqlServer.EventOutboxStorage.csproj", "Adapter.SqlServer.EventOutboxStorage/"]
+COPY ["Adapter.MongoDb.AuctionImageRepository/Adapter.MongoDb.AuctionImageRepository.csproj", "Adapter.MongoDb.AuctionImageRepository/"]
 COPY ["Common.WebAPI/Common.WebAPI.csproj", "Common.WebAPI/"]
+COPY ["Adapter.XmlCategoryTreeStore/Adapter.XmlCategoryTreeStore.csproj", "Adapter.XmlCategoryTreeStore/"]
 RUN dotnet restore "Auctionhouse.Query/Auctionhouse.Query.csproj"
 COPY . .
 WORKDIR "/src/Auctionhouse.Query"
