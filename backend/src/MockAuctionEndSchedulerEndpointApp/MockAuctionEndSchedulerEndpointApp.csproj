@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\QuartzTimeTaskService.AuctionEndScheduler\Adapter.QuartzTimeTaskService.AuctionEndScheduler.csproj" />
+    <ProjectReference Include="..\Adapter.QuartzTimeTaskService.AuctionEndScheduler\Adapter.QuartzTimeTaskService.AuctionEndScheduler.csproj" />
   </ItemGroup>
 
 </Project>

@@ -43,7 +43,7 @@ services:
     image: pekalam/auctionhousecommandstatus
     build:
       context: .
-      dockerfile: Auctionhouse.CommandStatusCheck/Dockerfile
+      dockerfile: Auctionhouse.CommandStatus/Dockerfile
     depends_on:
         - quartz_web_task_service
         - sql_server

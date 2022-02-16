@@ -41,7 +41,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{5F25
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Adapters", "Adapters", "{2C7F9FB2-0106-45A8-8185-8B58DF359DE2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.QuartzTimeTaskService.AuctionEndScheduler", "QuartzTimeTaskService.AuctionEndScheduler\Adapter.QuartzTimeTaskService.AuctionEndScheduler.csproj", "{5EE29E8F-C7FE-430F-944E-1DBD210FD494}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.QuartzTimeTaskService.AuctionEndScheduler", "Adapter.QuartzTimeTaskService.AuctionEndScheduler\Adapter.QuartzTimeTaskService.AuctionEndScheduler.csproj", "{5EE29E8F-C7FE-430F-944E-1DBD210FD494}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctions.Application", "Auctions.Application\Auctions.Application.csproj", "{C601EF06-7E1D-41DB-B97F-846265CD097D}"
 EndProject
@@ -71,7 +71,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{BA7B15F4
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionalTests", "Tests\FunctionalTests.csproj", "{143BBFAF-CF69-4D3F-A597-328A327BDC83}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adatper.RabbitMq.EventBus", "RabbitMq\Adatper.RabbitMq.EventBus.csproj", "{5744FD2C-7224-4A12-ACB1-C00EE1B0DF7D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adatper.RabbitMq.EventBus", "Adatper.RabbitMq.EventBus\Adatper.RabbitMq.EventBus.csproj", "{5744FD2C-7224-4A12-ACB1-C00EE1B0DF7D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventBus", "EventBus", "{7E28159A-BD62-46D0-8167-81A089544046}"
 EndProject
@@ -79,7 +79,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.RabbitMq.Event
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Repositories", "Repositories", "{94E22CD1-B1B9-44DF-8240-85E518B2CD5B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.Dapper.AuctionhouseDatabase", "Dapper.AuctionhouseDatabase\Adapter.Dapper.AuctionhouseDatabase.csproj", "{EBDE7CFF-E774-4BFD-B9BD-9C51B0DBA569}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.Dapper.AuctionhouseDatabase", "Adapter.Dapper.AuctionhouseDatabase\Adapter.Dapper.AuctionhouseDatabase.csproj", "{EBDE7CFF-E774-4BFD-B9BD-9C51B0DBA569}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Dapper.AuctionhouseDatabase", "Test.Dapper.AuctionhouseDatabase\Test.Dapper.AuctionhouseDatabase.csproj", "{12CB7343-A060-4ADD-B6C4-DAE3347B7743}"
 EndProject
@@ -91,7 +91,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadModel.Core", "ReadModel
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CategoryStore", "CategoryStore", "{B032A588-F375-46B8-8678-994B7EFD0FE1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.XmlCategoryTreeStore", "Xml.CategoryTreeStore\Adapter.XmlCategoryTreeStore.csproj", "{26446E27-D315-4D68-959F-62A47D3426E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.XmlCategoryTreeStore", "Adapter.XmlCategoryTreeStore\Adapter.XmlCategoryTreeStore.csproj", "{26446E27-D315-4D68-959F-62A47D3426E1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.XmlCategoryTreeStore", "Test.XmlCategoryTreeStore\Test.XmlCategoryTreeStore.csproj", "{EAC2A518-3F82-4B29-A847-A33979A1F6D9}"
 EndProject
@@ -105,9 +105,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctionhouse.Query", "Aucti
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuctionImageRepository", "AuctionImageRepository", "{2250DF43-E387-473E-9AFE-02C347335D32}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.MongoDb.AuctionImageRepository", "Adapter.MongoDb\Adapter.MongoDb.AuctionImageRepository.csproj", "{8E70447F-E471-4033-987D-45BA5734090B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.MongoDb.AuctionImageRepository", "Adapter.MongoDb.AuctionImageRepository\Adapter.MongoDb.AuctionImageRepository.csproj", "{8E70447F-E471-4033-987D-45BA5734090B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.MongoDb.AuctionImageRepository", "Test.Adapter.MongoDb\Test.Adapter.MongoDb.AuctionImageRepository.csproj", "{8D2660A3-A9FD-4EB0-9718-3F81A005C404}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.MongoDb.AuctionImageRepository", "Test.Adapter.MongoDb.AuctionImageRepository\Test.Adapter.MongoDb.AuctionImageRepository.csproj", "{8D2660A3-A9FD-4EB0-9718-3F81A005C404}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.AuctionImageConversion", "Adapter.AuctionImageConversion\Adapter.AuctionImageConversion.csproj", "{79FF3326-A130-4DDD-AAC6-08F0A68EF9C3}"
 EndProject
@@ -129,21 +129,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserPayments.DomainEvents",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReadModelNotifications", "ReadModelNotifications", "{E6CC83ED-4295-4092-8720-5A838CF8E0C5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.EfCore.ReadModelNotifications", "Adapter.EfCore.SagaEventsConfirmation\Adapter.EfCore.ReadModelNotifications.csproj", "{F058EE29-59E9-40B1-A2E1-05C491B67DB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.EfCore.ReadModelNotifications", "Adapter.EfCore.ReadModelNotifications\Adapter.EfCore.ReadModelNotifications.csproj", "{F058EE29-59E9-40B1-A2E1-05C491B67DB5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.EfCore.ReadModelNotifications", "Test.Adapter.EfCore.SagaEventsConfirmation\Test.Adapter.EfCore.ReadModelNotifications.csproj", "{F59B28EB-65E7-458C-863A-9F200437D6A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.EfCore.ReadModelNotifications", "Test.Adapter.EfCore.ReadModelNotifications\Test.Adapter.EfCore.ReadModelNotifications.csproj", "{F59B28EB-65E7-458C-863A-9F200437D6A7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctionhouse.CommandStatus", "Auctionhouse.CommandStatusCheck\Auctionhouse.CommandStatus.csproj", "{68972832-B680-4E1A-AD31-A85289EA4421}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctionhouse.CommandStatus", "Auctionhouse.CommandStatus\Auctionhouse.CommandStatus.csproj", "{68972832-B680-4E1A-AD31-A85289EA4421}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Auctionhouse.CommandStatus.Integration", "Test.Auctionhouse.CommandStatus.Integration\Test.Auctionhouse.CommandStatus.Integration.csproj", "{EA58E3C0-5C97-46D9-8AE7-143E28C3AE75}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.EfCore.ReadModelNotifications.SetupTestDb", "SetupTestDb\Adapter.EfCore.ReadModelNotifications.SetupTestDb.csproj", "{C8FECAFC-E541-441B-A19B-991D4959D7F6}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventOutboxStorage", "EventOutboxStorage", "{D54B2273-CB0E-46DC-8B5D-B70D72226EDF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.SqlServer.EventOutboxStorage", "Adapter.SqlServer.EventOutbox\Adapter.SqlServer.EventOutboxStorage.csproj", "{0CE3CE42-E1A0-4804-AF03-D3AD01FFD3EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.SqlServer.EventOutboxStorage", "Adapter.SqlServer.EventOutboxStorage\Adapter.SqlServer.EventOutboxStorage.csproj", "{0CE3CE42-E1A0-4804-AF03-D3AD01FFD3EB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.SqlServer.EventOutbox", "Test.Adapter.SqlServer.EventOutbox\Test.Adapter.SqlServer.EventOutbox.csproj", "{8685B8D1-EB4B-4CA7-8C52-2AE5A2E31F44}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.SqlServer.EventOutboxStorage", "Test.Adapter.SqlServer.EventOutbox\Test.Adapter.SqlServer.EventOutboxStorage.csproj", "{8685B8D1-EB4B-4CA7-8C52-2AE5A2E31F44}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Common.Base", "Test.Common.Base\Test.Common.Base.csproj", "{F7CC5BF3-4406-4EF0-B5A1-2070AD4078AE}"
 EndProject
@@ -416,10 +414,6 @@ Global
 		{EA58E3C0-5C97-46D9-8AE7-143E28C3AE75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA58E3C0-5C97-46D9-8AE7-143E28C3AE75}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA58E3C0-5C97-46D9-8AE7-143E28C3AE75}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C8FECAFC-E541-441B-A19B-991D4959D7F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C8FECAFC-E541-441B-A19B-991D4959D7F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C8FECAFC-E541-441B-A19B-991D4959D7F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C8FECAFC-E541-441B-A19B-991D4959D7F6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0CE3CE42-E1A0-4804-AF03-D3AD01FFD3EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0CE3CE42-E1A0-4804-AF03-D3AD01FFD3EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CE3CE42-E1A0-4804-AF03-D3AD01FFD3EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -560,7 +554,6 @@ Global
 		{F59B28EB-65E7-458C-863A-9F200437D6A7} = {E6CC83ED-4295-4092-8720-5A838CF8E0C5}
 		{68972832-B680-4E1A-AD31-A85289EA4421} = {84D834F3-79C2-4E31-9A71-1917955E6CD7}
 		{EA58E3C0-5C97-46D9-8AE7-143E28C3AE75} = {108DCD5F-C97B-44A0-90A4-1AE386A216BB}
-		{C8FECAFC-E541-441B-A19B-991D4959D7F6} = {E6CC83ED-4295-4092-8720-5A838CF8E0C5}
 		{D54B2273-CB0E-46DC-8B5D-B70D72226EDF} = {2C7F9FB2-0106-45A8-8185-8B58DF359DE2}
 		{0CE3CE42-E1A0-4804-AF03-D3AD01FFD3EB} = {D54B2273-CB0E-46DC-8B5D-B70D72226EDF}
 		{8685B8D1-EB4B-4CA7-8C52-2AE5A2E31F44} = {D54B2273-CB0E-46DC-8B5D-B70D72226EDF}

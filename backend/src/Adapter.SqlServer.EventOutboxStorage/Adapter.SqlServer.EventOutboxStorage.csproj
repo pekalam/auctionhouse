@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="Test.Adapter.SqlServer.EventOutbox" />
+    <InternalsVisibleTo Include="Test.Adapter.SqlServer.EventOutboxStorage" />
   </ItemGroup>
 
 </Project>

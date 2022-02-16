@@ -8,12 +8,12 @@ RUN apt-get update && apt-get install -y ncat
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["Auctionhouse.CommandStatusCheck/Auctionhouse.CommandStatus.csproj", "Auctionhouse.CommandStatusCheck/"]
+COPY ["Auctionhouse.CommandStatus/Auctionhouse.CommandStatus.csproj", "Auctionhouse.CommandStatus/"]
 COPY ["Common.Application/Common.Application.csproj", "Common.Application/"]
 COPY ["Core.DomainFramework/Common.DomainFramework.csproj", "Core.DomainFramework/"]
-RUN dotnet restore "Auctionhouse.CommandStatusCheck/Auctionhouse.CommandStatus.csproj"
+RUN dotnet restore "Auctionhouse.CommandStatus/Auctionhouse.CommandStatus.csproj"
 COPY . .
-WORKDIR "/src/Auctionhouse.CommandStatusCheck"
+WORKDIR "/src/Auctionhouse.CommandStatus"
 RUN dotnet build "Auctionhouse.CommandStatus.csproj" -c Release -o /app/build
 
 FROM build AS publish
@@ -21,7 +21,7 @@ RUN dotnet publish "Auctionhouse.CommandStatus.csproj" -c Release -o /app/publis
 
 FROM base AS final
 WORKDIR /app
-COPY ["Auctionhouse.CommandStatusCheck/entrypoint.sh", "wait-for", "."] 
+COPY ["Auctionhouse.CommandStatus/entrypoint.sh", "wait-for", "."] 
 RUN chmod +x entrypoint.sh wait-for
 COPY --from=publish /app/publish .
 ENTRYPOINT ["./entrypoint.sh"]

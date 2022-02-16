@@ -30,7 +30,7 @@
     <ProjectReference Include="..\Auctions.Application\Auctions.Application.csproj" />
     <ProjectReference Include="..\Common.Application\Common.Application.csproj" />
     <ProjectReference Include="..\MockAuctionEndSchedulerEndpointApp\MockAuctionEndSchedulerEndpointApp.csproj" />
-    <ProjectReference Include="..\QuartzTimeTaskService.AuctionEndScheduler\Adapter.QuartzTimeTaskService.AuctionEndScheduler.csproj" />
+    <ProjectReference Include="..\Adapter.QuartzTimeTaskService.AuctionEndScheduler\Adapter.QuartzTimeTaskService.AuctionEndScheduler.csproj" />
     <ProjectReference Include="..\Test.Auctions.Base\Test.Auctions.Base.csproj" />
     <ProjectReference Include="..\Test.Common.Base\Test.Common.Base.csproj" />
   </ItemGroup>

@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Adapter.EfCore.SagaEventsConfirmation\Adapter.EfCore.ReadModelNotifications.csproj" />
+    <ProjectReference Include="..\Adapter.EfCore.ReadModelNotifications\Adapter.EfCore.ReadModelNotifications.csproj" />
   </ItemGroup>
 
 </Project>

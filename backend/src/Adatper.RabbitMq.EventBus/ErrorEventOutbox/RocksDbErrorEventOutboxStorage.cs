@@ -54,7 +54,7 @@ namespace Adatper.RabbitMq.EventBus.ErrorEventOutbox
         public void Save(ErrorEventOutboxItem item)
         {
             var bytes = RocksDbSerializationUtils.Serialize(item);
-
+            
             if (item.Timestamp == default)
             {
                 item.Timestamp = ErrorEventOutboxItemTimestampFactory.CreateTimestamp();

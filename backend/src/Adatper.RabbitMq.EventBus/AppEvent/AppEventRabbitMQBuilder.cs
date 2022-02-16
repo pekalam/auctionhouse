@@ -17,7 +17,7 @@ namespace RabbitMq.EventBus
             return this;
         }
 
-        public IAppEventBuilder WithEvent<TEvent>(TEvent @event) where TEvent : Event
+        public IAppEventBuilder WithEvent<TEvent>(TEvent @event) where TEvent : Event //TODO unnecessary type param
         {
             _event = @event;
             return this;
