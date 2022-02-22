@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   command:
-    image: pekalam/auctionhousecommand
+    image: ${DOCKER_REGISTRY-}pekalam/auctionhousecommand
     build:
       context: .
       dockerfile: Auctionhouse.Command/Dockerfile
@@ -21,7 +21,7 @@ services:
         - '7203:80'
 
   query:
-    image: pekalam/auctionhousequery
+    image: ${DOCKER_REGISTRY-}pekalam/auctionhousequery
     build:
       context: .
       dockerfile: Auctionhouse.Query/Dockerfile
@@ -40,7 +40,7 @@ services:
         - '7070:80'
 
   commandstatus:
-    image: pekalam/auctionhousecommandstatus
+    image: ${DOCKER_REGISTRY-}pekalam/auctionhousecommandstatus
     build:
       context: .
       dockerfile: Auctionhouse.CommandStatus/Dockerfile
@@ -58,7 +58,7 @@ services:
 
 ## INFRASTRUCTURE
   envoy1:
-    image: pekalam/auctionhouse-envoy1
+    image: ${DOCKER_REGISTRY-}pekalam/auctionhouse-envoy1
     ports:
       - '10000:10000'
       - '8001:8001'
@@ -66,7 +66,7 @@ services:
       context: ./Envoy
 
   mongodb:
-    image: pekalam/auctionhouse-mongodb-standalone
+    image: ${DOCKER_REGISTRY-}pekalam/auctionhouse-mongodb-standalone
     ports:
       - '27017:27017'
     build:
@@ -85,7 +85,7 @@ services:
       - "ManagmentKey=testm"
 
   sql_server:
-    image: pekalam/auctionhouse-sqlserver
+    image: ${DOCKER_REGISTRY-}pekalam/auctionhouse-sqlserver
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=Qwerty1234
