@@ -163,6 +163,22 @@ namespace Test.Adapter.RabbitMq.EventBus
         }
 
         [Fact]
+        public void Saves_item_and_generates_timestamp()
+        {
+            var errorEventOutboxItem = new GivenErrorEventOutboxItem()
+                .WithTimestamp(default)
+                .Build();
+
+            storage.Save(errorEventOutboxItem);
+
+            var itemBytes = GetSavedItem(errorEventOutboxItem);
+            itemBytes.Should().NotBeNull();
+            var deserialized = RocksDbSerializationUtils.Deserialize(itemBytes);
+            deserialized.ShouldBeEquivalentToItem(errorEventOutboxItem);
+            deserialized.Timestamp.Should().NotBe(default);
+        }
+
+        [Fact]
         public void Upates_item()
         {
             var errorEventOutboxItem = new GivenErrorEventOutboxItem()
