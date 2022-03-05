@@ -1,0 +1,43 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool: myserver
+
+steps:
+- task: UseDotNet@2
+  displayName: 'Use .NET Core sdk from global.json'
+  inputs:
+    packageType: 'sdk'
+    useGlobalJson: true
+    workingDirectory: 'backend/src'
+- task: DotNetCoreCLI@2
+  displayName: 'Build solution'
+  inputs:
+    command: 'build'
+    arguments: 'Auctionhouse.Build.slnf'
+    workingDirectory: 'backend/src'
+- task: DotNetCoreCLI@2
+  displayName: 'Run domain tests'
+  inputs:
+    command: 'test'
+    projects: '**/Test.*Domain'
+    testRunTitle: 'Domain tests'
+    workingDirectory: 'backend/src'
+- task: DockerCompose@0
+  inputs:
+    containerregistrytype: 'Container Registry'
+    dockerRegistryEndpoint: 'VPSDockerRegistry'
+    dockerComposeFile: 'backend/src/docker-compose.yml'
+    action: 'Run a Docker Compose command'
+    dockerComposeCommand: 'build'
+- task: DockerCompose@0
+  inputs:
+    containerregistrytype: 'Container Registry'
+    dockerRegistryEndpoint: 'VPSDockerRegistry'
+    dockerComposeFile: 'backend/src/docker-compose.yml'
+    action: 'Push services'

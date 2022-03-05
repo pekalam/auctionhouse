@@ -37,7 +37,7 @@ RUN dotnet publish "Auctionhouse.Query.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
-COPY ["Auctionhouse.Query/entrypoint.sh", "wait-for", "."] 
+COPY ["Auctionhouse.Query/entrypoint.sh", "wait-for", "./"] 
 RUN chmod +x entrypoint.sh wait-for
 COPY --from=publish /app/publish .
 ENTRYPOINT ["./entrypoint.sh"]
