@@ -12,7 +12,6 @@
       "Adapter.SqlServer.EventOutboxStorage\\Adapter.SqlServer.EventOutboxStorage.csproj",
       "Adapter.XmlCategoryTreeStore\\Adapter.XmlCategoryTreeStore.csproj",
       "Adatper.RabbitMq.EventBus\\Adatper.RabbitMq.EventBus.csproj",
-      "ArchTests\\Test.Arch.csproj",
       "AuctionBids.Application\\AuctionBids.Application.csproj",
       "AuctionBids.DomainEvents\\AuctionBids.DomainEvents.csproj",
       "AuctionBids.Domain\\AuctionBids.Domain.csproj",
