@@ -1,7 +1,7 @@
 const convert = require('xml-js');
 const fs = require('fs');
 
-var xml = fs.readFileSync('../../../Xml.CategoryTreeStore/_Categories-xml-data/categories.xml', {encoding: 'UTF-8'})
+var xml = fs.readFileSync('../../../Adapter.XmlCategoryTreeStore/_Categories-xml-data/categories.xml', {encoding: 'UTF-8'})
 
 var result = convert.xml2js(xml, {compact: false, spaces: 4});
 

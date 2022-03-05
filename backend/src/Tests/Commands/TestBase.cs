@@ -216,8 +216,8 @@ namespace FunctionalTests.Commands
                 services.AddCategoriesModule();
                 services.AddXmlCategoryTreeStore(settings: new XmlCategoryNameStoreSettings
                 {
-    CategoriesFilePath = "C:\\Users\\Marek\\source\\repos\\Csharp\\auctionhouse\\backend\\src\\Xml.CategoryTreeStore\\_Categories-xml-data\\categories.xml",
-    SchemaFilePath = "C:\\Users\\Marek\\source\\repos\\Csharp\\auctionhouse\\backend\\src\\Xml.CategoryTreeStore\\_Categories-xml-data\\categories.xsd"
+    CategoriesFilePath = "C:\\Users\\Marek\\source\\repos\\Csharp\\auctionhouse\\backend\\src\\Adapter.XmlCategoryTreeStore\\_Categories-xml-data\\categories.xml",
+    SchemaFilePath = "C:\\Users\\Marek\\source\\repos\\Csharp\\auctionhouse\\backend\\src\\Adapter.XmlCategoryTreeStore\\_Categories-xml-data\\categories.xsd"
                 });
 
 
