@@ -1,33 +1,18 @@
 trigger:
-- sqlserver
+- master
 
 pool:
   vmImage: 'ubuntu-latest'
 
 steps:
 - task: UseDotNet@2
-  displayName: 'Use .NET Core sdk 2.2.401'
+  displayName: 'Use .NET Core sdk from global.json'
   inputs:
-    packageType: sdk
-    version: 2.2.401
-    installationPath: $(Agent.ToolsDirectory)/dotnet
-- task: ShellScript@2
-  displayName: 'Domain tests'
+    packageType: 'sdk'
+    useGlobalJson: true
+    workingDirectory: 'backend/src'
+- task: DotNetCoreCLI@2
   inputs:
-    scriptPath: 'backend/cli/local-run_domain_tests.sh'
-    cwd: 'backend/cli'
-- task: ShellScript@2
-  displayName: 'Unit tests'
-  inputs:
-    scriptPath: 'backend/cli/local-run_unit_tests.sh'
-    cwd: 'backend/cli'
-- task: ShellScript@2
-  displayName: 'Integration tests'
-  inputs:
-    scriptPath: 'backend/cli/docker-run_integration_tests.sh'
-    cwd: 'backend/cli'
-- task: ShellScript@2
-  displayName: 'Functional tests'
-  inputs:
-    scriptPath: 'backend/cli/docker-run_functional_tests.sh'
-    cwd: 'backend/cli'
+    command: 'build'
+    arguments: 'Auctionhouse.Build.slnf'
+    workingDirectory: 'backend/src'
