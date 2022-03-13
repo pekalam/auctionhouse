@@ -1,0 +1,38 @@
+{
+  "solution": {
+    "path": "Auctionhouse.sln",
+    "projects": [
+      "AuctionBids.Application\\AuctionBids.Application.csproj",
+      "AuctionBids.DomainEvents\\AuctionBids.DomainEvents.csproj",
+      "AuctionBids.Domain\\AuctionBids.Domain.csproj",
+      "Auctions.Application\\Auctions.Application.csproj",
+      "Auctions.Domain.Events\\Auctions.DomainEvents.csproj",
+      "Auctions.Domain\\Auctions.Domain.csproj",
+      "Categories.Domain\\Categories.Domain.csproj",
+      "Common.Application\\Common.Application.csproj",
+      "Core.DomainFramework\\Common.DomainFramework.csproj",
+      "IntegrationService.AuctionPaymentVerification\\IntegrationService.AuctionPaymentVerification.csproj",
+      "IntegrationService.CategoryNamesToTreeIdsConversion\\IntegrationService.CategoryNamesToTreeIdsConversion.csproj",
+      "ReadModel.Core\\ReadModel.Core.csproj",
+      "Test.AuctionBids.Domain\\Test.AuctionBids_.Domain.csproj",
+      "Test.Auctions.Application\\Test.Auctions.Application.csproj",
+      "Test.Auctions.Base\\Test.Auctions.Base.csproj",
+      "Test.Auctions.Domain\\Test.AuctionsDomain.csproj",
+      "Test.CategoriesDomain\\Test.CategoriesDomain.csproj",
+      "Test.Common.Application\\Test.Common.Application.csproj",
+      "Test.Common.Base\\Test.Common.Base.csproj",
+      "Test.ReadModel.Base\\Test.ReadModel.Base.csproj",
+      "Test.ReadModel.Integration\\Test.ReadModel.Integration.csproj",
+      "Test.UserPayments.Base\\Test.UserPaymentsBase.csproj",
+      "Test.UserPayments.Domain\\Test.UserPayments_.Domain.csproj",
+      "Test.Users.Base\\Test.Users.Base.csproj",
+      "Test.UsersDomain\\Test.UsersDomain.csproj",
+      "UserPayments.Application\\UserPayments.Application.csproj",
+      "UserPayments.DomainEvents\\UserPayments.DomainEvents.csproj",
+      "UserPayments.Domain\\UserPayments.Domain.csproj",
+      "Users.Application\\Users.Application.csproj",
+      "Users.DomainEvents\\Users.DomainEvents.csproj",
+      "Users.Domain\\Users.Domain.csproj"
+    ]
+  }
+}

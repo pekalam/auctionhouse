@@ -1,0 +1,27 @@
+{
+  "solution": {
+    "path": "Auctionhouse.sln",
+    "projects": [
+      "Adapter.AuctionImageConversion\\Adapter.AuctionImageConversion.csproj",
+      "Adapter.ChronicleEfCoreStorage\\ChronicleEfCoreStorage.csproj",
+      "Adapter.Dapper.AuctionhouseDatabase\\Adapter.Dapper.AuctionhouseDatabase.csproj",
+      "Adapter.EfCore.ReadModelNotifications\\Adapter.EfCore.ReadModelNotifications.csproj",
+      "Adapter.Hangfire.Auctionhouse\\Adapter.Hangfire_.Auctionhouse.csproj",
+      "Adapter.MongoDb.AuctionImageRepository\\Adapter.MongoDb.AuctionImageRepository.csproj",
+      "Adapter.QuartzTimeTaskService.AuctionEndScheduler\\Adapter.QuartzTimeTaskService.AuctionEndScheduler.csproj",
+      "Adapter.SqlServer.EventOutboxStorage\\Adapter.SqlServer.EventOutboxStorage.csproj",
+      "Adapter.XmlCategoryTreeStore\\Adapter.XmlCategoryTreeStore.csproj",
+      "Adatper.RabbitMq.EventBus\\Adatper.RabbitMq.EventBus.csproj",
+      "MockAuctionEndSchedulerEndpointApp\\MockAuctionEndSchedulerEndpointApp.csproj",
+      "Test.Adapter.AuctionImageConversion\\Test.Adapter.AuctionImageConversion.csproj",
+      "Test.Adapter.EfCore.ReadModelNotifications\\Test.Adapter.EfCore.ReadModelNotifications.csproj",
+      "Test.Adapter.Hangfire.Auctionhouse\\Test.Adapter.Hangfire.Auctionhouse.csproj",
+      "Test.Adapter.MongoDb.AuctionImageRepository\\Test.Adapter.MongoDb.AuctionImageRepository.csproj",
+      "Test.Adapter.QuartzServiceAuctionEndScheduler\\Test.Adapter.QuartzServiceAuctionEndScheduler.csproj",
+      "Test.Adapter.SqlServer.EventOutbox\\Test.Adapter.SqlServer.EventOutboxStorage.csproj",
+      "Test.Dapper.AuctionhouseDatabase\\Test.Dapper.AuctionhouseDatabase.csproj",
+      "Test.RabbitMq.EventBus\\Test.Adapter.RabbitMq.EventBus.csproj",
+      "Test.XmlCategoryTreeStore\\Test.XmlCategoryTreeStore.csproj"
+    ]
+  }
+}
