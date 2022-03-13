@@ -1,77 +1,102 @@
 trigger:
 - master
 
-
-steps:
-- task: UseDotNet@2
-  displayName: 'Use .NET Core sdk from global.json'
-  inputs:
-    packageType: 'sdk'
-    useGlobalJson: true
-    workingDirectory: 'backend/src'
-- task: DotNetCoreCLI@2
-  displayName: 'Build solution'
-  inputs:
-    command: 'build'
-    arguments: 'Auctionhouse.Build.slnf'
-    workingDirectory: 'backend/src'
-- task: DotNetCoreCLI@2
-  displayName: 'Run domain tests'
-  inputs:
-    command: 'test'
-    projects: '**/Test.*Domain'
-    testRunTitle: 'Domain tests'
-    workingDirectory: 'backend/src'
-- task: DotNetCoreCLI@2
-  displayName: 'Publish Auctionhouse.Command'
-  inputs:
-    command: 'publish'
-    publishWebProjects: false
-    zipAfterPublish: false
-    arguments: '-c Release'
-    workingDirectory: 'backend/src/Auctionhouse.Command'
-- task: DotNetCoreCLI@2
-  displayName: 'Publish Auctionhouse.CommandStatus'
-  inputs:
-    command: 'publish'
-    publishWebProjects: false
-    zipAfterPublish: false
-    arguments: '-c Release'
-    workingDirectory: 'backend/src/Auctionhouse.CommandStatus'
-- task: DotNetCoreCLI@2
-  displayName: 'Publish Auctionhouse.Query'
-  inputs:
-    command: 'publish'
-    publishWebProjects: false
-    zipAfterPublish: false
-    arguments: '-c Release'
-    workingDirectory: 'backend/src/Auctionhouse.Query'
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: 'backend/src/Auctionhouse.Command/bin/Release/net6.0/publish/'
-    includeRootFolder: false
-    archiveType: 'tar'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/Auctionhouse.Command_$(Build.BuildId).zip'
-    replaceExistingArchive: true
-    verbose: true
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: 'backend/src/Auctionhouse.CommandStatus/bin/Release/net6.0/publish/'
-    includeRootFolder: false
-    archiveType: 'tar'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/Auctionhouse.CommandStatus_$(Build.BuildId).zip'
-    replaceExistingArchive: true
-    verbose: true
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: 'backend/src/Auctionhouse.Query/bin/Release/net6.0/publish/'
-    includeRootFolder: false
-    archiveType: 'tar'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/Auctionhouse.Query_$(Build.BuildId).zip'
-    replaceExistingArchive: true
-    verbose: true
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
+jobs:
+  - job:
+    displayName: 'CommandDB project'
+    pool:
+      vmImage: 'windows-2022'
+    steps:
+    - task: MSBuild@1
+      inputs:
+        solution: 'backend/src/Auctionhouse.CommandDb.slnf'
+        msbuildArchitecture: 'x64'
+  - job:
+    pool:
+      vmImage: 'ubuntu-latest'
+    displayName: 'C# projects'
+    steps:
+    - task: UseDotNet@2
+      displayName: 'Use .NET Core sdk from global.json'
+      inputs:
+        packageType: 'sdk'
+        useGlobalJson: true
+        workingDirectory: 'backend/src'
+    - task: DotNetCoreCLI@2
+      displayName: 'Build modules'
+      inputs:
+        command: 'build'
+        arguments: 'Auctionhouse.Modules.slnf'
+        workingDirectory: 'backend/src'
+    - task: DotNetCoreCLI@2
+      displayName: 'Run domain tests from modules'
+      inputs:
+        command: 'test'
+        projects: '**/Test.*Domain'
+        testRunTitle: 'Domain tests'
+        workingDirectory: 'backend/src'
+    - task: DotNetCoreCLI@2
+      displayName: 'Build adapters'
+      inputs:
+        command: 'build'
+        arguments: 'Auctionhouse.Adapters.slnf'
+        workingDirectory: 'backend/src'
+    - task: DotNetCoreCLI@2
+      displayName: 'Build WebAPI'
+      inputs:
+        command: 'build'
+        arguments: 'Auctionhouse.WebAPI.slnf'
+        workingDirectory: 'backend/src'
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish Auctionhouse.Command'
+      inputs:
+        command: 'publish'
+        publishWebProjects: false
+        zipAfterPublish: false
+        arguments: '-c Release'
+        workingDirectory: 'backend/src/Auctionhouse.Command'
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish Auctionhouse.CommandStatus'
+      inputs:
+        command: 'publish'
+        publishWebProjects: false
+        zipAfterPublish: false
+        arguments: '-c Release'
+        workingDirectory: 'backend/src/Auctionhouse.CommandStatus'
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish Auctionhouse.Query'
+      inputs:
+        command: 'publish'
+        publishWebProjects: false
+        zipAfterPublish: false
+        arguments: '-c Release'
+        workingDirectory: 'backend/src/Auctionhouse.Query'
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: 'backend/src/Auctionhouse.Command/bin/Release/net6.0/publish/'
+        includeRootFolder: false
+        archiveType: 'tar'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/Auctionhouse.Command_$(Build.BuildId).zip'
+        replaceExistingArchive: true
+        verbose: true
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: 'backend/src/Auctionhouse.CommandStatus/bin/Release/net6.0/publish/'
+        includeRootFolder: false
+        archiveType: 'tar'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/Auctionhouse.CommandStatus_$(Build.BuildId).zip'
+        replaceExistingArchive: true
+        verbose: true
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: 'backend/src/Auctionhouse.Query/bin/Release/net6.0/publish/'
+        includeRootFolder: false
+        archiveType: 'tar'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/Auctionhouse.Query_$(Build.BuildId).zip'
+        replaceExistingArchive: true
+        verbose: true
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
