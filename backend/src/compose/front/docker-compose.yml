@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  front:
+    image: pekalam/auctionhouse-front
+    ports:
+      - '8080:80'
+      - '4430:443'
+
+networks:
+  default:
+    external:
+      name: auctionhouse

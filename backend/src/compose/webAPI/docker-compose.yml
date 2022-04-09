@@ -1,0 +1,39 @@
+version: '3.4'
+
+
+services:
+  command:
+    image: ${DOCKER_REGISTRY-}pekalam/auctionhousecommand
+    build:
+      context: ../../
+      dockerfile: Auctionhouse.Command/Dockerfile
+    environment:
+      - OTEL_EXPORTER_ZIPKIN_ENDPOINT=http://zipkin:9411/api/v2/spans
+    command: "sql_server:32112 quartz_web_task_service:80 rabbitmq:5672 redis:6379 seq:5341 zipkin:9411 mongodb:27017"
+    ports:
+      - '7203:80'
+
+  query:
+    image: ${DOCKER_REGISTRY-}pekalam/auctionhousequery
+    build:
+      context: ../../
+      dockerfile: Auctionhouse.Query/Dockerfile
+    environment:
+      - OTEL_EXPORTER_ZIPKIN_ENDPOINT=http://zipkin:9411/api/v2/spans
+    command: "sql_server:32112 quartz_web_task_service:80 rabbitmq:5672 redis:6379 seq:5341 zipkin:9411 mongodb:27017"
+    ports:
+      - '7070:80'
+
+  commandstatus:
+    image: ${DOCKER_REGISTRY-}pekalam/auctionhousecommandstatus
+    build:
+      context: ../../
+      dockerfile: Auctionhouse.CommandStatus/Dockerfile
+    command: "sql_server:32112 quartz_web_task_service:80 rabbitmq:5672 redis:6379 seq:5341 zipkin:9411 mongodb:27017"
+    ports:
+      - '7263:80'
+
+networks:
+  default:
+    external:
+      name: auctionhouse

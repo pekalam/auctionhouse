@@ -1,0 +1,6 @@
+version: '3.4'
+
+services:
+  front:
+    volumes:
+      - ../../front_config:/usr/share/nginx/html/front_config
