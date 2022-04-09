@@ -63,5 +63,8 @@ stages:
               inputs:
                 sshEndpoint: 'OVH_vps'
                 runOptions: 'commands'
-                commands: 'echo $(pekalam-me-12) | base64 --decode | docker secret create envoy_ssl_pkcs12 -'
+                commands: |
+                  echo $(pekalam-me-12) | base64 --decode | docker secret create envoy_ssl_pkcs12 -
+                  echo $(pekalam-me-12) | base64 --decode | openssl pkcs12 -password pass: -clcerts -nokeys | docker secret create front_ssl_chain -
+                  echo $(pekalam-me-12) | base64 --decode | openssl pkcs12 -password pass: -nocerts -nodes | docker secret create front_ssl_private -
                 readyTimeout: '20000'
