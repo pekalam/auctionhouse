@@ -5,12 +5,12 @@ jobs:
   - job:
     displayName: 'CommandDB project'
     pool:
-      vmImage: 'windows-2022'
+      vmImage: 'windows-2019'
     steps:
-    - task: MSBuild@1
+    - task: VSBuild@1
+      displayName: 'Build CommandDB'
       inputs:
-        solution: 'backend/src/Auctionhouse.CommandDb.slnf'
-        msbuildArchitecture: 'x64'
+        solution: 'backend\src\Auctionhouse.CommandDb.slnf'
   - job:
     pool:
       vmImage: 'ubuntu-latest'
