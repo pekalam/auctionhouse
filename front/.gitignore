@@ -44,5 +44,6 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
-!secrets/ssl_certs/
 secrets/*
+!secrets/ssl_certs/
+!secrets/environment*.ts

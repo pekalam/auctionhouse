@@ -37,5 +37,3 @@ backend/src/AuctionhouseDatabase/AuctionhouseDatabase.jfm
 
 .vscode/settings.json
 /backend/Adapter.ChronicleEfCoreStorage/obj
-backend/src/docker-compose.prod.certs.yml
-backend/src/docker-compose.front.certs.yml

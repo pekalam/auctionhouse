@@ -25,15 +25,14 @@ fi
 if [ -n "$SSL_CHAIN" ]; then
     echo "Found SSL_CHAIN variable"
     echo "$SSL_CHAIN" > /usr/share/nginx/ssl_certs/chain.txt
-else
-    echo "SSL_CHAIN variable not found. Executing nginx entrypoint"
+    if [ -n "$SSL_PRIVATE" ]; then
+        echo "Found SSL_PRIVATE variable"
+        echo "$SSL_PRIVATE" > /usr/share/nginx/ssl_certs/private.txt
+    else
+        echo "SSL_PRIVATE variable not found"
+        exit 65
+    fi
     start_nginx "$@"
-fi
-if [ -n "$SSL_PRIVATE" ]; then
-    echo "Found SSL_PRIVATE variable"
-    echo "$SSL_PRIVATE" > /usr/share/nginx/ssl_certs/private.txt
-else
-    exit 128;
 fi
 
 start_nginx "$@"
