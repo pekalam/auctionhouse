@@ -72,6 +72,20 @@ stages:
         dockerComposeFile: 'backend/src/compose/webAPI/docker-compose.yml'
         additionalDockerComposeFiles: 'backend/src/compose/webAPI/docker-compose.prod.yml'
         action: 'Push services'
+  - job: 'publish_artifacts'
+    displayName: 'Publish build artifacts'
+    dependsOn: ['build_docker_webapi', 'build_docker_infrastructure'] 
+    steps:
+      - task: CopyFiles@2
+        inputs:
+          SourceFolder: 'backend/src/compose'
+          Contents: '**'
+          TargetFolder: '$(Build.ArtifactStagingDirectory)/compose'
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'drop'
+          publishLocation: 'Container'
 - stage: Deploy
   displayName: 'Deploy Prod stage'
   jobs:
@@ -82,6 +96,12 @@ stages:
       runOnce:    #rolling, canary are the other strategies that are supported
         deploy:
           steps:
+            - task: DownloadBuildArtifacts@1
+              inputs:
+                buildType: 'current'
+                downloadType: 'single'
+                artifactName: 'drop'
+                downloadPath: '$(System.ArtifactsDirectory)'
             - task: AzureKeyVault@2
               inputs:
                 azureSubscription: 'Azure for Students(54a8b190-aefa-4989-849f-3931ec46cb62)'
@@ -99,13 +119,15 @@ stages:
                   (docker secret rm front_ssl_private 2>/dev/null && echo $(pekalam-me-12) | base64 --decode | openssl pkcs12 -password pass: -nocerts -nodes | docker secret create front_ssl_private -) || true;
                 readyTimeout: '20000'
             - task: CopyFilesOverSSH@0
+              displayName: 'Copy artifacts to target machine'
               inputs:
                 sshEndpoint: 'OVH_vps'
-                sourceFolder: 'backend/src/compose'
+                sourceFolder: '$(System.ArtifactsDirectory)/drop'
                 contents: '**'
                 targetFolder: '/home/ubuntu/auctionhouse/test'
                 readyTimeout: '20000'
             - task: SSH@0
+              displayName: 'Login to private registry'
               env:
                 PEKALAM-REGISTRY-PASS: $(pekalam-registry-pass)
               inputs:
