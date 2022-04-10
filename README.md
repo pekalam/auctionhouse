@@ -50,7 +50,7 @@ Some of use-cases are still not working and they require to design some parts of
 * Docker swarm deployment
 * MongoDB / SQL server backups automated by scripts
 * Envoy as edge proxy
-* ~~CI~~
+* CI/CD
 
 ## C4 Container diagram
 
