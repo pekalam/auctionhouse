@@ -7,7 +7,3 @@ services:
   commandstatus:
     environment:
       - CORS__AllowedOrigins=https://pekalam.me
-  envoy1:
-    ports:
-      - '443:10000'
-      - '80:10000'

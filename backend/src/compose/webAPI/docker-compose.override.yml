@@ -1,0 +1,24 @@
+version: '3.4'
+
+services:
+  command:
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - DemoMode__Enabled=false
+    ports:
+      - "80"
+      - "443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+  query:
+    environment:
+      - CORS__AllowedOrigins=https://localhost:10000
+  commandstatus:
+    environment:
+      - CORS__AllowedOrigins=https://localhost:10000
+
+networks:
+  default:
+    external:
+      name: auctionhouse

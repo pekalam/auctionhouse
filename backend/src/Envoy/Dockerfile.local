@@ -1,0 +1,4 @@
+FROM envoyproxy/envoy:v1.21.1
+
+COPY ./ssl/ /etc/ssl
+COPY ./envoy-local.yaml /etc/envoy/envoy.yaml

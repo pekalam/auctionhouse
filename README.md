@@ -50,7 +50,7 @@ Some of use-cases are still not working and they require to design some parts of
 * Docker swarm deployment
 * MongoDB / SQL server backups automated by scripts
 * Envoy as edge proxy
-* ~~CI~~
+* CI/CD
 
 ## C4 Container diagram
 
@@ -63,18 +63,14 @@ Some of use-cases are still not working and they require to design some parts of
 
 1. Start docker and run powershell script:
 ```
-backend/src/Start-ComposeLocal.ps1
+backend/src/compose/StartLocal.ps1
 ```
 2. Open https://localhost:10000
 
 ### Development
 
 1. Open solution inside backend/src
-2. Start docker and run powershell script
-
-```
-backend/src/Start-InfrastructureLocal.ps1
-```
+2. Start docker and run ``docker-compose up`` inside backend/src/compose/infrastructure folder
 3. Configure visual studio to start multiple projects (Solution -> Properties -> Multiple startup projects): WebApi.Auctionhouse.Command, WebApi.Auctionhouse.Query, WebApi.Auctionhouse.CommandStatus
 4. Start backend application (should be in Development hosting environment) 
 5. Start frontend application

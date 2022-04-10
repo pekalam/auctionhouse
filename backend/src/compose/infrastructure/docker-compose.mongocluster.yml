@@ -1,19 +1,21 @@
 version: '3.4'
 
+#TODO
+
 services:
   db-config1:
     image: pekalam/auctionhouse-mongocluster-db-config1
     hostname: db-config1
     build:
-      dockerfile: ./config/Dockerfile
-      context: ./MongoDb/cluster
+      dockerfile: ../config/Dockerfile
+      context: ../MongoDb/cluster
     command: "--configsvr --replSet configRS --bind_ip_all"   
   mongodb:
     image: pekalam/auctionhouse-mongocluster-db-mongos1
     hostname: mongodb
     build:
-      dockerfile: ./mongos/Dockerfile
-      context: ./MongoDb/cluster
+      dockerfile: ../mongos/Dockerfile
+      context: ../MongoDb/cluster
     command: ["--wait-for", "db-config1:32112", "db-node1:32112", "db-node2:32112", "db-node3:32112", "--configdb", "configRS/db-config1:27019", "--bind_ip_all"]
     ports:
       - "27017:27017"       
@@ -21,20 +23,20 @@ services:
     image: pekalam/auctionhouse-mongocluster-db-node1
     hostname: db-node1
     build:
-      dockerfile: ./shards/shard_db-node1/Dockerfile
-      context: ./MongoDb/cluster
+      dockerfile: ../shards/shard_db-node1/Dockerfile
+      context: ../MongoDb/cluster
     command: [ "--bind_ip_all", "--replSet", "n1", "--shardsvr" ]      
   db-node2:
     image: pekalam/auctionhouse-mongocluster-db-node2
     hostname: db-node2
     build:
-      dockerfile: ./shards/shard_db-node2/Dockerfile
-      context: ./MongoDb/cluster
+      dockerfile: ../shards/shard_db-node2/Dockerfile
+      context: ../MongoDb/cluster
     command: [ "--bind_ip_all", "--replSet", "n2", "--shardsvr" ]      
   db-node3:
     image: pekalam/auctionhouse-mongocluster-db-node3
     hostname: db-node3
     build:
-      dockerfile: ./shards/shard_db-node3/Dockerfile
-      context: ./MongoDb/cluster
+      dockerfile: ../shards/shard_db-node3/Dockerfile
+      context: ../MongoDb/cluster
     command: [ "--bind_ip_all", "--replSet", "n3", "--shardsvr" ]    
