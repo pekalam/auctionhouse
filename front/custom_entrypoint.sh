@@ -18,7 +18,7 @@ if [ -e "/run/secrets/front_ssl_chain" ]; then
         exit 64
     fi
 
-    start_nginx $@
+    start_nginx "$@"
 fi
 
 
@@ -27,7 +27,7 @@ if [ -n "$SSL_CHAIN" ]; then
     echo "$SSL_CHAIN" > /usr/share/nginx/ssl_certs/chain.txt
 else
     echo "SSL_CHAIN variable not found. Executing nginx entrypoint"
-    start_nginx $@
+    start_nginx "$@"
 fi
 if [ -n "$SSL_PRIVATE" ]; then
     echo "Found SSL_PRIVATE variable"
@@ -36,4 +36,4 @@ else
     exit 128;
 fi
 
-start_nginx $@
+start_nginx "$@"
