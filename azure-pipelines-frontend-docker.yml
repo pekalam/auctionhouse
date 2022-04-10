@@ -1,0 +1,14 @@
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: Docker@2
+  inputs:
+    containerRegistry: 'VPSDockerRegistry'
+    repository: 'pekalam/auctionhouse-front'
+    command: 'buildAndPush'
+    Dockerfile: 'front/Dockerfile'
+    tags: 'latest'
