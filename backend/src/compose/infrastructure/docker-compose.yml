@@ -68,7 +68,4 @@ volumes:
   mongodb_config:
   sqlserver_data:
 
-networks:
-  default:
-    external:
-      name: auctionhouse
+

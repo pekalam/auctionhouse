@@ -7,7 +7,4 @@ services:
       - '8080:80'
       - '4430:443'
 
-networks:
-  default:
-    external:
-      name: auctionhouse
+

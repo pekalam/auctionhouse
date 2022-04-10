@@ -4,3 +4,9 @@ services:
   envoy1:
     build:
       dockerfile: Dockerfile.local
+
+
+networks:
+  default:
+    external:
+      name: auctionhouse

@@ -32,8 +32,3 @@ services:
     command: "sql_server:32112 quartz_web_task_service:80 rabbitmq:5672 redis:6379 seq:5341 zipkin:9411 mongodb:27017"
     ports:
       - '7263:80'
-
-networks:
-  default:
-    external:
-      name: auctionhouse
