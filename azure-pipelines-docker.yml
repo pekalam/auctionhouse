@@ -5,6 +5,7 @@ pool: myserver
 
 stages:
 - stage: Build
+  displayName: 'Build & Test stage'
   jobs:
   - job: 'build_local'
     displayName: 'Build project with .net cli'
@@ -21,9 +22,6 @@ stages:
         command: 'build'
         arguments: 'Auctionhouse.WebAPI.slnf'
         workingDirectory: 'backend/src'
-  - job: 'build_docker'
-    displayName: 'Build project with docker and publish'
-    steps:
     - task: DotNetCoreCLI@2
       displayName: 'Run domain tests'
       inputs:
@@ -31,20 +29,51 @@ stages:
         projects: '**/Test.*Domain'
         testRunTitle: 'Domain tests'
         workingDirectory: 'backend/src'
+- stage: DockerBuild
+  displayName: 'Docker build stage'
+  jobs:
+  - job: 'build_docker_infrastructure'
+    displayName: 'Build infrastructure docker images'
+    steps:
     - task: DockerCompose@0
+      displayName: 'Build images'
       inputs:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'VPSDockerRegistry'
-        dockerComposeFile: 'backend/src/docker-compose.yml'
+        dockerComposeFile: 'backend/src/compose/infrastructure/docker-compose.yml'
+        additionalDockerComposeFiles: 'backend/src/compose/infrastructure/docker-compose.prod.yml'
         action: 'Run a Docker Compose command'
         dockerComposeCommand: 'build'
     - task: DockerCompose@0
+      displayName: 'Push images'
       inputs:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'VPSDockerRegistry'
-        dockerComposeFile: 'backend/src/docker-compose.yml'
+        dockerComposeFile: 'backend/src/compose/infrastructure/docker-compose.yml'
+        additionalDockerComposeFiles: 'backend/src/compose/infrastructure/docker-compose.prod.yml'
         action: 'Push services'
-- stage: Deployment
+  - job: 'build_docker_webapi'
+    displayName: 'Build Web API docker images'
+    steps:
+    - task: DockerCompose@0
+      displayName: 'Build images'
+      inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'VPSDockerRegistry'
+        dockerComposeFile: 'backend/src/compose/webAPI/docker-compose.yml'
+        additionalDockerComposeFiles: 'backend/src/compose/webAPI/docker-compose.prod.yml'
+        action: 'Run a Docker Compose command'
+        dockerComposeCommand: 'build'
+    - task: DockerCompose@0
+      displayName: 'Push images'
+      inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'VPSDockerRegistry'
+        dockerComposeFile: 'backend/src/compose/webAPI/docker-compose.yml'
+        additionalDockerComposeFiles: 'backend/src/compose/webAPI/docker-compose.prod.yml'
+        action: 'Push services'
+- stage: Deploy
+  displayName: 'Deploy Prod stage'
   jobs:
   - deployment: 'VPSDeployment'   # name of the deployment job, A-Z, a-z, 0-9, and underscore. The word "deploy" is a keyword and is unsupported as the deployment name.
     displayName: 'VPS Deployment' 
@@ -60,11 +89,44 @@ stages:
                 SecretsFilter: '*'
                 RunAsPreJob: false
             - task: SSH@0
+              displayName: 'Create docker secrets'
               inputs:
                 sshEndpoint: 'OVH_vps'
                 runOptions: 'commands'
                 commands: |
-                  echo $(pekalam-me-12) | base64 --decode | docker secret create envoy_ssl_pkcs12 -
-                  echo $(pekalam-me-12) | base64 --decode | openssl pkcs12 -password pass: -clcerts -nokeys | docker secret create front_ssl_chain -
-                  echo $(pekalam-me-12) | base64 --decode | openssl pkcs12 -password pass: -nocerts -nodes | docker secret create front_ssl_private -
+                  (docker secret rm envoy_ssl_pkcs12 2>/dev/null && echo $(pekalam-me-12) | base64 --decode | docker secret create envoy_ssl_pkcs12 -) || true;
+                  (docker secret rm front_ssl_chain 2>/dev/null && echo $(pekalam-me-12) | base64 --decode | openssl pkcs12 -password pass: -clcerts -nokeys | docker secret create front_ssl_chain -) || true;
+                  (docker secret rm front_ssl_private 2>/dev/null && echo $(pekalam-me-12) | base64 --decode | openssl pkcs12 -password pass: -nocerts -nodes | docker secret create front_ssl_private -) || true;
                 readyTimeout: '20000'
+            - task: CopyFilesOverSSH@0
+              inputs:
+                sshEndpoint: 'OVH_vps'
+                sourceFolder: 'backend/src/compose'
+                contents: '**'
+                targetFolder: '/home/ubuntu/auctionhouse/test'
+                readyTimeout: '20000'
+            - task: SSH@0
+              env:
+                PEKALAM-REGISTRY-PASS: $(pekalam-registry-pass)
+              inputs:
+                sshEndpoint: 'OVH_vps'
+                runOptions: 'commands'
+                commands: '(docker login -u pekalam -p $(PEKALAM-REGISTRY-PASS) pekalam.me:5000 2>login_errorlog.txt || (cat login_errorlog.txt && exit 1)) && (test $(wc -l login_errorlog.txt | cut -d " " -f1) -gt 0 || rm login_errorlog.txt)'
+                failOnStdErr: false
+                readyTimeout: '20000'
+            - task: SSH@0
+              displayName: 'Deploy auctionhouse'
+              inputs:
+                sshEndpoint: 'OVH_vps'
+                runOptions: 'commands'
+                commands: 'cd /home/ubuntu/auctionhouse/test && (DOCKER_REGISTRY="pekalam.me:5000/" docker stack deploy --with-registry-auth -c front/docker-compose.yml -c front/docker-compose.prod.yml -c infrastructure/docker-compose.yml -c infrastructure/docker-compose.prod.yml -c webAPI/docker-compose.yml -c webAPI/docker-compose.prod.yml auctionhouse 2>deploy_errorlog.txt || (cat deploy_errorlog.txt && exit 1)) && (test $(wc -l deploy_errorlog.txt | cut -d " " -f1) -gt 0 || rm deploy_errorlog.txt)'
+                failOnStdErr: false
+                readyTimeout: '20000'
+            - task: SSH@0
+              displayName: 'Run post-deployment script on target machine'
+              inputs:
+                sshEndpoint: 'OVH_vps'
+                runOptions: 'commands'
+                commands: 'bash /home/ubuntu/auctionhouse/post-deployment.sh'
+                readyTimeout: '20000'
+            
