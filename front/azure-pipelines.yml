@@ -10,6 +10,13 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+- task: Bash@3
+  displayName: 'Copy prod environment ts file'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Copy prod env
+      cp secrets/environment.prod.ts src/environments
 - task: Npm@1
   inputs:
     command: 'install'
