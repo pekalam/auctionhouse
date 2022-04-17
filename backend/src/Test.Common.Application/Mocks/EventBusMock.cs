@@ -1,5 +1,6 @@
 ﻿using Common.Application.Commands;
 using Common.Application.Events;
+using Common.Application.Tests.ServiceContracts;
 using Core.Common.Domain;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -8,9 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Test.Common.Application.ServiceContracts;
 
-namespace Test.Common.Application.Mocks
+namespace Common.Application.Tests.Mocks
 {
     internal static class EventBusMock
     {

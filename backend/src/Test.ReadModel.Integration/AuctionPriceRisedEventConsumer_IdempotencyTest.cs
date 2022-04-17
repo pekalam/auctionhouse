@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Test.Common.Base.Mocks.Events;
+using Common.Tests.Base.Mocks.Events;
 using Xunit;
 
 namespace Test.ReadModel.Integration

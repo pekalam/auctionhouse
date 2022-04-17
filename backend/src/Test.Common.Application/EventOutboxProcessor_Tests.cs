@@ -1,17 +1,17 @@
 using Common.Application.Events;
+using Common.Application.Tests.Mocks;
+using Common.Application.Tests.ServiceContracts;
 using Core.Common.Domain;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Test.Common.Application.Mocks;
-using Test.Common.Application.ServiceContracts;
-using Test.Common.Base.Builders;
-using Test.Common.Base.Mocks.Events;
+using Common.Tests.Base.Builders;
+using Common.Tests.Base.Mocks.Events;
 using Xunit;
 
-namespace Test.Common.Application
+namespace Common.Application.Tests
 {
     public class Timestamp
     {

@@ -4,6 +4,7 @@ using Auctions.Domain.Repositories;
 using Auctions.Domain.Services;
 using Common.Application;
 using Common.Application.Events;
+using Common.Tests.Base.Mocks;
 using Hangfire;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -15,7 +16,6 @@ using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
 using Test.Auctions.Base.Builders;
-using Test.Common.Base.Mocks;
 using Xunit;
 using Xunit.Abstractions;
 

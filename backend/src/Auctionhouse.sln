@@ -57,7 +57,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuctionBids.Application", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserPayments.Application", "UserPayments.Application\UserPayments.Application.csproj", "{0E78327D-AE10-4765-B3DF-31B1272668C6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Common.Application", "Test.Common.Application\Test.Common.Application.csproj", "{55EB0490-F686-436A-9B09-6862ABC6BD8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Application.Tests", "Test.Common.Application\Common.Application.Tests.csproj", "{55EB0490-F686-436A-9B09-6862ABC6BD8E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Auctions.Application", "Test.Auctions.Application\Test.Auctions.Application.csproj", "{17C3B8A2-8AC3-49CA-8537-CB1A34318BA8}"
 EndProject
@@ -143,7 +143,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.SqlServer.EventOutb
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.SqlServer.EventOutboxStorage", "Test.Adapter.SqlServer.EventOutbox\Test.Adapter.SqlServer.EventOutboxStorage.csproj", "{8685B8D1-EB4B-4CA7-8C52-2AE5A2E31F44}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Common.Base", "Test.Common.Base\Test.Common.Base.csproj", "{F7CC5BF3-4406-4EF0-B5A1-2070AD4078AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Tests.Base", "Test.Common.Base\Common.Tests.Base.csproj", "{F7CC5BF3-4406-4EF0-B5A1-2070AD4078AE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Schedulers", "Schedulers", "{CA1CA04B-8114-43E0-90A7-6A297EF4A77F}"
 EndProject

@@ -1,11 +1,12 @@
 ﻿using Common.Application.Events;
+using Common.Application.Tests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Test.Common.Application.ServiceContracts
+namespace Common.Application.Tests.ServiceContracts
 {
     internal record OutboxItemFinderContract_GetUnprocessedItemsOlder(OutboxItemFinder_GetUnprocessedItemsOlderThanArgs Given, IEnumerable<OutboxItem> Expected);
     internal record OutboxItemFinderContract_GetTotalUnprocessedItemsOlder(OutboxItemFinder_GetTotalUnprocessedItemsOlderThanArgs Given, Task<int> Expected);
@@ -15,7 +16,7 @@ namespace Test.Common.Application.ServiceContracts
         public static OutboxItemFinderContract_GetUnprocessedItemsOlder
             ValidGetUnprocessedItemsOlderThanArgs(IEnumerable<OutboxItem> saved, Timestamp diff, Timestamp currentTimestamp, int limit)
         {
-            return new(new(diff.Value, currentTimestamp.Value, limit), 
+            return new(new(diff.Value, currentTimestamp.Value, limit),
                 saved.Where(i => currentTimestamp.Value - i.Timestamp > diff.Value).Take(limit));
         }
 

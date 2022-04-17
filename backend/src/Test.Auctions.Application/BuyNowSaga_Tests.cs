@@ -10,6 +10,8 @@ using Common.Application.Commands;
 using Common.Application.Events;
 using Common.Application.Mediator;
 using Common.Application.SagaNotifications;
+using Common.Tests.Base.Mocks;
+using Common.Tests.Base.Mocks.Events;
 using Core.Common.Domain;
 using FluentAssertions;
 using FluentAssertions.Common;
@@ -24,8 +26,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Test.Auctions.Base.Builders;
 using Test.Auctions.Base.Mocks;
-using Test.Common.Base.Mocks;
-using Test.Common.Base.Mocks.Events;
 using Xunit;
 using static Auctions.DomainEvents.Events.V1;
 

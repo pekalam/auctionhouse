@@ -9,9 +9,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Test.Common.Base.Mocks.Events;
+using Common.Tests.Base.Mocks.Events;
 
-namespace Test.Common.Base.Scenarios
+namespace Common.Tests.Base.AdapterContracts
 {
     public class EventBusRedeliveryTestEventSubscriber : EventSubscriber<EventBusRedeliveryEvent>
     {
@@ -24,7 +24,7 @@ namespace Test.Common.Base.Scenarios
 
         public override Task Handle(IAppEvent<EventBusRedeliveryEvent> appEvent)
         {
-            if(correlationId == null)
+            if (correlationId == null)
             {
                 correlationId = appEvent.CommandContext.CorrelationId.Value;
             }
@@ -38,7 +38,7 @@ namespace Test.Common.Base.Scenarios
         }
     }
 
-    public class EventBusRedeliveryTestEventConsumer : EventConsumer<EventBusRedeliveryEvent, EventBusRedeliveryTestEventConsumer> 
+    public class EventBusRedeliveryTestEventConsumer : EventConsumer<EventBusRedeliveryEvent, EventBusRedeliveryTestEventConsumer>
     {
         internal static int RedeliveryCount = -1;
         internal static string correlationId;
@@ -86,7 +86,7 @@ namespace Test.Common.Base.Scenarios
                 .WithEvent(new EventBusRedeliveryEvent())
                 .Build<EventBusRedeliveryEvent>()), () =>
                 {
-                    if(EventBusRedeliveryTestEventSubscriber.RedeliveryCount != 3)
+                    if (EventBusRedeliveryTestEventSubscriber.RedeliveryCount != 3)
                     {
                         throw new Exception("Invalid redelivery count " + EventBusRedeliveryTestEventSubscriber.RedeliveryCount);
                     }
@@ -100,7 +100,7 @@ namespace Test.Common.Base.Scenarios
             {
                 var appEventBuilder = new TestAppEventBuilder();
                 var cmdContext = CommandContext.CreateNew("test");
-                return new(new(new (Mock.Of<ILogger<EventBusRedeliveryTestEventConsumer>>(), new EventConsumerDependencies(new TestAppEventBuilder(), null, null)), appEventBuilder.WithCommandContext(cmdContext)
+                return new(new(new(Mock.Of<ILogger<EventBusRedeliveryTestEventConsumer>>(), new EventConsumerDependencies(new TestAppEventBuilder(), null, null)), appEventBuilder.WithCommandContext(cmdContext)
                 .WithReadModelNotificationsMode(ReadModelNotificationsMode.Disabled)
                 .WithEvent(new EventBusRedeliveryEvent())
                 .Build<EventBusRedeliveryEvent>()), () =>

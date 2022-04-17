@@ -7,7 +7,7 @@ using System;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Test.Common.Base.Builders;
+using Common.Tests.Base.Builders;
 using Xunit;
 
 namespace Test.Adapter.SqlServer.EventOutbox
