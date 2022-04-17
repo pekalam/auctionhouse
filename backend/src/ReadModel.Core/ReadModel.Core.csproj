@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="Test.ReadModel.Integration" />
+    <InternalsVisibleTo Include="ReadModel.Tests.Integration" />
   </ItemGroup>
   
 </Project>

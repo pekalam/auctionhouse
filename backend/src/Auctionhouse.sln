@@ -159,9 +159,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.DomainEvents", "Users
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9B96EB46-E872-42D2-A50A-A361AB976033}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.ReadModel.Integration", "Test.ReadModel.Integration\Test.ReadModel.Integration.csproj", "{9AACEA59-7E45-4895-B3E2-60324801103C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadModel.Tests.Integration", "Test.ReadModel.Integration\ReadModel.Tests.Integration.csproj", "{9AACEA59-7E45-4895-B3E2-60324801103C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.ReadModel.Base", "Test.ReadModel.Base\Test.ReadModel.Base.csproj", "{8AF275BA-6928-438F-9878-0A6C82B2EEBE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadModel.Tests.Base", "Test.ReadModel.Base\ReadModel.Tests.Base.csproj", "{8AF275BA-6928-438F-9878-0A6C82B2EEBE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommandDb", "CommandDb", "{EAD12EB0-674E-406A-A468-B96C896145D6}"
 EndProject
