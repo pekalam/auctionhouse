@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.DomainFramework", "C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.AuctionBids_.Domain", "Test.AuctionBids.Domain\Test.AuctionBids_.Domain.csproj", "{0468B76C-CB81-40F0-B979-28A85D0B97D2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.UserPayments_.Domain", "Test.UserPayments.Domain\Test.UserPayments_.Domain.csproj", "{27B6DF0E-DF3B-4090-B7C8-2900D78ECC8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserPayments.Domain.Tests", "Test.UserPayments.Domain\UserPayments.Domain.Tests.csproj", "{27B6DF0E-DF3B-4090-B7C8-2900D78ECC8D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.AuctionsDomain", "Test.Auctions.Domain\Test.AuctionsDomain.csproj", "{E4726A92-8E2A-4ED6-92F7-ACF7297946FB}"
 EndProject
@@ -211,7 +211,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuctionPaymentVerification"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationService.AuctionPaymentVerification", "IntegrationService.AuctionPaymentVerification\IntegrationService.AuctionPaymentVerification.csproj", "{BB0F9FDF-9751-4B93-8F50-091D83CAC7B7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.UserPaymentsBase", "Test.UserPayments.Base\Test.UserPaymentsBase.csproj", "{F132EF37-BB5F-497F-B7E8-99858BB90E20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserPayments.Tests.Base", "Test.UserPayments.Base\UserPayments.Tests.Base.csproj", "{F132EF37-BB5F-497F-B7E8-99858BB90E20}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CategoryNamesToTreeIdsConversion", "CategoryNamesToTreeIdsConversion", "{4EED55A6-C808-4F7F-90C2-AA559E0353D4}"
 EndProject

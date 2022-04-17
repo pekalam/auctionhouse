@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Test.UserPayments.Base\Test.UserPaymentsBase.csproj" />
+    <ProjectReference Include="..\Test.UserPayments.Base\UserPayments.Tests.Base.csproj" />
     <ProjectReference Include="..\UserPayments.Domain\UserPayments.Domain.csproj" />
   </ItemGroup>
 

@@ -2,14 +2,14 @@ using System;
 using Xunit;
 using FluentAssertions;
 using System.Linq;
+using UserPayments.Tests.Base;
 
-namespace Test.UserPayments_.Domain
+namespace UserPayments.Domain.Tests
 {
-    using Test.UserPaymentsBase;
-    using UserPayments.Domain;
-    using UserPayments.Domain.Events;
-    using UserPayments.Domain.Shared;
-    using static UserPayments.DomainEvents.Events.V1;
+    using Domain;
+    using Domain.Events;
+    using Domain.Shared;
+    using static DomainEvents.Events.V1;
 
     [Trait("Category", "Unit")]
     public class UnitTest1

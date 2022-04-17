@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UserPayments.Domain.Repositories;
 using UserPayments.Domain.Shared;
 using Xunit;
+using UserPayments.Tests.Base;
 
 namespace Test.Dapper.AuctionhouseDatabase
 {
@@ -13,7 +14,6 @@ namespace Test.Dapper.AuctionhouseDatabase
     using Adapter.Dapper.AuctionhouseDatabase.UserPayments_;
     using FluentAssertions;
     using UserPayments.Domain;
-    using Test.UserPaymentsBase;
 
     [Trait("Category", "Integration")]
     public class UserPaymentsRepository_Tests
