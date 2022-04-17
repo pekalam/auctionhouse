@@ -11,7 +11,7 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Test.AuctionhouseDatabase",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.DomainFramework", "Core.DomainFramework\Common.DomainFramework.csproj", "{F7720E68-77D4-401B-B4C6-348CDC8DFB81}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.AuctionBids_.Domain", "Test.AuctionBids.Domain\Test.AuctionBids_.Domain.csproj", "{0468B76C-CB81-40F0-B979-28A85D0B97D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuctionBids.Domain.Tests", "Test.AuctionBids.Domain\AuctionBids.Domain.Tests.csproj", "{0468B76C-CB81-40F0-B979-28A85D0B97D2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserPayments.Domain.Tests", "Test.UserPayments.Domain\UserPayments.Domain.Tests.csproj", "{27B6DF0E-DF3B-4090-B7C8-2900D78ECC8D}"
 EndProject

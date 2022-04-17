@@ -6,11 +6,11 @@ using System.Collections;
 using Core.Common.Domain;
 using System.Collections.Generic;
 
-namespace Test.AuctionBids_.Domain
+namespace AuctionBids.Domain.Tests
 {
-    using AuctionBids.Domain;
-    using AuctionBids.Domain.Shared;
-    using AuctionBids.DomainEvents;
+    using Domain;
+    using Domain.Shared;
+    using DomainEvents;
     using Core.DomainFramework;
 
     public static class TestUtils
@@ -127,10 +127,10 @@ namespace Test.AuctionBids_.Domain
             auctionBids.MarkPendingEventsAsHandled();
             newWinner = GivenValidUserId();
 
-            var bid = auctionBids.TryRaise(newWinner, less ? auctionBids.CurrentPrice-1 : auctionBids.CurrentPrice);
+            var bid = auctionBids.TryRaise(newWinner, less ? auctionBids.CurrentPrice - 1 : auctionBids.CurrentPrice);
 
             auctionBids.Bids.Count().Should().Be(2);
-            auctionBids.PendingEvents.ShouldContainEvents(new[] {typeof(AuctionBidNotAccepted) });
+            auctionBids.PendingEvents.ShouldContainEvents(new[] { typeof(AuctionBidNotAccepted) });
             var notAcceptedEvent = (AuctionBidNotAccepted)auctionBids.PendingEvents.First(e => e.GetType() == typeof(AuctionBidNotAccepted));
             notAcceptedEvent.Price.Should().Be(bid.Price);
             notAcceptedEvent.UserId.Should().Be(bid.UserId);
