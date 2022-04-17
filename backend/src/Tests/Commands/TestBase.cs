@@ -39,13 +39,13 @@ namespace FunctionalTests.Commands
     using System.Threading.Tasks;
     using Test.Auctions.Base.Mocks;
     using Test.ReadModel.Base;
-    using Test.Users.Base.Mocks;
     using UserPayments.Application;
     using UserPayments.Domain.Repositories;
     using UserPayments.Domain.Services;
     using Users.Application;
     using Users.Application.Commands.SignUp;
     using Users.Domain.Repositories;
+    using Users.Tests.Base.Mocks;
     using XmlCategoryTreeStore;
     using Xunit;
     using Xunit.Abstractions;

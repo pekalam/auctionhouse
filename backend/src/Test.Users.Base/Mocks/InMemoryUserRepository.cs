@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 using Users.Domain;
 using Users.Domain.Repositories;
 
-namespace Test.Users.Base.Mocks
+namespace Users.Tests.Base.Mocks
 {
     public class InMemoryUserRepository : IUserRepository
     {
-        private Dictionary<UserId, User> _users = new Dictionary<UserId,User>();
+        private Dictionary<UserId, User> _users = new Dictionary<UserId, User>();
 
         public User AddUser(User user)
         {

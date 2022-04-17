@@ -21,7 +21,6 @@ namespace FunctionalTests.Commands
     using Core.Common.Domain.Users;
     using MongoDB.Driver;
     using Test.Auctions.Base.Mocks;
-    using Test.Users.Base.Mocks;
     using UserPayments.Domain;
     using UserPayments.Domain.Events;
     using UserPayments.Domain.Shared;
@@ -29,6 +28,7 @@ namespace FunctionalTests.Commands
     using Users.Domain.Events;
     using Users.Domain.Repositories;
     using Users.DomainEvents;
+    using Users.Tests.Base.Mocks;
 
     public class BuyNowCommandTestBase : TestBase, IDisposable
     {

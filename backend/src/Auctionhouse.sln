@@ -153,7 +153,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.Hangfire.Aucti
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{260B980C-C261-46ED-8D35-74E7317D95B0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Users.Base", "Test.Users.Base\Test.Users.Base.csproj", "{33584C47-5C14-4D7C-BA13-FEF7F4BA2C0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.Tests.Base", "Test.Users.Base\Users.Tests.Base.csproj", "{33584C47-5C14-4D7C-BA13-FEF7F4BA2C0A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.DomainEvents", "Users.DomainEvents\Users.DomainEvents.csproj", "{07C3FF8D-2049-4BFF-A3B6-D046CCBB9254}"
 EndProject
@@ -176,7 +176,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{CB7E
 		Save-BackupFromDockerContainer.ps1 = Save-BackupFromDockerContainer.ps1
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.UsersDomain", "Test.UsersDomain\Test.UsersDomain.csproj", "{682C5F13-8901-476A-B0D5-D6E553F8CA23}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.Domain.Tests", "Test.UsersDomain\Users.Domain.Tests.csproj", "{682C5F13-8901-476A-B0D5-D6E553F8CA23}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8C3CAEA9-939E-4F49-B2E7-5E9DEE5E6429}"
 EndProject
@@ -186,8 +186,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5C8BFF18
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{5FFCFE65-844B-49DF-92BF-56D6A1FD7097}"
 	ProjectSection(SolutionItems) = preProject
-		AuctionhouseDatabase.Docker\docker_setup.sql = AuctionhouseDatabase.Docker\docker_setup.sql
 		AuctionhouseDatabase.Docker\Dockerfile = AuctionhouseDatabase.Docker\Dockerfile
+		AuctionhouseDatabase.Docker\docker_setup.sql = AuctionhouseDatabase.Docker\docker_setup.sql
 		AuctionhouseDatabase.Docker\entrypoint.sh = AuctionhouseDatabase.Docker\entrypoint.sh
 		AuctionhouseDatabase.Docker\frombackup-entrypoint.sh = AuctionhouseDatabase.Docker\frombackup-entrypoint.sh
 		AuctionhouseDatabase.Docker\healthcheck.sh = AuctionhouseDatabase.Docker\healthcheck.sh
