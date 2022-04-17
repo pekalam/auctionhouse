@@ -17,17 +17,6 @@ namespace Auctions.Domain.Tests
     [Trait("Category", "Unit")]
     public class Auction_BuyTests
     {
-        private async Task<(Auction auction, AuctionPaymentVerificationScenario scenario, UserId buyerId)> CreateAndBuyAuction()
-        {
-            var auction = new GivenAuction().ValidOfTypeBuyNowAndBid();
-            var buyerId = UserId.New();
-            var auctionPaymentVerificationScenario = AuctionPaymentVerificationContracts.ValidParams(auction, buyerId);
-            var auctionPaymentVerification = new GivenAuctionPaymentVerification().Create(auctionPaymentVerificationScenario);
-            auction.MarkPendingEventsAsHandled();
-            await auction.Buy(buyerId, auctionPaymentVerificationScenario.Given.paymentMethod, auctionPaymentVerification, Mock.Of<IAuctionUnlockScheduler>());
-            return (auction, auctionPaymentVerificationScenario, buyerId);
-        }
-
         [Fact]
         public async Task Cannot_be_bought_by_owner()
         {
@@ -38,6 +27,17 @@ namespace Auctions.Domain.Tests
 
             var paymentMethod = auctionPaymentVerificationScenario.Given.paymentMethod;
             await Assert.ThrowsAsync<DomainException>(() => auction.Buy(buyerId, paymentMethod, auctionPaymentVerification, Mock.Of<IAuctionUnlockScheduler>()));
+        }
+
+        private async Task<(Auction auction, AuctionPaymentVerificationScenario scenario, UserId buyerId)> CreateAndBuyAuction()
+        {
+            var auction = new GivenAuction().ValidOfTypeBuyNowAndBid();
+            var buyerId = UserId.New();
+            var auctionPaymentVerificationScenario = AuctionPaymentVerificationContracts.ValidParams(auction, buyerId);
+            var auctionPaymentVerification = new GivenAuctionPaymentVerification().Create(auctionPaymentVerificationScenario);
+            auction.MarkPendingEventsAsHandled();
+            await auction.Buy(buyerId, auctionPaymentVerificationScenario.Given.paymentMethod, auctionPaymentVerification, Mock.Of<IAuctionUnlockScheduler>());
+            return (auction, auctionPaymentVerificationScenario, buyerId);
         }
 
         [Fact]
