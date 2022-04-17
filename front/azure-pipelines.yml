@@ -81,5 +81,4 @@ stages:
                 sshEndpoint: 'OVH_vps'
                 runOptions: 'commands'
                 commands: 'docker pull pekalam.me:5000/pekalam/auctionhouse-front:latest && docker service update auctionhouse_front --with-registry-auth --image pekalam.me:5000/pekalam/auctionhouse-front:latest'
-                failOnStdErr: false
                 readyTimeout: '20000'
