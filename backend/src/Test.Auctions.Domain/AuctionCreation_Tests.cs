@@ -6,10 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Test.Auctions.Base.Builders;
+using Auctions.Tests.Base.Builders;
 using Xunit;
 
-namespace Test.AuctionsDomain
+namespace Auctions.Domain.Tests
 {
 
     [Trait("Category", "Unit")]

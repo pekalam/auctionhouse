@@ -3,7 +3,7 @@ using Auctions.Domain.Repositories;
 using Core.Common.Domain.Users;
 using FluentAssertions;
 using System;
-using Test.Auctions.Base.Builders;
+using Auctions.Tests.Base.Builders;
 using Users.Domain;
 using Xunit;
 

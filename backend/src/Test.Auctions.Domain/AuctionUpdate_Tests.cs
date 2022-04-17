@@ -7,10 +7,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Test.Auctions.Base.Builders;
+using Auctions.Tests.Base.Builders;
 using Xunit;
 
-namespace Test.AuctionsDomain
+namespace Auctions.Domain.Tests
 {
     [Trait("Category", "Unit")]
     public class AuctionUpdate_Tests
@@ -61,7 +61,7 @@ namespace Test.AuctionsDomain
                 .GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
                 .First(m => m.Name == methodName);
 
-            return (auction) => (Type)method.Invoke(null, new[] {auction});
+            return (auction) => (Type)method.Invoke(null, new[] { auction });
         }
 
         [Theory]
@@ -85,7 +85,7 @@ namespace Test.AuctionsDomain
         }
 
         [Theory]
-        [InlineData(nameof(UpdateAndAssertDescription)+","+nameof(UpdateAndAssertTags)+","+nameof(UpdateBuyNowPrice)+","+nameof(UpdateName))]
+        [InlineData(nameof(UpdateAndAssertDescription) + "," + nameof(UpdateAndAssertTags) + "," + nameof(UpdateBuyNowPrice) + "," + nameof(UpdateName))]
         public void Can_be_updated_with_update_methods_and_update_events_are_added_to_one_updateEventGroup(string updateAndAssertMethodNames)
         {
             var updateAndAssertDelegates = updateAndAssertMethodNames.Split(',').Select(CreateUpdateAndAssertDelegate).ToArray();
@@ -102,7 +102,7 @@ namespace Test.AuctionsDomain
                 auction.PendingEvents.ElementAt(0).Should().BeOfType<AuctionUpdateEventGroup>();
                 var eventGroup = auction.PendingEvents.First() as AuctionUpdateEventGroup;
                 eventGroup.UpdateEvents.Should().HaveCount(expectedEventsInEventGroup);
-                eventGroup.UpdateEvents.ElementAt(expectedEventsInEventGroup-1).Should().BeOfType(eventType);
+                eventGroup.UpdateEvents.ElementAt(expectedEventsInEventGroup - 1).Should().BeOfType(eventType);
             }
         }
     }

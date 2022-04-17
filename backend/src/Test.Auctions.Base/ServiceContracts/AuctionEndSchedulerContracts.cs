@@ -1,8 +1,8 @@
 ﻿using Auctions.Domain;
 using Auctions.Domain.Services;
-using Test.Auctions.Base.Builders;
+using Auctions.Tests.Base.Builders;
 
-namespace Test.Auctions.Base.ServiceContracts
+namespace Auctions.Tests.Base.ServiceContracts
 {
     public record AuctionEndSchedulerScenario(AuctionEndSchedulerScenarioArgs given, AuctionEndSchedulerScenarioController ctrl);
 

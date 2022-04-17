@@ -1,18 +1,18 @@
 using Auctions.Domain;
 using Auctions.Domain.Services;
 using Auctions.DomainEvents;
+using Auctions.Tests.Base.ServiceContracts;
 using Core.DomainFramework;
 using FluentAssertions;
 using Moq;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Test.Auctions.Base.Builders;
-using Test.Auctions.Base.ServiceContracts;
+using Auctions.Tests.Base.Builders;
 using Xunit;
 using static Auctions.DomainEvents.Events.V1;
 
-namespace Test.AuctionsDomain
+namespace Auctions.Domain.Tests
 {
     [Trait("Category", "Unit")]
     public class Auction_BuyTests

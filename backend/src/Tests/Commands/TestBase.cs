@@ -20,6 +20,7 @@ namespace FunctionalTests.Commands
     using Auctions.Application.Commands.BuyNow;
     using Auctions.Application.Commands.StartAuctionCreateSession;
     using Auctions.Domain;
+    using Auctions.Tests.Base.Mocks;
     using Categories.Domain;
     using Chronicle.Integrations.SQLServer;
     using ChronicleEfCoreStorage;
@@ -37,7 +38,6 @@ namespace FunctionalTests.Commands
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Test.Auctions.Base.Mocks;
     using Test.ReadModel.Base;
     using UserPayments.Application;
     using UserPayments.Domain.Repositories;

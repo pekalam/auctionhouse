@@ -1,9 +1,9 @@
 ﻿using Auctions.Domain;
 using Auctions.Domain.Services;
+using Auctions.Tests.Base.ServiceContracts;
 using Moq;
-using Test.Auctions.Base.ServiceContracts;
 
-namespace Test.Auctions.Base.Builders
+namespace Auctions.Tests.Base.Builders
 {
     public class GivenAuctionPaymentVerification
     {

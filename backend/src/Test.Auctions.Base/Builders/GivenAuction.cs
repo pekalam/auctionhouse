@@ -1,7 +1,7 @@
 ﻿using Auctions.Domain;
 using System;
 
-namespace Test.Auctions.Base.Builders
+namespace Auctions.Tests.Base.Builders
 {
     public class GivenAuction
     {

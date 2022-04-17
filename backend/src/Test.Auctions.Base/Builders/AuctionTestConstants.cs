@@ -1,4 +1,4 @@
-﻿namespace Test.Auctions.Base.Builders
+﻿namespace Auctions.Tests.Base.Builders
 {
     public static class AuctionTestConstants
     {

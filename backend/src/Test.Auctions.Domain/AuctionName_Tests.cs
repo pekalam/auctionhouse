@@ -4,7 +4,7 @@ using FluentAssertions;
 using System.Linq;
 using Xunit;
 
-namespace Test.AuctionsDomain
+namespace Auctions.Domain.Tests
 {
     public class AuctionName_Tests
     {
@@ -33,7 +33,7 @@ namespace Test.AuctionsDomain
         [Fact]
         public void Constructor_when_tag_value_is_too_long_throws()
         {
-            string name = Enumerable.Range(0, AuctionName.MAX_LENGTH + 1)
+            var name = Enumerable.Range(0, AuctionName.MAX_LENGTH + 1)
                 .Select(i => $"{i}")
                 .Aggregate((s, s1) => s + s1);
             Assert.Throws<DomainException>(() => new AuctionName(name));

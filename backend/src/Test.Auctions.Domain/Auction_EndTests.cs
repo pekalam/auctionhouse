@@ -9,10 +9,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Test.Auctions.Base.Builders;
+using Auctions.Tests.Base.Builders;
 using Xunit;
 
-namespace Test.AuctionsDomain
+namespace Auctions.Domain.Tests
 {
     public class Auction_EndTests
     {
@@ -23,7 +23,7 @@ namespace Test.AuctionsDomain
             auction.MarkPendingEventsAsHandled();
 
             auction.EndAuction();
-            
+
             auction.Completed.Should().BeTrue();
             auction.PendingEvents.Count.Should().Be(1);
             auction.PendingEvents.First().Should().BeOfType<AuctionEnded>();
@@ -34,7 +34,7 @@ namespace Test.AuctionsDomain
         public void Cannot_be_ended_while_locked()
         {
             var auction = new GivenAuction().WithAssignedAuctionBidsId(null).Build();
-            
+
             Assert.Throws<DomainException>(() => auction.EndAuction());
         }
 

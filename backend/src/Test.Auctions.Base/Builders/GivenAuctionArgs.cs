@@ -1,8 +1,8 @@
 ﻿using Auctions.Domain;
-using Test.Auctions.Base.Mocks;
-using static Test.Auctions.Base.Builders.AuctionTestConstants;
+using Auctions.Tests.Base.Mocks;
+using static Auctions.Tests.Base.Builders.AuctionTestConstants;
 
-namespace Test.Auctions.Base.Builders
+namespace Auctions.Tests.Base.Builders
 {
     public class GivenAuctionArgs
     {

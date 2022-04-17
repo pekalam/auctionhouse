@@ -3,7 +3,7 @@ using Core.DomainFramework;
 using System;
 using Xunit;
 
-namespace Test.AuctionsDomain
+namespace Auctions.Domain.Tests
 {
     public class AuctionDate_Tests
     {

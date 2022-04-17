@@ -18,7 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Auctions.Domain.Events\Auctions.DomainEvents.csproj" />
     <ProjectReference Include="..\Auctions.Domain\Auctions.Domain.csproj" />
-    <ProjectReference Include="..\Test.Auctions.Base\Test.Auctions.Base.csproj" />
+    <ProjectReference Include="..\Test.Auctions.Base\Auctions.Tests.Base.csproj" />
   </ItemGroup>
 
 </Project>

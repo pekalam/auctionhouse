@@ -17,10 +17,10 @@ namespace FunctionalTests.Commands
 {
     using Auctions.Application.Commands.CreateAuction;
     using Auctions.Domain;
+    using Auctions.Tests.Base.Mocks;
     using Core.Common.Domain;
     using Core.Common.Domain.Users;
     using MongoDB.Driver;
-    using Test.Auctions.Base.Mocks;
     using UserPayments.Domain;
     using UserPayments.Domain.Events;
     using UserPayments.Domain.Shared;

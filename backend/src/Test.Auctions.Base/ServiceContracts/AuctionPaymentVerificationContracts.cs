@@ -1,6 +1,6 @@
 ﻿using Auctions.Domain;
 
-namespace Test.Auctions.Base.ServiceContracts
+namespace Auctions.Tests.Base.ServiceContracts
 {
     public class AuctionPaymentVerificationContractArgs
     {

@@ -6,10 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Test.Auctions.Base.Builders;
+using Auctions.Tests.Base.Builders;
 using Xunit;
 
-namespace Test.AuctionsDomain
+namespace Auctions.Domain.Tests
 {
     [Trait("Category", "Unit")]
     public class AuctionCreateSession_Tests
@@ -57,7 +57,7 @@ namespace Test.AuctionsDomain
         public void AddOrReplaceImage_adds_to_auction_images()
         {
             AuctionCreateSession.SESSION_MAX_TIME = AuctionCreateSession.DEFAULT_SESSION_MAX_TIME;
-            int imgNum = 1;
+            var imgNum = 1;
 
             var session = AuctionCreateSession.CreateSession(UserId.New());
             var image1 = new GivenAuctionImage().Valid();
@@ -65,7 +65,7 @@ namespace Test.AuctionsDomain
 
             session.AuctionImages.Count.Should()
                 .Be(Auction.MAX_IMAGES);
-            for (int i = 0; i < session.AuctionImages.Count; i++)
+            for (var i = 0; i < session.AuctionImages.Count; i++)
             {
                 if (i == imgNum)
                 {
@@ -88,7 +88,7 @@ namespace Test.AuctionsDomain
         public void AddOrReplaceImage_replaces_image()
         {
             AuctionCreateSession.SESSION_MAX_TIME = AuctionCreateSession.DEFAULT_SESSION_MAX_TIME;
-            int imgNum = 1;
+            var imgNum = 1;
 
             var session = AuctionCreateSession.CreateSession(UserId.New());
             var image1 = new GivenAuctionImage().Valid();
@@ -98,7 +98,7 @@ namespace Test.AuctionsDomain
 
             session.AuctionImages.Count.Should()
                 .Be(Auction.MAX_IMAGES);
-            for (int i = 0; i < session.AuctionImages.Count; i++)
+            for (var i = 0; i < session.AuctionImages.Count; i++)
             {
                 if (i == imgNum)
                 {
@@ -138,7 +138,7 @@ namespace Test.AuctionsDomain
             auction.AuctionImages[1]
                 .Should()
                 .Be(image2);
-            for (int i = 2; i < auction.AuctionImages.Count; i++)
+            for (var i = 2; i < auction.AuctionImages.Count; i++)
             {
                 auction.AuctionImages[i]
                     .Should()
@@ -158,7 +158,7 @@ namespace Test.AuctionsDomain
 
             auction.AuctionImages.Count.Should()
                 .Be(Auction.MAX_IMAGES);
-            for (int i = 0; i < auction.AuctionImages.Count; i++)
+            for (var i = 0; i < auction.AuctionImages.Count; i++)
             {
                 auction.AuctionImages[i]
                     .Should()

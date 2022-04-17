@@ -24,7 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Auctions.Domain\Auctions.Domain.csproj" />
     <ProjectReference Include="..\Adapter.Dapper.AuctionhouseDatabase\Adapter.Dapper.AuctionhouseDatabase.csproj" />
-    <ProjectReference Include="..\Test.Auctions.Base\Test.Auctions.Base.csproj" />
+    <ProjectReference Include="..\Test.Auctions.Base\Auctions.Tests.Base.csproj" />
     <ProjectReference Include="..\Test.UserPayments.Base\UserPayments.Tests.Base.csproj" />
     <ProjectReference Include="..\Users.Domain\Users.Domain.csproj" />
   </ItemGroup>

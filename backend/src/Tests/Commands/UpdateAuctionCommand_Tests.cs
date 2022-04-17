@@ -18,7 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Auctions.Domain.Repositories;
 using AuctionBids.Domain.Repositories;
 using Adapter.EfCore.ReadModelNotifications;
-using Test.Auctions.Base.Mocks;
+using Auctions.Tests.Base.Mocks;
 
 namespace FunctionalTests.Commands
 {

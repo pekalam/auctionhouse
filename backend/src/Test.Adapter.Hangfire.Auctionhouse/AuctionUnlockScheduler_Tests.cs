@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
-using Test.Auctions.Base.Builders;
+using Auctions.Tests.Base.Builders;
 using Xunit;
 using Xunit.Abstractions;
 

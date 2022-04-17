@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuctionBids.Domain.Tests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserPayments.Domain.Tests", "Test.UserPayments.Domain\UserPayments.Domain.Tests.csproj", "{27B6DF0E-DF3B-4090-B7C8-2900D78ECC8D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.AuctionsDomain", "Test.Auctions.Domain\Test.AuctionsDomain.csproj", "{E4726A92-8E2A-4ED6-92F7-ACF7297946FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctions.Domain.Tests", "Test.Auctions.Domain\Auctions.Domain.Tests.csproj", "{E4726A92-8E2A-4ED6-92F7-ACF7297946FB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctions.Domain", "Auctions.Domain\Auctions.Domain.csproj", "{7A73B27D-BD46-45E6-88C0-57E7D404C61A}"
 EndProject
@@ -59,7 +59,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserPayments.Application", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Application.Tests", "Test.Common.Application\Common.Application.Tests.csproj", "{55EB0490-F686-436A-9B09-6862ABC6BD8E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Auctions.Application", "Test.Auctions.Application\Test.Auctions.Application.csproj", "{17C3B8A2-8AC3-49CA-8537-CB1A34318BA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctions.Application.Tests", "Test.Auctions.Application\Auctions.Application.Tests.csproj", "{17C3B8A2-8AC3-49CA-8537-CB1A34318BA8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{042D36E8-EBEF-43FB-8B69-BF1169CCC1B3}"
 EndProject
@@ -83,7 +83,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.Dapper.Auctionhouse
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Dapper.AuctionhouseDatabase", "Test.Dapper.AuctionhouseDatabase\Test.Dapper.AuctionhouseDatabase.csproj", "{12CB7343-A060-4ADD-B6C4-DAE3347B7743}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Auctions.Base", "Test.Auctions.Base\Test.Auctions.Base.csproj", "{6842B227-754B-46CB-A4B3-8E93BE6C0BB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctions.Tests.Base", "Test.Auctions.Base\Auctions.Tests.Base.csproj", "{6842B227-754B-46CB-A4B3-8E93BE6C0BB5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReadModel", "ReadModel", "{00AB0266-0388-4EC1-BDE5-0EC6206F28E2}"
 EndProject

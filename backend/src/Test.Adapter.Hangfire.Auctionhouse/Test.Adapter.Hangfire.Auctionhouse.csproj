@@ -24,7 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Adapter.Hangfire.Auctionhouse\Adapter.Hangfire_.Auctionhouse.csproj" />
     <ProjectReference Include="..\Auctions.Application\Auctions.Application.csproj" />
-    <ProjectReference Include="..\Test.Auctions.Base\Test.Auctions.Base.csproj" />
+    <ProjectReference Include="..\Test.Auctions.Base\Auctions.Tests.Base.csproj" />
     <ProjectReference Include="..\Test.Common.Base\Common.Tests.Base.csproj" />
   </ItemGroup>
 

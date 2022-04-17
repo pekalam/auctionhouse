@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Test.Auctions.Base.Mocks
+namespace Auctions.Tests.Base.Mocks
 {
     public class InMemoryAuctionRepository : IAuctionRepository
     {

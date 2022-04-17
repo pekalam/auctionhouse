@@ -7,10 +7,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Test.Auctions.Base.Builders;
+using Auctions.Tests.Base.Builders;
 using Xunit;
 
-namespace Test.AuctionsDomain
+namespace Auctions.Domain.Tests
 {
     [Trait("Category", "Unit")]
     public class Auction_Images_Tests
@@ -21,12 +21,12 @@ namespace Test.AuctionsDomain
             var auctionImages = new AuctionImages();
             var image = new GivenAuctionImage().Valid();
 
-            for (int j = 0; j < 2; j++)
+            for (var j = 0; j < 2; j++)
             {
                 auctionImages.AddImage(image);
-                auctionImages.Count().Should().Be(j+1);
+                auctionImages.Count().Should().Be(j + 1);
                 auctionImages[j].Should().Be(image);
-                for (int i = j+1; i < AuctionConstantsFactory.MaxImages; i++)
+                for (var i = j + 1; i < AuctionConstantsFactory.MaxImages; i++)
                 {
                     auctionImages[i].Should().BeNull();
                 }
@@ -55,12 +55,12 @@ namespace Test.AuctionsDomain
             var image2 = new GivenAuctionImage().Valid();
 
             auctionImages[1] = image1;
-            auctionImages[AuctionConstantsFactory.MaxImages-1] = image2;
-            for (int i = 0; i < 1; i++)
+            auctionImages[AuctionConstantsFactory.MaxImages - 1] = image2;
+            for (var i = 0; i < 1; i++)
             {
                 auctionImages[i].Should().BeNull();
             }
-            for (int i = 2; i < AuctionConstantsFactory.MaxImages - 1; i++)
+            for (var i = 2; i < AuctionConstantsFactory.MaxImages - 1; i++)
             {
                 auctionImages[i].Should().BeNull();
             }
@@ -95,7 +95,7 @@ namespace Test.AuctionsDomain
             auctionImages[1] = image1;
 
             auctionImages.ClearAll();
-            for (int i = 0; i < AuctionConstantsFactory.MaxImages; i++)
+            for (var i = 0; i < AuctionConstantsFactory.MaxImages; i++)
             {
                 auctionImages[i].Should().BeNull();
             }
@@ -164,7 +164,7 @@ namespace Test.AuctionsDomain
             var auction = new GivenAuction().ValidOfTypeBuyNowAndBid();
             var image = new GivenAuctionImage().Valid();
             auction.MarkPendingEventsAsHandled();
-            for (int i = 1; i <= Auction.MAX_IMAGES; i++)
+            for (var i = 1; i <= Auction.MAX_IMAGES; i++)
             {
                 auction.AddImage(image);
             }

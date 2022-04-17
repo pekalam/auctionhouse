@@ -4,6 +4,7 @@ using Auctions.Domain;
 using Auctions.Domain.Repositories;
 using Auctions.Domain.Services;
 using Auctions.DomainEvents;
+using Auctions.Tests.Base.Mocks;
 using Chronicle;
 using Common.Application;
 using Common.Application.Commands;
@@ -24,12 +25,11 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Test.Auctions.Base.Builders;
-using Test.Auctions.Base.Mocks;
+using Auctions.Tests.Base.Builders;
 using Xunit;
 using static Auctions.DomainEvents.Events.V1;
 
-namespace Test.Auctions.Application
+namespace Auctions.Application.Tests
 {
     public class BuyNowSaga_Tests
     {
@@ -164,18 +164,18 @@ namespace Test.Auctions.Application
             paymentVerification = new GivenAuctionPaymentVerification().CreateValidMock(auction, buyerId);
             serviceCollection.AddTransient(typeof(Lazy<>), typeof(LazyInstance<>));
             serviceCollection.AddSingleton<IAuctionRepository>(_auctions);
-            serviceCollection.AddTransient<IAuctionUnlockScheduler>(s => Mock.Of<IAuctionUnlockScheduler>());
+            serviceCollection.AddTransient(s => Mock.Of<IAuctionUnlockScheduler>());
             serviceCollection.AddScoped<EventOutboxMock>();
             serviceCollection.AddTransient<IEventOutbox, EventOutboxMock>(s => s.GetRequiredService<EventOutboxMock>());
             serviceCollection.AddTransient<IEventOutboxSavedItems, EventOutboxMock>(s => s.GetRequiredService<EventOutboxMock>());
-            serviceCollection.AddTransient<IUnitOfWorkFactory>(s => UnitOfWorkFactoryMock.Instance.Object);
-            serviceCollection.AddTransient<ISagaNotifications>(s => Mock.Of<ISagaNotifications>());
+            serviceCollection.AddTransient(s => UnitOfWorkFactoryMock.Instance.Object);
+            serviceCollection.AddTransient(s => Mock.Of<ISagaNotifications>());
             serviceCollection.AddTransient<OptimisticConcurrencyHandler>();
-            
-            serviceCollection.AddSingleton<IEventBus>(eventBus);
+
+            serviceCollection.AddSingleton(eventBus);
             serviceCollection.AddTransient<IAppEventBuilder, TestAppEventBuilder>();
             serviceCollection.AddTransient<EventOutboxSender>();
-            serviceCollection.AddTransient<IOutboxItemStore>(s => Mock.Of<IOutboxItemStore>());
+            serviceCollection.AddTransient(s => Mock.Of<IOutboxItemStore>());
 
             serviceCollection.AddLogging();
             //serviceCollection.AddTransient<EventBusHelper>(s => new EventBusHelper(eventBus, new TestAppEventBuilder()));
@@ -187,7 +187,7 @@ namespace Test.Auctions.Application
     internal class EventOutboxMock : IEventOutbox, IEventOutboxSavedItems
     {
         private readonly List<OutboxItem> _outboxItems = new();
-        
+
         public IReadOnlyList<OutboxItem> SavedOutboxStoreItems => _outboxItems;
 
         public Task<OutboxItem> SaveEvent(Event @event, CommandContext commandContext, ReadModelNotificationsMode notificationsMode)

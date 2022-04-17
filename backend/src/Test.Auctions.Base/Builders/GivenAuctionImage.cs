@@ -1,6 +1,6 @@
 ﻿using Auctions.Domain;
 
-namespace Test.Auctions.Base.Builders
+namespace Auctions.Tests.Base.Builders
 {
     public class GivenAuctionImage
     {

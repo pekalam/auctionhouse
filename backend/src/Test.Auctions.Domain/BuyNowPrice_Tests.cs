@@ -2,7 +2,7 @@
 using Core.DomainFramework;
 using Xunit;
 
-namespace Test.AuctionsDomain
+namespace Auctions.Domain.Tests
 {
     public class BuyNowPrice_Tests
     {
