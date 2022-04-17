@@ -16,17 +16,17 @@ steps:
     workingDir: 'front'
 - task: Npm@1
   inputs:
-    command: 'install'
+    command: 'custom'
     workingDir: 'front'
+    customCommand: 'run build -- -c=production'
 - task: Docker@2
   displayName: 'Build and push docker image'
   inputs:
     containerRegistry: 'VPSDockerRegistry'
     repository: 'pekalam/auctionhouse-front'
-    command: 'build'
-    Dockerfile: 'front/Dockerfile'
+    command: 'buildAndPush'
+    Dockerfile: 'front/Dockerfile.hosting'
     tags: 'latest'
-    arguments: '--target=hosting'
 - task: SSH@0
   displayName: 'Deploy on target machine'
   inputs:
