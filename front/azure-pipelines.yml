@@ -10,13 +10,22 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+- task: Npm@1
+  inputs:
+    command: 'install'
+    workingDir: 'front'
+- task: Npm@1
+  inputs:
+    command: 'custom'
+    workingDir: 'front'
+    customCommand: 'run build -- -c=production'
 - task: Docker@2
   displayName: 'Build and push docker image'
   inputs:
     containerRegistry: 'VPSDockerRegistry'
     repository: 'pekalam/auctionhouse-front'
     command: 'buildAndPush'
-    Dockerfile: 'front/Dockerfile'
+    Dockerfile: 'front/Dockerfile.hosting'
     tags: 'latest'
 - task: SSH@0
   displayName: 'Deploy on target machine'
