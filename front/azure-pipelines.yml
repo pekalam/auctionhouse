@@ -39,7 +39,7 @@ stages:
     - task: Npm@1
       displayName: 'Install npm dependencies'
       inputs:
-        command: 'install'
+        command: 'ci'
         workingDir: 'front'
     - task: Npm@1
       displayName: 'Build app with production configuration'
