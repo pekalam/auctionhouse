@@ -16,7 +16,7 @@ steps:
     targetType: 'inline'
     script: |
       # Copy prod env
-      cp secrets/environment.prod.ts src/environments
+      cp front/secrets/environment.prod.ts front/src/environments
 - task: Npm@1
   inputs:
     command: 'install'
