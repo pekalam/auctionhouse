@@ -180,7 +180,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.Domain.Tests", "Test.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8C3CAEA9-939E-4F49-B2E7-5E9DEE5E6429}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.CategoriesDomain", "Test.CategoriesDomain\Test.CategoriesDomain.csproj", "{23E05036-AFE1-457F-877B-6984393CF5E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Categories.Domain.Tests", "Test.CategoriesDomain\Categories.Domain.Tests.csproj", "{23E05036-AFE1-457F-877B-6984393CF5E0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5C8BFF18-65ED-43A6-8743-000662D95A27}"
 EndProject

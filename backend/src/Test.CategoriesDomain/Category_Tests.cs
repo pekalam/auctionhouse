@@ -2,7 +2,7 @@ using Core.Common.Domain.Categories;
 using FluentAssertions;
 using Xunit;
 
-namespace Test.CategoriesDomain
+namespace Categories.Domain.Tests
 {
     public class Category_Tests
     {
