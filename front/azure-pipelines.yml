@@ -11,10 +11,10 @@ pool:
 
 stages:
 - stage: Build
-  displayName: 'Build & Test stage'
+  displayName: 'Build stage'
   jobs:
   - job: 'build'
-    displayName: 'Build'
+    displayName: 'Build app and push docker image'
     steps:
     - task: Bash@3
       displayName: 'Copy prod environment ts file'
@@ -24,10 +24,12 @@ stages:
           # Copy prod env
           cp front/secrets/environment.prod.ts front/src/environments && cat front/src/environments/environment.prod.ts
     - task: Npm@1
+      displayName: 'Install npm dependencies'
       inputs:
         command: 'install'
         workingDir: 'front'
     - task: Npm@1
+      displayName: 'Build app with production configuration'
       inputs:
         command: 'custom'
         workingDir: 'front'
