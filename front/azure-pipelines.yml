@@ -9,29 +9,76 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- task: Npm@1
-  inputs:
-    command: 'install'
-    workingDir: 'front'
-- task: Npm@1
-  inputs:
-    command: 'custom'
-    workingDir: 'front'
-    customCommand: 'run build -- -c=production'
-- task: Docker@2
-  displayName: 'Build and push docker image'
-  inputs:
-    containerRegistry: 'VPSDockerRegistry'
-    repository: 'pekalam/auctionhouse-front'
-    command: 'buildAndPush'
-    Dockerfile: 'front/Dockerfile.hosting'
-    tags: 'latest'
-- task: SSH@0
-  displayName: 'Deploy on target machine'
-  inputs:
-    sshEndpoint: 'OVH_vps'
-    runOptions: 'commands'
-    commands: 'docker pull pekalam.me:5000/pekalam/auctionhouse-front:latest && docker service update auctionhouse_front --image pekalam.me:5000/pekalam/auctionhouse-front:latest'
-    failOnStdErr: false
-    readyTimeout: '20000'
+variables:
+  npm_config_cache: $(Pipeline.Workspace)/front/.npm
+
+stages:
+- stage: Build
+  displayName: 'Build stage'
+  jobs:
+  - job: 'build'
+    displayName: 'Build app and push docker image'
+    steps:
+    - task: Bash@3
+      displayName: 'Copy prod environment ts file'
+      inputs:
+        targetType: 'inline'
+        script: |
+          # Copy prod env
+          cp front/secrets/environment.prod.ts front/src/environments && cat front/src/environments/environment.prod.ts
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '14.17.x'
+    - task: Cache@2
+      inputs:
+        key: 'npm | "$(Agent.OS)" | front/package-lock.json'
+        restoreKeys: |
+          npm | "$(Agent.OS)"
+        path: $(npm_config_cache)
+      displayName: Cache npm
+    - task: Npm@1
+      displayName: 'Install npm dependencies'
+      inputs:
+        command: 'ci'
+        workingDir: 'front'
+    - task: Npm@1
+      displayName: 'Build app with production configuration'
+      inputs:
+        command: 'custom'
+        workingDir: 'front'
+        customCommand: 'run build -- -c=production'
+    - task: Docker@2
+      displayName: 'Build and push docker image'
+      inputs:
+        containerRegistry: 'VPSDockerRegistry'
+        repository: 'pekalam/auctionhouse-front'
+        command: 'buildAndPush'
+        Dockerfile: 'front/Dockerfile.hosting'
+        tags: 'latest'
+- stage: Deploy
+  displayName: 'Deploy Prod stage'
+  jobs:
+    - deployment: 'VPSDeployment'
+      displayName: 'VPS Deployment' 
+      environment: vps-production
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - task: SSH@0
+              displayName: 'Login to private registry'
+              env:
+                PEKALAM-REGISTRY-PASS: $(pekalam-registry-pass)
+              inputs:
+                sshEndpoint: 'OVH_vps'
+                runOptions: 'commands'
+                commands: '(docker login -u pekalam -p $(PEKALAM-REGISTRY-PASS) pekalam.me:5000 2>login_errorlog.txt || (cat login_errorlog.txt && exit 1)) && (test $(wc -l login_errorlog.txt | cut -d " " -f1) -gt 0 || rm login_errorlog.txt)'
+                failOnStdErr: false
+                readyTimeout: '20000'
+            - task: SSH@0
+              displayName: 'Deploy on target machine'
+              inputs:
+                sshEndpoint: 'OVH_vps'
+                runOptions: 'commands'
+                commands: 'docker pull pekalam.me:5000/pekalam/auctionhouse-front:latest && docker service update auctionhouse_front --with-registry-auth --image pekalam.me:5000/pekalam/auctionhouse-front:latest'
+                readyTimeout: '20000'
