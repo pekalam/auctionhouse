@@ -55,7 +55,9 @@ stages:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'VPSDockerRegistry'
         dockerComposeFile: 'backend/src/compose/infrastructure/docker-compose.yml'
-        additionalDockerComposeFiles: 'backend/src/compose/infrastructure/docker-compose.prod.yml'
+        additionalDockerComposeFiles: |
+          backend/src/compose/infrastructure/docker-compose.prod.yml
+          backend/src/compose/infrastructure/docker-compose.mongocluster.yml
         action: 'Push services'
   - job: 'build_docker_webapi'
     displayName: 'Build Web API docker images'

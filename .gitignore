@@ -25,7 +25,6 @@ backend/src/AuctionhouseDatabase/AuctionhouseDatabase.jfm
 /backend/src/SetupTestDb
 /backend/src/MongoDb/cluster/shards
 /backend/src/MongoDb/node_modules
-/backend/src/MongoDb/package-lock.json
 /backend/src/AuctionhouseDatabase/testbackups
 /backend/src/MongoDb/testbackups
 /backend/src/ArchTests

@@ -1,14 +1,19 @@
 services:
   {{#each config_servers}}
   {{this}}:
+    image: ${DOCKER_REGISTRY-}pekalam/{{this}}
     hostname: {{this}}
     build:
       dockerfile: config/Dockerfile
       context: .
-    command: "--configsvr --replSet configRS --bind_ip_all"   
+    command: "--configsvr --replSet configRS --bind_ip_all"
+    volumes:
+      - {{this}}_data:/data/db
+      - {{this}}_config:/data/configdb
   {{/each}}
   {{#each mongos}}
   {{this}}:
+    image: ${DOCKER_REGISTRY-}pekalam/{{this}}
     hostname: {{this}}
     build:
       dockerfile: mongos/Dockerfile
@@ -18,12 +23,34 @@ services:
       {{#if @first}}
       - "27017:27017"       
       {{/if}}
+    volumes:
+      - {{this}}_mongos_data:/data/db
+      - {{this}}_mongos_config:/data/configdb
   {{/each}}
   {{#each nodes}}
   {{this}}:
+    image: ${DOCKER_REGISTRY-}pekalam/{{this}}
     hostname: {{this}}
     build:
       dockerfile: shards/shard_{{this}}/Dockerfile
       context: .
-    command: [ "--bind_ip_all", "--replSet", "n{{inc @index}}", "--shardsvr" ]      
+    command: [ "--bind_ip_all", "--replSet", "n{{inc @index}}", "--shardsvr" ]
+    volumes:
+      - {{this}}_data:/data/db
+      - {{this}}_config:/data/configdb
   {{/each}}
+
+
+volumes:
+{{#each config_servers}}
+  {{this}}_data:
+  {{this}}_config:
+{{/each}}
+{{#each nodes}}
+  {{this}}_data:
+  {{this}}_config:
+{{/each}}
+{{#each mongos}}
+  {{this}}_mongos_data:
+  {{this}}_mongos_config:
+{{/each}}
