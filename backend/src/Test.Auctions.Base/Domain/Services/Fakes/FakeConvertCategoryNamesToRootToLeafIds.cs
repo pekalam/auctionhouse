@@ -3,11 +3,11 @@ using Auctions.Domain.Services;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using static Auctions.Tests.Base.Builders.AuctionTestConstants;
+using static Auctions.Tests.Base.Domain.ModelBuilders.AuctionTestConstants;
 
-namespace Auctions.Tests.Base.Mocks
+namespace Auctions.Tests.Base.Domain.Services.Fakes
 {
-    internal class TestConvertCategoryNamesToRootToLeafIds : ICategoryNamesToTreeIdsConversion
+    internal class FakeConvertCategoryNamesToRootToLeafIds : ICategoryNamesToTreeIdsConversion
     {
         public Task<CategoryId[]> ConvertNames(string[] categoryNames)
         {

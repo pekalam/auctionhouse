@@ -1,8 +1,8 @@
 ﻿using Auctions.Domain;
-using Auctions.Tests.Base.Mocks;
-using static Auctions.Tests.Base.Builders.AuctionTestConstants;
+using Auctions.Tests.Base.Domain.Services.Fakes;
+using static Auctions.Tests.Base.Domain.ModelBuilders.AuctionTestConstants;
 
-namespace Auctions.Tests.Base.Builders
+namespace Auctions.Tests.Base.Domain.ModelBuilders
 {
     public class GivenAuctionArgs
     {
@@ -51,7 +51,7 @@ namespace Auctions.Tests.Base.Builders
                 .SetBuyNowOnly(_buyNowOnly)
                 .SetTags(_tags)
                 .SetName(_name);
-            auctionArgsBuilder.SetCategories(_categories, new TestConvertCategoryNamesToRootToLeafIds()).GetAwaiter().GetResult();
+            auctionArgsBuilder.SetCategories(_categories, new FakeConvertCategoryNamesToRootToLeafIds()).GetAwaiter().GetResult();
             return auctionArgsBuilder.Build();
         }
 
@@ -67,7 +67,7 @@ namespace Auctions.Tests.Base.Builders
             return this;
         }
 
-        public AuctionArgs ValidBuyNowAndBid()
+        public AuctionArgs ValidForBuyNowAndBidAuctionType()
         {
             var auctionArgsBuilder = new AuctionArgs.Builder()
                 .SetBuyNow(BUY_NOW_PRICE)
@@ -78,7 +78,7 @@ namespace Auctions.Tests.Base.Builders
                 .SetBuyNowOnly(false)
                 .SetTags(new[] { TAG_1 })
                 .SetName(NAME);
-            auctionArgsBuilder.SetCategories(CATEGORY_IDS, new TestConvertCategoryNamesToRootToLeafIds()).GetAwaiter().GetResult();
+            auctionArgsBuilder.SetCategories(CATEGORY_IDS, new FakeConvertCategoryNamesToRootToLeafIds()).GetAwaiter().GetResult();
             return auctionArgsBuilder.Build();
         }
     }

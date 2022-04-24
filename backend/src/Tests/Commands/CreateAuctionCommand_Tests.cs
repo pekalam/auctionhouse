@@ -2,7 +2,7 @@ using Adapter.EfCore.ReadModelNotifications;
 using AuctionBids.Domain.Repositories;
 using Auctions.Application.Commands.StartAuctionCreateSession;
 using Auctions.Domain.Repositories;
-using Auctions.Tests.Base.Mocks;
+using Auctions.Tests.Base.Domain.Services.Fakes;
 using FunctionalTests.Mocks;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
@@ -22,14 +22,14 @@ namespace FunctionalTests.Commands
     [Trait("Category", "Functional")]
     public class CreateAuctionCommand_Tests : TestBase
     {
-        private readonly InMemoryAuctionRepository auctions;
+        private readonly FakeAuctionRepository auctions;
         private readonly InMemoryAuctionBidsRepository auctionBids;
         private readonly ITestOutputHelper outputHelper;
 
         public CreateAuctionCommand_Tests(ITestOutputHelper outputHelper) : base(outputHelper, "AuctionBids.Application", "Auctions.Application", "ReadModel.Core")
         {
             this.outputHelper = outputHelper;
-            auctions = (InMemoryAuctionRepository)ServiceProvider.GetRequiredService<IAuctionRepository>();
+            auctions = (FakeAuctionRepository)ServiceProvider.GetRequiredService<IAuctionRepository>();
             auctionBids = (InMemoryAuctionBidsRepository)ServiceProvider.GetRequiredService<IAuctionBidsRepository>();
 
         }

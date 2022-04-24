@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Auctions.Tests.Base.Mocks
+namespace Auctions.Tests.Base.Domain.Services.Fakes
 {
-    public class InMemoryAuctionRepository : IAuctionRepository
+    public class FakeAuctionRepository : IAuctionRepository
     {
         private readonly Dictionary<AuctionId, Auction> _auctions = new();
 

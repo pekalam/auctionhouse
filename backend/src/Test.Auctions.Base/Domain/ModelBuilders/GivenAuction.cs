@@ -1,11 +1,11 @@
 ﻿using Auctions.Domain;
 using System;
 
-namespace Auctions.Tests.Base.Builders
+namespace Auctions.Tests.Base.Domain.ModelBuilders
 {
     public class GivenAuction
     {
-        private AuctionArgs _args = new GivenAuctionArgs().ValidBuyNowAndBid();
+        private AuctionArgs _args = new GivenAuctionArgs().ValidForBuyNowAndBidAuctionType();
         private AuctionBidsId? _auctionBidsId;
 
         public GivenAuction WithAuctionArgs(AuctionArgs auctionArgs)
@@ -32,7 +32,7 @@ namespace Auctions.Tests.Base.Builders
 
         public Auction ValidOfTypeBuyNowAndBid(AuctionBidsId? auctionBidsId = null)
         {
-            _args = new GivenAuctionArgs().ValidBuyNowAndBid();
+            _args = new GivenAuctionArgs().ValidForBuyNowAndBidAuctionType();
             _auctionBidsId = auctionBidsId ?? new AuctionBidsId(Guid.NewGuid());
             WithAssignedAuctionBidsId(_auctionBidsId);
             return Build();

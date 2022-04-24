@@ -4,7 +4,6 @@ using Auctions.Domain;
 using Auctions.Domain.Repositories;
 using Auctions.Domain.Services;
 using Auctions.DomainEvents;
-using Auctions.Tests.Base.Mocks;
 using Chronicle;
 using Common.Application;
 using Common.Application.Commands;
@@ -25,15 +24,17 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Auctions.Tests.Base.Builders;
 using Xunit;
 using static Auctions.DomainEvents.Events.V1;
+using Auctions.Tests.Base.Domain.Services.Fakes;
+using Auctions.Tests.Base.Domain.ModelBuilders;
+using Auctions.Tests.Base.Domain.Services.TestDoubleBuilders;
 
 namespace Auctions.Application.Tests
 {
     public class BuyNowSaga_Tests
     {
-        InMemoryAuctionRepository _auctions = new();
+        FakeAuctionRepository _auctions = new();
         CommandContext commandContext = CommandContext.CreateNew("test");
         Guid commandId = Guid.NewGuid();
         Guid correlationId = Guid.NewGuid();
@@ -114,7 +115,7 @@ namespace Auctions.Application.Tests
             {
                 var user2 = UserId.New();
                 auction.Unlock(auction.LockIssuer);
-                var paymentVerificationForUser2 = new GivenAuctionPaymentVerification().CreateValidMock(auction, user2);
+                var paymentVerificationForUser2 = new GivenAuctionPaymentVerification().BuildValidMock(auction, user2);
                 await auction.Buy(user2, "test", paymentVerificationForUser2.Object, Mock.Of<IAuctionUnlockScheduler>());
                 auction.MarkPendingEventsAsHandled();
             }
@@ -161,7 +162,7 @@ namespace Auctions.Application.Tests
             serviceCollection.AddCommonCommandDependencies(new[] { Assembly.Load("Auctions.Application") });
 
             serviceCollection.AddChronicle(b => b.UseInMemoryPersistence());
-            paymentVerification = new GivenAuctionPaymentVerification().CreateValidMock(auction, buyerId);
+            paymentVerification = new GivenAuctionPaymentVerification().BuildValidMock(auction, buyerId);
             serviceCollection.AddTransient(typeof(Lazy<>), typeof(LazyInstance<>));
             serviceCollection.AddSingleton<IAuctionRepository>(_auctions);
             serviceCollection.AddTransient(s => Mock.Of<IAuctionUnlockScheduler>());

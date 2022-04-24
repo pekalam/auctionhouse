@@ -12,7 +12,7 @@ namespace Auctions.Domain.Tests
         [InlineData(" ")]
         [InlineData("")]
         [InlineData(null)]
-        public void Constructor_when_invalid_value_throws(string value)
+        public void Constructor_fails_for_invalid_parameters(string value)
         {
             Assert.Throws<DomainException>(() => new AuctionName(value));
         }
@@ -23,7 +23,7 @@ namespace Auctions.Domain.Tests
         [InlineData("example ", "example")]
         [InlineData(" example ", "example")]
         [InlineData("             example                ", "example")]
-        public void Value_gets_trimmed(string value, string excpected)
+        public void Name_value_is_trimmed(string value, string excpected)
         {
             var name = new AuctionName(value);
             name.Value.Should()

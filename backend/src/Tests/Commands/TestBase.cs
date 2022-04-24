@@ -20,7 +20,7 @@ namespace FunctionalTests.Commands
     using Auctions.Application.Commands.BuyNow;
     using Auctions.Application.Commands.StartAuctionCreateSession;
     using Auctions.Domain;
-    using Auctions.Tests.Base.Mocks;
+    using Auctions.Tests.Base.Domain.Services.Fakes;
     using Categories.Domain;
     using Chronicle.Integrations.SQLServer;
     using ChronicleEfCoreStorage;
@@ -169,7 +169,7 @@ namespace FunctionalTests.Commands
                 }, @"Data Source=127.0.0.1;Initial Catalog=AuctionhouseDatabase;MultipleActiveResultSets=True;TrustServerCertificate=True;User ID=sa;Password=Qwerty1234;");
 
                 services.AddSingleton<IAuctionCreateSessionStore, InMemAuctionCreateSessionStore>();
-                services.AddSingleton<IAuctionRepository, InMemoryAuctionRepository>();
+                services.AddSingleton<IAuctionRepository, FakeAuctionRepository>();
                 services.AddSingleton<IAuctionBidsRepository, InMemoryAuctionBidsRepository>();
                 services.AddSingleton<IUserRepository, InMemoryUserRepository>();
                 services.AddTransient<ICategoryNamesToTreeIdsConversion, ConvertCategoryNamesToRootToLeafIdsMock>();

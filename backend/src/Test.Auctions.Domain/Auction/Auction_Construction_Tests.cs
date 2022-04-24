@@ -1,19 +1,13 @@
-﻿using Auctions.Domain;
+﻿using Auctions.Tests.Base.Domain.ModelBuilders;
 using Core.DomainFramework;
 using FluentAssertions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Auctions.Tests.Base.Builders;
 using Xunit;
 
 namespace Auctions.Domain.Tests
 {
-
     [Trait("Category", "Unit")]
-    public class AuctionCreation_Tests
+    public class Auction_Construction_Tests
     {
 
         [Fact]
@@ -28,7 +22,7 @@ namespace Auctions.Domain.Tests
         [Fact]
         public void Created_auction_should_be_locked_and_unlocked_when_bids_id_is_set()
         {
-            var auction = new GivenAuction().WithAuctionArgs(new GivenAuctionArgs().ValidBuyNowAndBid()).Build();
+            var auction = new GivenAuction().WithAuctionArgs(new GivenAuctionArgs().ValidForBuyNowAndBidAuctionType()).Build();
 
             auction.Locked.Should().BeTrue();
 

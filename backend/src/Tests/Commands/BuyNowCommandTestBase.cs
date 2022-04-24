@@ -17,7 +17,7 @@ namespace FunctionalTests.Commands
 {
     using Auctions.Application.Commands.CreateAuction;
     using Auctions.Domain;
-    using Auctions.Tests.Base.Mocks;
+    using Auctions.Tests.Base.Domain.Services.Fakes;
     using Core.Common.Domain;
     using Core.Common.Domain.Users;
     using MongoDB.Driver;
@@ -32,7 +32,7 @@ namespace FunctionalTests.Commands
 
     public class BuyNowCommandTestBase : TestBase, IDisposable
     {
-        protected InMemoryAuctionRepository auctions;
+        protected FakeAuctionRepository auctions;
         protected InMemoryAuctionBidsRepository auctionBids;
         protected InMemortUserPaymentsRepository allUserPayments;
         protected InMemoryUserRepository users;
@@ -43,7 +43,7 @@ namespace FunctionalTests.Commands
             : base(outputHelper, "AuctionBids.Application", "Auctions.Application", "UserPayments.Application", "Users.Application")
         {
             this.outputHelper = outputHelper;
-            auctions = (InMemoryAuctionRepository)ServiceProvider.GetRequiredService<IAuctionRepository>();
+            auctions = (FakeAuctionRepository)ServiceProvider.GetRequiredService<IAuctionRepository>();
             auctionBids = (InMemoryAuctionBidsRepository)ServiceProvider.GetRequiredService<IAuctionBidsRepository>();
             allUserPayments = (InMemortUserPaymentsRepository)ServiceProvider.GetRequiredService<IUserPaymentsRepository>();
             users = (InMemoryUserRepository)ServiceProvider.GetRequiredService<IUserRepository>();

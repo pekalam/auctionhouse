@@ -11,7 +11,7 @@ namespace FunctionalTests.Commands
 {
     using Microsoft.Extensions.DependencyInjection;
     using MongoDB.Driver;
-    using Auctions.Tests.Base.Builders;
+    using Auctions.Tests.Base.Domain.Services.TestDoubleBuilders;
     using UserPayments.Domain;
     using UserPayments.Domain.Events;
     using Users.DomainEvents;
@@ -39,7 +39,7 @@ namespace FunctionalTests.Commands
         protected override void AddServices(IServiceCollection services)
         {
             base.AddServices(services);
-            services.AddTransient(s => new GivenAuctionPaymentVerification().CreateAlwaysValidMock().Object);
+            services.AddTransient(s => new GivenAuctionPaymentVerification().BuildAlwaysValidMock().Object);
         }
 
         [Fact]

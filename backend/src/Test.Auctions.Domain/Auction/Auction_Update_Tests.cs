@@ -1,19 +1,15 @@
-﻿using Auctions.Domain;
-using Auctions.DomainEvents;
+﻿using Auctions.DomainEvents;
 using Auctions.DomainEvents.Update;
+using Auctions.Tests.Base.Domain.ModelBuilders;
 using FluentAssertions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Auctions.Tests.Base.Builders;
 using Xunit;
 
 namespace Auctions.Domain.Tests
 {
     [Trait("Category", "Unit")]
-    public class AuctionUpdate_Tests
+    public class Auction_Update_Tests
     {
         private static Type UpdateAndAssertDescription(Auction auction)
         {
@@ -29,6 +25,7 @@ namespace Auctions.Domain.Tests
             {
                 new Tag("testTag1"),
             };
+
             auction.UpdateTags(newTags);
 
             auction.Tags.Should().BeEquivalentTo(newTags);
@@ -57,7 +54,7 @@ namespace Auctions.Domain.Tests
 
         private static Func<Auction, Type> CreateUpdateAndAssertDelegate(string methodName)
         {
-            var method = typeof(AuctionUpdate_Tests)
+            var method = typeof(Auction_Update_Tests)
                 .GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
                 .First(m => m.Name == methodName);
 

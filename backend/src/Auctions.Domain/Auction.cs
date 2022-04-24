@@ -187,7 +187,7 @@ namespace Auctions.Domain
 
             if (!hasMinTime)
             {
-                throw new DomainException("");
+                throw new DomainException("Auction does not last long enough");
             }
             bool startLessThanEnd = startDate.Value.CompareTo(endDate) == -1;
 

@@ -2,6 +2,7 @@ using Adapter.Hangfire_.Auctionhouse;
 using Auctions.Domain;
 using Auctions.Domain.Repositories;
 using Auctions.Domain.Services;
+using Auctions.Tests.Base.Domain.ModelBuilders;
 using Common.Application;
 using Common.Application.Events;
 using Common.Tests.Base.Mocks;
@@ -15,7 +16,6 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
-using Auctions.Tests.Base.Builders;
 using Xunit;
 using Xunit.Abstractions;
 

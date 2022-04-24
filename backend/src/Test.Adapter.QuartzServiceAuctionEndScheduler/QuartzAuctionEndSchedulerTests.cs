@@ -2,8 +2,8 @@ using Adapter.QuartzTimeTaskService.AuctionEndScheduler;
 using Auctions.Domain;
 using Auctions.Domain.Repositories;
 using Auctions.Domain.Services;
-using Auctions.Tests.Base.Mocks;
-using Auctions.Tests.Base.ServiceContracts;
+using Auctions.Tests.Base.Domain.Services.Fakes;
+using Auctions.Tests.Base.Domain.Services.ServiceContracts;
 using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
@@ -88,7 +88,7 @@ namespace Test.Adapter.QuartzServiceAuctionEndScheduler
         {
             var cts = new CancellationTokenSource();
             var scenario = AuctionEndSchedulerContracts.Success;
-            var auctions = new InMemoryAuctionRepository();
+            var auctions = new FakeAuctionRepository();
             auctions.AddAuction(scenario.given.auction);
             var auctionEndScheduler = SetupTest(auctions, scenario, cts);
             
@@ -97,7 +97,7 @@ namespace Test.Adapter.QuartzServiceAuctionEndScheduler
             scenario.given.auction.Completed.Should().Be(expected.completed);
         }
 
-        private static QuartzAuctionEndScheduler SetupTest(InMemoryAuctionRepository auctions, AuctionEndSchedulerScenario scenario, CancellationTokenSource cts)
+        private static QuartzAuctionEndScheduler SetupTest(FakeAuctionRepository auctions, AuctionEndSchedulerScenario scenario, CancellationTokenSource cts)
         {
             var application = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
@@ -144,7 +144,7 @@ namespace Test.Adapter.QuartzServiceAuctionEndScheduler
             return new QuartzAuctionEndScheduler(RestClient.For<ITimeTaskClient>(settings.ConnectionString), settings);
         }
 
-        private static IServiceProvider SetupServices(IServiceCollection services, InMemoryAuctionRepository auctions)
+        private static IServiceProvider SetupServices(IServiceCollection services, FakeAuctionRepository auctions)
         {
             services.AddTransient<IRequestHandler<AppCommand<EndAuctionCommand>, RequestStatus>, EndAuctionCommandHandler>();
             services.AddSingleton<IAuctionRepository>(auctions);
