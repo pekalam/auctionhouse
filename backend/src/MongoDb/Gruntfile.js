@@ -22,13 +22,15 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask('cluster', 'clu', function () {
+    grunt.registerTask('cluster', 'Generate mongo cluster files', function () {
         var context = grunt.config.get("cluster.all");
 
         var templates = ["cluster/templates/docker-compose.yml.hbs", "cluster/mongos/templates/scripts/init.js.hbs"];
         for (var tpath of templates) {
             var template = Handlebars.compile(grunt.file.read(tpath));
-            grunt.file.write(tpath.replace("templates/", "").removeHandlebarsExt(), template(context));
+            var targetPath = tpath.replace("templates/", "").removeHandlebarsExt();
+            grunt.log.writeln("Writing " + targetPath);
+            grunt.file.write(targetPath, template(context));
         }
 
         var i = 1;
@@ -51,13 +53,15 @@ module.exports = function (grunt) {
                     "shard_name": node,
                     "replSetName": "n"+i
                 }
-                grunt.file.write(tpath.replace("cluster/templates/shardtemplate", clusterShardFolder).removeHandlebarsExt(), shardTemplate(shardContext))
+                var targetPath = tpath.replace("cluster/templates/shardtemplate", clusterShardFolder).removeHandlebarsExt();
+                grunt.log.writeln("Writing " + targetPath);
+                grunt.file.write(targetPath, shardTemplate(shardContext))
             }
             i++;
         }
     });
 
-    grunt.registerTask('clean', 'Log stuff.', function () {
+    grunt.registerTask('clean', 'Clean generated files', function () {
         for (const file of grunt.file.expand("cluster/shards/shard_?*")) {
             grunt.log.writeln("deleting existing " + file)
             grunt.file.delete(file)

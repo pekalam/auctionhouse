@@ -9,17 +9,6 @@ services:
     build:
       context: ../../Envoy
 
-  mongodb:
-    image: ${DOCKER_REGISTRY-}pekalam/auctionhouse-mongodb-standalone
-    ports:
-      - '27017:27017'
-    build:
-      context: ../../MongoDb/standalone
-      dockerfile: Dockerfile-mongo-standalone-replicaset
-    volumes:
-      - mongodb_data:/data/db
-      - mongodb_config:/data/configdb
-
   quartz_web_task_service:
     image: marekbf3/quartz-web-task-service
     ports:
