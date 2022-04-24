@@ -1,9 +1,9 @@
 using Adapter.Dapper.AuctionhouseDatabase;
 using Auctions.Domain.Repositories;
+using Auctions.Tests.Base.Domain.ModelBuilders;
 using Core.Common.Domain.Users;
 using FluentAssertions;
 using System;
-using Test.Auctions.Base.Builders;
 using Users.Domain;
 using Xunit;
 

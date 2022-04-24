@@ -10,6 +10,8 @@ using Common.Application.Commands;
 using Common.Application.Events;
 using Common.Application.Mediator;
 using Common.Application.SagaNotifications;
+using Common.Tests.Base.Mocks;
+using Common.Tests.Base.Mocks.Events;
 using Core.Common.Domain;
 using FluentAssertions;
 using FluentAssertions.Common;
@@ -22,18 +24,17 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Test.Auctions.Base.Builders;
-using Test.Auctions.Base.Mocks;
-using Test.Common.Base.Mocks;
-using Test.Common.Base.Mocks.Events;
 using Xunit;
 using static Auctions.DomainEvents.Events.V1;
+using Auctions.Tests.Base.Domain.Services.Fakes;
+using Auctions.Tests.Base.Domain.ModelBuilders;
+using Auctions.Tests.Base.Domain.Services.TestDoubleBuilders;
 
-namespace Test.Auctions.Application
+namespace Auctions.Application.Tests
 {
     public class BuyNowSaga_Tests
     {
-        InMemoryAuctionRepository _auctions = new();
+        FakeAuctionRepository _auctions = new();
         CommandContext commandContext = CommandContext.CreateNew("test");
         Guid commandId = Guid.NewGuid();
         Guid correlationId = Guid.NewGuid();
@@ -114,7 +115,7 @@ namespace Test.Auctions.Application
             {
                 var user2 = UserId.New();
                 auction.Unlock(auction.LockIssuer);
-                var paymentVerificationForUser2 = new GivenAuctionPaymentVerification().CreateValidMock(auction, user2);
+                var paymentVerificationForUser2 = new GivenAuctionPaymentVerification().BuildValidMock(auction, user2);
                 await auction.Buy(user2, "test", paymentVerificationForUser2.Object, Mock.Of<IAuctionUnlockScheduler>());
                 auction.MarkPendingEventsAsHandled();
             }
@@ -161,21 +162,21 @@ namespace Test.Auctions.Application
             serviceCollection.AddCommonCommandDependencies(new[] { Assembly.Load("Auctions.Application") });
 
             serviceCollection.AddChronicle(b => b.UseInMemoryPersistence());
-            paymentVerification = new GivenAuctionPaymentVerification().CreateValidMock(auction, buyerId);
+            paymentVerification = new GivenAuctionPaymentVerification().BuildValidMock(auction, buyerId);
             serviceCollection.AddTransient(typeof(Lazy<>), typeof(LazyInstance<>));
             serviceCollection.AddSingleton<IAuctionRepository>(_auctions);
-            serviceCollection.AddTransient<IAuctionUnlockScheduler>(s => Mock.Of<IAuctionUnlockScheduler>());
+            serviceCollection.AddTransient(s => Mock.Of<IAuctionUnlockScheduler>());
             serviceCollection.AddScoped<EventOutboxMock>();
             serviceCollection.AddTransient<IEventOutbox, EventOutboxMock>(s => s.GetRequiredService<EventOutboxMock>());
             serviceCollection.AddTransient<IEventOutboxSavedItems, EventOutboxMock>(s => s.GetRequiredService<EventOutboxMock>());
-            serviceCollection.AddTransient<IUnitOfWorkFactory>(s => UnitOfWorkFactoryMock.Instance.Object);
-            serviceCollection.AddTransient<ISagaNotifications>(s => Mock.Of<ISagaNotifications>());
+            serviceCollection.AddTransient(s => UnitOfWorkFactoryMock.Instance.Object);
+            serviceCollection.AddTransient(s => Mock.Of<ISagaNotifications>());
             serviceCollection.AddTransient<OptimisticConcurrencyHandler>();
-            
-            serviceCollection.AddSingleton<IEventBus>(eventBus);
+
+            serviceCollection.AddSingleton(eventBus);
             serviceCollection.AddTransient<IAppEventBuilder, TestAppEventBuilder>();
             serviceCollection.AddTransient<EventOutboxSender>();
-            serviceCollection.AddTransient<IOutboxItemStore>(s => Mock.Of<IOutboxItemStore>());
+            serviceCollection.AddTransient(s => Mock.Of<IOutboxItemStore>());
 
             serviceCollection.AddLogging();
             //serviceCollection.AddTransient<EventBusHelper>(s => new EventBusHelper(eventBus, new TestAppEventBuilder()));
@@ -187,7 +188,7 @@ namespace Test.Auctions.Application
     internal class EventOutboxMock : IEventOutbox, IEventOutboxSavedItems
     {
         private readonly List<OutboxItem> _outboxItems = new();
-        
+
         public IReadOnlyList<OutboxItem> SavedOutboxStoreItems => _outboxItems;
 
         public Task<OutboxItem> SaveEvent(Event @event, CommandContext commandContext, ReadModelNotificationsMode notificationsMode)

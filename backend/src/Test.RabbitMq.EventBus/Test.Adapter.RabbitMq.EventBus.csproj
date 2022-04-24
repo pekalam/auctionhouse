@@ -26,7 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Adatper.RabbitMq.EventBus\Adatper.RabbitMq.EventBus.csproj" />
-    <ProjectReference Include="..\Test.Common.Base\Test.Common.Base.csproj" />
+    <ProjectReference Include="..\Test.Common.Base\Common.Tests.Base.csproj" />
   </ItemGroup>
 
 </Project>

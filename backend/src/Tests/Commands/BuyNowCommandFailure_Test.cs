@@ -9,10 +9,9 @@ using static UserPayments.DomainEvents.Events.V1;
 
 namespace FunctionalTests.Commands
 {
-    using Auctions.Domain.Services;
     using Microsoft.Extensions.DependencyInjection;
     using MongoDB.Driver;
-    using Test.Auctions.Base.Builders;
+    using Auctions.Tests.Base.Domain.Services.TestDoubleBuilders;
     using UserPayments.Domain;
     using UserPayments.Domain.Events;
     using Users.DomainEvents;
@@ -40,7 +39,7 @@ namespace FunctionalTests.Commands
         protected override void AddServices(IServiceCollection services)
         {
             base.AddServices(services);
-            services.AddTransient(s => new GivenAuctionPaymentVerification().CreateAlwaysValidMock().Object);
+            services.AddTransient(s => new GivenAuctionPaymentVerification().BuildAlwaysValidMock().Object);
         }
 
         [Fact]

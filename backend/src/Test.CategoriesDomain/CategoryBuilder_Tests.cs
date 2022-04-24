@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Test.CategoriesDomain
+namespace Categories.Domain.Tests
 {
     public class CategoryBuilder_Tests
     {

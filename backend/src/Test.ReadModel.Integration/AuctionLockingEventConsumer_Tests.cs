@@ -13,7 +13,7 @@ using ReadModel.Core.EventConsumers;
 using ReadModel.Core.Model;
 using System;
 using System.Collections.Generic;
-using Test.Common.Base.Mocks.Events;
+using Common.Tests.Base.Mocks.Events;
 using Xunit;
 
 namespace Test.ReadModel.Integration

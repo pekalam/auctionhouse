@@ -1,13 +1,12 @@
 using Xunit;
 using Core.Common.Domain.Users;
-using Users.Domain;
 using Users.Domain.Shared;
 using System;
-using static Test.UsersDomain.UserTestContants;
+using static Users.Domain.Tests.UserTestContants;
 using FluentAssertions;
 using System.Linq;
 
-namespace Test.UsersDomain
+namespace Users.Domain.Tests
 {
     public class User_Tests
     {

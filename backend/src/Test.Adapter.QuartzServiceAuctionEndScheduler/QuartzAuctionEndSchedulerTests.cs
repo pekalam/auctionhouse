@@ -2,10 +2,14 @@ using Adapter.QuartzTimeTaskService.AuctionEndScheduler;
 using Auctions.Domain;
 using Auctions.Domain.Repositories;
 using Auctions.Domain.Services;
+using Auctions.Tests.Base.Domain.Services.Fakes;
+using Auctions.Tests.Base.Domain.Services.ServiceContracts;
 using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
 using Common.Application.Mediator;
+using Common.Tests.Base.Mocks;
+using Common.Tests.Base.Mocks.Events;
 using Core.Command.Commands.EndAuction;
 using FluentAssertions;
 using MediatR;
@@ -24,10 +28,6 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Test.Auctions.Base.Mocks;
-using Test.Auctions.Base.ServiceContracts;
-using Test.Common.Base.Mocks;
-using Test.Common.Base.Mocks.Events;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -88,7 +88,7 @@ namespace Test.Adapter.QuartzServiceAuctionEndScheduler
         {
             var cts = new CancellationTokenSource();
             var scenario = AuctionEndSchedulerContracts.Success;
-            var auctions = new InMemoryAuctionRepository();
+            var auctions = new FakeAuctionRepository();
             auctions.AddAuction(scenario.given.auction);
             var auctionEndScheduler = SetupTest(auctions, scenario, cts);
             
@@ -97,7 +97,7 @@ namespace Test.Adapter.QuartzServiceAuctionEndScheduler
             scenario.given.auction.Completed.Should().Be(expected.completed);
         }
 
-        private static QuartzAuctionEndScheduler SetupTest(InMemoryAuctionRepository auctions, AuctionEndSchedulerScenario scenario, CancellationTokenSource cts)
+        private static QuartzAuctionEndScheduler SetupTest(FakeAuctionRepository auctions, AuctionEndSchedulerScenario scenario, CancellationTokenSource cts)
         {
             var application = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
@@ -144,7 +144,7 @@ namespace Test.Adapter.QuartzServiceAuctionEndScheduler
             return new QuartzAuctionEndScheduler(RestClient.For<ITimeTaskClient>(settings.ConnectionString), settings);
         }
 
-        private static IServiceProvider SetupServices(IServiceCollection services, InMemoryAuctionRepository auctions)
+        private static IServiceProvider SetupServices(IServiceCollection services, FakeAuctionRepository auctions)
         {
             services.AddTransient<IRequestHandler<AppCommand<EndAuctionCommand>, RequestStatus>, EndAuctionCommandHandler>();
             services.AddSingleton<IAuctionRepository>(auctions);

@@ -1,6 +1,7 @@
 ﻿using Adatper.RabbitMq.EventBus.ErrorEventOutbox;
 using Common.Application;
 using Common.Application.Events;
+using Common.Tests.Base.AdapterContracts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -14,7 +15,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Test.Common.Base.Scenarios;
 using Xunit;
 
 namespace Test.Adapter.RabbitMq.EventBus

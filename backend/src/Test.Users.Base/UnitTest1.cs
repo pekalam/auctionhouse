@@ -1,6 +1,6 @@
 using Xunit;
 
-namespace Test.Users.Base
+namespace Users.Tests.Base
 {
     public class UnitTest1
     {

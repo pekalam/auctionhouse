@@ -1,5 +1,6 @@
 ﻿using AuctionBids.Domain.Repositories;
 using Auctions.Domain.Repositories;
+using Auctions.Tests.Base.Domain.ModelBuilders;
 using Common.Application.Events;
 using Core.Command.Bid;
 using Core.Common.Domain;
@@ -11,7 +12,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Test.Auctions.Base.Builders;
 using Users.Domain.Repositories;
 using Xunit;
 using Xunit.Abstractions;

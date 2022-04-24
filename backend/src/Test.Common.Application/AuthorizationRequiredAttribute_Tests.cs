@@ -7,10 +7,10 @@ using System.Linq;
 using System.Reflection;
 using Xunit;
 
-namespace UnitTests.AuthorizationRequiredAttribute_Tests
+namespace Common.Application.Tests
 {
     [AuthorizationRequired]
-    public class TestCommandBase : ICommand
+    public class TestCommandWithUser : ICommand
     {
         public int Prop { get; set; }
 
@@ -28,7 +28,7 @@ namespace UnitTests.AuthorizationRequiredAttribute_Tests
     }
 
     [AuthorizationRequired]
-    public class TestCommandBaseNoUser : ICommand
+    public class TestCommandNoUser : ICommand
     {
         public int Prop { get; set; }
     }
@@ -45,7 +45,7 @@ namespace UnitTests.AuthorizationRequiredAttribute_Tests
         [Fact]
         public void Loads_commands_and_queries_using_valid_combination_of_attributes_to_property_map()
         {
-            AuthorizationRequiredAttribute.LoadSignedInUserCmdAndQueryMembers(Assembly.Load("Test.Common.Application"));
+            AuthorizationRequiredAttribute.LoadSignedInUserCmdAndQueryMembers(Assembly.Load("Common.Application.Tests"));
 
             foreach (var cmdToProp in AuthorizationRequiredAttribute._signedInUserCommandProperties)
             {
@@ -55,11 +55,11 @@ namespace UnitTests.AuthorizationRequiredAttribute_Tests
             }
 
             AuthorizationRequiredAttribute._signedInUserCommandProperties
-                .Where(pair => pair.Key.Equals(typeof(TestCommandBase)))
+                .Where(pair => pair.Key.Equals(typeof(TestCommandWithUser)))
                 .Count().Should().Be(1);
 
             var prop = AuthorizationRequiredAttribute._signedInUserCommandProperties
-                .First(pair => pair.Key.Equals(typeof(TestCommandBase)))
+                .First(pair => pair.Key.Equals(typeof(TestCommandWithUser)))
                 .Value;
 
             prop.Name.Should().Be("User");
@@ -84,7 +84,7 @@ namespace UnitTests.AuthorizationRequiredAttribute_Tests
 
 
             var nullProp = AuthorizationRequiredAttribute._signedInUserCommandProperties
-                .FirstOrDefault(pair => pair.Key.Equals(typeof(TestCommandBaseNoUser)));
+                .FirstOrDefault(pair => pair.Key.Equals(typeof(TestCommandNoUser)));
 
             nullProp.Key.Should().BeNull();
             nullProp.Value.Should().BeNull();

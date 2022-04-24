@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Test.Common.Base.Mocks.Events
+namespace Common.Tests.Base.Mocks.Events
 {
     internal class EventOutboxMock
     {

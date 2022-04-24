@@ -10,10 +10,10 @@ using System.Linq;
 using System.Reflection;
 using Xunit;
 
-namespace Test.Auctions.Application.SaveTempAuctionImageAttr
+namespace Auctions.Application.Tests
 {
     [SaveTempAuctionImage]
-    public class TestCommandBase : ICommand
+    public class SaveTempAuctionImageTestCommand : ICommand
     {
         [AuctionImage] public IFileStreamAccessor Img { get; set; }
 
@@ -26,25 +26,25 @@ namespace Test.Auctions.Application.SaveTempAuctionImageAttr
         [Fact]
         public void LoadImagePathCommandMembers_loads_valid_commands()
         {
-            SaveTempAuctionImageAttribute.LoadImagePathCommandMembers(Assembly.Load("Test.Auctions.Application"));
+            SaveTempAuctionImageAttribute.LoadImagePathCommandMembers(Assembly.Load("Auctions.Application.Tests"));
 
             SaveTempAuctionImageAttribute._auctionImagePathCommandProperties.Count.Should().Be(1);
             var validPath = SaveTempAuctionImageAttribute._auctionImagePathCommandProperties.First();
             validPath.Key.Should()
-                .Be(typeof(TestCommandBase));
+                .Be(typeof(SaveTempAuctionImageTestCommand));
             validPath.Value.Name.Should().Be("Path");
 
             SaveTempAuctionImageAttribute._auctionImageAccessorCommandProperties.Count.Should().Be(1);
             var validImg = SaveTempAuctionImageAttribute._auctionImageAccessorCommandProperties.First();
             validImg.Key.Should()
-                .Be(typeof(TestCommandBase));
+                .Be(typeof(SaveTempAuctionImageTestCommand));
             validImg.Value.Name.Should().Be("Img");
         }
 
         [Fact]
         public void SaveImage_saves_auction_img_and_sets_img_to_null()
         {
-            SaveTempAuctionImageAttribute.LoadImagePathCommandMembers(Assembly.Load("Test.Auctions.Application"));
+            SaveTempAuctionImageAttribute.LoadImagePathCommandMembers(Assembly.Load("Auctions.Application.Tests"));
 
             var stubTempFileService = new Mock<ITempFileService>();
             stubTempFileService.Setup(f => f.SaveAsTempFile(It.IsAny<Stream>())).Returns("TempFile");
@@ -55,11 +55,11 @@ namespace Test.Auctions.Application.SaveTempAuctionImageAttr
             var stubStreamAccessor = new Mock<IFileStreamAccessor>();
             stubStreamAccessor.Setup(f => f.GetStream()).Returns(Stream.Null);
 
-            var cmd = new TestCommandBase()
+            var cmd = new SaveTempAuctionImageTestCommand()
             {
                 Img = stubStreamAccessor.Object
             };
-            var ctx = CommandContext.CreateNew(nameof(TestCommandBase));
+            var ctx = CommandContext.CreateNew(nameof(SaveTempAuctionImageTestCommand));
 
             SaveTempAuctionImageAttribute.SaveImage(stubImplProvider.Object, ctx, cmd);
 

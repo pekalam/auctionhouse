@@ -1,6 +1,6 @@
 ﻿using UserPayments.Domain;
 
-namespace Test.UserPaymentsBase
+namespace UserPayments.Tests.Base
 {
     public class TestPaymentMethodConstants
     {

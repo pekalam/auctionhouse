@@ -1,6 +1,7 @@
 ﻿using Adatper.RabbitMq.EventBus.ErrorEventOutbox;
 using Common.Application.Commands;
 using Common.Application.Events;
+using Common.Tests.Base.Mocks.Events;
 using Core.Common.Domain;
 using EasyNetQ;
 using FluentAssertions;
@@ -12,7 +13,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Test.Common.Base.Mocks.Events;
 using Xunit;
 
 namespace Test.Adapter.RabbitMq.EventBus

@@ -11,11 +11,11 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Test.AuctionhouseDatabase",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.DomainFramework", "Core.DomainFramework\Common.DomainFramework.csproj", "{F7720E68-77D4-401B-B4C6-348CDC8DFB81}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.AuctionBids_.Domain", "Test.AuctionBids.Domain\Test.AuctionBids_.Domain.csproj", "{0468B76C-CB81-40F0-B979-28A85D0B97D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuctionBids.Domain.Tests", "Test.AuctionBids.Domain\AuctionBids.Domain.Tests.csproj", "{0468B76C-CB81-40F0-B979-28A85D0B97D2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.UserPayments_.Domain", "Test.UserPayments.Domain\Test.UserPayments_.Domain.csproj", "{27B6DF0E-DF3B-4090-B7C8-2900D78ECC8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserPayments.Domain.Tests", "Test.UserPayments.Domain\UserPayments.Domain.Tests.csproj", "{27B6DF0E-DF3B-4090-B7C8-2900D78ECC8D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.AuctionsDomain", "Test.Auctions.Domain\Test.AuctionsDomain.csproj", "{E4726A92-8E2A-4ED6-92F7-ACF7297946FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctions.Domain.Tests", "Test.Auctions.Domain\Auctions.Domain.Tests.csproj", "{E4726A92-8E2A-4ED6-92F7-ACF7297946FB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctions.Domain", "Auctions.Domain\Auctions.Domain.csproj", "{7A73B27D-BD46-45E6-88C0-57E7D404C61A}"
 EndProject
@@ -57,9 +57,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuctionBids.Application", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserPayments.Application", "UserPayments.Application\UserPayments.Application.csproj", "{0E78327D-AE10-4765-B3DF-31B1272668C6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Common.Application", "Test.Common.Application\Test.Common.Application.csproj", "{55EB0490-F686-436A-9B09-6862ABC6BD8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Application.Tests", "Test.Common.Application\Common.Application.Tests.csproj", "{55EB0490-F686-436A-9B09-6862ABC6BD8E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Auctions.Application", "Test.Auctions.Application\Test.Auctions.Application.csproj", "{17C3B8A2-8AC3-49CA-8537-CB1A34318BA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctions.Application.Tests", "Test.Auctions.Application\Auctions.Application.Tests.csproj", "{17C3B8A2-8AC3-49CA-8537-CB1A34318BA8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{042D36E8-EBEF-43FB-8B69-BF1169CCC1B3}"
 EndProject
@@ -83,7 +83,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.Dapper.Auctionhouse
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Dapper.AuctionhouseDatabase", "Test.Dapper.AuctionhouseDatabase\Test.Dapper.AuctionhouseDatabase.csproj", "{12CB7343-A060-4ADD-B6C4-DAE3347B7743}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Auctions.Base", "Test.Auctions.Base\Test.Auctions.Base.csproj", "{6842B227-754B-46CB-A4B3-8E93BE6C0BB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctions.Tests.Base", "Test.Auctions.Base\Auctions.Tests.Base.csproj", "{6842B227-754B-46CB-A4B3-8E93BE6C0BB5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReadModel", "ReadModel", "{00AB0266-0388-4EC1-BDE5-0EC6206F28E2}"
 EndProject
@@ -143,7 +143,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.SqlServer.EventOutb
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.SqlServer.EventOutboxStorage", "Test.Adapter.SqlServer.EventOutbox\Test.Adapter.SqlServer.EventOutboxStorage.csproj", "{8685B8D1-EB4B-4CA7-8C52-2AE5A2E31F44}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Common.Base", "Test.Common.Base\Test.Common.Base.csproj", "{F7CC5BF3-4406-4EF0-B5A1-2070AD4078AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Tests.Base", "Test.Common.Base\Common.Tests.Base.csproj", "{F7CC5BF3-4406-4EF0-B5A1-2070AD4078AE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Schedulers", "Schedulers", "{CA1CA04B-8114-43E0-90A7-6A297EF4A77F}"
 EndProject
@@ -153,15 +153,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.Hangfire.Aucti
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{260B980C-C261-46ED-8D35-74E7317D95B0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Users.Base", "Test.Users.Base\Test.Users.Base.csproj", "{33584C47-5C14-4D7C-BA13-FEF7F4BA2C0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.Tests.Base", "Test.Users.Base\Users.Tests.Base.csproj", "{33584C47-5C14-4D7C-BA13-FEF7F4BA2C0A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.DomainEvents", "Users.DomainEvents\Users.DomainEvents.csproj", "{07C3FF8D-2049-4BFF-A3B6-D046CCBB9254}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9B96EB46-E872-42D2-A50A-A361AB976033}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.ReadModel.Integration", "Test.ReadModel.Integration\Test.ReadModel.Integration.csproj", "{9AACEA59-7E45-4895-B3E2-60324801103C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadModel.Tests.Integration", "Test.ReadModel.Integration\ReadModel.Tests.Integration.csproj", "{9AACEA59-7E45-4895-B3E2-60324801103C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.ReadModel.Base", "Test.ReadModel.Base\Test.ReadModel.Base.csproj", "{8AF275BA-6928-438F-9878-0A6C82B2EEBE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadModel.Tests.Base", "Test.ReadModel.Base\ReadModel.Tests.Base.csproj", "{8AF275BA-6928-438F-9878-0A6C82B2EEBE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommandDb", "CommandDb", "{EAD12EB0-674E-406A-A468-B96C896145D6}"
 EndProject
@@ -176,18 +176,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{CB7E
 		Save-BackupFromDockerContainer.ps1 = Save-BackupFromDockerContainer.ps1
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.UsersDomain", "Test.UsersDomain\Test.UsersDomain.csproj", "{682C5F13-8901-476A-B0D5-D6E553F8CA23}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.Domain.Tests", "Test.UsersDomain\Users.Domain.Tests.csproj", "{682C5F13-8901-476A-B0D5-D6E553F8CA23}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8C3CAEA9-939E-4F49-B2E7-5E9DEE5E6429}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.CategoriesDomain", "Test.CategoriesDomain\Test.CategoriesDomain.csproj", "{23E05036-AFE1-457F-877B-6984393CF5E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Categories.Domain.Tests", "Test.CategoriesDomain\Categories.Domain.Tests.csproj", "{23E05036-AFE1-457F-877B-6984393CF5E0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5C8BFF18-65ED-43A6-8743-000662D95A27}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{5FFCFE65-844B-49DF-92BF-56D6A1FD7097}"
 	ProjectSection(SolutionItems) = preProject
-		AuctionhouseDatabase.Docker\docker_setup.sql = AuctionhouseDatabase.Docker\docker_setup.sql
 		AuctionhouseDatabase.Docker\Dockerfile = AuctionhouseDatabase.Docker\Dockerfile
+		AuctionhouseDatabase.Docker\docker_setup.sql = AuctionhouseDatabase.Docker\docker_setup.sql
 		AuctionhouseDatabase.Docker\entrypoint.sh = AuctionhouseDatabase.Docker\entrypoint.sh
 		AuctionhouseDatabase.Docker\frombackup-entrypoint.sh = AuctionhouseDatabase.Docker\frombackup-entrypoint.sh
 		AuctionhouseDatabase.Docker\healthcheck.sh = AuctionhouseDatabase.Docker\healthcheck.sh
@@ -211,7 +211,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuctionPaymentVerification"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationService.AuctionPaymentVerification", "IntegrationService.AuctionPaymentVerification\IntegrationService.AuctionPaymentVerification.csproj", "{BB0F9FDF-9751-4B93-8F50-091D83CAC7B7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.UserPaymentsBase", "Test.UserPayments.Base\Test.UserPaymentsBase.csproj", "{F132EF37-BB5F-497F-B7E8-99858BB90E20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserPayments.Tests.Base", "Test.UserPayments.Base\UserPayments.Tests.Base.csproj", "{F132EF37-BB5F-497F-B7E8-99858BB90E20}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CategoryNamesToTreeIdsConversion", "CategoryNamesToTreeIdsConversion", "{4EED55A6-C808-4F7F-90C2-AA559E0353D4}"
 EndProject

@@ -20,6 +20,7 @@ namespace FunctionalTests.Commands
     using Auctions.Application.Commands.BuyNow;
     using Auctions.Application.Commands.StartAuctionCreateSession;
     using Auctions.Domain;
+    using Auctions.Tests.Base.Domain.Services.Fakes;
     using Categories.Domain;
     using Chronicle.Integrations.SQLServer;
     using ChronicleEfCoreStorage;
@@ -37,15 +38,14 @@ namespace FunctionalTests.Commands
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Test.Auctions.Base.Mocks;
     using Test.ReadModel.Base;
-    using Test.Users.Base.Mocks;
     using UserPayments.Application;
     using UserPayments.Domain.Repositories;
     using UserPayments.Domain.Services;
     using Users.Application;
     using Users.Application.Commands.SignUp;
     using Users.Domain.Repositories;
+    using Users.Tests.Base.Mocks;
     using XmlCategoryTreeStore;
     using Xunit;
     using Xunit.Abstractions;
@@ -169,7 +169,7 @@ namespace FunctionalTests.Commands
                 }, @"Data Source=127.0.0.1;Initial Catalog=AuctionhouseDatabase;MultipleActiveResultSets=True;TrustServerCertificate=True;User ID=sa;Password=Qwerty1234;");
 
                 services.AddSingleton<IAuctionCreateSessionStore, InMemAuctionCreateSessionStore>();
-                services.AddSingleton<IAuctionRepository, InMemoryAuctionRepository>();
+                services.AddSingleton<IAuctionRepository, FakeAuctionRepository>();
                 services.AddSingleton<IAuctionBidsRepository, InMemoryAuctionBidsRepository>();
                 services.AddSingleton<IUserRepository, InMemoryUserRepository>();
                 services.AddTransient<ICategoryNamesToTreeIdsConversion, ConvertCategoryNamesToRootToLeafIdsMock>();

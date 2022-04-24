@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Test.Common.Base.Mocks
+namespace Common.Tests.Base.Mocks
 {
     public class EventBusMock : IEventBus
     {

@@ -37,9 +37,9 @@
     <ProjectReference Include="..\IntegrationService.AuctionPaymentVerification\IntegrationService.AuctionPaymentVerification.csproj" />
     <ProjectReference Include="..\Adatper.RabbitMq.EventBus\Adatper.RabbitMq.EventBus.csproj" />
     <ProjectReference Include="..\ReadModel.Core\ReadModel.Core.csproj" />
-    <ProjectReference Include="..\Test.Auctions.Base\Test.Auctions.Base.csproj" />
-    <ProjectReference Include="..\Test.ReadModel.Base\Test.ReadModel.Base.csproj" />
-    <ProjectReference Include="..\Test.Users.Base\Test.Users.Base.csproj" />
+    <ProjectReference Include="..\Test.Auctions.Base\Auctions.Tests.Base.csproj" />
+    <ProjectReference Include="..\Test.ReadModel.Base\ReadModel.Tests.Base.csproj" />
+    <ProjectReference Include="..\Test.Users.Base\Users.Tests.Base.csproj" />
     <ProjectReference Include="..\Test.XmlCategoryTreeStore\Test.XmlCategoryTreeStore.csproj" />
     <ProjectReference Include="..\UserPayments.Application\UserPayments.Application.csproj" />
     <ProjectReference Include="..\Users.Application\Users.Application.csproj" />
