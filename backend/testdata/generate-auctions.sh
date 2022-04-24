@@ -12,7 +12,7 @@ for (( i=0; i<$count; i++ ))
 do
 	rand=$(((RANDOM<<15|RANDOM) % ${#files[@]}))
 	echo "Generating $i auction with img ${files[$rand]}..."
-	dotnet run $url $jwt "$imgDir/${files[$rand]}" $categories --no-build &
+	dotnet run $url $jwt "$imgDir" $categories --no-build &
 	echo "finished"
 done
 popd

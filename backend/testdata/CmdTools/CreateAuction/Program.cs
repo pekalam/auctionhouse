@@ -7,12 +7,11 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using Auctionhouse.Command.Controllers;
+using Auctionhouse.Command.Dto;
 using Bogus;
 using Bogus.DataSets;
-using Core.Command.Commands.AuctionCreateSession.StartAuctionCreateSession;
 using Core.Common.Domain.Categories;
-using Core.Common.Domain.Products;
-using Infrastructure.Services;
 using RestEase;
 using RestEase.Implementation;
 using Web.Dto.Commands;
@@ -21,14 +20,17 @@ namespace CreateAuction
 {
     public interface Req
     {
-        [Post("/api/startCreateSession")]
+        [Post("/api/c/startCreateSession")]
         Task StartSession([Header("Authorization")] string jwt);
 
-        [Post("/api/createAuction")]
+        [Post("/api/c/demoCode")]
+        Task SetDemoCode([Header("Authorization")] string jwt, [Body] DemoCodeDto dto);
+
+        [Post("/api/c/createAuction")]
         Task CreateAuction([Header("Authorization")] string jwt, [Body] CreateAuctionCommandDto dto);
 
-        [Get("/api/command/{correlationId}")]
-        Task<RequestStatusDto> GetCommandStatus([Header("Authorization")] string jwt, [Path] string correlationId);
+        [Get("/api/s/status/{commandId}")]
+        Task<RequestStatusDto> GetCommandStatus([Header("Authorization")] string jwt, [Path] string commandId);
 
         IRequester Requester { get; }
     }
@@ -39,8 +41,8 @@ namespace CreateAuction
         {
             Func<List<string>> fakeCategory = () =>
             {
-                var categoryTreeService = new CategoryTreeService(new CategoryNameServiceSettings()
-                    {CategoriesFilePath = "./categories.xml", SchemaFilePath = "./categories.xsd"});
+
+                var categoryTreeService = new XmlCategoryTreeStore.XmlCategoryTreeStore(new XmlCategoryTreeStore.XmlCategoryNameStoreSettings { CategoriesFilePath = "./categories.xml", SchemaFilePath = "./categories.xsd" });
                 categoryTreeService.Init();
 
                 var categoryBuilder = new CategoryBuilder(categoryTreeService);
@@ -71,7 +73,7 @@ namespace CreateAuction
                 {
                     Name = faker.Commerce.ProductName(),
                     Description = faker.Lorem.Lines(20),
-                    Condition = faker.Random.Bool() ? Condition.New : Condition.Used
+                    Condition = faker.Random.Bool() ? (int)Auctions.Domain.Condition.New : (int)Auctions.Domain.Condition.Used
                 })
                 .RuleFor(dto => dto.Name, faker => faker.Commerce.ProductName() + " " + faker.Commerce.Color())
                 .RuleFor(dto => dto.Tags,
@@ -81,7 +83,7 @@ namespace CreateAuction
                 {
                     set.RuleFor(dto => dto.BuyNowOnly, false)
                         .RuleFor(dto => dto.BuyNowPrice,
-                            faker => faker.Random.Bool() ? faker.Random.Decimal(20, 100) : 0);
+                            faker => faker.Random.Bool() ? faker.Random.Decimal(20, 100) : 1);
                 })
                 .RuleSet("buyNowOnly", set =>
                 {
@@ -119,7 +121,7 @@ namespace CreateAuction
             var url = args[0];
             var jwt = $"Bearer " + args[1];
 
-            var img = args.Length >= 3 ? args[2] : "";
+            var imgDr = args.Length >= 3 ? args[2] : "";
 
             var categories =
                 args.Length >= 4 ? GetTestCategoriesList(args[3]) : new List<(int, int, int)>() {(0, 0, 0)};
@@ -128,41 +130,53 @@ namespace CreateAuction
 
             var cmd = CreateCommand(categories);
 
+            api.SetDemoCode(jwt, new DemoCodeDto
+            {
+                DemoCode = "12345"
+            }).Wait();
+
             api.StartSession(jwt)
                 .Wait();
 
 
-            if (!string.IsNullOrEmpty(img))
+            if (!string.IsNullOrEmpty(imgDr))
             {
-                var bytes = File.ReadAllBytes(img);
-                var content = new MultipartFormDataContent();
-                content.Headers.Add("enctype", "multipart/form-data");
-
-                var imageContent = new ByteArrayContent(bytes);
-
-                var ext = img.Split('.')
-                    .Last();
-                imageContent.Headers.ContentType =
-                    new MediaTypeHeaderValue(ext == "jpg" ? "image/jpeg" : $"image/{ext}");
-                content.Add(imageContent, "img", "0.jpg");
-                content.Add(new StringContent("0"), "img-num");
-                content.Add(new StringContent("123"), "correlation-id");
-
-                var reqInfo = new RequestInfo(HttpMethod.Post, "/api/addAuctionImage");
-                reqInfo.AddHeaderParameter("Authorization", jwt);
-                reqInfo.SetBodyParameterInfo(BodySerializationMethod.Default, content);
-
-                var status = api.Requester.RequestAsync<RequestStatusDto>(reqInfo).Result;
-                for (int i = 0; i < 5; i++)
+                int i = 0;
+                foreach (var img in Directory.EnumerateFiles(imgDr))
                 {
-                    var newStatus = api.GetCommandStatus(jwt, status.CorrelationId).Result;
-                    if (newStatus.Status != "PENDING")
-                    {
-                        break;
-                    }
+                    var bytes = File.ReadAllBytes(img);
+                    var content = new MultipartFormDataContent();
+                    content.Headers.Add("enctype", "multipart/form-data");
 
-                    Thread.Sleep(2000);
+                    var imageContent = new ByteArrayContent(bytes);
+
+                    var ext = img.Split('.')
+                        .Last();
+                    imageContent.Headers.ContentType =
+                        new MediaTypeHeaderValue(ext == "jpg" ? "image/jpeg" : $"image/{ext}");
+                    content.Add(imageContent, "img", $"{i}.png");
+                    content.Add(new StringContent(i.ToString()), "img-num");
+                    content.Add(new StringContent("123"), "correlation-id");
+
+                    var reqInfo = new RequestInfo(HttpMethod.Post, "/api/c/addAuctionImage");
+                    reqInfo.AddHeaderParameter("Authorization", jwt);
+                    reqInfo.SetBodyParameterInfo(BodySerializationMethod.Default, content);
+
+                    var status = api.Requester.RequestAsync<RequestStatusDto>(reqInfo).Result;
+                    for (int j = 0; j < 5; j++)
+                    {
+                        var newStatus = api.GetCommandStatus(jwt, status.CommandId).Result;
+                        if (newStatus == null || newStatus.Status != "PENDING")
+                        {
+                            break;
+                        }
+
+                        Thread.Sleep(2000);
+                    }
+                    i++;
                 }
+
+
             }
 
 
