@@ -46,9 +46,6 @@ stages:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'VPSDockerRegistry'
         dockerComposeFile: 'backend/src/compose/infrastructure/docker-compose.yml'
-        additionalDockerComposeFiles: |
-          backend/src/compose/infrastructure/docker-compose.prod.yml
-          backend/src/compose/infrastructure/docker-compose.mongocluster.yml
         action: 'Run a Docker Compose command'
         dockerComposeCommand: 'build'
     - task: DockerCompose@0
@@ -57,9 +54,24 @@ stages:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'VPSDockerRegistry'
         dockerComposeFile: 'backend/src/compose/infrastructure/docker-compose.yml'
-        additionalDockerComposeFiles: |
-          backend/src/compose/infrastructure/docker-compose.prod.yml
-          backend/src/compose/infrastructure/docker-compose.mongocluster.yml
+        action: 'Push services'
+  - job: 'build_docker_infrastructure_mongodb'
+    displayName: 'Build mongodb docker images'
+    steps:
+    - task: DockerCompose@0
+      displayName: 'Build images'
+      inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'VPSDockerRegistry'
+        dockerComposeFile: 'backend/src/compose/infrastructure/mongodb/docker-compose.mongocluster.yml'
+        action: 'Run a Docker Compose command'
+        dockerComposeCommand: 'build'
+    - task: DockerCompose@0
+      displayName: 'Push images'
+      inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'VPSDockerRegistry'
+        dockerComposeFile: 'backend/src/compose/infrastructure/mongodb/docker-compose.mongocluster.yml'
         action: 'Push services'
   - job: 'build_docker_webapi'
     displayName: 'Build Web API docker images'
@@ -70,7 +82,6 @@ stages:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'VPSDockerRegistry'
         dockerComposeFile: 'backend/src/compose/webAPI/docker-compose.yml'
-        additionalDockerComposeFiles: 'backend/src/compose/webAPI/docker-compose.prod.yml'
         action: 'Run a Docker Compose command'
         dockerComposeCommand: 'build'
     - task: DockerCompose@0
@@ -79,11 +90,10 @@ stages:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'VPSDockerRegistry'
         dockerComposeFile: 'backend/src/compose/webAPI/docker-compose.yml'
-        additionalDockerComposeFiles: 'backend/src/compose/webAPI/docker-compose.prod.yml'
         action: 'Push services'
   - job: 'publish_artifacts'
     displayName: 'Publish build artifacts'
-    dependsOn: ['build_docker_webapi', 'build_docker_infrastructure'] 
+    dependsOn: ['build_docker_webapi', 'build_docker_infrastructure', 'build_docker_infrastructure_mongodb'] 
     steps:
       - task: CopyFiles@2
         inputs:
@@ -131,7 +141,7 @@ stages:
               displayName: 'Copy artifacts to target machine'
               inputs:
                 sshEndpoint: 'OVH_vps'
-                sourceFolder: '$(System.ArtifactsDirectory)/drop'
+                sourceFolder: '$(System.ArtifactsDirectory)/drop/compose'
                 contents: '**'
                 targetFolder: '/home/ubuntu/auctionhouse/test'
                 readyTimeout: '20000'
@@ -150,7 +160,7 @@ stages:
               inputs:
                 sshEndpoint: 'OVH_vps'
                 runOptions: 'commands'
-                commands: 'cd /home/ubuntu/auctionhouse/test && (DOCKER_REGISTRY="pekalam.me:5000/" docker stack deploy --with-registry-auth -c front/docker-compose.yml -c front/docker-compose.prod.yml -c infrastructure/docker-compose.yml -c infrastructure/docker-compose.prod.yml -c infrastructure/docker-compose.mongocluster.yml -c webAPI/docker-compose.yml -c webAPI/docker-compose.prod.yml auctionhouse 2>deploy_errorlog.txt || (cat deploy_errorlog.txt && exit 1)) && (test $(wc -l deploy_errorlog.txt | cut -d " " -f1) -gt 0 || rm deploy_errorlog.txt)'
+                commands: 'cd /home/ubuntu/auctionhouse/test && (DOCKER_REGISTRY="pekalam.me:5000/" docker stack deploy --with-registry-auth -c front/docker-compose.yml -c front/docker-compose.prod.yml -c infrastructure/docker-compose.yml -c infrastructure/docker-compose.prod.yml -c infrastructure/mongodb/docker-compose.mongocluster.yml -c webAPI/docker-compose.yml -c webAPI/docker-compose.prod.yml auctionhouse 2>deploy_errorlog.txt || (cat deploy_errorlog.txt && exit 1)) && (test $(wc -l deploy_errorlog.txt | cut -d " " -f1) -gt 0 || rm deploy_errorlog.txt)'
                 failOnStdErr: false
                 readyTimeout: '20000'
             - task: SSH@0
