@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   db-config1:
-    command: "--configsvr --replSet configRS --bind_ip_all --keyFile=/data/mongocluster-keyfile"
+    command: ["--keyFile=/data/mongocluster-keyfile"]
     secrets:
       - mongocluster-keyfile 
   mongodb:

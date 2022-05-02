@@ -7,7 +7,7 @@ services:
     build:
       dockerfile: config/Dockerfile
       context: .
-    command: "--configsvr --replSet configRS --bind_ip_all"
+    command: ["--configsvr", "--replSet", "configRS", "--bind_ip_all"]
     volumes:
       - db-config1_data:/data/db
       - db-config1_config:/data/configdb

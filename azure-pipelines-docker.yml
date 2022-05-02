@@ -136,7 +136,7 @@ stages:
                   (docker secret rm envoy_ssl_pkcs12 2>/dev/null && echo $(pekalam-me-12) | base64 --decode | docker secret create envoy_ssl_pkcs12 -) || true;
                   (docker secret rm front_ssl_chain 2>/dev/null && echo $(pekalam-me-12) | base64 --decode | openssl pkcs12 -password pass: -clcerts -nokeys | docker secret create front_ssl_chain -) || true;
                   (docker secret rm front_ssl_private 2>/dev/null && echo $(pekalam-me-12) | base64 --decode | openssl pkcs12 -password pass: -nocerts -nodes | docker secret create front_ssl_private -) || true;
-                  (docker secret rm mongocluster-keyfile 2>/dev/null && echo $(mongocluster-keyfile) | base64 --decode | docker secret create mongocluster-keyfile -) || true;
+                  (docker secret rm mongocluster-keyfile 2>/dev/null || true) && (echo $(mongocluster-keyfile) | docker secret create mongocluster-keyfile -);
                 readyTimeout: '20000'
             - task: CopyFilesOverSSH@0
               displayName: 'Copy artifacts to target machine'
