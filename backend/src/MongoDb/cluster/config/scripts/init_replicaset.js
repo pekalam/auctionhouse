@@ -24,3 +24,16 @@ if (i == tryCount) {
   print("replSet configuration error");
   exit();
 }
+sleep(10000);
+
+db.createUser(
+  {
+    user: "auctionhouse",
+    pwd: "Test-1234", // or cleartext password
+    roles: [
+      { role: "userAdminAnyDatabase", db: "admin" },
+      { role: "readWriteAnyDatabase", db: "admin" },
+      { role: "clusterAdmin", db: "admin" }
+    ]
+  }
+)

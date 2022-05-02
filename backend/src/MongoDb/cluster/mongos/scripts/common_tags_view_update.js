@@ -1,6 +1,3 @@
-var conn = new Mongo();
-var db = conn.getDB('appDb');
-
 db.getCollection('AuctionsReadModel').aggregate([
     { $match : { "Archived" : false } },
     { $project: { "_id": "$Tags", "2": "$Tags" } },

@@ -1,6 +1,8 @@
 var dbName = "appDb";
 var namespace = dbName + ".AuctionsReadModel";
 
+db.auth("auctionhouse", "Test-1234")
+
 {{{{#each nodes}}
 sh.addShard("n{{}}/{{this}}:27018");
 {{/each}}}}

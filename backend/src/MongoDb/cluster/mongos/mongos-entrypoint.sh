@@ -3,6 +3,11 @@
 set -m
 set -e
 
+if [ -e "/run/secrets/mongocluster-keyfile" ]; then
+    cp /run/secrets/mongocluster-keyfile /data/mongocluster-keyfile
+    chmod 400 /data/mongocluster-keyfile
+fi
+
 if [ "$1" == "--wait-for" ]; then
     shift 1
     args=($@)
@@ -25,7 +30,7 @@ mongos $args &
 echo "waiting for port 27017"
 wait-for localhost:27017 -t 180
 echo "running init.js..."
-mongo /scripts/init.js
+mongosh 127.0.0.1:27017/admin /scripts/init.js
 
 echo "mongos initialized"
 
