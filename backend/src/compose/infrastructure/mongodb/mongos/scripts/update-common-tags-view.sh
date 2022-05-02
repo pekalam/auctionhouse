@@ -1,3 +1,3 @@
 #!/bin/bash
 
-mongo --nodb /scripts/common_tags_view_update.js
+mongosh 127.0.0.1/appDb --username "marek" --password "Test-1234" /scripts/common_tags_view_update.js

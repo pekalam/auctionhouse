@@ -7,6 +7,11 @@ if [ -e "/run/secrets/mongo_password" ]; then
 	MONGO_INITDB_ROOT_PASSWORD=`< /run/secrets/mongo_password`
 fi
 
+if [ -e "/run/secrets/mongocluster-keyfile" ]; then
+    cp /run/secrets/mongocluster-keyfile /data/mongocluster-keyfile
+    chmod 400 /data/mongocluster-keyfile
+fi
+
 if [ "$1" == "--wait-for" ]; then
     shift 1
     args=($@)
