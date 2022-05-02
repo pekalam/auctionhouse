@@ -143,7 +143,7 @@ stages:
                 sshEndpoint: 'OVH_vps'
                 sourceFolder: '$(System.ArtifactsDirectory)/drop/compose'
                 contents: '**'
-                targetFolder: '/home/ubuntu/auctionhouse/test'
+                targetFolder: '/home/auctionhouse/auctionhouse/test'
                 readyTimeout: '20000'
             - task: SSH@0
               displayName: 'Login to private registry'
@@ -160,7 +160,7 @@ stages:
               inputs:
                 sshEndpoint: 'OVH_vps'
                 runOptions: 'commands'
-                commands: 'cd /home/ubuntu/auctionhouse/test && (DOCKER_REGISTRY="pekalam.me:5000/" docker stack deploy --with-registry-auth -c front/docker-compose.yml -c front/docker-compose.prod.yml -c infrastructure/docker-compose.yml -c infrastructure/docker-compose.prod.yml -c infrastructure/mongodb/docker-compose.mongocluster.yml -c webAPI/docker-compose.yml -c webAPI/docker-compose.prod.yml auctionhouse 2>deploy_errorlog.txt || (cat deploy_errorlog.txt && exit 1)) && (test $(wc -l deploy_errorlog.txt | cut -d " " -f1) -gt 0 || rm deploy_errorlog.txt)'
+                commands: 'cd /home/auctionhouse/auctionhouse/test && (DOCKER_REGISTRY="pekalam.me:5000/" docker stack deploy --with-registry-auth -c front/docker-compose.yml -c front/docker-compose.prod.yml -c infrastructure/docker-compose.yml -c infrastructure/docker-compose.prod.yml -c infrastructure/mongodb/docker-compose.mongocluster.yml -c webAPI/docker-compose.yml -c webAPI/docker-compose.prod.yml auctionhouse 2>deploy_errorlog.txt || (cat deploy_errorlog.txt && exit 1)) && (test $(wc -l deploy_errorlog.txt | cut -d " " -f1) -gt 0 || rm deploy_errorlog.txt)'
                 failOnStdErr: false
                 readyTimeout: '20000'
             - task: SSH@0
@@ -168,6 +168,6 @@ stages:
               inputs:
                 sshEndpoint: 'OVH_vps'
                 runOptions: 'commands'
-                commands: 'bash /home/ubuntu/auctionhouse/post-deployment.sh'
+                commands: 'bash /home/auctionhouse/auctionhouse/post-deployment.sh'
                 readyTimeout: '20000'
             
