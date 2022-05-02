@@ -63,7 +63,7 @@ stages:
       inputs:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'VPSDockerRegistry'
-        dockerComposeFile: 'backend/src/compose/infrastructure/mongodb/docker-compose.mongocluster.yml'
+        dockerComposeFile: 'backend/src/compose/infrastructure/mongodb/docker-compose.yml'
         action: 'Run a Docker Compose command'
         dockerComposeCommand: 'build'
     - task: DockerCompose@0
@@ -71,7 +71,7 @@ stages:
       inputs:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'VPSDockerRegistry'
-        dockerComposeFile: 'backend/src/compose/infrastructure/mongodb/docker-compose.mongocluster.yml'
+        dockerComposeFile: 'backend/src/compose/infrastructure/mongodb/docker-compose.yml'
         action: 'Push services'
   - job: 'build_docker_webapi'
     displayName: 'Build Web API docker images'
