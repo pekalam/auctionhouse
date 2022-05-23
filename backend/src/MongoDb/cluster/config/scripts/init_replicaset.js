@@ -6,6 +6,18 @@ var replicaset = {
   ]
 };
 
+try{
+  db.auth("auctionhouse", "Test-1234")
+  var state = db.adminCommand({ replSetGetStatus: 1 }).myState;
+  if(state == 1) 
+  {
+      print("already configured replSet, exiting");
+      exit(0);
+  }
+}
+catch{}
+
+
 rs.initiate(replicaset);
 var i = 0;
 var tryCount = 3;

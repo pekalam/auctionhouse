@@ -27,6 +27,7 @@ if [ "$1" == "--wait-for" ]; then
     done
 else
     args=$@
+    echo "ARGS: $args"
 fi
 
 MONGO_INITDB_ROOT_PASSWORD=$MONGO_INITDB_ROOT_PASSWORD mongod $args & 

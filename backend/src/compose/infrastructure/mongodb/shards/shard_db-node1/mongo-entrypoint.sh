@@ -27,15 +27,23 @@ if [ "$1" == "--wait-for" ]; then
     done
 else
     args=$@
+    echo "ARGS: $args"
 fi
 
 MONGO_INITDB_ROOT_PASSWORD=$MONGO_INITDB_ROOT_PASSWORD mongod $args & 
 
 echo "waiting for port 27018"
 wait-for localhost:27018 -t 180
-echo "running init.js..."
-mongo appDb --port 27018 /scripts/init.js
+
+if [ ! -f "/node_initialized" ]; then
+    echo "running init.js..."
+    mongosh 127.0.0.1:27018/appDb /scripts/init.js
+fi
+
+
 
 echo "mongodb initialized"
 bash container-scripts/listen-on-health-port.sh &
+touch /node_initialized
+
 fg %1

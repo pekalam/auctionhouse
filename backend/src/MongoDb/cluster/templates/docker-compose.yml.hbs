@@ -8,10 +8,16 @@ services:
     build:
       dockerfile: config/Dockerfile
       context: .
-    command: "--configsvr --replSet configRS --bind_ip_all"
+    command: ["--configsvr", "--replSet", "configRS", "--bind_ip_all", "--keyFile", "/data/mongocluster-keyfile"]
     volumes:
       - {{this}}_data:/data/db
       - {{this}}_config:/data/configdb
+    secrets:
+      - mongocluster-keyfile 
+    depends_on:
+  {{/each}}
+  {{#each nodes}}
+      - {{this}}
   {{/each}}
   {{#each mongos}}
   {{this}}:
@@ -20,7 +26,7 @@ services:
     build:
       dockerfile: mongos/Dockerfile
       context: .
-    command: ["--wait-for", {{#each ../config_servers}}"{{this}}:32112"{{#if @last}}{{else}}, {{/if}}{{/each}}, {{#each ../nodes}}"{{this}}:32112"{{#if @last}}{{else}}, {{/if}}{{/each}}, "--configdb", "configRS/{{#each ../config_servers}}{{this}}:27019{{#if @last}}{{else}}, {{/if}}{{/each}}", "--bind_ip_all"]
+    command: ["--wait-for", {{#each ../config_servers}}"{{this}}:32112"{{#if @last}}{{else}}, {{/if}}{{/each}}, {{#each ../nodes}}"{{this}}:32112"{{#if @last}}{{else}}, {{/if}}{{/each}}, "--configdb", "configRS/{{#each ../config_servers}}{{this}}:27019{{#if @last}}{{else}}, {{/if}}{{/each}}", "--bind_ip_all", "--keyFile=/data/mongocluster-keyfile"]
     ports:
       {{#if @first}}
       - "27017:27017"       
@@ -28,6 +34,8 @@ services:
     volumes:
       - {{this}}_mongos_data:/data/db
       - {{this}}_mongos_config:/data/configdb
+    secrets:
+      - mongocluster-keyfile 
   {{/each}}
   {{#each nodes}}
   {{this}}:
@@ -36,10 +44,12 @@ services:
     build:
       dockerfile: shards/shard_{{this}}/Dockerfile
       context: .
-    command: [ "--bind_ip_all", "--replSet", "n{{inc @index}}", "--shardsvr" ]
+    command: [ "--bind_ip_all", "--replSet", "n{{inc @index}}", "--shardsvr", "--keyFile=/data/mongocluster-keyfile" ]
     volumes:
       - {{this}}_data:/data/db
       - {{this}}_config:/data/configdb
+    secrets:
+      - mongocluster-keyfile 
   {{/each}}
 
 
@@ -56,3 +66,7 @@ volumes:
   {{this}}_mongos_data:
   {{this}}_mongos_config:
 {{/each}}
+
+secrets:
+  mongocluster-keyfile:
+    external: true

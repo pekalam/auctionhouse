@@ -18,5 +18,5 @@ while (i < tryCount) {
 }
 if (i == tryCount) {
   print("replSet configuration error");
-  exit;
+  exit(1);
 }

@@ -3,6 +3,17 @@ var namespace = dbName + ".AuctionsReadModel";
 
 db.auth("auctionhouse", "Test-1234")
 
+
+try {
+    var shStatus = sh.status();
+    if(shStatus && shStatus.value.shards.length > 0){
+        print('already configured sharding, exiting')
+        exit(0)
+    }
+} catch{
+    
+}
+
 sh.addShard("n1/db-node1:27018");
 sh.addShard("n2/db-node2:27018");
 sh.addShard("n3/db-node3:27018");
@@ -17,3 +28,15 @@ for (const cat of categories) {
         print("shard split [" + cat.id + " " + subCat.id + " 0 ] --> [" + cat.id + " " + subCat.id + " " + lastSub2Cat.id + " ]" );
     }
 }
+
+
+db = db.getSiblingDB(dbName)
+db.createUser(
+    {
+      user: "auctionhouse-user",
+      pwd: "Test-1234", // or cleartext password
+      roles: [
+        { role: "readWrite", db: "appDb" }
+      ]
+    }
+  )

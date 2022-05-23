@@ -25,7 +25,7 @@ module.exports = function (grunt) {
     grunt.registerTask('cluster', 'Generate mongo cluster files', function () {
         var context = grunt.config.get("cluster.all");
 
-        var templates = ["cluster/templates/docker-compose.yml.hbs", "cluster/templates/docker-compose.prod.yml.hbs", "cluster/templates/docker-compose.prod.env.yml.hbs", "cluster/mongos/templates/scripts/init.js.hbs"];
+        var templates = ["cluster/templates/docker-compose.yml.hbs", "cluster/templates/docker-compose.prod.env.yml.hbs", "cluster/mongos/templates/scripts/init.js.hbs"];
         for (var tpath of templates) {
             var template = Handlebars.compile(grunt.file.read(tpath));
             var targetPath = tpath.replace("templates/", "").removeHandlebarsExt();

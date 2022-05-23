@@ -23,6 +23,7 @@ if [ "$1" == "--wait-for" ]; then
     done
 else
     args=$@
+    echo "ARGS: $args"
 fi
 
 mongos $args & 

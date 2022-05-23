@@ -1,7 +1,3 @@
-auctionsCollectionName = 'AuctionsReadModel';
-usersCollectionName = 'UsersReadModel';
-userPaymentsCollectionName = 'UserPaymentsReadModel';
-
 hostname = "db-node2";
 port = 27018;
 replSetName = "n2";
