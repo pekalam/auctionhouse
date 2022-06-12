@@ -30,7 +30,8 @@ services:
       - mongodb_mongos_data:/data/db
       - mongodb_mongos_config:/data/configdb
     secrets:
-      - mongocluster-keyfile 
+      - mongocluster-keyfile
+      - mongouser-password
   db-node1:
     image: ${DOCKER_REGISTRY-}pekalam/db-node1
     hostname: db-node1
@@ -83,4 +84,6 @@ volumes:
 
 secrets:
   mongocluster-keyfile:
+    external: true
+  mongouser-password:
     external: true
