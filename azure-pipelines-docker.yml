@@ -138,15 +138,15 @@ stages:
                 # TODO logging
                 commands: |
                   (docker secret ls | grep envoy_ssl_pkcs12 && docker secret rm envoy_ssl_pkcs12 2>/dev/null) || true;
-                  (echo $(pekalam-me-12) | base64 --decode | docker secret create envoy_ssl_pkcs12 -) || true;
+                  (echo "$(pekalam-me-12)" | base64 --decode | docker secret create envoy_ssl_pkcs12 -) || true;
                   (docker secret ls | grep front_ssl_chain && docker secret rm front_ssl_chain 2>/dev/null) || true;
-                  (echo $(pekalam-me-12) | base64 --decode | openssl pkcs12 -password pass: -clcerts -nokeys | docker secret create front_ssl_chain -) || true;
+                  (echo "$(pekalam-me-12)" | base64 --decode | openssl pkcs12 -password pass: -clcerts -nokeys | docker secret create front_ssl_chain -) || true;
                   (docker secret ls | grep front_ssl_private && docker secret rm front_ssl_private 2>/dev/null) || true;
-                  (echo $(pekalam-me-12) | base64 --decode | openssl pkcs12 -password pass: -nocerts -nodes | docker secret create front_ssl_private -) || true;
+                  (echo "$(pekalam-me-12)" | base64 --decode | openssl pkcs12 -password pass: -nocerts -nodes | docker secret create front_ssl_private -) || true;
                   (docker secret ls | grep mongocluster-keyfile && docker secret rm mongocluster-keyfile 2>/dev/null) || true;
-                  (echo $(mongocluster-keyfile) | docker secret create mongocluster-keyfile -) || true;
+                  (echo "$(mongocluster-keyfile)" | docker secret create mongocluster-keyfile -) || true;
                   (docker secret ls | grep mongouser-password && docker secret rm mongouser-password 2>/dev/null) || true;
-                  (echo $(mongouser-password) | docker secret create mongouser-password -) || true;
+                  (echo "$(mongouser-password)" | docker secret create mongouser-password -) || true;
                 readyTimeout: '20000'
             - task: CopyFilesOverSSH@0
               displayName: 'Copy artifacts to target machine'
