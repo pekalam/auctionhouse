@@ -32,7 +32,8 @@ echo "waiting for port 27017"
 wait-for localhost:27017 -t 180
 echo "running init.js..."
 mongosh 127.0.0.1:27017/admin /scripts/init.js
-
+echo "changing password"
+echo "db.auth('auctionhouse', 'Test-1234'); db=db.getSiblingDB('appDb'); db.changeUserPassword('auctionhouse-user', '$(cat /run/secrets/mongouser-password)');" |  mongosh 127.0.0.1:27017/admin
 echo "mongos initialized"
 
 echo "setting cronjob"

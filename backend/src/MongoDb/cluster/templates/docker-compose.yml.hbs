@@ -35,7 +35,8 @@ services:
       - {{this}}_mongos_data:/data/db
       - {{this}}_mongos_config:/data/configdb
     secrets:
-      - mongocluster-keyfile 
+      - mongocluster-keyfile
+      - mongouser-password
   {{/each}}
   {{#each nodes}}
   {{this}}:
@@ -69,4 +70,6 @@ volumes:
 
 secrets:
   mongocluster-keyfile:
+    external: true
+  mongouser-password:
     external: true
