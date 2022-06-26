@@ -137,8 +137,8 @@ static_resources:
             - endpoint:
                 address:           
                   socket_address:
-                    address: command
-                    port_value: 80
+                    address: host.docker.internal
+                    port_value: 5203
   - name: auctionhouse_query
     per_connection_buffer_limit_bytes: 32768  # 32 KiB
     type: STRICT_DNS
@@ -150,8 +150,8 @@ static_resources:
             - endpoint:
                 address:           
                   socket_address:
-                    address: query
-                    port_value: 80
+                    address: host.docker.internal
+                    port_value: 5070
   - name: auctionhouse_commandstatus
     per_connection_buffer_limit_bytes: 32768  # 32 KiB
     type: STRICT_DNS
@@ -163,8 +163,8 @@ static_resources:
             - endpoint:
                 address:           
                   socket_address:
-                    address: commandstatus
-                    port_value: 80
+                    address: host.docker.internal
+                    port_value: 5263
   - name: front
     per_connection_buffer_limit_bytes: 32768  # 32 KiB
     type: STRICT_DNS
