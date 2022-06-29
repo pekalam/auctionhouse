@@ -6,4 +6,6 @@ namespace AuctionBids.Domain.Shared
     {
         public AuctionId(Guid value) : base(value) { }
     }
+
+    public record AuctionCategoryIds(int CategoryId, int SubCategoryId, int SubSubCategoryId);
 }

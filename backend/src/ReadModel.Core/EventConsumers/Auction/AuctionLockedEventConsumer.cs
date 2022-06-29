@@ -23,7 +23,7 @@ namespace ReadModel.Core.EventConsumers
             var filterBuilder = Builders<AuctionRead>.Filter;
             var idFilter = filterBuilder.Eq(f => f.AuctionId, appEvent.Event.AuctionId.ToString());
             var versionFilter = filterBuilder.Lt(f => f.Version, appEvent.Event.AggVersion);
-            var filter = filterBuilder.And(idFilter, versionFilter);
+            var filter = filterBuilder.And(CategoryFilterFactory.Create(appEvent.Event.CategoryIds), idFilter, versionFilter);
 
             var updateBuilder = Builders<AuctionRead>.Update;
             var updateLocked = updateBuilder.Set(read => read.Locked, true);

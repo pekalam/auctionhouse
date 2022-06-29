@@ -22,7 +22,7 @@ namespace Auctions.Domain
 
         protected override AuctionUpdateEventGroup CreateUpdateEventGroup()
         {
-            return new AuctionUpdateEventGroup(Owner);
+            return new AuctionUpdateEventGroup(Owner) { CategoryIds = new CategoryIds(Categories[0], Categories[1], Categories[2])};
         }
 
         private void ApplyEvent(AuctionCreated @event)

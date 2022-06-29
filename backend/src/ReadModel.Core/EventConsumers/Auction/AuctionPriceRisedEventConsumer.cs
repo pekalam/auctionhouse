@@ -36,8 +36,9 @@ namespace ReadModel.Core.EventConsumers
                 UserIdentity = userIdentity,
             })
             .Set(a => a.Winner, userIdentity);
-            var filter = Builders<AuctionRead>.Filter
+            var idFilter = Builders<AuctionRead>.Filter
                         .Eq(a => a.AuctionId, appEvent.Event.AuctionId.ToString());
+            var filter = Builders<AuctionRead>.Filter.And(CategoryFilterFactory.Create(appEvent.Event.CategoryId, appEvent.Event.SubCategoryId, appEvent.Event.SubSubCategoryId), idFilter);
 
             return _dbContext.AuctionsReadModel.UpdateOneAsync(filter, update);
         }

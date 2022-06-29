@@ -208,7 +208,7 @@ namespace FunctionalTests.Commands
 
                 services.AddReadModel(new MongoDbSettings
                 {
-                    ConnectionString = "mongodb://localhost:27017",
+                    ConnectionString = "mongodb://auctionhouse-user:Test-1234@localhost:27017/appDb",
                     DatabaseName = "appDb"
                 });
                 services.AddEventConsumers(typeof(ReadModelInstaller));

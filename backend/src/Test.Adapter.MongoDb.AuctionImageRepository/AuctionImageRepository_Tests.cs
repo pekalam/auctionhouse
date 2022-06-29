@@ -24,7 +24,7 @@ namespace IntegrationTests
             var settings = new ImageDbSettings()
             {
 
-                ConnectionString = "mongodb://localhost:27017",
+                ConnectionString = "mongodb://auctionhouse-user:Test-1234@localhost:27017/appDb",
                 DatabaseName = "appDb"
             };
             var dbContext = new ImageDbContext(settings);

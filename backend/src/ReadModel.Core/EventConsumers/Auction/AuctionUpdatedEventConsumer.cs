@@ -5,6 +5,7 @@ using Common.Application.SagaNotifications;
 using Core.Common.Domain.Categories;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using ReadModel.Core.EventConsumers;
 using ReadModel.Core.Model;
 using ReflectionMagic;
 
@@ -71,14 +72,15 @@ namespace Core.Query.EventHandlers.AuctionUpdateHandlers
 
         public override async Task Consume(IAppEvent<AuctionUpdateEventGroup> appEvent)
         {
-            var filter = Builders<AuctionRead>.Filter.Eq(f => f.AuctionId, appEvent.Event.AggregateId.ToString());
+            var idFilter = Builders<AuctionRead>.Filter.Eq(f => f.AuctionId, appEvent.Event.AggregateId.ToString());
+            var filter = Builders<AuctionRead>.Filter.And(CategoryFilterFactory.Create(appEvent.Event.CategoryIds), idFilter);
             var updates = new List<UpdateDefinition<AuctionRead>>();
             appEvent.Event.UpdateEvents.ForEach(ev =>
                 updates.Add((UpdateDefinition<AuctionRead>) this.AsDynamic().UpdateAuction(appEvent.Event, ev)));
 
             var update = Builders<AuctionRead>.Update.Combine(updates);
 
-            await _dbContext.AuctionsReadModel.UpdateManyAsync(filter, update);
+            await _dbContext.AuctionsReadModel.UpdateOneAsync(filter, update);
         }
     }
 }

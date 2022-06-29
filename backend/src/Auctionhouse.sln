@@ -224,6 +224,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "container-scripts", "contai
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChronicleEfCoreStorage", "Adapter.ChronicleEfCoreStorage\ChronicleEfCoreStorage.csproj", "{6756D564-8FCE-4D48-A7BE-92271A854B69}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadModel.Tests.Unit", "ReadModel.Tests.Unit\ReadModel.Tests.Unit.csproj", "{61079A9F-3FD1-47B6-B2D5-D29E1DCA02BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -486,6 +488,10 @@ Global
 		{6756D564-8FCE-4D48-A7BE-92271A854B69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6756D564-8FCE-4D48-A7BE-92271A854B69}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6756D564-8FCE-4D48-A7BE-92271A854B69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61079A9F-3FD1-47B6-B2D5-D29E1DCA02BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61079A9F-3FD1-47B6-B2D5-D29E1DCA02BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61079A9F-3FD1-47B6-B2D5-D29E1DCA02BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61079A9F-3FD1-47B6-B2D5-D29E1DCA02BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -586,6 +592,7 @@ Global
 		{E870F142-D7B8-43A8-B614-3A3751A0C30E} = {4EED55A6-C808-4F7F-90C2-AA559E0353D4}
 		{30ADC9D6-3AB9-41BC-BF7D-60BAC785D706} = {5FFCFE65-844B-49DF-92BF-56D6A1FD7097}
 		{6756D564-8FCE-4D48-A7BE-92271A854B69} = {2C7F9FB2-0106-45A8-8185-8B58DF359DE2}
+		{61079A9F-3FD1-47B6-B2D5-D29E1DCA02BF} = {9B96EB46-E872-42D2-A50A-A361AB976033}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F4E77E2A-13ED-428A-962C-F0BDF00E9A14}

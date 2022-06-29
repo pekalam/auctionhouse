@@ -6,6 +6,7 @@ using Common.Application.Events;
 namespace AuctionBids.Application.Commands.CreateAuctionBids
 {
     using AuctionBids.Domain;
+    using AuctionBids.Domain.Shared;
     using Core.DomainFramework;
 
     public class CreateAuctionBidsCommandHandler : CommandHandlerBase<CreateAuctionBidsCommand>
@@ -21,7 +22,8 @@ namespace AuctionBids.Application.Commands.CreateAuctionBids
 
         protected override async Task<RequestStatus> HandleCommand(AppCommand<CreateAuctionBidsCommand> request, IEventOutbox eventOutbox, CancellationToken cancellationToken)
         {
-            var auctionBids = AuctionBids.CreateNew(new(request.Command.AuctionId), new(request.Command.Owner));
+            var categoryIds = new AuctionCategoryIds(request.Command.CategoryId, request.Command.SubCategoryId, request.Command.SubSubCategoryId);
+            var auctionBids = AuctionBids.CreateNew(new(request.Command.AuctionId), categoryIds, new(request.Command.Owner));
             // try to detect if already called - happy path
             if (_allAuctionBids.WithAuctionId(new(request.Command.AuctionId)) is not null)
             {

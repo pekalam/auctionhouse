@@ -6,7 +6,7 @@ namespace Auctions.DomainEvents
     {
         public static partial class V1
         {
-            public class BuyNowTXStarted : Event
+            public class BuyNowTXStarted : AuctionEvent
             {
                 public Guid TransactionId { get; set; }
                 public Guid AuctionId { get; set; }
@@ -22,7 +22,7 @@ namespace Auctions.DomainEvents
             /// <summary>
             /// Confirmation sent if transaction was commited before lock timeout elapsed
             /// </summary>
-            public class BuyNowTXSuccess : Event
+            public class BuyNowTXSuccess : AuctionEvent
             {
                 public Guid TransactionId { get; set; }
                 public Guid AuctionId { get; set; }
@@ -37,7 +37,7 @@ namespace Auctions.DomainEvents
             /// <summary>
             /// Sent when transaction was commited but it was locked again before commit, after lock timeout elapsed
             /// </summary>
-            public class BuyNowTXFailed : Event
+            public class BuyNowTXFailed : AuctionEvent
             {
                 public Guid TransactionId { get; set; }
                 public Guid AuctionId { get; set; }
@@ -47,7 +47,7 @@ namespace Auctions.DomainEvents
                 }
             }
 
-            public class BuyNowTXCanceled : Event
+            public class BuyNowTXCanceled : AuctionEvent
             {
                 public Guid TransactionId { get; set; }
                 public Guid AuctionId { get; set; }
@@ -57,7 +57,7 @@ namespace Auctions.DomainEvents
                 }
             }
 
-            public class BuyNowTXCanceledConcurrently : Event
+            public class BuyNowTXCanceledConcurrently : AuctionEvent
             {
                 public Guid TransactionId { get; set; }
                 public Guid AuctionId { get; set; }

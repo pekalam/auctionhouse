@@ -7,6 +7,9 @@ namespace AuctionBids.DomainEvents
         public Guid AuctionBidsId { get; set; }
         public Guid BidId { get; set; }
         public Guid AuctionId { get; set; }
+        public int CategoryId { get; set; }
+        public int SubCategoryId { get; set; }
+        public int SubSubCategoryId { get; set; }
         public Guid WinnerId { get; set; }
         public DateTime Date { get; set; }
         public decimal CurrentPrice { get; set; }

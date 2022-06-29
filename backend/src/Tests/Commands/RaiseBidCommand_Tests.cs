@@ -47,7 +47,7 @@ namespace FunctionalTests.Commands
             auctions.AddAuction(auction);
 
             var allAuctionBids = ServiceProvider.GetRequiredService<IAuctionBidsRepository>();
-            var auctionBids = AuctionBids.Domain.AuctionBids.CreateNew(new(auction.AggregateId), new(auction.Owner));
+            var auctionBids = AuctionBids.Domain.AuctionBids.CreateNew(new(auction.AggregateId), new(1,2,3), new(auction.Owner));
             ReadModelDbContext.AuctionBidsReadModel.InsertOne(new()
             {
                 AuctionId = auction.AggregateId.ToString(),

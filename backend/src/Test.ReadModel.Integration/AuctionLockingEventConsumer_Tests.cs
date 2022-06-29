@@ -29,7 +29,7 @@ namespace Test.ReadModel.Integration
             dbContext = new ReadModelDbContext(
                 new MongoDbSettings
                 {
-                    ConnectionString = "mongodb://localhost:27017",
+                    ConnectionString = "mongodb://auctionhouse-user:Test-1234@localhost:27017/appDb",
                     DatabaseName = "appDb"
                 });
         }
@@ -139,6 +139,7 @@ namespace Test.ReadModel.Integration
                 AuctionId = Guid.Parse(auctionRead.AuctionId),
                 LockIssuer = Guid.NewGuid(),
                 AggVersion = aggVersion,
+                CategoryIds = new CategoryIds(1, 1, 1)
             };
         }
 
@@ -148,6 +149,7 @@ namespace Test.ReadModel.Integration
             {
                 AuctionId = Guid.Parse(auctionRead.AuctionId),
                 AggVersion = aggVersion,
+                CategoryIds = new CategoryIds(1, 1, 1)
             };
         }
 
@@ -165,8 +167,9 @@ namespace Test.ReadModel.Integration
             fixture.Customize<BidRead>(opt => opt.Without(b => b.Id));
             fixture.Customize<AuctionRead>(opt => opt
                 .Without(a => a.Id)
-                .Without(a => a.Category)
                 .Without(a => a.Locked)
+                .With(a => a.Category, 
+                    new CategoryRead { Id = 1, SubCategory = new CategoryRead { Id = 1, SubCategory = new CategoryRead() { Id = 1 } } })
                 .With(a => a.AuctionId, () => Guid.NewGuid().ToString()));
             var auctionRead = insertedAuctionRead = fixture.Create<AuctionRead>();
             return auctionRead;

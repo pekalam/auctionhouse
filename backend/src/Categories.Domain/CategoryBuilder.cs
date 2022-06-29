@@ -41,7 +41,7 @@ namespace Core.Common.Domain.Categories
             return toReturn;
         }
 
-        public Category FromCategoryNamesList(List<string> categoryNames)
+        public virtual Category FromCategoryNamesList(List<string> categoryNames)
         {
             if (categoryNames.Count == Category.MAX_CATEGORIES_DEPTH)
             {
@@ -90,7 +90,7 @@ namespace Core.Common.Domain.Categories
             return toReturn;
         }
 
-        public Category FromCategoryIdList(List<int> categoryIds)
+        public virtual Category FromCategoryIdList(List<int> categoryIds)
         {
             if (categoryIds.Count == Category.MAX_CATEGORIES_DEPTH)
             {

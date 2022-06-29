@@ -20,6 +20,9 @@ namespace AuctionBids.Application.EventSubscriptions
             var cmd = new CreateAuctionBidsCommand
             {
                 AuctionId = appEvent.Event.AuctionId,
+                CategoryId = appEvent.Event.Category[0],
+                SubCategoryId = appEvent.Event.Category[1],
+                SubSubCategoryId = appEvent.Event.Category[2],
                 Owner = appEvent.Event.Owner,
             };
 

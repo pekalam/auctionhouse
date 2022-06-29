@@ -14,6 +14,7 @@ namespace AuctionBids.Domain
     {
         private List<Bid> _bids;
         public AuctionId AuctionId { get; private set; }
+        public AuctionCategoryIds AuctionCategoryIds { get; private set; }
         public UserId OwnerId { get; private set; }
         public UserId? WinnerId { get; private set; }
         public BidId? WinnerBidId { get; private set; }
@@ -30,22 +31,28 @@ namespace AuctionBids.Domain
         public AuctionBids() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-        public AuctionBids(AuctionBidsId aggregateId, Bid[] bids, AuctionId auctionId, UserId ownerId, UserId? winnerId, decimal currentPrice, bool cancelled, bool completed)
+        public AuctionBids(AuctionBidsId aggregateId, Bid[] bids, AuctionId auctionId, AuctionCategoryIds auctionCategoryIds, UserId ownerId, UserId? winnerId, decimal currentPrice, bool cancelled, bool completed)
         {
             AggregateId = aggregateId;
             _bids = bids.ToList();
             AuctionId = auctionId;
+            AuctionCategoryIds = auctionCategoryIds;
             OwnerId = ownerId;
             WinnerId = winnerId;
             CurrentPrice = currentPrice;
             Cancelled = cancelled;
             Completed = completed;
-            AddEvent(new Events.V1.AuctionBidsCreated { AuctionBidsId = AggregateId, AuctionId = AuctionId, OwnerId = OwnerId });//temporary solution TODO
+            AddEvent(new Events.V1.AuctionBidsCreated { 
+                AuctionBidsId = AggregateId, AuctionId = AuctionId, OwnerId = OwnerId, 
+                CategoryId = auctionCategoryIds.CategoryId, 
+                SubCategoryId = auctionCategoryIds.SubCategoryId, 
+                SubSubCategoryId = auctionCategoryIds.SubSubCategoryId 
+            });//temporary solution TODO
         }
 
-        public static AuctionBids CreateNew(AuctionId auctionId, UserId ownerId)
+        public static AuctionBids CreateNew(AuctionId auctionId, AuctionCategoryIds auctionCategoryIds, UserId ownerId)
         {
-            return new AuctionBids(AuctionBidsId.New(), new Bid[0], auctionId, ownerId, null, 0m, false, false);//TODO null
+            return new AuctionBids(AuctionBidsId.New(), new Bid[0], auctionId, auctionCategoryIds, ownerId, null, 0m, false, false);//TODO null
         }
 
         public Bid TryRaise(UserId userId, decimal price)
@@ -76,7 +83,7 @@ namespace AuctionBids.Domain
                 CurrentPrice = price;
                 WinnerId = userId;
                 WinnerBidId = bid.Id;
-                AddEvent(new AuctionPriceRised { AuctionBidsId = AggregateId, BidId = bid.Id, AuctionId = AuctionId, Date = bid.Date, CurrentPrice = CurrentPrice, WinnerId = userId });
+                AddEvent(new AuctionPriceRised { AuctionBidsId = AggregateId, BidId = bid.Id, AuctionId = AuctionId, CategoryId = AuctionCategoryIds.CategoryId, SubCategoryId = AuctionCategoryIds.SubCategoryId, SubSubCategoryId = AuctionCategoryIds.SubSubCategoryId, Date = bid.Date, CurrentPrice = CurrentPrice, WinnerId = userId });
             }
             else
             {
@@ -132,6 +139,7 @@ namespace AuctionBids.Domain
                 case Events.V1.AuctionBidsCreated e:
                     AggregateId = new AuctionBidsId(e.AuctionBidsId);
                     AuctionId = new AuctionId(e.AuctionId);
+                    AuctionCategoryIds = new AuctionCategoryIds(e.CategoryId, e.SubCategoryId, e.SubSubCategoryId);
                     OwnerId = new UserId(e.OwnerId);
                     _bids = new List<Bid>();
                     break;

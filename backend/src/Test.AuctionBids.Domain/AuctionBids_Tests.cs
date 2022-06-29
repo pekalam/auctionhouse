@@ -32,13 +32,15 @@ namespace AuctionBids.Domain.Tests
 
         private static AuctionBids GivenValidAuctionBids()
         {
-            return AuctionBids.CreateNew(GivenValidAuctionId(), GivenValidUserId());
+            return AuctionBids.CreateNew(GivenValidAuctionId(), GivenValidCategoryIds(), GivenValidUserId());
         }
 
         private static AuctionId GivenValidAuctionId()
         {
             return new AuctionId(Guid.NewGuid());
         }
+
+        private static AuctionCategoryIds GivenValidCategoryIds() => new AuctionCategoryIds(1, 2, 3);
 
         private static UserId GivenValidUserId()
         {
@@ -51,7 +53,10 @@ namespace AuctionBids.Domain.Tests
             auctionBids.PendingEvents.Count.Should().Be(1);
             var createdEvent = auctionBids.PendingEvents.First() as Events.V1.AuctionBidsCreated;
 
-            createdEvent.Should().NotBeNull();
+            createdEvent.AuctionId.Should().Be(auctionBids.AuctionId);
+            createdEvent.CategoryId.Should().Be(auctionBids.AuctionCategoryIds.CategoryId);
+            createdEvent.SubCategoryId.Should().Be(auctionBids.AuctionCategoryIds.SubCategoryId);
+            createdEvent.SubSubCategoryId.Should().Be(auctionBids.AuctionCategoryIds.SubSubCategoryId);
         }
 
         [Fact]
@@ -70,6 +75,10 @@ namespace AuctionBids.Domain.Tests
             var raisedEvent = (AuctionPriceRised)auctionBids.PendingEvents.First(e => e.GetType() == typeof(AuctionPriceRised));
             raisedEvent.WinnerId.Should().Be(newWinner);
             raisedEvent.CurrentPrice.Should().Be(1m);
+            raisedEvent.AuctionId.Should().Be(auctionBids.AuctionId);
+            raisedEvent.CategoryId.Should().Be(auctionBids.AuctionCategoryIds.CategoryId);
+            raisedEvent.SubCategoryId.Should().Be(auctionBids.AuctionCategoryIds.SubCategoryId);
+            raisedEvent.SubSubCategoryId.Should().Be(auctionBids.AuctionCategoryIds.SubSubCategoryId);
         }
 
         [Fact]

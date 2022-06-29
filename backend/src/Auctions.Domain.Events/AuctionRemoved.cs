@@ -2,7 +2,7 @@
 
 namespace Auctions.DomainEvents
 {
-    public class AuctionRemoved : Event
+    public class AuctionRemoved : AuctionEvent
     {
         public Guid AuctionId { get; }
 

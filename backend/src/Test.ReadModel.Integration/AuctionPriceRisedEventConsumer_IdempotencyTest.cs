@@ -33,13 +33,25 @@ namespace Test.ReadModel.Integration
             dbContext = new ReadModelDbContext(
             new MongoDbSettings
             {
-                ConnectionString = "mongodb://localhost:27017",
+                ConnectionString = "mongodb://auctionhouse-user:Test-1234@localhost:27017/appDb",
                 DatabaseName = "appDb"
             });
 
             auction = new()
             {
                 AuctionId = Guid.NewGuid().ToString(),
+                Category = new CategoryRead
+                {
+                    Id = 1,
+                    SubCategory = new CategoryRead
+                    {
+                        Id = 2,
+                        SubCategory = new CategoryRead
+                        {
+                            Id = 3
+                        }
+                    }
+                }
             };
             dbContext.AuctionsReadModel.InsertOne(auction);
             dbContext.UsersReadModel.InsertOne(new UserRead
@@ -65,6 +77,7 @@ namespace Test.ReadModel.Integration
                 .WithEvent(new AuctionPriceRised
                 {
                     AuctionId = Guid.Parse(auction.AuctionId),
+                    CategoryId = 1, SubCategoryId = 2, SubSubCategoryId = 3,
                     AggVersion = aggVersion,
                     AuctionBidsId = auctionBidsId,
                     CurrentPrice = 10,

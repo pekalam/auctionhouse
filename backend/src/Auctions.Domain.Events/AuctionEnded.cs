@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Auctions.DomainEvents
 {
-    public class AuctionEnded : Event
+    public class AuctionEnded : AuctionEvent
     {
         public Guid AuctionId { get; set; }
 

@@ -258,7 +258,7 @@ namespace Auctions.Domain
         {
             Lock(lockIssuerId);
 
-            ApplyEvent(AddEvent(new Events.V1.BuyNowTXStarted { TransactionId = Guid.NewGuid(), Price = BuyNowPrice.Value, AuctionId = AggregateId, BuyerId = lockIssuerId, PaymentMethodName = paymentMethod, }));
+            ApplyEvent(AddEvent(new Events.V1.BuyNowTXStarted { TransactionId = Guid.NewGuid(), Price = BuyNowPrice.Value, AuctionId = AggregateId, CategoryIds = CategoryIdsFactory.Create(this), BuyerId = lockIssuerId, PaymentMethodName = paymentMethod, }));
         }
 
         private void TryCancelScheduledAuctionUnlock(IAuctionUnlockScheduler auctionUnlockScheduler)
@@ -285,7 +285,7 @@ namespace Auctions.Domain
             if (TransactionId != transactionId)
             {
                 //transaction failed - auction unlocked and locked by another transaction
-                ApplyEvent(AddEvent(new Events.V1.BuyNowTXFailed { TransactionId = transactionId, AuctionId = AggregateId }));
+                ApplyEvent(AddEvent(new Events.V1.BuyNowTXFailed { TransactionId = transactionId, AuctionId = AggregateId, CategoryIds = CategoryIdsFactory.Create(this) }));
                 return false;
             }
 
@@ -294,7 +294,8 @@ namespace Auctions.Domain
 
             var buyerId = LockIssuer;
             Unlock(LockIssuer);
-            ApplyEvent(AddEvent(new Events.V1.BuyNowTXSuccess { TransactionId = transactionId, AuctionId = AggregateId, BuyerId = buyerId, EndDate = DateTime.UtcNow }));
+            ApplyEvent(AddEvent(new Events.V1.BuyNowTXSuccess { TransactionId = transactionId, AuctionId = AggregateId, CategoryIds = CategoryIdsFactory.Create(this), 
+                BuyerId = buyerId, EndDate = DateTime.UtcNow }));
             return true;
         }
 
@@ -303,7 +304,7 @@ namespace Auctions.Domain
             if (TransactionId != transactionId) //when someone started buynow tx
             {
                 //this event doesn't result in state change
-                ApplyEvent(AddEvent(new Events.V1.BuyNowTXCanceledConcurrently { TransactionId = transactionId, AuctionId = AggregateId }));
+                ApplyEvent(AddEvent(new Events.V1.BuyNowTXCanceledConcurrently { TransactionId = transactionId, AuctionId = AggregateId, CategoryIds = CategoryIdsFactory.Create(this) }));
                 return false;
             }
 
@@ -311,7 +312,7 @@ namespace Auctions.Domain
             auctionUnlockScheduler.Cancel(AggregateId);
 
             Unlock(LockIssuer);
-            ApplyEvent(AddEvent(new Events.V1.BuyNowTXCanceled { TransactionId = transactionId, AuctionId= AggregateId }));
+            ApplyEvent(AddEvent(new Events.V1.BuyNowTXCanceled { TransactionId = transactionId, AuctionId= AggregateId, CategoryIds = CategoryIdsFactory.Create(this) }));
             return true;
         }
 
@@ -321,7 +322,7 @@ namespace Auctions.Domain
             {
                 throw new DomainException("Auction is already locked");
             }
-            ApplyEvent(AddEvent(new AuctionLocked() { AuctionId = AggregateId, LockIssuer = lockIssuerId }));
+            ApplyEvent(AddEvent(new AuctionLocked() { AuctionId = AggregateId, CategoryIds = CategoryIdsFactory.Create(this), LockIssuer = lockIssuerId }));
         }
 
 
@@ -330,14 +331,14 @@ namespace Auctions.Domain
             if (Completed) return; //TODO invariants checks
             if (!Locked) return;
             if (LockIssuer != lockIssuerId) throw new DomainException($"Invalid {nameof(lockIssuerId)}");
-            ApplyEvent(AddEvent(new AuctionUnlocked() { AuctionId = AggregateId }));
+            ApplyEvent(AddEvent(new AuctionUnlocked() { AuctionId = AggregateId, CategoryIds = CategoryIdsFactory.Create(this) }));
         }
 
         internal void AddAuctionBids(AuctionBidsId auctionBidsId)
         {
             if (BuyNowOnly) throw new DomainException($"Cannot add AuctionBidsId to auction when {nameof(BuyNowOnly)}=true");
             if (Locked) Unlock(LockIssuer);
-            ApplyEvent(AddEvent(new AuctionBidsAdded() { AuctionId = AggregateId, AuctionBidsId = auctionBidsId.Value }));
+            ApplyEvent(AddEvent(new AuctionBidsAdded() { AuctionId = AggregateId, CategoryIds = CategoryIdsFactory.Create(this), AuctionBidsId = auctionBidsId.Value }));
         }
 
 

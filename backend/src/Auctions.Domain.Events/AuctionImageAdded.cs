@@ -2,7 +2,7 @@
 
 namespace Auctions.DomainEvents
 {
-    public class AuctionImageAdded : Event
+    public class AuctionImageAdded : AuctionEvent
     {
         public string AddedImageSize1Id { get; }
         public string AddedImageSize2Id { get; }

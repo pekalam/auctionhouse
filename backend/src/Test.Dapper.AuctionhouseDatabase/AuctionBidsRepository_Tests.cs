@@ -27,7 +27,7 @@ namespace Test.Dapper.AuctionhouseDatabase
         [Fact]
         public void Adds_auction_to_repository_and_finds_it_by_auctionId()
         {
-            var bids = AuctionBids.Domain.AuctionBids.CreateNew(new AuctionId(Guid.NewGuid()), new UserId(Guid.NewGuid()));
+            var bids = AuctionBids.Domain.AuctionBids.CreateNew(new AuctionId(Guid.NewGuid()), new AuctionCategoryIds(1,2,3), new UserId(Guid.NewGuid()));
 
             auctionBids.Add(bids);
             bids.MarkPendingEventsAsHandled();

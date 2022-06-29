@@ -23,8 +23,10 @@ namespace ReadModel.Core.EventConsumers
                 .Project(u => u.UserIdentity.UserName)
                 .SingleAsync();
 
-            var filter = Builders<AuctionRead>.Filter.Eq(a => a.AuctionId,
+            var catFilter = CategoryFilterFactory.Create(appEvent.Event.CategoryIds);
+            var idFilter = Builders<AuctionRead>.Filter.Eq(a => a.AuctionId,
                 appEvent.Event.AuctionId.ToString());
+            var filter = Builders<AuctionRead>.Filter.And(catFilter, idFilter);
 
             var update = Builders<AuctionRead>.Update
                 .Set(a => a.Buyer, new UserIdentityRead
