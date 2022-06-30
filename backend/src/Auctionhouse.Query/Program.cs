@@ -17,6 +17,20 @@ using Serilog;
 using XmlCategoryTreeStore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var appConfigConnectionString = builder.Configuration.GetConnectionString("AppConfigurationProd");
+var environmentName = Environment.GetEnvironmentVariable("ENV");
+if (environmentName != "local")
+{
+    builder.Host.ConfigureAppConfiguration(cfgBuilder =>
+    {
+        cfgBuilder.AddAzureAppConfiguration(cfg =>
+        {
+            cfg.Connect(appConfigConnectionString).Select("*", environmentName);
+        });
+    });
+}
+
 builder.Host.UseSerilog();
 
 //MODULES

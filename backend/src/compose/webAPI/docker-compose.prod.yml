@@ -1,9 +1,13 @@
 version: '3.4'
 
 services:
+  command:
+    environment:
+      - ConnectionStrings__AppConfigurationProd
   query:
     environment:
       - CORS__AllowedOrigins=https://pekalam.me
+      - ConnectionStrings__AppConfigurationProd
   commandstatus:
     environment:
       - CORS__AllowedOrigins=https://pekalam.me

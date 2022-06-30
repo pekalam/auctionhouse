@@ -34,6 +34,21 @@ using static System.Convert;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var connectionString = builder.Configuration.GetConnectionString("AppConfigurationProd");
+
+var environmentName = Environment.GetEnvironmentVariable("ENV");
+if(environmentName != "local")
+{
+    builder.Host.ConfigureAppConfiguration(cfgBuilder =>
+    {
+        cfgBuilder.AddAzureAppConfiguration(cfg =>
+        {
+            cfg.Connect(connectionString).Select("*", environmentName);
+        });
+    });
+}
+
+
 builder.Host.UseSerilog();
 
 var moduleNames = new[] {
