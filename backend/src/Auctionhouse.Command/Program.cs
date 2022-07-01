@@ -3,7 +3,6 @@ using Adapter.Dapper.AuctionhouseDatabase;
 using Adapter.EfCore.ReadModelNotifications;
 using Adapter.Hangfire_.Auctionhouse;
 using Adapter.MongoDb;
-using Adapter.MongoDb.AuctionImage;
 using Adapter.QuartzTimeTaskService.AuctionEndScheduler;
 using Adapter.SqlServer.EventOutbox;
 using AuctionBids.Application;
@@ -11,18 +10,18 @@ using Auctionhouse.Command;
 using Auctionhouse.Command.Adapters;
 using Auctionhouse.Command.Controllers;
 using Auctions.Application;
+using Azure.Identity;
 using Categories.Domain;
 using ChronicleEfCoreStorage;
 using Common.Application;
 using Common.Application.Events;
 using Common.WebAPI;
 using Common.WebAPI.Auth;
+using Common.WebAPI.Configuration;
 using IntegrationService.AuctionPaymentVerification;
 using IntegrationService.CategoryNamesToTreeIdsConversion;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
-using OpenTelemetry.Trace;
-using QuartzTimeTaskService.AuctionEndScheduler;
 using RabbitMq.EventBus;
 using Serilog;
 using System.Diagnostics;
@@ -34,16 +33,18 @@ using static System.Convert;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("AppConfigurationProd");
-
-var environmentName = Environment.GetEnvironmentVariable("ENV");
-if(environmentName != "local")
+var appConfigurationCs = ConfigurationUtils.GetAppConfigurationConnectionString(builder.Configuration);
+var environmentName = ConfigurationUtils.GetEnvironmentName();
+if(environmentName != ConfigurationUtils.LocalEnvName)
 {
+    ConfigurationUtils.InitializeAzureCredentials(builder.Configuration);
     builder.Host.ConfigureAppConfiguration(cfgBuilder =>
     {
         cfgBuilder.AddAzureAppConfiguration(cfg =>
         {
-            cfg.Connect(connectionString).Select("*", environmentName);
+            cfg.Connect(appConfigurationCs)
+                .ConfigureKeyVault(kv => kv.SetCredential(new DefaultAzureCredential()))
+                .Select("*", environmentName);
         });
     });
 }

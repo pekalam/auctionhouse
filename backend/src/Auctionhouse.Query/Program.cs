@@ -1,12 +1,13 @@
 using Adapter.EfCore.ReadModelNotifications;
 using Adapter.MongoDb;
-using Adapter.MongoDb.AuctionImage;
 using Auctionhouse.Query;
 using Auctionhouse.Query.Adapters;
+using Azure.Identity;
 using Categories.Domain;
 using Common.Application;
 using Common.WebAPI;
 using Common.WebAPI.Auth;
+using Common.WebAPI.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using OpenTelemetry.Trace;
 using RabbitMq.EventBus;
@@ -18,15 +19,17 @@ using XmlCategoryTreeStore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var appConfigConnectionString = builder.Configuration.GetConnectionString("AppConfigurationProd");
-var environmentName = Environment.GetEnvironmentVariable("ENV");
+var appConfigurationCs = ConfigurationUtils.GetAppConfigurationConnectionString(builder.Configuration);
+var environmentName = ConfigurationUtils.GetEnvironmentName();
 if (environmentName != "local")
 {
     builder.Host.ConfigureAppConfiguration(cfgBuilder =>
     {
         cfgBuilder.AddAzureAppConfiguration(cfg =>
         {
-            cfg.Connect(appConfigConnectionString).Select("*", environmentName);
+            cfg.Connect(appConfigurationCs)
+                .ConfigureKeyVault(kv => kv.SetCredential(new DefaultAzureCredential()))
+                .Select("*", environmentName);
         });
     });
 }
