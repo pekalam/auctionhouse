@@ -23,6 +23,7 @@ var appConfigurationCs = ConfigurationUtils.GetAppConfigurationConnectionString(
 var environmentName = ConfigurationUtils.GetEnvironmentName();
 if (environmentName != "local")
 {
+    ConfigurationUtils.InitializeAzureCredentials(builder.Configuration);
     builder.Host.ConfigureAppConfiguration(cfgBuilder =>
     {
         cfgBuilder.AddAzureAppConfiguration(cfg =>

@@ -13,7 +13,8 @@
       "commandName": "Project",
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ENV": "local"
       },
       "applicationUrl": "https://localhost:7070;http://localhost:5070",
       "dotnetRunMessages": true
@@ -22,7 +23,8 @@
       "commandName": "IISExpress",
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ENV": "local"
       }
     },
     "Docker": {
