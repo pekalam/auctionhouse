@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { SignUpCommand, SignUpCommandArgs } from '../../../core/commands/auth/SignUpCommand';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -31,7 +31,6 @@ export class SignUpPageComponent implements OnInit {
   showLoading = false;
 
   passwordMatch = false;
-  strongPassword = false;
 
   constructor(private signUpCommand: SignUpCommand, private checkUsernameQuery: CheckUsernameQuery, private router: Router) {
 
@@ -73,6 +72,10 @@ export class SignUpPageComponent implements OnInit {
   }
 
   onConfirmType() {
+    this.checkPasswordsAreMatching();
+  }
+
+  private checkPasswordsAreMatching(){
     if (this.form.value.confirmPassword !== this.form.value.password) {
       this.passwordMatch = false;
       this.form.controls.confirmPassword.setErrors(Object.assign(
@@ -95,8 +98,22 @@ export class SignUpPageComponent implements OnInit {
     console.log(err);
   }
 
+  onPasswordKeyUp(){
+    if(this.form.value.confirmPassword){
+      this.checkPasswordsAreMatching();
+    }
+  }
+
+  onPasswordStrengthChange(strength: null | 'weak' | 'medium' | 'strong'){
+    const strongPassword = strength === 'medium' || strength === 'strong';
+    if(strongPassword){
+      return;
+    }
+    setTimeout(() => this.form.controls['password'].setErrors({ ...(this.form.controls['password'].errors || {}),weakPassword: 'password is too weak' }), 0);
+  }
+
   onSignUpClick() {
-    if (this.form.valid && this.strongPassword && this.validUsername) {
+    if (this.form.valid && this.validUsername) {
       const commandArgs = {
         username: this.form.value.username,
         password: this.form.value.password,

@@ -40,16 +40,17 @@
 
       <div class="field-container" id="passowrd-field-container">
         <mat-form-field id="password">
-          <input matInput type="password" placeholder="Password"
+          <input matInput (keyup)="onPasswordKeyUp()" type="password" placeholder="Password"
             formControlName="password" required />
           <mat-error>
             <ng-container *ngIf="form.controls.password.errors">
               <span *ngIf="form.controls.password.errors.required">Password cannot be empty</span>
               <span *ngIf="form.controls.password.errors.minlength">Too short password</span>
+              <span *ngIf="!form.controls.password.errors.required && !form.controls.password.errors.minlength && form.controls.password.errors.weakPassword">Password is too weak</span>
             </ng-container>
           </mat-error>
         </mat-form-field>
-        <app-password-meter [password]="form.value.password" (strengthChange)="strongPassword = $event === 'weak'"></app-password-meter>
+        <app-password-meter [password]="form.value.password" (strengthChange)="onPasswordStrengthChange($event)"></app-password-meter>
       </div>
 
 
@@ -59,7 +60,7 @@
           <mat-error>
             <ng-container *ngIf="form.controls.confirmPassword.errors">
               <span *ngIf="form.controls.confirmPassword.errors.required">Password cannot be empty</span>
-              <span *ngIf="form.controls.confirmPassword.errors.match">Passwords aren't the same!</span>
+              <span *ngIf="!form.controls.confirmPassword.errors.required && form.controls.confirmPassword.errors.match">Passwords aren't the same!</span>
             </ng-container>
           </mat-error>
         </mat-form-field>
