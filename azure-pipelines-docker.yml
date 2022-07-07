@@ -45,7 +45,7 @@ stages:
       inputs:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'VPSDockerRegistry'
-        dockerComposeFile: 'backend/src/compose/infrastructure/docker-compose.yml'
+        dockerComposeFile: 'compose/infrastructure/docker-compose.yml'
         action: 'Run a Docker Compose command'
         dockerComposeCommand: 'build'
     - task: DockerCompose@0
@@ -53,7 +53,7 @@ stages:
       inputs:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'VPSDockerRegistry'
-        dockerComposeFile: 'backend/src/compose/infrastructure/docker-compose.yml'
+        dockerComposeFile: 'compose/infrastructure/docker-compose.yml'
         action: 'Push services'
   - job: 'build_docker_infrastructure_mongodb'
     displayName: 'Build mongodb docker images'
@@ -63,7 +63,7 @@ stages:
       inputs:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'VPSDockerRegistry'
-        dockerComposeFile: 'backend/src/compose/infrastructure/mongodb/docker-compose.yml'
+        dockerComposeFile: 'compose/infrastructure/mongodb/docker-compose.yml'
         action: 'Run a Docker Compose command'
         dockerComposeCommand: 'build'
     - task: DockerCompose@0
@@ -71,7 +71,7 @@ stages:
       inputs:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'VPSDockerRegistry'
-        dockerComposeFile: 'backend/src/compose/infrastructure/mongodb/docker-compose.yml'
+        dockerComposeFile: 'compose/infrastructure/mongodb/docker-compose.yml'
         action: 'Push services'
   - job: 'build_docker_webapi'
     displayName: 'Build Web API docker images'
@@ -81,7 +81,7 @@ stages:
       inputs:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'VPSDockerRegistry'
-        dockerComposeFile: 'backend/src/compose/webAPI/docker-compose.yml'
+        dockerComposeFile: 'compose/webAPI/docker-compose.yml'
         action: 'Run a Docker Compose command'
         dockerComposeCommand: 'build'
     - task: DockerCompose@0
@@ -89,7 +89,7 @@ stages:
       inputs:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'VPSDockerRegistry'
-        dockerComposeFile: 'backend/src/compose/webAPI/docker-compose.yml'
+        dockerComposeFile: 'compose/webAPI/docker-compose.yml'
         action: 'Push services'
   - job: 'publish_artifacts'
     displayName: 'Publish build artifacts'
@@ -97,7 +97,7 @@ stages:
     steps:
       - task: CopyFiles@2
         inputs:
-          SourceFolder: 'backend/src/compose'
+          SourceFolder: 'compose'
           Contents: '**'
           TargetFolder: '$(Build.ArtifactStagingDirectory)/compose'
       - task: PublishBuildArtifacts@1

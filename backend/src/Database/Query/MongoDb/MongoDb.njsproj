@@ -1,0 +1,92 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <Name>MongoDb</Name>
+    <RootNamespace>MongoDb</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>835c31f7-1ca9-490c-86c0-41eea386d86c</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>
+    </StartupFile>
+    <StartWebBrowser>False</StartWebBrowser>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <StartWebBrowser>false</StartWebBrowser>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="cluster\config\Dockerfile" />
+    <Content Include="cluster\config\mongo-config-entrypoint.sh" />
+    <Content Include="cluster\config\scripts\config.js" />
+    <Content Include="cluster\config\scripts\init.js" />
+    <Content Include="cluster\config\scripts\init_replicaset.js" />
+    <Content Include="cluster\templates\docker-compose.yml.hbs" />
+    <Content Include="cluster\mongos\Dockerfile" />
+    <Content Include="cluster\mongos\healthcheck.sh" />
+    <Content Include="cluster\mongos\mongos-entrypoint.sh" />
+    <Content Include="cluster\mongos\scripts\categories.js" />
+    <Content Include="cluster\mongos\scripts\common_tags_view_update.js" />
+    <Content Include="cluster\mongos\scripts\ending_auctions_update.js" />
+    <Content Include="cluster\mongos\scripts\healthcheck.js" />
+    <Content Include="cluster\mongos\scripts\remove_unasigned_auction_images.js" />
+    <Content Include="cluster\mongos\scripts\remove_unasigned_auction_images.sh" />
+    <Content Include="cluster\mongos\scripts\top_auctions_by_product_name_update.js" />
+    <Content Include="cluster\mongos\scripts\top_auctions_in_tag_view_update.js" />
+    <Content Include="cluster\mongos\scripts\update-common-tags-view.sh" />
+    <Content Include="cluster\mongos\scripts\update-ending-auctions-view.sh" />
+    <Content Include="cluster\mongos\scripts\update-top-auctions-by-product-name.sh" />
+    <Content Include="cluster\mongos\scripts\update-top-auctions-in-tag-view.sh" />
+    <Content Include="cluster\mongos\templates\scripts\init.js.hbs" />
+    <Content Include="cluster\mongos\update-cronjob" />
+    <Content Include="Gruntfile.js">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="mongocluster-dev-keyfile.txt" />
+    <Content Include="mongouser-dev-password.txt" />
+    <Content Include="package.json" />
+    <Content Include="README.md" />
+    <Content Include="standalone\scripts\common_tags_view_update.js" />
+    <Content Include="standalone\Dockerfile-mongo-standalone-replicaset" />
+    <Content Include="standalone\scripts\ending_auctions_update.js" />
+    <Content Include="standalone\init-collections.js" />
+    <Content Include="standalone\init.js" />
+    <Content Include="standalone\mongo-standalone-entrypoint.sh" />
+    <Content Include="standalone\scripts\remove_unasigned_auction_images.js" />
+    <Content Include="standalone\scripts\remove_unasigned_auction_images.sh" />
+    <Content Include="standalone\scripts\top_auctions_by_product_name_update.js" />
+    <Content Include="standalone\scripts\top_auctions_in_tag_view_update.js" />
+    <Content Include="standalone\scripts\update-common-tags-view.sh" />
+    <Content Include="standalone\update-cronjob" />
+    <Content Include="standalone\scripts\update-ending-auctions-view.sh" />
+    <Content Include="standalone\scripts\update-top-auctions-by-product-name.sh" />
+    <Content Include="standalone\scripts\update-top-auctions-in-tag-view.sh" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="cluster\config\scripts\" />
+    <Folder Include="cluster\mongos\" />
+    <Folder Include="cluster\mongos\templates\" />
+    <Folder Include="cluster\mongos\scripts\" />
+    <Folder Include="cluster\config\" />
+    <Folder Include="cluster\mongos\templates\scripts\" />
+    <Folder Include="cluster\templates\" />
+    <Folder Include="cluster\shard\" />
+    <Folder Include="cluster\" />
+    <Folder Include="standalone\" />
+    <Folder Include="standalone\scripts\" />
+  </ItemGroup>
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
+</Project>

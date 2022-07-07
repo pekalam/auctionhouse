@@ -2,33 +2,33 @@
 backend/Gen/
 backend/src/.vs/
 backend/src/bin/
-backend/src/*/obj/
-backend/src/*/bin/
+backend/src/**/obj/
+backend/src/**/bin/
 backend/src/obj/
 backend/tools/
 backend/src/AuthDataDatabase/AuthDataDatabase.dbmdl
 
 backend/src/Test.AuctionhouseDatabase/Import Schema Logs/
 
-backend/src/AuctionhouseDatabase/AuctionhouseDatabase.dbmdl
+backend/src/Database/Command/AuctionhouseDatabase/AuctionhouseDatabase.dbmdl
 
-backend/src/Test.AuctionhouseDatabase/Test.AuctionhouseDatabase.dbmdl
+backend/src/Database/Command/Test.AuctionhouseDatabase/Test.AuctionhouseDatabase.dbmdl
 
 backend/scripts/mongodb/node_modules/*
 /backend/src/Tests/FunctionalTestsServer_log.ldf
 /backend/src/Tests/FunctionalTestsServer.mdf
-backend/src/AuctionhouseDatabase/AuctionhouseDatabase.jfm
-/backend/src/Auctionhouse.Command/errorEventOutboxDb
-/backend/src/Auctionhouse.Query/errorEventOutboxDb
+backend/src/Database/Command/AuctionhouseDatabase/AuctionhouseDatabase.jfm
+/backend/src/WebAPI/Auctionhouse.Command/errorEventOutboxDb
+/backend/src/WebAPI/Auctionhouse.Query/errorEventOutboxDb
 /backend/src/Test.Integration.MediatrCommandHandling
 /backend/src/Test.Integration.CommandHandling.RabbitMQ
 /backend/src/SetupTestDb
-/backend/src/MongoDb/cluster/shards
-/backend/src/MongoDb/node_modules
-/backend/src/AuctionhouseDatabase/testbackups
+/backend/src/Database/Query/MongoDb/cluster/shards
+/backend/src/Database/Query/MongoDb/node_modules
+/backend/src/Database/Command/AuctionhouseDatabase/testbackups
 /backend/src/MongoDb/testbackups
 /backend/src/ArchTests
-/backend/src/Test.AuctionhouseDatabase/Test.AuctionhouseDatabase.jfm
+/backend/src/Database/Command/Test.AuctionhouseDatabase/Test.AuctionhouseDatabase.jfm
 
 .vs/slnx.sqlite
 
@@ -36,3 +36,4 @@ backend/src/AuctionhouseDatabase/AuctionhouseDatabase.jfm
 
 .vscode/settings.json
 /backend/Adapter.ChronicleEfCoreStorage/obj
+

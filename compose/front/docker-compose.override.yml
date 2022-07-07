@@ -1,0 +1,11 @@
+version: '3.4'
+
+services:
+  front:
+    volumes:
+      - ../../front/front_config:/usr/share/nginx/html/front_config
+
+networks:
+  default:
+    external:
+      name: auctionhouse

@@ -1,8 +1,0 @@
-{
-  "solution": {
-    "path": "Auctionhouse.sln",
-    "projects": [
-      "MongoDb\\MongoDb.njsproj"
-    ]
-  }
-}

@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="pekalam.Chronicle_" Version="3.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Auctions\Auctions.Domain.Events\Auctions.DomainEvents.csproj" />
+    <ProjectReference Include="..\..\Common\Common.Application\Common.Application.csproj" />
+    <ProjectReference Include="..\..\UserPayments\UserPayments.DomainEvents\UserPayments.DomainEvents.csproj" />
+    <ProjectReference Include="..\..\UserPayments\UserPayments.Domain\UserPayments.Domain.csproj" />
+    <ProjectReference Include="..\Users.DomainEvents\Users.DomainEvents.csproj" />
+    <ProjectReference Include="..\Users.Domain\Users.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

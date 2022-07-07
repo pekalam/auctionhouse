@@ -1,0 +1,69 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+
+    <IsPackable>false</IsPackable>
+
+    <AssemblyVersion></AssemblyVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="6.3.0" />
+    <PackageReference Include="MartinCostello.Logging.XUnit" Version="0.2.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+    <PackageReference Include="Moq" Version="4.16.1" />
+    <PackageReference Include="Polly" Version="7.2.2" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector" Version="3.1.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Adapters\Adapter.ChronicleEfCoreStorage\ChronicleEfCoreStorage.csproj" />
+    <ProjectReference Include="..\..\Adapters\ReadModelNotifications\Adapter.EfCore.ReadModelNotifications\Adapter.EfCore.ReadModelNotifications.csproj" />
+    <ProjectReference Include="..\..\Modules\IntegrationServices\IntegrationService.AuctionPaymentVerification\IntegrationService.AuctionPaymentVerification.csproj" />
+    <ProjectReference Include="..\..\Modules\AuctionBids\AuctionBids.Application\AuctionBids.Application.csproj" />
+    <ProjectReference Include="..\..\WebAPI\Auctionhouse.Query\Auctionhouse.Query.csproj" />
+    <ProjectReference Include="..\..\Modules\Auctions\Auctions.Application\Auctions.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\Categories\Categories.Domain\Categories.Domain.csproj" />
+    <ProjectReference Include="..\..\Adapters\EventBus\Adatper.RabbitMq.EventBus\Adatper.RabbitMq.EventBus.csproj" />
+    <ProjectReference Include="..\..\Modules\ReadModel\ReadModel.Core\ReadModel.Core.csproj" />
+    <ProjectReference Include="..\..\Modules\Auctions\Tests\Test.Auctions.Base\Auctions.Tests.Base.csproj" />
+    <ProjectReference Include="..\..\Modules\ReadModel\Tests\Test.ReadModel.Base\ReadModel.Tests.Base.csproj" />
+    <ProjectReference Include="..\..\Modules\Users\Tests\Test.Users.Base\Users.Tests.Base.csproj" />
+    <ProjectReference Include="..\..\Adapters\CategoryStore\Test.XmlCategoryTreeStore\Test.XmlCategoryTreeStore.csproj" />
+    <ProjectReference Include="..\..\Modules\UserPayments\UserPayments.Application\UserPayments.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\Users\Users.Application\Users.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="imageData\1200x600.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="imageData\1200x600.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="imageData\500x900.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="imageData\500x900.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="imageData\500x900.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="imageData\500x900.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

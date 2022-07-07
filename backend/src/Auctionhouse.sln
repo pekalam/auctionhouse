@@ -2,30 +2,30 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.31911.260
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "AuctionhouseDatabase", "AuctionhouseDatabase\AuctionhouseDatabase.sqlproj", "{31D723E0-FB8D-4C1A-8200-68570D4ED3A8}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "AuctionhouseDatabase", "Database\Command\AuctionhouseDatabase\AuctionhouseDatabase.sqlproj", "{31D723E0-FB8D-4C1A-8200-68570D4ED3A8}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Test.AuctionhouseDatabase", "Test.AuctionhouseDatabase\Test.AuctionhouseDatabase.sqlproj", "{4DD3B832-93FD-4D4B-9CE7-D4AF44D182E3}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Test.AuctionhouseDatabase", "Database\Command\Test.AuctionhouseDatabase\Test.AuctionhouseDatabase.sqlproj", "{4DD3B832-93FD-4D4B-9CE7-D4AF44D182E3}"
 	ProjectSection(ProjectDependencies) = postProject
 		{31D723E0-FB8D-4C1A-8200-68570D4ED3A8} = {31D723E0-FB8D-4C1A-8200-68570D4ED3A8}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.DomainFramework", "Core.DomainFramework\Common.DomainFramework.csproj", "{F7720E68-77D4-401B-B4C6-348CDC8DFB81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.DomainFramework", "Modules\Common\Core.DomainFramework\Common.DomainFramework.csproj", "{F7720E68-77D4-401B-B4C6-348CDC8DFB81}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuctionBids.Domain.Tests", "Test.AuctionBids.Domain\AuctionBids.Domain.Tests.csproj", "{0468B76C-CB81-40F0-B979-28A85D0B97D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuctionBids.Domain.Tests", "Modules\AuctionBids\Tests\Test.AuctionBids.Domain\AuctionBids.Domain.Tests.csproj", "{0468B76C-CB81-40F0-B979-28A85D0B97D2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserPayments.Domain.Tests", "Test.UserPayments.Domain\UserPayments.Domain.Tests.csproj", "{27B6DF0E-DF3B-4090-B7C8-2900D78ECC8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserPayments.Domain.Tests", "Modules\UserPayments\Tests\Test.UserPayments.Domain\UserPayments.Domain.Tests.csproj", "{27B6DF0E-DF3B-4090-B7C8-2900D78ECC8D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctions.Domain.Tests", "Test.Auctions.Domain\Auctions.Domain.Tests.csproj", "{E4726A92-8E2A-4ED6-92F7-ACF7297946FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctions.Domain.Tests", "Modules\Auctions\Tests\Test.Auctions.Domain\Auctions.Domain.Tests.csproj", "{E4726A92-8E2A-4ED6-92F7-ACF7297946FB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctions.Domain", "Auctions.Domain\Auctions.Domain.csproj", "{7A73B27D-BD46-45E6-88C0-57E7D404C61A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctions.Domain", "Modules\Auctions\Auctions.Domain\Auctions.Domain.csproj", "{7A73B27D-BD46-45E6-88C0-57E7D404C61A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuctionBids.Domain", "AuctionBids.Domain\AuctionBids.Domain.csproj", "{5C9FEAB8-6B43-46BC-AFD5-92DC7B527DC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuctionBids.Domain", "Modules\AuctionBids\AuctionBids.Domain\AuctionBids.Domain.csproj", "{5C9FEAB8-6B43-46BC-AFD5-92DC7B527DC5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Categories.Domain", "Categories.Domain\Categories.Domain.csproj", "{1CB32A4A-ADA3-4303-BEE7-BBD6975569B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Categories.Domain", "Modules\Categories\Categories.Domain\Categories.Domain.csproj", "{1CB32A4A-ADA3-4303-BEE7-BBD6975569B5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserPayments.Domain", "UserPayments.Domain\UserPayments.Domain.csproj", "{E2DD0CC0-A7C7-4081-B4C1-C30F1243C0F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserPayments.Domain", "Modules\UserPayments\UserPayments.Domain\UserPayments.Domain.csproj", "{E2DD0CC0-A7C7-4081-B4C1-C30F1243C0F1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.Domain", "Users.Domain\Users.Domain.csproj", "{D5F4529A-8809-48F8-9149-25BAF1D0AF42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.Domain", "Modules\Users\Users.Domain\Users.Domain.csproj", "{D5F4529A-8809-48F8-9149-25BAF1D0AF42}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Users", "Users", "{171D635D-FE40-4BCF-B615-E372E96693F2}"
 EndProject
@@ -41,190 +41,217 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{5F25
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Adapters", "Adapters", "{2C7F9FB2-0106-45A8-8185-8B58DF359DE2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.QuartzTimeTaskService.AuctionEndScheduler", "Adapter.QuartzTimeTaskService.AuctionEndScheduler\Adapter.QuartzTimeTaskService.AuctionEndScheduler.csproj", "{5EE29E8F-C7FE-430F-944E-1DBD210FD494}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.QuartzTimeTaskService.AuctionEndScheduler", "Adapters\Schedulers\Adapter.QuartzTimeTaskService.AuctionEndScheduler\Adapter.QuartzTimeTaskService.AuctionEndScheduler.csproj", "{5EE29E8F-C7FE-430F-944E-1DBD210FD494}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctions.Application", "Auctions.Application\Auctions.Application.csproj", "{C601EF06-7E1D-41DB-B97F-846265CD097D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctions.Application", "Modules\Auctions\Auctions.Application\Auctions.Application.csproj", "{C601EF06-7E1D-41DB-B97F-846265CD097D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{9D788C3F-96DA-46AE-B5EB-02D4346DDF2C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Application", "Common.Application\Common.Application.csproj", "{6B7A042C-590E-43FB-9D57-91FCC2E8CCA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Application", "Modules\Common\Common.Application\Common.Application.csproj", "{6B7A042C-590E-43FB-9D57-91FCC2E8CCA4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctions.DomainEvents", "Auctions.Domain.Events\Auctions.DomainEvents.csproj", "{D3BD7480-9F00-4E47-9142-D72BEE426533}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctions.DomainEvents", "Modules\Auctions\Auctions.Domain.Events\Auctions.DomainEvents.csproj", "{D3BD7480-9F00-4E47-9142-D72BEE426533}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.Application", "Users.Application\Users.Application.csproj", "{3462E35B-F8DA-4A77-B592-B21FE8C24F46}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.Application", "Modules\Users\Users.Application\Users.Application.csproj", "{3462E35B-F8DA-4A77-B592-B21FE8C24F46}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuctionBids.Application", "AuctionBids.Application\AuctionBids.Application.csproj", "{C0479453-CAB2-4E87-84B7-456B1A190AD2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuctionBids.Application", "Modules\AuctionBids\AuctionBids.Application\AuctionBids.Application.csproj", "{C0479453-CAB2-4E87-84B7-456B1A190AD2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserPayments.Application", "UserPayments.Application\UserPayments.Application.csproj", "{0E78327D-AE10-4765-B3DF-31B1272668C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserPayments.Application", "Modules\UserPayments\UserPayments.Application\UserPayments.Application.csproj", "{0E78327D-AE10-4765-B3DF-31B1272668C6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Application.Tests", "Test.Common.Application\Common.Application.Tests.csproj", "{55EB0490-F686-436A-9B09-6862ABC6BD8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Application.Tests", "Modules\Common\Tests\Test.Common.Application\Common.Application.Tests.csproj", "{55EB0490-F686-436A-9B09-6862ABC6BD8E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctions.Application.Tests", "Test.Auctions.Application\Auctions.Application.Tests.csproj", "{17C3B8A2-8AC3-49CA-8537-CB1A34318BA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctions.Application.Tests", "Modules\Auctions\Tests\Test.Auctions.Application\Auctions.Application.Tests.csproj", "{17C3B8A2-8AC3-49CA-8537-CB1A34318BA8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{042D36E8-EBEF-43FB-8B69-BF1169CCC1B3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8461F559-5101-4F0D-8E98-E1CFAEFA802C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuctionBids.DomainEvents", "AuctionBids.DomainEvents\AuctionBids.DomainEvents.csproj", "{4E82E4C2-CA17-48E8-8E16-25281582C906}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuctionBids.DomainEvents", "Modules\AuctionBids\AuctionBids.DomainEvents\AuctionBids.DomainEvents.csproj", "{4E82E4C2-CA17-48E8-8E16-25281582C906}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{BA7B15F4-B694-4A21-9D8E-9128916C6242}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionalTests", "Tests\FunctionalTests.csproj", "{143BBFAF-CF69-4D3F-A597-328A327BDC83}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionalTests", "Tests\FunctionalTests\FunctionalTests.csproj", "{143BBFAF-CF69-4D3F-A597-328A327BDC83}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adatper.RabbitMq.EventBus", "Adatper.RabbitMq.EventBus\Adatper.RabbitMq.EventBus.csproj", "{5744FD2C-7224-4A12-ACB1-C00EE1B0DF7D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adatper.RabbitMq.EventBus", "Adapters\EventBus\Adatper.RabbitMq.EventBus\Adatper.RabbitMq.EventBus.csproj", "{5744FD2C-7224-4A12-ACB1-C00EE1B0DF7D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventBus", "EventBus", "{7E28159A-BD62-46D0-8167-81A089544046}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.RabbitMq.EventBus", "Test.RabbitMq.EventBus\Test.Adapter.RabbitMq.EventBus.csproj", "{9237AD4B-4959-4FAF-8CBA-141E4C0E4BEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.RabbitMq.EventBus", "Adapters\EventBus\Test.RabbitMq.EventBus\Test.Adapter.RabbitMq.EventBus.csproj", "{9237AD4B-4959-4FAF-8CBA-141E4C0E4BEB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Repositories", "Repositories", "{94E22CD1-B1B9-44DF-8240-85E518B2CD5B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.Dapper.AuctionhouseDatabase", "Adapter.Dapper.AuctionhouseDatabase\Adapter.Dapper.AuctionhouseDatabase.csproj", "{EBDE7CFF-E774-4BFD-B9BD-9C51B0DBA569}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.Dapper.AuctionhouseDatabase", "Adapters\Repositories\Adapter.Dapper.AuctionhouseDatabase\Adapter.Dapper.AuctionhouseDatabase.csproj", "{EBDE7CFF-E774-4BFD-B9BD-9C51B0DBA569}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Dapper.AuctionhouseDatabase", "Test.Dapper.AuctionhouseDatabase\Test.Dapper.AuctionhouseDatabase.csproj", "{12CB7343-A060-4ADD-B6C4-DAE3347B7743}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Dapper.AuctionhouseDatabase", "Adapters\Repositories\Test.Dapper.AuctionhouseDatabase\Test.Dapper.AuctionhouseDatabase.csproj", "{12CB7343-A060-4ADD-B6C4-DAE3347B7743}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctions.Tests.Base", "Test.Auctions.Base\Auctions.Tests.Base.csproj", "{6842B227-754B-46CB-A4B3-8E93BE6C0BB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctions.Tests.Base", "Modules\Auctions\Tests\Test.Auctions.Base\Auctions.Tests.Base.csproj", "{6842B227-754B-46CB-A4B3-8E93BE6C0BB5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReadModel", "ReadModel", "{00AB0266-0388-4EC1-BDE5-0EC6206F28E2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadModel.Core", "ReadModel.Core\ReadModel.Core.csproj", "{3E25A583-5EB5-4044-A257-CDDB426DD7AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadModel.Core", "Modules\ReadModel\ReadModel.Core\ReadModel.Core.csproj", "{3E25A583-5EB5-4044-A257-CDDB426DD7AF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CategoryStore", "CategoryStore", "{B032A588-F375-46B8-8678-994B7EFD0FE1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.XmlCategoryTreeStore", "Adapter.XmlCategoryTreeStore\Adapter.XmlCategoryTreeStore.csproj", "{26446E27-D315-4D68-959F-62A47D3426E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.XmlCategoryTreeStore", "Adapters\CategoryStore\Adapter.XmlCategoryTreeStore\Adapter.XmlCategoryTreeStore.csproj", "{26446E27-D315-4D68-959F-62A47D3426E1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.XmlCategoryTreeStore", "Test.XmlCategoryTreeStore\Test.XmlCategoryTreeStore.csproj", "{EAC2A518-3F82-4B29-A847-A33979A1F6D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.XmlCategoryTreeStore", "Adapters\CategoryStore\Test.XmlCategoryTreeStore\Test.XmlCategoryTreeStore.csproj", "{EAC2A518-3F82-4B29-A847-A33979A1F6D9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8DC5F62A-D2B2-4C3A-9483-A65C9EBC8514}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebAPI", "WebAPI", "{84D834F3-79C2-4E31-9A71-1917955E6CD7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctionhouse.Command", "Auctionhouse.Command\Auctionhouse.Command.csproj", "{449E5642-6615-4514-A421-6966B99FB72B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctionhouse.Command", "WebAPI\Auctionhouse.Command\Auctionhouse.Command.csproj", "{449E5642-6615-4514-A421-6966B99FB72B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctionhouse.Query", "Auctionhouse.Query\Auctionhouse.Query.csproj", "{155A7768-C318-4AC3-BBFF-EE1724691638}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctionhouse.Query", "WebAPI\Auctionhouse.Query\Auctionhouse.Query.csproj", "{155A7768-C318-4AC3-BBFF-EE1724691638}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuctionImageRepository", "AuctionImageRepository", "{2250DF43-E387-473E-9AFE-02C347335D32}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.MongoDb.AuctionImageRepository", "Adapter.MongoDb.AuctionImageRepository\Adapter.MongoDb.AuctionImageRepository.csproj", "{8E70447F-E471-4033-987D-45BA5734090B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.MongoDb.AuctionImageRepository", "Adapters\AuctionImageRepository\Adapter.MongoDb.AuctionImageRepository\Adapter.MongoDb.AuctionImageRepository.csproj", "{8E70447F-E471-4033-987D-45BA5734090B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.MongoDb.AuctionImageRepository", "Test.Adapter.MongoDb.AuctionImageRepository\Test.Adapter.MongoDb.AuctionImageRepository.csproj", "{8D2660A3-A9FD-4EB0-9718-3F81A005C404}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.MongoDb.AuctionImageRepository", "Adapters\AuctionImageRepository\Test.Adapter.MongoDb.AuctionImageRepository\Test.Adapter.MongoDb.AuctionImageRepository.csproj", "{8D2660A3-A9FD-4EB0-9718-3F81A005C404}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.AuctionImageConversion", "Adapter.AuctionImageConversion\Adapter.AuctionImageConversion.csproj", "{79FF3326-A130-4DDD-AAC6-08F0A68EF9C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.AuctionImageConversion", "Adapters\AuctionImageConversion\Adapter.AuctionImageConversion\Adapter.AuctionImageConversion.csproj", "{79FF3326-A130-4DDD-AAC6-08F0A68EF9C3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.AuctionImageConversion", "Test.Adapter.AuctionImageConversion\Test.Adapter.AuctionImageConversion.csproj", "{F4496BDD-3F7F-4502-95FB-F6C326F3747D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.AuctionImageConversion", "Adapters\AuctionImageConversion\Test.Adapter.AuctionImageConversion\Test.Adapter.AuctionImageConversion.csproj", "{F4496BDD-3F7F-4502-95FB-F6C326F3747D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuctionImageConversion", "AuctionImageConversion", "{E6927AB3-C25B-47DA-BC7E-1921EA46FB40}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Arch", "ArchTests\Test.Arch.csproj", "{9C2F00B8-7124-43DE-AE15-44B6E6283B77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Arch", "Tests\ArchTests\Test.Arch.csproj", "{9C2F00B8-7124-43DE-AE15-44B6E6283B77}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{108DCD5F-C97B-44A0-90A4-1AE386A216BB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Auctionhouse.Command.Integration", "Test.Auctionhouse.Command.Integration\Test.Auctionhouse.Command.Integration.csproj", "{2DA24D10-8F4B-413C-AC79-089FF9D301C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Auctionhouse.Command.Integration", "WebAPI\Tests\Test.Auctionhouse.Command.Integration\Test.Auctionhouse.Command.Integration.csproj", "{2DA24D10-8F4B-413C-AC79-089FF9D301C4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.WebAPI", "Common.WebAPI\Common.WebAPI.csproj", "{EC41C59D-A1E6-4458-9FC2-76CAF37D9C16}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.WebAPI", "WebAPI\Common.WebAPI\Common.WebAPI.csproj", "{EC41C59D-A1E6-4458-9FC2-76CAF37D9C16}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Auctionhouse.Query.Integration", "Test.Auctionhouse.Query.Integration\Test.Auctionhouse.Query.Integration.csproj", "{5F3DBBAD-5BED-4E1D-9726-F543A5DB26FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Auctionhouse.Query.Integration", "WebAPI\Tests\Test.Auctionhouse.Query.Integration\Test.Auctionhouse.Query.Integration.csproj", "{5F3DBBAD-5BED-4E1D-9726-F543A5DB26FB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserPayments.DomainEvents", "UserPayments.DomainEvents\UserPayments.DomainEvents.csproj", "{7C29DBE4-88BA-4252-AE1E-7676F4472D69}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserPayments.DomainEvents", "Modules\UserPayments\UserPayments.DomainEvents\UserPayments.DomainEvents.csproj", "{7C29DBE4-88BA-4252-AE1E-7676F4472D69}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReadModelNotifications", "ReadModelNotifications", "{E6CC83ED-4295-4092-8720-5A838CF8E0C5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.EfCore.ReadModelNotifications", "Adapter.EfCore.ReadModelNotifications\Adapter.EfCore.ReadModelNotifications.csproj", "{F058EE29-59E9-40B1-A2E1-05C491B67DB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.EfCore.ReadModelNotifications", "Adapters\ReadModelNotifications\Adapter.EfCore.ReadModelNotifications\Adapter.EfCore.ReadModelNotifications.csproj", "{F058EE29-59E9-40B1-A2E1-05C491B67DB5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.EfCore.ReadModelNotifications", "Test.Adapter.EfCore.ReadModelNotifications\Test.Adapter.EfCore.ReadModelNotifications.csproj", "{F59B28EB-65E7-458C-863A-9F200437D6A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.EfCore.ReadModelNotifications", "Adapters\ReadModelNotifications\Test.Adapter.EfCore.ReadModelNotifications\Test.Adapter.EfCore.ReadModelNotifications.csproj", "{F59B28EB-65E7-458C-863A-9F200437D6A7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctionhouse.CommandStatus", "Auctionhouse.CommandStatus\Auctionhouse.CommandStatus.csproj", "{68972832-B680-4E1A-AD31-A85289EA4421}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auctionhouse.CommandStatus", "WebAPI\Auctionhouse.CommandStatus\Auctionhouse.CommandStatus.csproj", "{68972832-B680-4E1A-AD31-A85289EA4421}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Auctionhouse.CommandStatus.Integration", "Test.Auctionhouse.CommandStatus.Integration\Test.Auctionhouse.CommandStatus.Integration.csproj", "{EA58E3C0-5C97-46D9-8AE7-143E28C3AE75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Auctionhouse.CommandStatus.Integration", "WebAPI\Tests\Test.Auctionhouse.CommandStatus.Integration\Test.Auctionhouse.CommandStatus.Integration.csproj", "{EA58E3C0-5C97-46D9-8AE7-143E28C3AE75}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventOutboxStorage", "EventOutboxStorage", "{D54B2273-CB0E-46DC-8B5D-B70D72226EDF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.SqlServer.EventOutboxStorage", "Adapter.SqlServer.EventOutboxStorage\Adapter.SqlServer.EventOutboxStorage.csproj", "{0CE3CE42-E1A0-4804-AF03-D3AD01FFD3EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.SqlServer.EventOutboxStorage", "Adapters\EventOutboxStorage\Adapter.SqlServer.EventOutboxStorage\Adapter.SqlServer.EventOutboxStorage.csproj", "{0CE3CE42-E1A0-4804-AF03-D3AD01FFD3EB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.SqlServer.EventOutboxStorage", "Test.Adapter.SqlServer.EventOutbox\Test.Adapter.SqlServer.EventOutboxStorage.csproj", "{8685B8D1-EB4B-4CA7-8C52-2AE5A2E31F44}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.SqlServer.EventOutboxStorage", "Adapters\EventOutboxStorage\Test.Adapter.SqlServer.EventOutbox\Test.Adapter.SqlServer.EventOutboxStorage.csproj", "{8685B8D1-EB4B-4CA7-8C52-2AE5A2E31F44}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Tests.Base", "Test.Common.Base\Common.Tests.Base.csproj", "{F7CC5BF3-4406-4EF0-B5A1-2070AD4078AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Tests.Base", "Modules\Common\Tests\Test.Common.Base\Common.Tests.Base.csproj", "{F7CC5BF3-4406-4EF0-B5A1-2070AD4078AE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Schedulers", "Schedulers", "{CA1CA04B-8114-43E0-90A7-6A297EF4A77F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.Hangfire_.Auctionhouse", "Adapter.Hangfire.Auctionhouse\Adapter.Hangfire_.Auctionhouse.csproj", "{E9CA9069-7ADA-400D-97F5-902612935B6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapter.Hangfire_.Auctionhouse", "Adapters\Schedulers\Adapter.Hangfire.Auctionhouse\Adapter.Hangfire_.Auctionhouse.csproj", "{E9CA9069-7ADA-400D-97F5-902612935B6E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.Hangfire.Auctionhouse", "Test.Adapter.Hangfire.Auctionhouse\Test.Adapter.Hangfire.Auctionhouse.csproj", "{451E5D38-F92E-4731-9BFA-08AFE6F70DCA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.Hangfire.Auctionhouse", "Adapters\Schedulers\Test.Adapter.Hangfire.Auctionhouse\Test.Adapter.Hangfire.Auctionhouse.csproj", "{451E5D38-F92E-4731-9BFA-08AFE6F70DCA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{260B980C-C261-46ED-8D35-74E7317D95B0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.Tests.Base", "Test.Users.Base\Users.Tests.Base.csproj", "{33584C47-5C14-4D7C-BA13-FEF7F4BA2C0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.Tests.Base", "Modules\Users\Tests\Test.Users.Base\Users.Tests.Base.csproj", "{33584C47-5C14-4D7C-BA13-FEF7F4BA2C0A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.DomainEvents", "Users.DomainEvents\Users.DomainEvents.csproj", "{07C3FF8D-2049-4BFF-A3B6-D046CCBB9254}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.DomainEvents", "Modules\Users\Users.DomainEvents\Users.DomainEvents.csproj", "{07C3FF8D-2049-4BFF-A3B6-D046CCBB9254}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9B96EB46-E872-42D2-A50A-A361AB976033}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadModel.Tests.Integration", "Test.ReadModel.Integration\ReadModel.Tests.Integration.csproj", "{9AACEA59-7E45-4895-B3E2-60324801103C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadModel.Tests.Integration", "Modules\ReadModel\Tests\Test.ReadModel.Integration\ReadModel.Tests.Integration.csproj", "{9AACEA59-7E45-4895-B3E2-60324801103C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadModel.Tests.Base", "Test.ReadModel.Base\ReadModel.Tests.Base.csproj", "{8AF275BA-6928-438F-9878-0A6C82B2EEBE}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommandDb", "CommandDb", "{EAD12EB0-674E-406A-A468-B96C896145D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadModel.Tests.Base", "Modules\ReadModel\Tests\Test.ReadModel.Base\ReadModel.Tests.Base.csproj", "{8AF275BA-6928-438F-9878-0A6C82B2EEBE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{CB7E6391-814A-47C5-A35C-D87E3CD99AD1}"
-	ProjectSection(SolutionItems) = preProject
-		Add-EventOutboxAdapterScripts.ps1 = Add-EventOutboxAdapterScripts.ps1
-		Add-SagaNotificationsScripts.ps1 = Add-SagaNotificationsScripts.ps1
-		Append-ScriptsToDatabaseProj.ps1 = Append-ScriptsToDatabaseProj.ps1
-		Build-DockerImage.ps1 = Build-DockerImage.ps1
-		Build-FromBackupDockerImage.ps1 = Build-FromBackupDockerImage.ps1
-		Generate-Compose.ps1 = Generate-Compose.ps1
-		Save-BackupFromDockerContainer.ps1 = Save-BackupFromDockerContainer.ps1
-	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.Domain.Tests", "Test.UsersDomain\Users.Domain.Tests.csproj", "{682C5F13-8901-476A-B0D5-D6E553F8CA23}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.Domain.Tests", "Modules\Users\Tests\Test.UsersDomain\Users.Domain.Tests.csproj", "{682C5F13-8901-476A-B0D5-D6E553F8CA23}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8C3CAEA9-939E-4F49-B2E7-5E9DEE5E6429}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Categories.Domain.Tests", "Test.CategoriesDomain\Categories.Domain.Tests.csproj", "{23E05036-AFE1-457F-877B-6984393CF5E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Categories.Domain.Tests", "Modules\Categories\Tests\Test.CategoriesDomain\Categories.Domain.Tests.csproj", "{23E05036-AFE1-457F-877B-6984393CF5E0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5C8BFF18-65ED-43A6-8743-000662D95A27}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{5FFCFE65-844B-49DF-92BF-56D6A1FD7097}"
 	ProjectSection(SolutionItems) = preProject
-		AuctionhouseDatabase.Docker\Dockerfile = AuctionhouseDatabase.Docker\Dockerfile
-		AuctionhouseDatabase.Docker\docker_setup.sql = AuctionhouseDatabase.Docker\docker_setup.sql
-		AuctionhouseDatabase.Docker\entrypoint.sh = AuctionhouseDatabase.Docker\entrypoint.sh
-		AuctionhouseDatabase.Docker\frombackup-entrypoint.sh = AuctionhouseDatabase.Docker\frombackup-entrypoint.sh
-		AuctionhouseDatabase.Docker\healthcheck.sh = AuctionhouseDatabase.Docker\healthcheck.sh
-		AuctionhouseDatabase.Docker\restore-AuctionhouseDatabase.sql = AuctionhouseDatabase.Docker\restore-AuctionhouseDatabase.sql
-		AuctionhouseDatabase.Docker\wait-for = AuctionhouseDatabase.Docker\wait-for
+		Database\Command\AuctionhouseDatabase.Docker\Dockerfile = Database\Command\AuctionhouseDatabase.Docker\Dockerfile
+		Database\Command\AuctionhouseDatabase.Docker\Dockerfile-frombackup = Database\Command\AuctionhouseDatabase.Docker\Dockerfile-frombackup
+		Database\Command\AuctionhouseDatabase.Docker\docker_setup.sql = Database\Command\AuctionhouseDatabase.Docker\docker_setup.sql
+		Database\Command\AuctionhouseDatabase.Docker\entrypoint.sh = Database\Command\AuctionhouseDatabase.Docker\entrypoint.sh
+		Database\Command\AuctionhouseDatabase.Docker\frombackup-entrypoint.sh = Database\Command\AuctionhouseDatabase.Docker\frombackup-entrypoint.sh
+		Database\Command\AuctionhouseDatabase.Docker\healthcheck.sh = Database\Command\AuctionhouseDatabase.Docker\healthcheck.sh
+		Database\Command\AuctionhouseDatabase.Docker\restore-AuctionhouseDatabase.sql = Database\Command\AuctionhouseDatabase.Docker\restore-AuctionhouseDatabase.sql
+		Database\Command\AuctionhouseDatabase.Docker\wait-for = Database\Command\AuctionhouseDatabase.Docker\wait-for
 	EndProjectSection
 EndProject
-Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "MongoDb", "MongoDb\MongoDb.njsproj", "{835C31F7-1CA9-490C-86C0-41EEA386D86C}"
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "MongoDb", "Database\Query\MongoDb\MongoDb.njsproj", "{835C31F7-1CA9-490C-86C0-41EEA386D86C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuctionEndScheduler", "AuctionEndScheduler", "{FD995697-1077-45A5-9729-4EEFA17A2DBD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.QuartzServiceAuctionEndScheduler", "Test.Adapter.QuartzServiceAuctionEndScheduler\Test.Adapter.QuartzServiceAuctionEndScheduler.csproj", "{D84D3ADD-729B-4B77-8C98-519A65DC42BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Adapter.QuartzServiceAuctionEndScheduler", "Adapters\Schedulers\Test.Adapter.QuartzServiceAuctionEndScheduler\Test.Adapter.QuartzServiceAuctionEndScheduler.csproj", "{D84D3ADD-729B-4B77-8C98-519A65DC42BF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockAuctionEndSchedulerEndpointApp", "MockAuctionEndSchedulerEndpointApp\MockAuctionEndSchedulerEndpointApp.csproj", "{2A34BF67-DACF-4682-9475-695045FAF601}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockAuctionEndSchedulerEndpointApp", "Adapters\Schedulers\MockAuctionEndSchedulerEndpointApp\MockAuctionEndSchedulerEndpointApp.csproj", "{2A34BF67-DACF-4682-9475-695045FAF601}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DatabaseProject", "DatabaseProject", "{53FD876C-BB2D-4313-A9C0-0B13D9C56EF0}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Command", "Command", "{53FD876C-BB2D-4313-A9C0-0B13D9C56EF0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntegrationServices", "IntegrationServices", "{F9610672-19F2-45CD-8C5B-E48E944D3858}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuctionPaymentVerification", "AuctionPaymentVerification", "{CEA3D5B6-99BF-4CB1-AA7B-F9F1C6924A16}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationService.AuctionPaymentVerification", "IntegrationService.AuctionPaymentVerification\IntegrationService.AuctionPaymentVerification.csproj", "{BB0F9FDF-9751-4B93-8F50-091D83CAC7B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationService.AuctionPaymentVerification", "Modules\IntegrationServices\IntegrationService.AuctionPaymentVerification\IntegrationService.AuctionPaymentVerification.csproj", "{BB0F9FDF-9751-4B93-8F50-091D83CAC7B7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserPayments.Tests.Base", "Test.UserPayments.Base\UserPayments.Tests.Base.csproj", "{F132EF37-BB5F-497F-B7E8-99858BB90E20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserPayments.Tests.Base", "Modules\UserPayments\Tests\Test.UserPayments.Base\UserPayments.Tests.Base.csproj", "{F132EF37-BB5F-497F-B7E8-99858BB90E20}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CategoryNamesToTreeIdsConversion", "CategoryNamesToTreeIdsConversion", "{4EED55A6-C808-4F7F-90C2-AA559E0353D4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationService.CategoryNamesToTreeIdsConversion", "IntegrationService.CategoryNamesToTreeIdsConversion\IntegrationService.CategoryNamesToTreeIdsConversion.csproj", "{E870F142-D7B8-43A8-B614-3A3751A0C30E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationService.CategoryNamesToTreeIdsConversion", "Modules\IntegrationServices\IntegrationService.CategoryNamesToTreeIdsConversion\IntegrationService.CategoryNamesToTreeIdsConversion.csproj", "{E870F142-D7B8-43A8-B614-3A3751A0C30E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "container-scripts", "container-scripts", "{30ADC9D6-3AB9-41BC-BF7D-60BAC785D706}"
 	ProjectSection(SolutionItems) = preProject
-		AuctionhouseDatabase.Docker\container-scripts\listen-on-health-port.sh = AuctionhouseDatabase.Docker\container-scripts\listen-on-health-port.sh
+		Database\Command\AuctionhouseDatabase.Docker\container-scripts\listen-on-health-port.sh = Database\Command\AuctionhouseDatabase.Docker\container-scripts\listen-on-health-port.sh
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChronicleEfCoreStorage", "Adapter.ChronicleEfCoreStorage\ChronicleEfCoreStorage.csproj", "{6756D564-8FCE-4D48-A7BE-92271A854B69}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChronicleEfCoreStorage", "Adapters\Adapter.ChronicleEfCoreStorage\ChronicleEfCoreStorage.csproj", "{6756D564-8FCE-4D48-A7BE-92271A854B69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadModel.Tests.Unit", "ReadModel.Tests.Unit\ReadModel.Tests.Unit.csproj", "{61079A9F-3FD1-47B6-B2D5-D29E1DCA02BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadModel.Tests.Unit", "Modules\ReadModel\Tests\ReadModel.Tests.Unit\ReadModel.Tests.Unit.csproj", "{61079A9F-3FD1-47B6-B2D5-D29E1DCA02BF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{B789FD63-2B9D-497F-98CC-175D72357F6B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Query", "Query", "{43FD7E99-9FFB-4B49-916B-37CB9E9F17F6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{59019552-9DA1-4276-80AA-81B1C6488D1C}"
+	ProjectSection(SolutionItems) = preProject
+		Database\Command\Scripts\build\Add-EventOutboxAdapterScripts.ps1 = Database\Command\Scripts\build\Add-EventOutboxAdapterScripts.ps1
+		Database\Command\Scripts\build\Add-SagaNotificationsScripts.ps1 = Database\Command\Scripts\build\Add-SagaNotificationsScripts.ps1
+		Database\Command\Scripts\build\Append-ScriptsToDatabaseProj.ps1 = Database\Command\Scripts\build\Append-ScriptsToDatabaseProj.ps1
+		Database\Command\Scripts\build\Build-DockerImage.ps1 = Database\Command\Scripts\build\Build-DockerImage.ps1
+		Database\Command\Scripts\build\Build.ps1 = Database\Command\Scripts\build\Build.ps1
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backups", "backups", "{10C9E355-874A-41BB-AABA-95B5C255927F}"
+	ProjectSection(SolutionItems) = preProject
+		Database\Command\Scripts\backups\Build-FromBackupDockerImage.ps1 = Database\Command\Scripts\backups\Build-FromBackupDockerImage.ps1
+		Database\Command\Scripts\backups\Generate-Compose.ps1 = Database\Command\Scripts\backups\Generate-Compose.ps1
+		Database\Command\Scripts\backups\Save-BackupFromDockerContainer.ps1 = Database\Command\Scripts\backups\Save-BackupFromDockerContainer.ps1
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Edge", "Edge", "{8BAC7B4D-1B16-4B8C-9460-90E60AB875F6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Envoy", "Envoy", "{1CEDF2B5-1364-48F5-8CB0-E7D3FF60BBB6}"
+	ProjectSection(SolutionItems) = preProject
+		Edge\Envoy\custom_entrypoint.sh = Edge\Envoy\custom_entrypoint.sh
+		Edge\Envoy\Dockerfile = Edge\Envoy\Dockerfile
+		Edge\Envoy\Dockerfile.local = Edge\Envoy\Dockerfile.local
+		Edge\Envoy\envoy-local.yaml = Edge\Envoy\envoy-local.yaml
+		Edge\Envoy\envoy.yaml = Edge\Envoy\envoy.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ssl", "ssl", "{3F760D64-304B-4322-A9E2-29F99B375C0C}"
+	ProjectSection(SolutionItems) = preProject
+		Edge\Envoy\ssl\chain.txt = Edge\Envoy\ssl\chain.txt
+		Edge\Envoy\ssl\private.txt = Edge\Envoy\ssl\private.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -531,7 +558,7 @@ Global
 		{5744FD2C-7224-4A12-ACB1-C00EE1B0DF7D} = {7E28159A-BD62-46D0-8167-81A089544046}
 		{7E28159A-BD62-46D0-8167-81A089544046} = {2C7F9FB2-0106-45A8-8185-8B58DF359DE2}
 		{9237AD4B-4959-4FAF-8CBA-141E4C0E4BEB} = {7E28159A-BD62-46D0-8167-81A089544046}
-		{94E22CD1-B1B9-44DF-8240-85E518B2CD5B} = {EAD12EB0-674E-406A-A468-B96C896145D6}
+		{94E22CD1-B1B9-44DF-8240-85E518B2CD5B} = {2C7F9FB2-0106-45A8-8185-8B58DF359DE2}
 		{EBDE7CFF-E774-4BFD-B9BD-9C51B0DBA569} = {94E22CD1-B1B9-44DF-8240-85E518B2CD5B}
 		{12CB7343-A060-4ADD-B6C4-DAE3347B7743} = {94E22CD1-B1B9-44DF-8240-85E518B2CD5B}
 		{6842B227-754B-46CB-A4B3-8E93BE6C0BB5} = {042D36E8-EBEF-43FB-8B69-BF1169CCC1B3}
@@ -573,17 +600,16 @@ Global
 		{9B96EB46-E872-42D2-A50A-A361AB976033} = {00AB0266-0388-4EC1-BDE5-0EC6206F28E2}
 		{9AACEA59-7E45-4895-B3E2-60324801103C} = {9B96EB46-E872-42D2-A50A-A361AB976033}
 		{8AF275BA-6928-438F-9878-0A6C82B2EEBE} = {9B96EB46-E872-42D2-A50A-A361AB976033}
-		{EAD12EB0-674E-406A-A468-B96C896145D6} = {2C7F9FB2-0106-45A8-8185-8B58DF359DE2}
 		{CB7E6391-814A-47C5-A35C-D87E3CD99AD1} = {53FD876C-BB2D-4313-A9C0-0B13D9C56EF0}
 		{682C5F13-8901-476A-B0D5-D6E553F8CA23} = {260B980C-C261-46ED-8D35-74E7317D95B0}
 		{8C3CAEA9-939E-4F49-B2E7-5E9DEE5E6429} = {FBCD4725-8EA6-45ED-80DC-EA06CD47027C}
 		{23E05036-AFE1-457F-877B-6984393CF5E0} = {8C3CAEA9-939E-4F49-B2E7-5E9DEE5E6429}
 		{5FFCFE65-844B-49DF-92BF-56D6A1FD7097} = {53FD876C-BB2D-4313-A9C0-0B13D9C56EF0}
-		{835C31F7-1CA9-490C-86C0-41EEA386D86C} = {00AB0266-0388-4EC1-BDE5-0EC6206F28E2}
+		{835C31F7-1CA9-490C-86C0-41EEA386D86C} = {43FD7E99-9FFB-4B49-916B-37CB9E9F17F6}
 		{FD995697-1077-45A5-9729-4EEFA17A2DBD} = {CA1CA04B-8114-43E0-90A7-6A297EF4A77F}
 		{D84D3ADD-729B-4B77-8C98-519A65DC42BF} = {FD995697-1077-45A5-9729-4EEFA17A2DBD}
 		{2A34BF67-DACF-4682-9475-695045FAF601} = {FD995697-1077-45A5-9729-4EEFA17A2DBD}
-		{53FD876C-BB2D-4313-A9C0-0B13D9C56EF0} = {EAD12EB0-674E-406A-A468-B96C896145D6}
+		{53FD876C-BB2D-4313-A9C0-0B13D9C56EF0} = {B789FD63-2B9D-497F-98CC-175D72357F6B}
 		{F9610672-19F2-45CD-8C5B-E48E944D3858} = {5F256B4F-B266-4FC7-AD43-28544B7AC3C6}
 		{CEA3D5B6-99BF-4CB1-AA7B-F9F1C6924A16} = {F9610672-19F2-45CD-8C5B-E48E944D3858}
 		{BB0F9FDF-9751-4B93-8F50-091D83CAC7B7} = {CEA3D5B6-99BF-4CB1-AA7B-F9F1C6924A16}
@@ -593,6 +619,11 @@ Global
 		{30ADC9D6-3AB9-41BC-BF7D-60BAC785D706} = {5FFCFE65-844B-49DF-92BF-56D6A1FD7097}
 		{6756D564-8FCE-4D48-A7BE-92271A854B69} = {2C7F9FB2-0106-45A8-8185-8B58DF359DE2}
 		{61079A9F-3FD1-47B6-B2D5-D29E1DCA02BF} = {9B96EB46-E872-42D2-A50A-A361AB976033}
+		{43FD7E99-9FFB-4B49-916B-37CB9E9F17F6} = {B789FD63-2B9D-497F-98CC-175D72357F6B}
+		{59019552-9DA1-4276-80AA-81B1C6488D1C} = {CB7E6391-814A-47C5-A35C-D87E3CD99AD1}
+		{10C9E355-874A-41BB-AABA-95B5C255927F} = {CB7E6391-814A-47C5-A35C-D87E3CD99AD1}
+		{1CEDF2B5-1364-48F5-8CB0-E7D3FF60BBB6} = {8BAC7B4D-1B16-4B8C-9460-90E60AB875F6}
+		{3F760D64-304B-4322-A9E2-29F99B375C0C} = {1CEDF2B5-1364-48F5-8CB0-E7D3FF60BBB6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F4E77E2A-13ED-428A-962C-F0BDF00E9A14}

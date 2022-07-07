@@ -1,0 +1,7 @@
+FROM pekalam/auctionhouse-sqlserver
+COPY restore-AuctionhouseDatabase.sql ./
+COPY frombackup-entrypoint.sh /bin/sqlserver-entrypoint.sh
+RUN chmod +x /bin/sqlserver-entrypoint.sh
+ARG BACKUP_LOCATION
+COPY ${BACKUP_LOCATION}AuctionhouseDatabase.mdf ${BACKUP_LOCATION}AuctionhouseDatabase_log.ldf ./
+ENTRYPOINT [ "sqlserver-entrypoint.sh" ]

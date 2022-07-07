@@ -1,0 +1,30 @@
+version: '3.4'
+
+services:
+  query:
+    depends_on:
+      - quartz_web_task_service
+      - sql_server
+      - rabbitmq
+      - zipkin
+      - seq
+      - redis
+      - mongodb
+  command:
+    depends_on:
+      - quartz_web_task_service
+      - sql_server
+      - rabbitmq
+      - zipkin
+      - seq
+      - redis
+      - mongodb
+  commandstatus:
+    depends_on:
+      - quartz_web_task_service
+      - sql_server
+      - rabbitmq
+      - zipkin
+      - seq
+      - redis
+      - mongodb

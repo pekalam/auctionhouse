@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="FunctionalTests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Auctions\Auctions.Domain.Events\Auctions.DomainEvents.csproj" />
+    <ProjectReference Include="..\..\Common\Common.Application\Common.Application.csproj" />
+    <ProjectReference Include="..\..\Common\Core.DomainFramework\Common.DomainFramework.csproj" />
+    <ProjectReference Include="..\UserPayments.Domain\UserPayments.Domain.csproj" />
+    <ProjectReference Include="..\..\Users\Users.DomainEvents\Users.DomainEvents.csproj" />
+  </ItemGroup>
+
+</Project>
