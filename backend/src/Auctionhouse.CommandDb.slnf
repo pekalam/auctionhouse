@@ -1,0 +1,9 @@
+{
+  "solution": {
+    "path": "Auctionhouse.sln",
+    "projects": [
+      "AuctionhouseDatabase\\AuctionhouseDatabase.sqlproj",
+      "Test.AuctionhouseDatabase\\Test.AuctionhouseDatabase.sqlproj"
+    ]
+  }
+}

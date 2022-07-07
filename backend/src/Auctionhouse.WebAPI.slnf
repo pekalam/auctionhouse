@@ -1,0 +1,14 @@
+{
+  "solution": {
+    "path": "Auctionhouse.sln",
+    "projects": [
+      "Auctionhouse.CommandStatus\\Auctionhouse.CommandStatus.csproj",
+      "Auctionhouse.Command\\Auctionhouse.Command.csproj",
+      "Auctionhouse.Query\\Auctionhouse.Query.csproj",
+      "Common.WebAPI\\Common.WebAPI.csproj",
+      "Test.Auctionhouse.Command.Integration\\Test.Auctionhouse.Command.Integration.csproj",
+      "Test.Auctionhouse.CommandStatus.Integration\\Test.Auctionhouse.CommandStatus.Integration.csproj",
+      "Test.Auctionhouse.Query.Integration\\Test.Auctionhouse.Query.Integration.csproj"
+    ]
+  }
+}
