@@ -2,13 +2,13 @@
   "solution": {
     "path": "Auctionhouse.sln",
     "projects": [
-      "Auctionhouse.CommandStatus\\Auctionhouse.CommandStatus.csproj",
-      "Auctionhouse.Command\\Auctionhouse.Command.csproj",
-      "Auctionhouse.Query\\Auctionhouse.Query.csproj",
-      "Common.WebAPI\\Common.WebAPI.csproj",
-      "Test.Auctionhouse.Command.Integration\\Test.Auctionhouse.Command.Integration.csproj",
-      "Test.Auctionhouse.CommandStatus.Integration\\Test.Auctionhouse.CommandStatus.Integration.csproj",
-      "Test.Auctionhouse.Query.Integration\\Test.Auctionhouse.Query.Integration.csproj"
+      "WebAPI\\Auctionhouse.CommandStatus\\Auctionhouse.CommandStatus.csproj",
+      "WebAPI\\Auctionhouse.Command\\Auctionhouse.Command.csproj",
+      "WebAPI\\Auctionhouse.Query\\Auctionhouse.Query.csproj",
+      "WebAPI\\Common.WebAPI\\Common.WebAPI.csproj",
+      "WebAPI\\Tests\\Test.Auctionhouse.Command.Integration\\Test.Auctionhouse.Command.Integration.csproj",
+      "WebAPI\\Tests\\Test.Auctionhouse.CommandStatus.Integration\\Test.Auctionhouse.CommandStatus.Integration.csproj",
+      "WebAPI\\Tests\\Test.Auctionhouse.Query.Integration\\Test.Auctionhouse.Query.Integration.csproj"
     ]
   }
 }
