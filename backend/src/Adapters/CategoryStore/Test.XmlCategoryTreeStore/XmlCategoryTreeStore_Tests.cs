@@ -1,9 +1,11 @@
 ﻿using System.Xml.Schema;
 using Xunit;
+using TestConfigurationAccessor;
 
 namespace IntegrationTests
 {
     using FluentAssertions;
+    using Test.XmlCategoryTreeStore;
     using XmlCategoryTreeStore;
 
     [Trait("Category", "Integration")]
@@ -12,11 +14,7 @@ namespace IntegrationTests
         [Fact]
         public void GetCategoryTree_when_called_returns_valid_category_tree()
         {
-            var serviceSettings = new XmlCategoryNameStoreSettings()
-            {
-                CategoriesFilePath = "./categoryTreeService_data/test_categories.xml",
-                SchemaFilePath = "_Categories-xml-data/categories.xsd"
-            };
+            var serviceSettings = TestConfig.Instance.GetStoreSettings();
             var testService = new XmlCategoryTreeStore(serviceSettings);
             testService.Init();
 
@@ -58,7 +56,7 @@ namespace IntegrationTests
             var service = new XmlCategoryTreeStore(new XmlCategoryNameStoreSettings()
             {
                 CategoriesFilePath = testFileName,
-                SchemaFilePath = "_Categories-xml-data/categories.xsd"
+                SchemaFilePath = TestConfig.Instance.GetSchemaFilePath()
             });
 
             Assert.Throws<XmlSchemaValidationException>(() => service.Init());

@@ -4,6 +4,7 @@ using Auctions.Tests.Base.Domain.ModelBuilders;
 using Core.Common.Domain.Users;
 using FluentAssertions;
 using System;
+using TestConfigurationAccessor;
 using Users.Domain;
 using Xunit;
 
@@ -17,13 +18,8 @@ namespace Test.Dapper.AuctionhouseDatabase
 
         public AuctionRepository_Tests()
         {
-            var serverOpt = new AuctionhouseRepositorySettings()
-            {
-                //ConnectionString = TestContextUtils.GetParameterOrDefault("sqlserver",
-                //"Data Source=.;Initial Catalog=AuctionhouseDatabase;Integrated Security=False;User ID=sa;PWD=Qwerty1234;")
-                ConnectionString = "Server=127.0.0.1;Database=AuctionhouseDatabase;TrustServerCertificate=True;User ID=sa;Password=Qwerty1234;"
-            };
-            auctionRepository = new MsSqlAuctionRepository(serverOpt);
+            var repositorySettings = TestConfig.Instance.GetRepositorySettings();
+            auctionRepository = new MsSqlAuctionRepository(repositorySettings);
             user = User.Create(Username.Create("Test username").Result);
             user.AddCredits(1000);
             user.MarkPendingEventsAsHandled();

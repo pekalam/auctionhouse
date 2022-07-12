@@ -15,6 +15,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using TestConfigurationAccessor;
 using Xunit;
 
 namespace Test.Adapter.RabbitMq.EventBus
@@ -51,10 +52,7 @@ namespace Test.Adapter.RabbitMq.EventBus
 
         protected static IImplProvider AddAdapterServices(ServiceCollection services)
         {
-            services.AddRabbitMqEventBus(new()
-            {
-                ConnectionString = RabbitMqSettings.SampleRabbitMqConnectionString,
-            });
+            services.AddRabbitMqEventBus(TestConfig.Instance.GetRabbitMqSettings());
             services.AddErrorEventOutbox(new()
             {
                 DatabasePath = @".\testDb"
@@ -129,11 +127,7 @@ namespace Test.Adapter.RabbitMq.EventBus
         {
             scenario = EventBusRedeliveryAdapterContract.EventSubscriberRedeliveryScenario;
             stubImplProvider = SetupImplProvider(scenario.given.eventSubscriber);
-            bus = new RabbitMqEventBus(new RabbitMqSettings()
-            {
-                //ConnectionString = TestContextUtils.GetParameterOrDefault("rabbitmq-connection-string", "host=localhost"),
-                ConnectionString = RabbitMqSettings.SampleRabbitMqConnectionString,
-            }, stubImplProvider.Get<ILogger<RabbitMqEventBus>>(), stubImplProvider.Get<IServiceScopeFactory>());
+            bus = new RabbitMqEventBus(TestConfig.Instance.GetRabbitMqSettings(), stubImplProvider.Get<ILogger<RabbitMqEventBus>>(), stubImplProvider.Get<IServiceScopeFactory>());
 
             bus.InitEventSubscriptions(stubImplProvider, Assembly.Load("Common.Tests.Base"));
             bus.SetupErrorQueueSubscribtion();

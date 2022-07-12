@@ -23,10 +23,17 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Modules\Auctions\Auctions.Domain\Auctions.Domain.csproj" />
+    <ProjectReference Include="..\..\..\TestConfigurationAccessor\TestConfigurationAccessor.csproj" />
     <ProjectReference Include="..\Adapter.Dapper.AuctionhouseDatabase\Adapter.Dapper.AuctionhouseDatabase.csproj" />
     <ProjectReference Include="..\..\..\Modules\Auctions\Tests\Test.Auctions.Base\Auctions.Tests.Base.csproj" />
     <ProjectReference Include="..\..\..\Modules\UserPayments\Tests\Test.UserPayments.Base\UserPayments.Tests.Base.csproj" />
     <ProjectReference Include="..\..\..\Modules\Users\\Users.Domain\Users.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="settings.local.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

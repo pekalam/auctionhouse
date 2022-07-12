@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Test.Adapter.RabbitMq.EventBus;
+using TestConfigurationAccessor;
 using Xunit;
 
 namespace Test.RabbitMq.EventBus
@@ -76,11 +77,7 @@ namespace Test.RabbitMq.EventBus
 
             var stubImplProvider = SetupImplProvider(handler);
 
-            var bus = new RabbitMqEventBus(new RabbitMqSettings()
-            {
-                //ConnectionString = TestContextUtils.GetParameterOrDefault("rabbitmq-connection-string", "host=localhost"),
-                ConnectionString = RabbitMqSettings.SampleRabbitMqConnectionString,
-            }, stubImplProvider.Get<ILogger<RabbitMqEventBus>>(), stubImplProvider.Get<IServiceScopeFactory>());
+            var bus = new RabbitMqEventBus(TestConfig.Instance.GetRabbitMqSettings(), stubImplProvider.Get<ILogger<RabbitMqEventBus>>(), stubImplProvider.Get<IServiceScopeFactory>());
             bus.InitEventSubscriptions(stubImplProvider, Assembly.Load("Test.Adapter.RabbitMq.EventBus"));
 
             await bus.Publish(toPublish);

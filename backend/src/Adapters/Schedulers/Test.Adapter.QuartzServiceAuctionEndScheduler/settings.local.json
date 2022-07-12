@@ -1,0 +1,4 @@
+{
+  "QuartzAuctionEndSchedulerTests:ConnectionString": "http://localhost:5001",
+  "QuartzAuctionEndSchedulerTests:ApiKey": "testk"
+}

@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
+using TestConfigurationAccessor;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -24,7 +25,6 @@ namespace Test.Adapter.Hangfire.Auctionhouse
     [Trait("Category", "Integration")]
     public class AuctionUnlockScheduler_Tests : IDisposable
     {
-        private const string ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Marek\source\repos\Csharp\auctionhouse\backend\src\Tests\FunctionalTestsServer.mdf;Integrated Security=True;Connect Timeout=30";
         private readonly ITestOutputHelper _outputHelper;
 
         public AuctionUnlockScheduler_Tests(ITestOutputHelper outputHelper)
@@ -87,7 +87,7 @@ namespace Test.Adapter.Hangfire.Auctionhouse
                     services.AddTransient<IEventOutbox>(s => Mock.Of<IEventOutbox>());
                     services.AddTransient<IUnitOfWorkFactory>(s => UnitOfWorkFactoryMock.Instance.Object);
                     services.AddTransient<AuctionUnlockService>();
-                    services.AddHangfireServices(connectionString: ConnectionString);
+                    services.AddHangfireServices(connectionString: TestConfig.Instance.GetHangfireDbConnectionString());
                 })
                 .Build();
             HangfireAdapterInstaller.Initialize(host.Services);
@@ -119,7 +119,7 @@ namespace Test.Adapter.Hangfire.Auctionhouse
         {
             var jobIds = new List<string>();
 
-            using (var connection = new SqlConnection(ConnectionString))
+            using (var connection = new SqlConnection(TestConfig.Instance.GetHangfireDbConnectionString()))
             {
                 connection.Open();
 

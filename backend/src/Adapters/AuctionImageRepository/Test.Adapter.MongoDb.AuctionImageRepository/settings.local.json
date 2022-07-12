@@ -1,0 +1,4 @@
+{
+  "AuctionImageRepositoryTests:ConnectionString": "mongodb://auctionhouse-user:Test-1234@localhost:27017/appDb",
+  "AuctionImageRepositoryTests:DatabaseName": "appDb"
+}

@@ -1,0 +1,4 @@
+{
+  "XmlCategoryTreeStoreTests:CategoriesFilePath": "./categoryTreeService_data/test_categories.xml",
+  "XmlCategoryTreeStoreTests:SchemaFilePath": "_Categories-xml-data/categories.xsd"
+}

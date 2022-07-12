@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\TestConfigurationAccessor\TestConfigurationAccessor.csproj" />
     <ProjectReference Include="..\Adapter.XmlCategoryTreeStore\Adapter.XmlCategoryTreeStore.csproj" />
   </ItemGroup>
 
@@ -37,6 +38,9 @@
     </None>
     <None Update="categoryTreeService_data\test_categories.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="settings.local.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

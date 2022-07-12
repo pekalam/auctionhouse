@@ -1,6 +1,7 @@
 ﻿using Adapter.Dapper.AuctionhouseDatabase;
 using FluentAssertions;
 using System;
+using TestConfigurationAccessor;
 using Users.Domain.Auth;
 using Users.Domain.Repositories;
 using Xunit;
@@ -21,11 +22,8 @@ namespace Test.Dapper.AuctionhouseDatabase
 
         public UserAuthDataRepository_Tests()
         {
-            var serverOpt = new AuctionhouseRepositorySettings()
-            {
-                ConnectionString = "Server=127.0.0.1;Database=AuctionhouseDatabase;TrustServerCertificate=True;User ID=sa;Password=Qwerty1234;"
-            };
-            _userAuthenticationDataRepository = new UserAuthenticationDataRepository(serverOpt);
+            var repositorySettings = TestConfig.Instance.GetRepositorySettings();
+            _userAuthenticationDataRepository = new UserAuthenticationDataRepository(repositorySettings);
         }
 
         [Fact]

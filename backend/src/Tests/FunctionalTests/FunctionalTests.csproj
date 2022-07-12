@@ -32,6 +32,7 @@
     <ProjectReference Include="..\..\Adapters\ReadModelNotifications\Adapter.EfCore.ReadModelNotifications\Adapter.EfCore.ReadModelNotifications.csproj" />
     <ProjectReference Include="..\..\Modules\IntegrationServices\IntegrationService.AuctionPaymentVerification\IntegrationService.AuctionPaymentVerification.csproj" />
     <ProjectReference Include="..\..\Modules\AuctionBids\AuctionBids.Application\AuctionBids.Application.csproj" />
+    <ProjectReference Include="..\..\TestConfigurationAccessor\TestConfigurationAccessor.csproj" />
     <ProjectReference Include="..\..\WebAPI\Auctionhouse.Query\Auctionhouse.Query.csproj" />
     <ProjectReference Include="..\..\Modules\Auctions\Auctions.Application\Auctions.Application.csproj" />
     <ProjectReference Include="..\..\Modules\Categories\Categories.Domain\Categories.Domain.csproj" />
@@ -63,6 +64,9 @@
     </None>
     <None Update="imageData\500x900.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="settings.local.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

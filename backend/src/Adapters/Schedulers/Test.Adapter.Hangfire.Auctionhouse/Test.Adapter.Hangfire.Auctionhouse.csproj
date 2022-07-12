@@ -22,10 +22,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\TestConfigurationAccessor\TestConfigurationAccessor.csproj" />
     <ProjectReference Include="..\Adapter.Hangfire.Auctionhouse\Adapter.Hangfire_.Auctionhouse.csproj" />
     <ProjectReference Include="..\..\..\Modules\Auctions\Auctions.Application\Auctions.Application.csproj" />
     <ProjectReference Include="..\..\..\Modules\Auctions\Tests\Test.Auctions.Base\Auctions.Tests.Base.csproj" />
     <ProjectReference Include="..\..\..\Modules\Common\Tests\Test.Common.Base\Common.Tests.Base.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="settings.local.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

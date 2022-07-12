@@ -55,21 +55,6 @@ namespace Test.Adapter.QuartzServiceAuctionEndScheduler
         }
     }
 
-    public class TimeTaskServiceSettingsFactory
-    {
-        public static string Url { get; set; }
-
-        public static TimeTaskServiceSettings Create()
-        {
-            return new TimeTaskServiceSettings
-            {
-                ConnectionString = "http://localhost:5001",
-                ApiKey = "testk",
-                AuctionEndEchoTaskEndpoint = Url.Replace("localhost", "host.docker.internal") + "/foo",
-            };
-        }
-    }
-
     [Trait("Category", "Integration")]
     public class QuartzAuctionEndSchedulerTests
     {

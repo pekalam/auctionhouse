@@ -1,0 +1,3 @@
+{
+  "AuctionBidsRepositoryTests:ConnectionString": "Server=127.0.0.1;Database=AuctionhouseDatabase;TrustServerCertificate=True;User ID=sa;Password=Qwerty1234;"
+}

@@ -1,0 +1,3 @@
+{
+  "EventBusTests:ConnectionString": "host=localhost;publisherConfirms=true;persistentMessages=true;prefetchcount=0"
+}

@@ -9,6 +9,7 @@ using Moq;
 using System;
 using System.IO;
 using System.Linq;
+using TestConfigurationAccessor;
 using Xunit;
 
 namespace IntegrationTests
@@ -21,16 +22,9 @@ namespace IntegrationTests
 
         public AuctionImageRepository_Tests()
         {
-            var settings = new ImageDbSettings()
-            {
-
-                ConnectionString = "mongodb://auctionhouse-user:Test-1234@localhost:27017/appDb",
-                DatabaseName = "appDb"
-            };
-            var dbContext = new ImageDbContext(settings);
-            this.dbContext = dbContext;
+            var settings = TestConfig.Instance.GetDbSettings();
+            dbContext = new ImageDbContext(settings);
             auctionImageRepository = new AuctionImageRepository(dbContext, Mock.Of<ILogger<AuctionImageRepository>>());
-
         }
 
         private static AuctionImageRepresentation GivenImageRepresentation(byte[] testFile)

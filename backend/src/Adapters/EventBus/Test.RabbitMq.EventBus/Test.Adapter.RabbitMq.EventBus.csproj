@@ -26,7 +26,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Modules\Common\Tests\Test.Common.Base\Common.Tests.Base.csproj" />
+    <ProjectReference Include="..\..\..\TestConfigurationAccessor\TestConfigurationAccessor.csproj" />
     <ProjectReference Include="..\Adatper.RabbitMq.EventBus\Adatper.RabbitMq.EventBus.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="settings.local.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

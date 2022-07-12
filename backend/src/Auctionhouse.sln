@@ -253,6 +253,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ssl", "ssl", "{3F760D64-304
 		Edge\Envoy\ssl\private.txt = Edge\Envoy\ssl\private.txt
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConfigurationAccessor", "TestConfigurationAccessor\TestConfigurationAccessor.csproj", "{563584AA-3AB0-4D4E-86D2-32ED1473BF20}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -519,6 +521,10 @@ Global
 		{61079A9F-3FD1-47B6-B2D5-D29E1DCA02BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61079A9F-3FD1-47B6-B2D5-D29E1DCA02BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61079A9F-3FD1-47B6-B2D5-D29E1DCA02BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{563584AA-3AB0-4D4E-86D2-32ED1473BF20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{563584AA-3AB0-4D4E-86D2-32ED1473BF20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{563584AA-3AB0-4D4E-86D2-32ED1473BF20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{563584AA-3AB0-4D4E-86D2-32ED1473BF20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -624,6 +630,7 @@ Global
 		{10C9E355-874A-41BB-AABA-95B5C255927F} = {CB7E6391-814A-47C5-A35C-D87E3CD99AD1}
 		{1CEDF2B5-1364-48F5-8CB0-E7D3FF60BBB6} = {8BAC7B4D-1B16-4B8C-9460-90E60AB875F6}
 		{3F760D64-304B-4322-A9E2-29F99B375C0C} = {1CEDF2B5-1364-48F5-8CB0-E7D3FF60BBB6}
+		{563584AA-3AB0-4D4E-86D2-32ED1473BF20} = {5C8BFF18-65ED-43A6-8743-000662D95A27}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F4E77E2A-13ED-428A-962C-F0BDF00E9A14}

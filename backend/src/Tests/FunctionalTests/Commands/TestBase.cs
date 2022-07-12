@@ -39,6 +39,7 @@ namespace FunctionalTests.Commands
     using System.Linq;
     using System.Threading.Tasks;
     using Test.ReadModel.Base;
+    using TestConfigurationAccessor;
     using UserPayments.Application;
     using UserPayments.Domain.Repositories;
     using UserPayments.Domain.Services;
@@ -166,7 +167,7 @@ namespace FunctionalTests.Commands
                     nameof(CreateAuctionSaga) => typeof(CreateAuctionSaga),
                     nameof(SignUpSaga) => typeof(SignUpSaga),
                     _ => throw new NotImplementedException(),
-                }, @"Data Source=127.0.0.1;Initial Catalog=AuctionhouseDatabase;MultipleActiveResultSets=True;TrustServerCertificate=True;User ID=sa;Password=Qwerty1234;");
+                }, TestConfig.Instance.GetChronicleSQLServerStorageConnectionString());
 
                 services.AddSingleton<IAuctionCreateSessionStore, InMemAuctionCreateSessionStore>();
                 services.AddSingleton<IAuctionRepository, FakeAuctionRepository>();
@@ -181,11 +182,7 @@ namespace FunctionalTests.Commands
 
                 services.AddTransient<IAuctionImageConversion>((s) => Mock.Of<IAuctionImageConversion>());
 
-                services.AddEfCoreReadModelNotifications(settings: new EfCoreReadModelNotificaitonsOptions
-                {
-                    Provider = "sqlserver",
-                    ConnectionString = @"Data Source=127.0.0.1;Initial Catalog=AuctionhouseDatabase;MultipleActiveResultSets=True;TrustServerCertificate=True;User ID=sa;Password=Qwerty1234;",
-                });
+                services.AddEfCoreReadModelNotifications(settings: TestConfig.Instance.GetEfCoreReadModelNotificaitonsOptions());
 
                 services.AddTransient<IAuctionPaymentVerification, AuctionPaymentVerification>();
                 services.AddTransient<IAuctionUnlockScheduler>(s => Mock.Of<IAuctionUnlockScheduler>());
@@ -199,26 +196,15 @@ namespace FunctionalTests.Commands
                     c.SetMinimumLevel(LogLevel.Debug);
                 });
 
-                services.AddRabbitMq(rabbitMqSettings: new RabbitMqSettings
-                {
-                    ConnectionString = RabbitMqSettings.SampleRabbitMqConnectionString,
-                });
+                services.AddRabbitMq(rabbitMqSettings: TestConfig.Instance.GetRabbitMqSettings());
 
                 services.AddTransient<IImplProvider>((p) => new ImplProviderMock(p));
 
-                services.AddReadModel(new MongoDbSettings
-                {
-                    ConnectionString = "mongodb://auctionhouse-user:Test-1234@localhost:27017/appDb",
-                    DatabaseName = "appDb"
-                });
+                services.AddReadModel(TestConfig.Instance.GetReadModelSettings());
                 services.AddEventConsumers(typeof(ReadModelInstaller));
                 services.AddAutoMapper(typeof(Auctionhouse.Query.QueryMapperProfile).Assembly);
                 services.AddCategoriesModule();
-                services.AddXmlCategoryTreeStore(settings: new XmlCategoryNameStoreSettings
-                {
-    CategoriesFilePath = "C:\\Users\\Marek\\source\\repos\\Csharp\\auctionhouse\\backend\\src\\Adapters\\CategoryStore\\Adapter.XmlCategoryTreeStore\\_Categories-xml-data\\categories.xml",
-    SchemaFilePath = "C:\\Users\\Marek\\source\\repos\\Csharp\\auctionhouse\\backend\\src\\Adapters\\CategoryStore\\Adapter.XmlCategoryTreeStore\\_Categories-xml-data\\categories.xsd"
-                });
+                services.AddXmlCategoryTreeStore(settings: TestConfig.Instance.GetXmlStoreSettings());
 
 
                 services.AddTransient<IOutboxItemStore, InMemoryOutboxItemStore>();
