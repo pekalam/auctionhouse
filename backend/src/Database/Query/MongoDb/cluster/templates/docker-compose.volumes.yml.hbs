@@ -1,0 +1,36 @@
+version: '3.4'
+
+services:
+  {{#each config_servers}}
+  {{this}}:
+    volumes:
+      - {{this}}_data:/data/db
+      - {{this}}_config:/data/configdb
+  {{/each}}
+  {{#each mongos}}
+  {{this}}:
+    volumes:
+      - {{this}}_mongos_data:/data/db
+      - {{this}}_mongos_config:/data/configdb
+  {{/each}}
+  {{#each nodes}}
+  {{this}}:
+    volumes:
+      - {{this}}_data:/data/db
+      - {{this}}_config:/data/configdb
+  {{/each}}
+
+
+volumes:
+{{#each config_servers}}
+  {{this}}_data:
+  {{this}}_config:
+{{/each}}
+{{#each nodes}}
+  {{this}}_data:
+  {{this}}_config:
+{{/each}}
+{{#each mongos}}
+  {{this}}_mongos_data:
+  {{this}}_mongos_config:
+{{/each}}

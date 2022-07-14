@@ -8,9 +8,6 @@ services:
       dockerfile: config/Dockerfile
       context: .
     command: ["--configsvr", "--replSet", "configRS", "--bind_ip_all", "--keyFile", "/data/mongocluster-keyfile"]
-    volumes:
-      - db-config1_data:/data/db
-      - db-config1_config:/data/configdb
     secrets:
       - mongocluster-keyfile 
     depends_on:
@@ -26,9 +23,6 @@ services:
     command: ["--wait-for", "db-config1:32112", "db-node1:32112", "db-node2:32112", "db-node3:32112", "--configdb", "configRS/db-config1:27019", "--bind_ip_all", "--keyFile=/data/mongocluster-keyfile"]
     ports:
       - "27017:27017"       
-    volumes:
-      - mongodb_mongos_data:/data/db
-      - mongodb_mongos_config:/data/configdb
     secrets:
       - mongocluster-keyfile
       - mongouser-password
@@ -39,9 +33,6 @@ services:
       dockerfile: shards/shard_db-node1/Dockerfile
       context: .
     command: [ "--bind_ip_all", "--replSet", "n1", "--shardsvr", "--keyFile=/data/mongocluster-keyfile" ]
-    volumes:
-      - db-node1_data:/data/db
-      - db-node1_config:/data/configdb
     secrets:
       - mongocluster-keyfile 
   db-node2:
@@ -51,9 +42,6 @@ services:
       dockerfile: shards/shard_db-node2/Dockerfile
       context: .
     command: [ "--bind_ip_all", "--replSet", "n2", "--shardsvr", "--keyFile=/data/mongocluster-keyfile" ]
-    volumes:
-      - db-node2_data:/data/db
-      - db-node2_config:/data/configdb
     secrets:
       - mongocluster-keyfile 
   db-node3:
@@ -63,24 +51,9 @@ services:
       dockerfile: shards/shard_db-node3/Dockerfile
       context: .
     command: [ "--bind_ip_all", "--replSet", "n3", "--shardsvr", "--keyFile=/data/mongocluster-keyfile" ]
-    volumes:
-      - db-node3_data:/data/db
-      - db-node3_config:/data/configdb
     secrets:
       - mongocluster-keyfile 
 
-
-volumes:
-  db-config1_data:
-  db-config1_config:
-  db-node1_data:
-  db-node1_config:
-  db-node2_data:
-  db-node2_config:
-  db-node3_data:
-  db-node3_config:
-  mongodb_mongos_data:
-  mongodb_mongos_config:
 
 secrets:
   mongocluster-keyfile:

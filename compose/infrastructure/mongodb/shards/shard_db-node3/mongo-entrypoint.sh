@@ -35,7 +35,7 @@ MONGO_INITDB_ROOT_PASSWORD=$MONGO_INITDB_ROOT_PASSWORD mongod $args &
 echo "waiting for port 27018"
 wait-for localhost:27018 -t 180
 
-if [ ! -f "/node_initialized" ]; then
+if [ ! -f "/data/node_initialized" ]; then
     echo "running init.js..."
     mongosh 127.0.0.1:27018/appDb /scripts/init.js
 fi
@@ -44,6 +44,6 @@ fi
 
 echo "mongodb initialized"
 bash container-scripts/listen-on-health-port.sh &
-touch /node_initialized
+touch /data/node_initialized
 
 fg %1

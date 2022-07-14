@@ -1,0 +1,22 @@
+version: '3.4'
+
+services:
+  {{#each config_servers}}
+  {{this}}:
+    tmpfs:
+      - /data/db
+      - /data/configdb
+  {{/each}}
+  {{#each mongos}}
+  {{this}}:
+    tmpfs:
+      - /data/db
+      - /data/configdb
+  {{/each}}
+  {{#each nodes}}
+  {{this}}:
+    tmpfs:
+      - /data/db
+      - /data/configdb
+  {{/each}}
+

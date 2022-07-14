@@ -1,0 +1,14 @@
+{
+  "FunctionalTests:RabbitMq:ConnectionString": "host=host.docker.internal;publisherConfirms=true;persistentMessages=true;prefetchcount=0",
+
+  "FunctionalTests:ReadModelSettings:ConnectionString": "mongodb://auctionhouse-user:Test-1234@host.docker.internal:27017/appDb",
+  "FunctionalTests:ReadModelSettings:DatabaseName": "appDb",
+
+  "FunctionalTests:XmlCategoryTreeStore:CategoriesFilePath": "_Categories-xml-data/categories.xml",
+  "FunctionalTests:XmlCategoryTreeStore:SchemaFilePath": "_Categories-xml-data/categories.xsd",
+
+  "FunctionalTests:ChronicleSQLServerStorage:ConnectionString": "Data Source=host.docker.internal;Initial Catalog=AuctionhouseDatabase;MultipleActiveResultSets=True;TrustServerCertificate=True;User ID=sa;Password=Qwerty1234;",
+
+  "FunctionalTests:ReadModelNotificaitons:ConnectionString": "Data Source=host.docker.internal;Initial Catalog=AuctionhouseDatabase;MultipleActiveResultSets=True;TrustServerCertificate=True;User ID=sa;Password=Qwerty1234;",
+  "FunctionalTests:ReadModelNotificaitons:Provider": "sqlserver"
+}

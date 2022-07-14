@@ -1,0 +1,36 @@
+version: '3.4'
+
+services:
+  db-config1:
+    volumes:
+      - db-config1_data:/data/db
+      - db-config1_config:/data/configdb
+  mongodb:
+    volumes:
+      - mongodb_mongos_data:/data/db
+      - mongodb_mongos_config:/data/configdb
+  db-node1:
+    volumes:
+      - db-node1_data:/data/db
+      - db-node1_config:/data/configdb
+  db-node2:
+    volumes:
+      - db-node2_data:/data/db
+      - db-node2_config:/data/configdb
+  db-node3:
+    volumes:
+      - db-node3_data:/data/db
+      - db-node3_config:/data/configdb
+
+
+volumes:
+  db-config1_data:
+  db-config1_config:
+  db-node1_data:
+  db-node1_config:
+  db-node2_data:
+  db-node2_config:
+  db-node3_data:
+  db-node3_config:
+  mongodb_mongos_data:
+  mongodb_mongos_config:

@@ -1,0 +1,2 @@
+docker-compose -f .\infrastructure\docker-compose.yml -f .\infrastructure\docker-compose.override.yml -f .\infrastructure\mongodb\docker-compose.yml -f .\infrastructure\mongodb\docker-compose.inmemory.yml -f .\infrastructure\mongodb\docker-compose.prod.env.yml `
+-f .\tests\docker-compose.yml up --exit-code-from functional-tests

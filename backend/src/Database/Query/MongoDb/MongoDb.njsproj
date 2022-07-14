@@ -34,6 +34,8 @@
     <Content Include="cluster\config\scripts\config.js" />
     <Content Include="cluster\config\scripts\init.js" />
     <Content Include="cluster\config\scripts\init_replicaset.js" />
+    <Content Include="cluster\templates\docker-compose.inmemory.yml.hbs" />
+    <Content Include="cluster\templates\docker-compose.volumes.yml.hbs" />
     <Content Include="cluster\templates\docker-compose.yml.hbs" />
     <Content Include="cluster\mongos\Dockerfile" />
     <Content Include="cluster\mongos\healthcheck.sh" />
@@ -77,13 +79,15 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="cluster\config\scripts\" />
+    <Folder Include="cluster\common\" />
     <Folder Include="cluster\mongos\" />
     <Folder Include="cluster\mongos\templates\" />
     <Folder Include="cluster\mongos\scripts\" />
     <Folder Include="cluster\config\" />
     <Folder Include="cluster\mongos\templates\scripts\" />
     <Folder Include="cluster\templates\" />
-    <Folder Include="cluster\shard\" />
+    <Folder Include="cluster\shardtemplate\" />
+    <Folder Include="cluster\shardtemplate\scripts\" />
     <Folder Include="cluster\" />
     <Folder Include="standalone\" />
     <Folder Include="standalone\scripts\" />

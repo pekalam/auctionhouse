@@ -9,9 +9,6 @@ services:
       dockerfile: config/Dockerfile
       context: .
     command: ["--configsvr", "--replSet", "configRS", "--bind_ip_all", "--keyFile", "/data/mongocluster-keyfile"]
-    volumes:
-      - {{this}}_data:/data/db
-      - {{this}}_config:/data/configdb
     secrets:
       - mongocluster-keyfile 
     depends_on:
@@ -31,9 +28,6 @@ services:
       {{#if @first}}
       - "27017:27017"       
       {{/if}}
-    volumes:
-      - {{this}}_mongos_data:/data/db
-      - {{this}}_mongos_config:/data/configdb
     secrets:
       - mongocluster-keyfile
       - mongouser-password
@@ -46,27 +40,10 @@ services:
       dockerfile: shards/shard_{{this}}/Dockerfile
       context: .
     command: [ "--bind_ip_all", "--replSet", "n{{inc @index}}", "--shardsvr", "--keyFile=/data/mongocluster-keyfile" ]
-    volumes:
-      - {{this}}_data:/data/db
-      - {{this}}_config:/data/configdb
     secrets:
       - mongocluster-keyfile 
   {{/each}}
 
-
-volumes:
-{{#each config_servers}}
-  {{this}}_data:
-  {{this}}_config:
-{{/each}}
-{{#each nodes}}
-  {{this}}_data:
-  {{this}}_config:
-{{/each}}
-{{#each mongos}}
-  {{this}}_mongos_data:
-  {{this}}_mongos_config:
-{{/each}}
 
 secrets:
   mongocluster-keyfile:
