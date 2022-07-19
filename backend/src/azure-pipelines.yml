@@ -19,21 +19,21 @@ stages:
       displayName: 'Use .NET Core sdk from global.json'
       inputs:
         packageType: 'sdk'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/backend/src'
         useGlobalJson: true
-        workingDirectory: 'backend/src'
     - task: DotNetCoreCLI@2
       displayName: 'Build WebAPI'
       inputs:
         command: 'build'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/backend/src'
         arguments: 'Auctionhouse.WebAPI.slnf'
-        workingDirectory: 'backend/src'
     - task: DotNetCoreCLI@2
       displayName: 'Run domain tests'
       inputs:
         command: 'test'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/backend/src'
         projects: '**/Test.*Domain'
         testRunTitle: 'Domain tests'
-        workingDirectory: 'backend/src'
 - stage: DockerBuild
   displayName: 'Docker build stage'
   jobs:
