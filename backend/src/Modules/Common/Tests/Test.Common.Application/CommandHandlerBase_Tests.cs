@@ -13,52 +13,50 @@ using Xunit;
 
 namespace Common.Application.Tests
 {
-    public class TestCommand : ICommand
-    {
-        [Required] public string Param1 { get; }
-
-        [MinLength(5)] public string Param2 { get; }
-
-        public TestCommand(string param1, string param2)
-        {
-            Param1 = param1;
-            Param2 = param2;
-        }
-    }
-
-    public class TestCommandHandler : CommandHandlerBase<TestCommand>
-    {
-
-        public TestCommandHandler(ILogger<CommandHandlerBase<TestCommand>> logger) : base(ReadModelNotificationsMode.Disabled, new CommandHandlerBaseDependencies
-        {
-            Logger = Mock.Of<ILogger<RequestStatus>>()
-        })
-        {
-        }
-
-        protected override Task<RequestStatus> HandleCommand(AppCommand<TestCommand> request, IEventOutbox eventOutbox, CancellationToken cancellationToken)
-        {
-            Assert.False(true, "Should not be called");
-            return Task.FromResult(RequestStatus.CreateFromCommandContext(request.CommandContext, Status.FAILED));
-        }
-    }
-
     public class CommandHandlerBase_Tests
     {
-        [Fact]
-        public async Task Handle_when_command_is_invalid_throws()
+        public class TestCommand : ICommand
         {
-            var stubCommand = new TestCommand(null, "11");
+            [MinLength(5)] public string Param { get; }
 
-            var mockCommandHandler = new TestCommandHandler(Mock.Of<ILogger<CommandHandlerBase<TestCommand>>>());
+            public TestCommand(string param)
+            {
+                Param = param;
+            }
+        }
+
+        public class InvalidTestCommandHandler : CommandHandlerBase<TestCommand>
+        {
+
+            public InvalidTestCommandHandler(ILogger<CommandHandlerBase<TestCommand>> logger) : base(ReadModelNotificationsMode.Disabled, new CommandHandlerBaseDependencies
+            {
+                Logger = Mock.Of<ILogger<RequestStatus>>()
+            })
+            {
+            }
+
+            protected override Task<RequestStatus> HandleCommand(AppCommand<TestCommand> request, IEventOutbox eventOutbox, CancellationToken cancellationToken)
+            {
+                Assert.False(true, "Should not be called");
+                return Task.FromResult(RequestStatus.CreateFromCommandContext(request.CommandContext, Status.FAILED));
+            }
+        }
 
 
-            await Assert.ThrowsAsync<InvalidCommandException>(() =>
+        [Fact]
+        public async Task Handle_InvalidCommand_ThrowsInvalidCommandException()
+        {
+            var stubCommand = new TestCommand("12");
+            var mockCommandHandler = new InvalidTestCommandHandler(Mock.Of<ILogger<CommandHandlerBase<TestCommand>>>());
+
+            var action = () =>
                 mockCommandHandler.Handle(new AppCommand<TestCommand>()
                 {
                     CommandContext = CommandContext.CreateNew("test"),
                     Command = stubCommand,
-                }, CancellationToken.None));
+                }, CancellationToken.None);
+
+            await Assert.ThrowsAsync<InvalidCommandException>(action);
         }
     }
 }

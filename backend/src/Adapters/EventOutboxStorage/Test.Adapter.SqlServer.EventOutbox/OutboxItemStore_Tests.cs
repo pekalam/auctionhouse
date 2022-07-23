@@ -13,62 +13,6 @@ using Xunit;
 namespace Test.Adapter.SqlServer.EventOutbox
 {
     [Trait("Category", "Integration")]
-    public class OutboxItemFinder_Tests
-    {
-        EventOutboxDbContext dbContext;
-        OutboxItemFinder outboxItemFinder;
-
-        public OutboxItemFinder_Tests()
-        {
-            dbContext = new EventOutboxDbContext(new DbContextOptionsBuilder<EventOutboxDbContext>()
-                .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
-            outboxItemFinder = new OutboxItemFinder(dbContext);
-        }
-
-        public class TestEvent : Event
-        {
-            public TestEvent() : base("TestEvent")
-            {
-            }
-        }
-
-        [Fact]
-        public async Task f()
-        {
-            dbContext.OutboxItems.Add(new DbOutboxItem
-            {
-                CommandContext = CommandContext.CreateNew("tes"),
-                Event = SerializationUtils.ToJson(new TestEvent()),
-                ReadModelNotifications = ReadModelNotificationsMode.Disabled,
-                Timestamp = 1,
-            });
-            await dbContext.SaveChangesAsync();
-
-            var total = await outboxItemFinder.GetTotalUnprocessedItemsOlderThan(1, 3);
-            Assert.Equal(1, total);
-        }
-
-        [Fact]
-        public async Task g()
-        {
-            var dbStoreItem = new DbOutboxItem
-            {
-                CommandContext = CommandContext.CreateNew("tes"),
-                Event = SerializationUtils.ToJson(new TestEvent()),
-                ReadModelNotifications = ReadModelNotificationsMode.Disabled,
-                Timestamp = 1,
-            };
-            dbContext.OutboxItems.Add(dbStoreItem);
-            await dbContext.SaveChangesAsync();
-
-            var unprocessed = (await outboxItemFinder.GetUnprocessedItemsOlderThan(1, 3, 10)).ToList();
-
-            Assert.Single(unprocessed);
-            Assert.Equal(unprocessed[0].CommandContext, dbStoreItem.CommandContext);
-        }
-    }
-
-    [Trait("Category", "Integration")]
     public class OutboxItemStore_Tests
     {
         EventOutboxDbContext dbContext;
@@ -102,7 +46,7 @@ namespace Test.Adapter.SqlServer.EventOutbox
 
             Assert.NotEqual(0, savedIitem.Id);
             var dbOutboxStoreItem = await dbContext.OutboxItems.FirstAsync();
-            Assert.Equal(JsonSerializer.Serialize(outboxStoreItem.CommandContext), JsonSerializer.Serialize(dbOutboxStoreItem.CommandContext));
+            outboxStoreItem.CommandContext.AssertCommandContextIsEqualTo(dbOutboxStoreItem.CommandContext);
             Assert.Equal(outboxStoreItem.ReadModelNotifications, dbOutboxStoreItem.ReadModelNotifications);
             Assert.Equal(outboxStoreItem.Timestamp, dbOutboxStoreItem.Timestamp);
             var deserializedEvent = SerializationUtils.FromJson(dbOutboxStoreItem.Event);
@@ -126,7 +70,7 @@ namespace Test.Adapter.SqlServer.EventOutbox
 
             Assert.NotEqual(0, savedIitem.Id);
             var dbOutboxStoreItem = await dbContext.OutboxItems.FirstAsync(i => i.Id == savedIitem.Id);
-            Assert.Equal(JsonSerializer.Serialize(outboxStoreItem.CommandContext), JsonSerializer.Serialize(dbOutboxStoreItem.CommandContext));
+            outboxStoreItem.CommandContext.AssertCommandContextIsEqualTo(dbOutboxStoreItem.CommandContext);
             Assert.Equal(outboxStoreItem.ReadModelNotifications, dbOutboxStoreItem.ReadModelNotifications);
             Assert.Equal(outboxStoreItem.Timestamp, dbOutboxStoreItem.Timestamp);
             var deserializedEvent = SerializationUtils.FromJson(dbOutboxStoreItem.Event);
@@ -153,7 +97,7 @@ namespace Test.Adapter.SqlServer.EventOutbox
                 Assert.NotEqual(0, savedIitems[i].Id);
                 var savedItem = savedIitems[i];
                 var dbOutboxStoreItem = await dbContext.OutboxItems.FirstAsync(i => i.Id == savedItem.Id);
-                Assert.Equal(JsonSerializer.Serialize(outboxStoreItems[i].CommandContext), JsonSerializer.Serialize(dbOutboxStoreItem.CommandContext));
+                outboxStoreItems[i].CommandContext.AssertCommandContextIsEqualTo(dbOutboxStoreItem.CommandContext);
                 Assert.Equal(outboxStoreItems[i].ReadModelNotifications, dbOutboxStoreItem.ReadModelNotifications);
                 Assert.Equal(outboxStoreItems[i].Timestamp, dbOutboxStoreItem.Timestamp);
                 var deserializedEvent = SerializationUtils.FromJson(dbOutboxStoreItem.Event);

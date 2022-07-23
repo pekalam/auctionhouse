@@ -9,10 +9,20 @@ namespace Adapter.SqlServer.EventOutbox
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
         public string Event { get; set; } = null!;
-        public CommandContext CommandContext { get; set; } = null!;
+        public DbCommandContext CommandContext { get; set; } = null!;
         public ReadModelNotificationsMode ReadModelNotifications { get; set; }
         public long Timestamp { get; set; }
         public bool Processed { get; set; }
+    }
+
+    internal class DbCommandContext
+    {
+        public string CommandId { get; set; }
+        public string CorrelationId { get; set; }
+        public Guid? User { get; set; }
+        public bool HttpQueued { get; set; }
+        public bool WSQueued { get; set; }
+        public string Name { get; set; }
     }
 
     internal static class DbOutboxItemAssembler
@@ -23,10 +33,10 @@ namespace Adapter.SqlServer.EventOutbox
             {
                 Id = outboxStoreItem.Id,
                 Event = SerializationUtils.ToJson(outboxStoreItem.Event),
-                CommandContext = new CommandContext
+                CommandContext = new DbCommandContext
                 {
-                    CommandId = new CommandId(outboxStoreItem.CommandContext.CommandId.Id),
-                    CorrelationId = new CorrelationId(outboxStoreItem.CommandContext.CorrelationId.Value),
+                    CommandId = outboxStoreItem.CommandContext.CommandId.Id,
+                    CorrelationId = outboxStoreItem.CommandContext.CorrelationId.Value,
                     HttpQueued = outboxStoreItem.CommandContext.HttpQueued,
                     Name = outboxStoreItem.CommandContext.Name,
                     User = outboxStoreItem.CommandContext.User,
@@ -43,7 +53,14 @@ namespace Adapter.SqlServer.EventOutbox
             return new OutboxItem
             {
                 Id = dbItem.Id,
-                CommandContext = dbItem.CommandContext,
+                CommandContext = new CommandContext(
+                    new CommandId(dbItem.CommandContext.CommandId), 
+                    new CorrelationId(dbItem.CommandContext.CorrelationId), 
+                    dbItem.CommandContext.User,
+                    dbItem.CommandContext.HttpQueued, 
+                    dbItem.CommandContext.WSQueued, 
+                    dbItem.CommandContext.Name
+                ),
                 Timestamp = dbItem.Timestamp,
                 ReadModelNotifications = dbItem.ReadModelNotifications,
                 Event = SerializationUtils.FromJson(dbItem.Event),
