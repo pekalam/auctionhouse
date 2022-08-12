@@ -227,6 +227,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{59019552
 		Database\Command\Scripts\build\Append-ScriptsToDatabaseProj.ps1 = Database\Command\Scripts\build\Append-ScriptsToDatabaseProj.ps1
 		Database\Command\Scripts\build\Build-DockerImage.ps1 = Database\Command\Scripts\build\Build-DockerImage.ps1
 		Database\Command\Scripts\build\Build.ps1 = Database\Command\Scripts\build\Build.ps1
+		Database\Command\Scripts\build\Push-DockerImage.ps1 = Database\Command\Scripts\build\Push-DockerImage.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backups", "backups", "{10C9E355-874A-41BB-AABA-95B5C255927F}"
@@ -259,6 +260,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		azure-pipelines.yml = azure-pipelines.yml
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReadModelNotifications", "ReadModelNotifications", "{BA3D6C47-8209-4A73-A400-A3567DAB2E2E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadModelNotifications", "ReadModelNotifications\ReadModelNotifications.csproj", "{1900AD92-0C8C-494C-8648-580133246BF0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadModelNotifications.Tests", "ReadModelNotifications.Tests\ReadModelNotifications.Tests.csproj", "{4AA2DAAA-F501-4FF8-A1D8-E8E8BF8371CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Extensions", "Common.Extensions\Common.Extensions.csproj", "{49DE6531-873E-4EA9-9B0D-3ACB12B30878}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -530,6 +539,18 @@ Global
 		{563584AA-3AB0-4D4E-86D2-32ED1473BF20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{563584AA-3AB0-4D4E-86D2-32ED1473BF20}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{563584AA-3AB0-4D4E-86D2-32ED1473BF20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1900AD92-0C8C-494C-8648-580133246BF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1900AD92-0C8C-494C-8648-580133246BF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1900AD92-0C8C-494C-8648-580133246BF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1900AD92-0C8C-494C-8648-580133246BF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AA2DAAA-F501-4FF8-A1D8-E8E8BF8371CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AA2DAAA-F501-4FF8-A1D8-E8E8BF8371CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AA2DAAA-F501-4FF8-A1D8-E8E8BF8371CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AA2DAAA-F501-4FF8-A1D8-E8E8BF8371CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49DE6531-873E-4EA9-9B0D-3ACB12B30878}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49DE6531-873E-4EA9-9B0D-3ACB12B30878}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49DE6531-873E-4EA9-9B0D-3ACB12B30878}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49DE6531-873E-4EA9-9B0D-3ACB12B30878}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -636,6 +657,10 @@ Global
 		{1CEDF2B5-1364-48F5-8CB0-E7D3FF60BBB6} = {8BAC7B4D-1B16-4B8C-9460-90E60AB875F6}
 		{3F760D64-304B-4322-A9E2-29F99B375C0C} = {1CEDF2B5-1364-48F5-8CB0-E7D3FF60BBB6}
 		{563584AA-3AB0-4D4E-86D2-32ED1473BF20} = {5C8BFF18-65ED-43A6-8743-000662D95A27}
+		{BA3D6C47-8209-4A73-A400-A3567DAB2E2E} = {9D788C3F-96DA-46AE-B5EB-02D4346DDF2C}
+		{1900AD92-0C8C-494C-8648-580133246BF0} = {BA3D6C47-8209-4A73-A400-A3567DAB2E2E}
+		{4AA2DAAA-F501-4FF8-A1D8-E8E8BF8371CA} = {BA3D6C47-8209-4A73-A400-A3567DAB2E2E}
+		{49DE6531-873E-4EA9-9B0D-3ACB12B30878} = {9D788C3F-96DA-46AE-B5EB-02D4346DDF2C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F4E77E2A-13ED-428A-962C-F0BDF00E9A14}

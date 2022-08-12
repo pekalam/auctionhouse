@@ -1,4 +1,4 @@
-& MSBuild.exe .\AuctionhouseDatabase\AuctionhouseDatabase.sqlproj
+& MSBuild.exe ..\..\AuctionhouseDatabase\AuctionhouseDatabase.sqlproj
 
 & .\Add-EventOutboxAdapterScripts.ps1
 & .\Add-SagaNotificationsScripts.ps1

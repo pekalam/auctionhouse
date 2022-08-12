@@ -7,7 +7,7 @@ using Chronicle;
 using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
-using Common.Application.SagaNotifications;
+using Common.Extensions;
 using Microsoft.Extensions.Logging;
 
 namespace Auctions.Application.Commands.CreateAuction
@@ -20,12 +20,14 @@ namespace Auctions.Application.Commands.CreateAuction
         private readonly CreateAuctionService _createAuctionService;
         private readonly IUnitOfWorkFactory _uow;
         private readonly IAuctionRepository _auctions;
+        private readonly ICommandHandlerCallbacks _commandHandlerCallbacks;
 
 
         public CreateAuctionCommandHandler(ILogger<CreateAuctionCommandHandler> logger, ICategoryNamesToTreeIdsConversion categoryNamesToTreeIdsConversion,
             ISagaCoordinator sagaCoordinator, CreateAuctionService createAuctionService, IUnitOfWorkFactory uow, CommandHandlerBaseDependencies dependencies, IAuctionRepository auctions)
             : base(ReadModelNotificationsMode.Saga, dependencies)
         {
+            _commandHandlerCallbacks = dependencies.CommandHandlerLi;
             _logger = logger;
             _categoryNamesToTreeIdsConversion = categoryNamesToTreeIdsConversion;
             _sagaCoordinator = sagaCoordinator;
@@ -43,6 +45,8 @@ namespace Auctions.Application.Commands.CreateAuction
             using (var uow = _uow.Begin())
             {
                 _auctions.AddAuction(auction);
+                await SetExtensionValues();
+                //TODO: remove if
                 if (!_createAuctionService.Finished) // when transaction is not finished it means that bids must be created and assigned by saga
                 {
                     await StartCreateAuctionSaga(request, auction);
@@ -57,6 +61,18 @@ namespace Auctions.Application.Commands.CreateAuction
             }
 
             return RequestStatus.CreatePending(request.CommandContext);
+        }
+
+        private Task SetExtensionValues()
+        {
+            if (!_createAuctionService.Finished)
+            {
+                return _commandHandlerCallbacks.CallExtension(CommonExtensionKeys.ReadModelNotificationsMode, CommonExtensionKeys.ReadModelNotificationsSagaMode);
+            }
+            else
+            {
+                return _commandHandlerCallbacks.CallExtension(CommonExtensionKeys.ReadModelNotificationsMode, CommonExtensionKeys.ReadModelNotificationsImmediateMode);
+            }
         }
 
         private async Task<AuctionArgs> CreateAuctionArgs(CreateAuctionCommand request, UserId owner)

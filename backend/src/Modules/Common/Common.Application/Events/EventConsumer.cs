@@ -1,24 +1,20 @@
 ﻿using Common.Application;
 using Common.Application.Events;
-using Common.Application.SagaNotifications;
 using Core.Common.Domain;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 
 namespace Core.Query.EventHandlers
 {
     public class EventConsumerDependencies
     {
         public IAppEventBuilder AppEventBuilder { get; set; } = null!;
-        public Lazy<ISagaNotifications> SagaNotifications { get; set; } = null!;
-        public Lazy<IImmediateNotifications> ImmediateNotifications { get; set; } = null!;
-        
-        public EventConsumerDependencies(IAppEventBuilder appEventBuilder, Lazy<ISagaNotifications> sagaNotifications, Lazy<IImmediateNotifications> immediateNotifications)
+        public IEventConsumerCallbacks EventConsumerCallbacks { get; }
+
+        public EventConsumerDependencies(IAppEventBuilder appEventBuilder, IEventConsumerCallbacks eventConsumerCallbacks)
         {
             AppEventBuilder = appEventBuilder;
-            SagaNotifications = sagaNotifications;
-            ImmediateNotifications = immediateNotifications;
+            EventConsumerCallbacks = eventConsumerCallbacks;
         }
     }
 
@@ -26,15 +22,13 @@ namespace Core.Query.EventHandlers
     {
         private readonly IAppEventBuilder _appEventBuilder;
         private readonly ILogger<TImpl> _logger;
-        private readonly Lazy<ISagaNotifications> _sagaNotifications;
-        private readonly Lazy<IImmediateNotifications> _immediateNotifications;
+        private readonly IEventConsumerCallbacks _eventConsumerCallbacks;
 
         protected EventConsumer(ILogger<TImpl> logger, EventConsumerDependencies dependencies)
         {
             _appEventBuilder = dependencies.AppEventBuilder;
+            _eventConsumerCallbacks = dependencies.EventConsumerCallbacks;
             _logger = logger;
-            _sagaNotifications = dependencies.SagaNotifications;
-            _immediateNotifications = dependencies.ImmediateNotifications;
         }
 
         public abstract Task Consume(IAppEvent<T> appEvent);
@@ -44,30 +38,9 @@ namespace Core.Query.EventHandlers
             using var activity = Tracing.StartTracing(GetType().Name + "_" + msg.Event.EventName, msg.CommandContext.CorrelationId);
 
             await ConsumeEvent(msg);
-            await ProcessNotifications(msg);
+            await _eventConsumerCallbacks.OnEventProcessed(msg, _logger);
 
             activity.TraceOkStatus();
-        }
-
-        private async Task ProcessNotifications(IAppEvent<Event> msg)
-        {
-            try
-            {
-                if (msg.ReadModelNotifications == ReadModelNotificationsMode.Saga)
-                {
-                    await _sagaNotifications.Value.MarkEventAsHandled(msg.CommandContext.CorrelationId, msg.Event);
-                }
-                if (msg.ReadModelNotifications == ReadModelNotificationsMode.Immediate)
-                {
-                    await _immediateNotifications.Value.NotifyCompleted(msg.CommandContext.CorrelationId);
-                }
-            }
-            catch (Exception e)
-            {
-                Activity.Current.TraceErrorStatus("Event consumer notifications processing error");
-                _logger.LogWarning(e, "Event consumer thrown an exception while processing notifications");
-                throw;
-            }
         }
 
         private async Task ConsumeEvent(IAppEvent<Event> msg)

@@ -50,10 +50,21 @@ namespace Adapter.SqlServer.EventOutboxStorage.Migrations
 
             modelBuilder.Entity("Adapter.SqlServer.EventOutbox.DbOutboxItem", b =>
                 {
-                    b.OwnsOne("Common.Application.Commands.CommandContext", "CommandContext", b1 =>
+                    b.OwnsOne("Adapter.SqlServer.EventOutbox.DbCommandContext", "CommandContext", b1 =>
                         {
                             b1.Property<long>("DbOutboxItemId")
                                 .HasColumnType("bigint");
+
+                            b1.Property<string>("CommandId")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("CorrelationId")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("ExtraData")
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<bool>("HttpQueued")
                                 .HasColumnType("bit");
@@ -74,45 +85,6 @@ namespace Adapter.SqlServer.EventOutboxStorage.Migrations
 
                             b1.WithOwner()
                                 .HasForeignKey("DbOutboxItemId");
-
-                            b1.OwnsOne("Common.Application.Commands.CommandId", "CommandId", b2 =>
-                                {
-                                    b2.Property<long>("CommandContextDbOutboxItemId")
-                                        .HasColumnType("bigint");
-
-                                    b2.Property<string>("Id")
-                                        .HasColumnType("nvarchar(max)");
-
-                                    b2.HasKey("CommandContextDbOutboxItemId");
-
-                                    b2.ToTable("OutboxItems");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("CommandContextDbOutboxItemId");
-                                });
-
-                            b1.OwnsOne("Common.Application.Events.CorrelationId", "CorrelationId", b2 =>
-                                {
-                                    b2.Property<long>("CommandContextDbOutboxItemId")
-                                        .HasColumnType("bigint");
-
-                                    b2.Property<string>("Value")
-                                        .IsRequired()
-                                        .HasColumnType("nvarchar(max)");
-
-                                    b2.HasKey("CommandContextDbOutboxItemId");
-
-                                    b2.ToTable("OutboxItems");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("CommandContextDbOutboxItemId");
-                                });
-
-                            b1.Navigation("CommandId")
-                                .IsRequired();
-
-                            b1.Navigation("CorrelationId")
-                                .IsRequired();
                         });
 
                     b.Navigation("CommandContext")

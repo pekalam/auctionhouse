@@ -1,7 +1,6 @@
 ﻿using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
-using Common.Application.SagaNotifications;
 using Users.Domain.Repositories;
 
 namespace Users.Application.Commands.SignUp.AssignUserPayments
@@ -9,15 +8,15 @@ namespace Users.Application.Commands.SignUp.AssignUserPayments
     public class AssignUserPaymentsCommandHandler : CommandHandlerBase<AssignUserPaymentsCommand>
     {
         private readonly IUserRepository _users;
-        private readonly ISagaNotifications _sagaNotifications;
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
+        private readonly ICommandHandlerCallbacks _commandHandlerCallbacks;
 
-        public AssignUserPaymentsCommandHandler(IUserRepository users, ISagaNotifications sagaNotifications, IUnitOfWorkFactory unitOfWorkFactory, 
+        public AssignUserPaymentsCommandHandler(IUserRepository users, IUnitOfWorkFactory unitOfWorkFactory,
             CommandHandlerBaseDependencies dependencies) : base(ReadModelNotificationsMode.Disabled, dependencies)
         {
             _users = users;
-            _sagaNotifications = sagaNotifications;
             _unitOfWorkFactory = unitOfWorkFactory;
+            _commandHandlerCallbacks = dependencies.CommandHandlerLi;
         }
 
         protected override async Task<RequestStatus> HandleCommand(AppCommand<AssignUserPaymentsCommand> request, IEventOutbox eventOutbox, CancellationToken cancellationToken)
@@ -35,7 +34,7 @@ namespace Users.Application.Commands.SignUp.AssignUserPayments
             _users.UpdateUser(user);
             await eventOutbox.SaveEvents(user.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Saga);
             //await _sagaNotifications.AddUnhandledEvents(request.CommandContext.CorrelationId, user.PendingEvents); //TODO this should be explicit
-            await _sagaNotifications.MarkSagaAsCompleted(request.CommandContext.CorrelationId);
+            await _commandHandlerCallbacks.OnUowCommit(request);
             user.MarkPendingEventsAsHandled();
             uow.Commit();
            

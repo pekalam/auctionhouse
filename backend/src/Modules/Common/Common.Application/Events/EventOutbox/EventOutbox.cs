@@ -3,11 +3,6 @@ using Core.Common.Domain;
 
 namespace Common.Application.Events
 {
-    public interface IEventOutboxSavedItems
-    {
-        IReadOnlyList<OutboxItem> SavedOutboxStoreItems { get; }
-    }
-
     /// <summary>
     /// Saves events with <see cref="IOutboxItemStore"/>.
     /// </summary>

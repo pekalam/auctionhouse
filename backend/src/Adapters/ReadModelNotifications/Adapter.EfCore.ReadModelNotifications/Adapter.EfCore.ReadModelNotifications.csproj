@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Modules\Common\Common.Application\Common.Application.csproj" />
+    <ProjectReference Include="..\..\..\ReadModelNotifications\ReadModelNotifications.csproj" />
   </ItemGroup>
 
 </Project>

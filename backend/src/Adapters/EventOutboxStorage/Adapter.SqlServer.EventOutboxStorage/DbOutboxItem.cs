@@ -1,6 +1,7 @@
 ﻿using Common.Application.Commands;
 using Common.Application.Events;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json;
 
 namespace Adapter.SqlServer.EventOutbox
 {
@@ -23,6 +24,7 @@ namespace Adapter.SqlServer.EventOutbox
         public bool HttpQueued { get; set; }
         public bool WSQueued { get; set; }
         public string Name { get; set; }
+        public string? ExtraData { get; set; }
     }
 
     internal static class DbOutboxItemAssembler
@@ -41,6 +43,7 @@ namespace Adapter.SqlServer.EventOutbox
                     Name = outboxStoreItem.CommandContext.Name,
                     User = outboxStoreItem.CommandContext.User,
                     WSQueued = outboxStoreItem.CommandContext.WSQueued,
+                    ExtraData = JsonSerializer.Serialize(outboxStoreItem.CommandContext.ExtraData)
                 },
                 ReadModelNotifications = outboxStoreItem.ReadModelNotifications,
                 Timestamp = outboxStoreItem.Timestamp,
@@ -54,18 +57,25 @@ namespace Adapter.SqlServer.EventOutbox
             {
                 Id = dbItem.Id,
                 CommandContext = new CommandContext(
-                    new CommandId(dbItem.CommandContext.CommandId), 
-                    new CorrelationId(dbItem.CommandContext.CorrelationId), 
+                    new CommandId(dbItem.CommandContext.CommandId),
+                    new CorrelationId(dbItem.CommandContext.CorrelationId),
                     dbItem.CommandContext.User,
-                    dbItem.CommandContext.HttpQueued, 
-                    dbItem.CommandContext.WSQueued, 
-                    dbItem.CommandContext.Name
+                    dbItem.CommandContext.HttpQueued,
+                    dbItem.CommandContext.WSQueued,
+                    dbItem.CommandContext.Name,
+                    DeserializeExtraData(dbItem)
                 ),
                 Timestamp = dbItem.Timestamp,
                 ReadModelNotifications = dbItem.ReadModelNotifications,
                 Event = SerializationUtils.FromJson(dbItem.Event),
                 Processed = dbItem.Processed,
             };
+        }
+
+        private static Dictionary<string, string>? DeserializeExtraData(DbOutboxItem outboxItem)
+        {
+            return outboxItem.CommandContext.ExtraData is null ? null
+                : JsonSerializer.Deserialize<Dictionary<string, string>>(outboxItem.CommandContext.ExtraData) ?? throw new ArgumentException("ExtraData deserialization error");
         }
     }
 }

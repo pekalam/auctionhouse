@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Common.Extensions\Common.Extensions.csproj" />
     <ProjectReference Include="..\Core.DomainFramework\Common.DomainFramework.csproj" />
   </ItemGroup>
 

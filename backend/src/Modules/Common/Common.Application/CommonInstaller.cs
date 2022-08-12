@@ -2,8 +2,6 @@
 using Common.Application.Commands.Attributes;
 using Common.Application.Events;
 using Common.Application.Mediator;
-using Common.Application.ReadModelNotifications;
-using Common.Application.SagaNotifications;
 using Core.Query.EventHandlers;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,8 +29,7 @@ namespace Common.Application
             services.AddTransient<IImplProvider, DefaultDIImplProvider>();
             services.AddTransient<EventConsumerDependencies>();
 
-            services.AddMediatR(commandHandlerAssemblies,
-cfg =>
+            services.AddMediatR(commandHandlerAssemblies, cfg =>
             {
                 cfg.AsTransient();
             });
@@ -57,6 +54,7 @@ cfg =>
 
             services.AddConcurrencyUtils();
             services.AddCommandHandling<EventOutbox>(commandHandlerAssemblies);
+            services.AddDefaultCommandHandlerExtensions();
             AttributeStrategies.LoadCommandAttributeStrategies(commandHandlerAssemblies);
             AuthorizationRequiredAttribute.LoadSignedInUserCmdAndQueryMembers(commandHandlerAssemblies);
         }
@@ -77,11 +75,16 @@ cfg =>
             cfg.AsTransient();
         });
             services.AddScoped<TEventOutbox>();
-            services.AddTransient<IEventOutbox>(s => s.GetRequiredService<TEventOutbox>());
-            services.AddTransient<IEventOutboxSavedItems>(s => s.GetRequiredService<TEventOutbox>());
+            services.AddScoped<IEventOutbox>(s => s.GetRequiredService<TEventOutbox>());
+            services.AddScoped<IEventOutboxSavedItems>(s => s.GetRequiredService<TEventOutbox>());
             services.AddTransient<EventOutboxSender>();
             services.AddTransient<ImmediateCommandQueryMediator>();
             services.AddTransient<CommandHandlerBaseDependencies>();
+        }
+
+        public static void AddDefaultCommandHandlerExtensions(this IServiceCollection services)
+        {
+            services.AddTransient<ICommandHandlerCallbacks, DefaultCommandHandlerCallbacks>();
         }
 
         public static void AddOutboxProcessorService(this IServiceCollection services, EventOutboxProcessorSettings outboxProcessorSettings)
@@ -98,8 +101,6 @@ cfg =>
         {
             Tracing.InitializeTracingSource();
             _tracerProviderBuilder = Sdk.CreateTracerProviderBuilder();
-            services.Decorate<ISagaNotifications, TracedSagaNotifications>();
-            services.Decorate<IImmediateNotifications, TracedImmediateNotifications>();
             action?.Invoke(_tracerProviderBuilder);
         }
 

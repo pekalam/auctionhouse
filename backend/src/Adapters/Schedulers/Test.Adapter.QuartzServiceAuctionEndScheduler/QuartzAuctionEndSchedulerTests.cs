@@ -141,6 +141,7 @@ namespace Test.Adapter.QuartzServiceAuctionEndScheduler
             
             services.AddConcurrencyUtils();
             services.AddCommandHandling<EventOutboxMock>(typeof(QuartzAuctionEndSchedulerTests).Assembly);
+            services.AddDefaultCommandHandlerExtensions();
             services.AddTransient(s => TimeTaskServiceSettingsFactory.Create());
             AttributeStrategies.LoadCommandAttributeStrategies(Assembly.Load("Auctions.Application"));
             var provider = services.BuildServiceProvider();

@@ -1,11 +1,14 @@
-﻿using AuctionBids.Domain.Repositories;
+﻿using AuctionBids.Domain;
+using AuctionBids.Domain.Repositories;
 using AuctionBids.Domain.Shared;
 using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
+using Common.Extensions;
 using Core.Command.Bid;
 using Core.DomainFramework;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 
 namespace Core.Command.Commands.Bid
 {
@@ -14,10 +17,12 @@ namespace Core.Command.Commands.Bid
         private readonly IAuctionBidsRepository _allAuctionBids;
         private readonly ILogger<RaiseBidCommandHandler> _logger;
         private readonly IUnitOfWorkFactory _uowFactory;
+        private readonly ICommandHandlerCallbacks _commandHandlerCallbacks;
 
         public RaiseBidCommandHandler(ILogger<RaiseBidCommandHandler> logger, CommandHandlerBaseDependencies dependencies, IUnitOfWorkFactory uowFactory, IAuctionBidsRepository auctionBids)
             : base(ReadModelNotificationsMode.Immediate, dependencies)
         {
+            _commandHandlerCallbacks = dependencies.CommandHandlerLi;
             _logger = logger;
             _uowFactory = uowFactory;
             _allAuctionBids = auctionBids;
@@ -46,6 +51,8 @@ namespace Core.Command.Commands.Bid
             using (var uow = _uowFactory.Begin())
             {
                 _allAuctionBids.Update(auctionBids);
+                await SetExtensionValues(bid);
+                //TODO: remove if
                 if (bid.Accepted) //accepted bid should be visible immediatedly
                 {
                     await eventOutbox.SaveEvents(auctionBids.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
@@ -63,6 +70,18 @@ namespace Core.Command.Commands.Bid
                 return RequestStatus.CreateFailed(request.CommandContext);
             }
             return RequestStatus.CreatePending(request.CommandContext);
+        }
+
+        private Task SetExtensionValues(AuctionBids.Domain.Bid bid)
+        {
+            if (bid.Accepted)
+            {
+                return _commandHandlerCallbacks.CallExtension(CommonExtensionKeys.ReadModelNotificationsMode, CommonExtensionKeys.ReadModelNotificationsImmediateMode);
+            }
+            else
+            {
+                return _commandHandlerCallbacks.CallExtension(CommonExtensionKeys.ReadModelNotificationsMode, CommonExtensionKeys.ReadModelNotificationsDisabledMode);
+            }
         }
     }
 }

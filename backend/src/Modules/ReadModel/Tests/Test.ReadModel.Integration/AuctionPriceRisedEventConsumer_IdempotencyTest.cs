@@ -1,7 +1,6 @@
 ﻿using AuctionBids.DomainEvents;
 using Common.Application.Commands;
 using Common.Application.Events;
-using Common.Application.SagaNotifications;
 using Core.Query.EventHandlers;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
@@ -117,8 +116,7 @@ namespace Test.ReadModel.Integration
 
         private static EventConsumerDependencies GivenMockEventConsumerDependencies()
         {
-            return new EventConsumerDependencies(new TestAppEventBuilder(),
-                new(() => Mock.Of<ISagaNotifications>()), new(() => Mock.Of<IImmediateNotifications>()));
+            return new EventConsumerDependencies(new TestAppEventBuilder(), Mock.Of<IEventConsumerCallbacks>());
         }
     }
 }

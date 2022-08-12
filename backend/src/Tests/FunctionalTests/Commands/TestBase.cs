@@ -150,6 +150,8 @@ namespace FunctionalTests.Commands
         {
             return DiTestUtils.CreateServiceProvider((services) =>
             {
+                services.AddSingleton(TestConfig.Instance);
+
                 var commandHandlerAssemblies = assemblyNames.Select(n => Assembly.Load(n)).ToArray();
                 //missing query dependencies
                 services.AddCommonCommandDependencies(commandHandlerAssemblies);

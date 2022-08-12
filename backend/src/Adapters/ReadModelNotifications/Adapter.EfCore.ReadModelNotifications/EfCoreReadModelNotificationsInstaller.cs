@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ReadModelNotifications;
 
 namespace Adapter.EfCore.ReadModelNotifications
 {
-    using Common.Application.SagaNotifications;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -15,8 +15,8 @@ namespace Adapter.EfCore.ReadModelNotifications
             services.AddSingleton(settings);
             services.AddDbContext<SagaEventsConfirmationDbContext>(opt =>
                 ConfigureDbContext(settings, opt));
-            services.AddTransient<ISagaNotifications, EfCoreSagaNotifications>();
-            services.AddTransient<IImmediateNotifications, EfCoreSagaNotifications>();
+            services.AddScoped<EfCoreSagaNotifications>();
+            services.AddReadModelNotifications<EfCoreSagaNotifications, EfCoreSagaNotifications>();
         }
 
         private static DbContextOptionsBuilder ConfigureDbContext(EfCoreReadModelNotificaitonsOptions settings, DbContextOptionsBuilder opt)

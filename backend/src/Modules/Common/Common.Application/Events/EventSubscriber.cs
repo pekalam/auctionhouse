@@ -3,11 +3,6 @@ using System.Diagnostics;
 
 namespace Common.Application.Events
 {
-    public interface IEventDispatcher
-    {
-        Task Dispatch(IAppEvent<Event> msg);
-    }
-
     public abstract class EventSubscriber<T> : IEventDispatcher where T : Event
     {
         private readonly IAppEventBuilder _eventBuilder;

@@ -3,7 +3,6 @@ using Auctions.Domain.Services;
 using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
-using Common.Application.SagaNotifications;
 
 namespace Auctions.Application.Commands.BuyNow.ConfirmBuy
 {
@@ -17,15 +16,15 @@ namespace Auctions.Application.Commands.BuyNow.ConfirmBuy
     {
         private readonly IAuctionRepository _auctions;
         private readonly OptimisticConcurrencyHandler _optimisticConcurrencyHandler;
-        private readonly ISagaNotifications _sagaNotifications;
+        private readonly ICommandHandlerCallbacks _commandHandlerCallbacks;
         private readonly IAuctionUnlockScheduler _auctionUnlockScheduler;
 
-        public ConfirmBuyCommandHandler(CommandHandlerBaseDependencies dependencies, IAuctionRepository auctions, OptimisticConcurrencyHandler optimisticConcurrencyHandler, ISagaNotifications sagaNotifications, IAuctionUnlockScheduler auctionUnlockScheduler) : base(ReadModelNotificationsMode.Disabled, dependencies)
+        public ConfirmBuyCommandHandler(CommandHandlerBaseDependencies dependencies, IAuctionRepository auctions, OptimisticConcurrencyHandler optimisticConcurrencyHandler, ICommandHandlerCallbacks commandHandlerCallbacks, IAuctionUnlockScheduler auctionUnlockScheduler) : base(ReadModelNotificationsMode.Disabled, dependencies)
         {
             _auctions = auctions;
             _optimisticConcurrencyHandler = optimisticConcurrencyHandler;
-            _sagaNotifications = sagaNotifications;
             _auctionUnlockScheduler = auctionUnlockScheduler;
+            _commandHandlerCallbacks = commandHandlerCallbacks;
         }
 
         protected override async Task<RequestStatus> HandleCommand(AppCommand<ConfirmBuyCommand> request, IEventOutbox eventOutbox, CancellationToken cancellationToken)
@@ -46,7 +45,7 @@ namespace Auctions.Application.Commands.BuyNow.ConfirmBuy
                 {
                     _auctions.UpdateAuction(auction);
                     outboxItems = await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Saga);
-                    await _sagaNotifications.MarkSagaAsCompleted(request.CommandContext.CorrelationId); //TODO separate UOW for saga notifications
+                    await _commandHandlerCallbacks.OnUowCommit(request); //TODO separate UOW for saga notifications
                     uow.Commit();
                 }
             });
