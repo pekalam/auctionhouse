@@ -54,7 +54,7 @@ builder.Services.AddCategoriesModule();
 builder.Services.AddRabbitMq(builder.Configuration, eventConsumerAssemblies: new[] { typeof(ReadModelInstaller).Assembly });
 builder.Services.AddXmlCategoryTreeStore(builder.Configuration);
 builder.Services.AddMongoDbImageDb(builder.Configuration);
-builder.Services.AddEfCoreReadModelNotifications(builder.Configuration);
+builder.Services.AddQueryEfCoreReadModelNotifications(builder.Configuration);
 builder.Services.AddTransient<IBidRaisedNotifications, BidRaisedNotifications>();
 
 //WEB API SERVICES

@@ -202,7 +202,7 @@ namespace ReadModelNotifications.Tests
         private ICommandHandlerCallbacks SetupCommandHandlerCallbacks(CommandNotificationSettings[] commandNotificationSettings)
         {
             var services = new ServiceCollection();
-            services.AddReadModelNotifications((_) => _mockImmediateNotifications.Object, (_) => _mockSagaNotifications.Object, (_) => new StubNotificationReader(commandNotificationSettings),
+            services.AddCommandReadModelNotifications((_) => _mockImmediateNotifications.Object, (_) => _mockSagaNotifications.Object, (_) => new StubNotificationReader(commandNotificationSettings),
                 eventOutboxFactoryTestDependency: (_) => Mock.Of<IEventOutbox>());
             var provider = services.BuildServiceProvider();
             return provider.GetRequiredService<ICommandHandlerCallbacks>();

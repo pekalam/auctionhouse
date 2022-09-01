@@ -184,7 +184,8 @@ namespace FunctionalTests.Commands
 
                 services.AddTransient<IAuctionImageConversion>((s) => Mock.Of<IAuctionImageConversion>());
 
-                services.AddEfCoreReadModelNotifications(settings: TestConfig.Instance.GetEfCoreReadModelNotificaitonsOptions());
+                services.AddCommandEfCoreReadModelNotifications(settings: TestConfig.Instance.GetEfCoreReadModelNotificaitonsOptions());
+                services.AddQueryEfCoreReadModelNotifications(settings: TestConfig.Instance.GetEfCoreReadModelNotificaitonsOptions());
 
                 services.AddTransient<IAuctionPaymentVerification, AuctionPaymentVerification>();
                 services.AddTransient<IAuctionUnlockScheduler>(s => Mock.Of<IAuctionUnlockScheduler>());

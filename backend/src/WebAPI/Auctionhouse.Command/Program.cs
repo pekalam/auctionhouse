@@ -87,7 +87,7 @@ builder.Services.AddRabbitMq(builder.Configuration, eventSubscriptionAssemblies:
 builder.Services.AddXmlCategoryTreeStore(builder.Configuration);
 builder.Services.AddAuctionhouseDatabaseRepositories(builder.Configuration);
 builder.Services.AddQuartzTimeTaskServiceAuctionEndScheduler(builder.Configuration);
-builder.Services.AddEfCoreReadModelNotifications(builder.Configuration);
+builder.Services.AddCommandEfCoreReadModelNotifications(builder.Configuration);
 builder.Services.AddSqlServerEventOutboxStorage(builder.Configuration);
 builder.Services.AddHangfireServices(builder.Configuration);
 

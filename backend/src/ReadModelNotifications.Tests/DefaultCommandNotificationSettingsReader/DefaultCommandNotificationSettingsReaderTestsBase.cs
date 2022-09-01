@@ -13,7 +13,7 @@ namespace ReadModelNotifications.Tests.DefaultCommandNotificationSettingsReader
         protected ICommandNotificationSettingsReader SetupConfigurationSettingsReader(Action<IServiceCollection> configureServices)
         {
             var services = new ServiceCollection();
-            services.AddReadModelNotifications((_) => Mock.Of<IImmediateNotifications>(), (_) => Mock.Of<ISagaNotifications>(), eventOutboxFactoryTestDependency: (_) => Mock.Of<IEventOutbox>());
+            services.AddCommandReadModelNotifications((_) => Mock.Of<IImmediateNotifications>(), (_) => Mock.Of<ISagaNotifications>(), eventOutboxFactoryTestDependency: (_) => Mock.Of<IEventOutbox>());
             configureServices(services);
             return services.BuildServiceProvider().GetRequiredService<ICommandNotificationSettingsReader>();
         }

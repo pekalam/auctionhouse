@@ -8,15 +8,28 @@ namespace Adapter.EfCore.ReadModelNotifications
 
     public static class EfCoreReadModelNotificationsInstaller
     {
-        public static void AddEfCoreReadModelNotifications(this IServiceCollection services, IConfiguration? configuration = null, 
+        public static void AddCommandEfCoreReadModelNotifications(this IServiceCollection services, IConfiguration? configuration = null,
             EfCoreReadModelNotificaitonsOptions? settings = null)
+        {
+            AddCoreServices(services, configuration, settings);
+            services.AddCommandReadModelNotifications<EfCoreSagaNotifications, EfCoreSagaNotifications>();
+        }
+
+        public static void AddQueryEfCoreReadModelNotifications(this IServiceCollection services, IConfiguration? configuration = null,
+            EfCoreReadModelNotificaitonsOptions? settings = null)
+        {
+            AddCoreServices(services, configuration, settings);
+            services.AddQueryReadModelNotificiations<EfCoreSagaNotifications, EfCoreSagaNotifications>();
+        }
+
+
+        private static void AddCoreServices(IServiceCollection services, IConfiguration configuration, EfCoreReadModelNotificaitonsOptions? settings)
         {
             settings ??= configuration!.GetSection(nameof(EfCoreReadModelNotificaitonsOptions)).Get<EfCoreReadModelNotificaitonsOptions>();
             services.AddSingleton(settings);
             services.AddDbContext<SagaEventsConfirmationDbContext>(opt =>
                 ConfigureDbContext(settings, opt));
             services.AddScoped<EfCoreSagaNotifications>();
-            services.AddReadModelNotifications<EfCoreSagaNotifications, EfCoreSagaNotifications>();
         }
 
         private static DbContextOptionsBuilder ConfigureDbContext(EfCoreReadModelNotificaitonsOptions settings, DbContextOptionsBuilder opt)
