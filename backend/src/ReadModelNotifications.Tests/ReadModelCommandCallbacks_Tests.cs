@@ -203,7 +203,7 @@ namespace ReadModelNotifications.Tests
         {
             var services = new ServiceCollection();
             services.AddReadModelNotifications((_) => _mockImmediateNotifications.Object, (_) => _mockSagaNotifications.Object, (_) => new StubNotificationReader(commandNotificationSettings),
-                eventOutboxFactory: (_) => Mock.Of<IEventOutbox>());
+                eventOutboxFactoryTestDependency: (_) => Mock.Of<IEventOutbox>());
             var provider = services.BuildServiceProvider();
             return provider.GetRequiredService<ICommandHandlerCallbacks>();
         }

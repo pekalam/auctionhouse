@@ -18,39 +18,56 @@ namespace ReadModelNotifications
                 static (prov) => prov.GetRequiredService<TSagaNotifications>());
         }
 
+        /// <summary>
+        /// Custom registration of ReadModelNotificaitons
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="immediateNotificationsFactory"></param>
+        /// <param name="sagaNotificationsFactory"></param>
+        /// <param name="commandNotificationSettingsReaderFactory"></param>
+        /// <param name="eventOutboxFactoryTestDependency">Test only dependency</param>
         public static void AddReadModelNotifications(
                 this IServiceCollection services, 
                 Func<IServiceProvider, IImmediateNotifications> immediateNotificationsFactory, 
                 Func<IServiceProvider, ISagaNotifications> sagaNotificationsFactory,
                 Func<IServiceProvider, ICommandNotificationSettingsReader>? commandNotificationSettingsReaderFactory = null,
-                Func<IServiceProvider, IEventOutbox>? eventOutboxFactory = null)
+                Func<IServiceProvider, IEventOutbox>? eventOutboxFactoryTestDependency = null)
         {
-            // Module required dependency for tests
-            if (eventOutboxFactory is not null && services.FirstOrDefault(d => d.ServiceType == typeof(IEventOutbox)) is null)
-            {
-                services.AddTransient(eventOutboxFactory);
-            }
+            AddEventOutboxTestDependency(services, eventOutboxFactoryTestDependency);
 
+            AddDefaultCommandNotificationSettingsReader(services, commandNotificationSettingsReaderFactory);
+
+            services.AddScoped<CommandNotificationsEventOutboxWrapper>();
+            services.Decorate<IEventOutbox, CommandNotificationsEventOutboxWrapper>();
+
+            services.AddTransient<IEventConsumerCallbacks, ReadModelEventCallbacks>();
+            services.AddTransient<ICommandHandlerCallbacks, ReadModelCommandCallbacks>();
+
+            services.AddTransient((prov) => sagaNotificationsFactory(prov));
+            services.AddTransient((prov) => immediateNotificationsFactory(prov));
+            services.Decorate<ISagaNotifications, TracedSagaNotifications>();
+            services.Decorate<IImmediateNotifications, TracedImmediateNotifications>();
+
+            services.Add(new ServiceDescriptor(typeof(ReadModelNotificationsSettings),
+                (prov) => new ReadModelNotificationsSettings(prov.GetRequiredService<ICommandNotificationSettingsReader>()), ServiceLifetime.Transient));
+        }
+
+        private static void AddEventOutboxTestDependency(IServiceCollection services, Func<IServiceProvider, IEventOutbox>? eventOutboxFactoryTestDependency)
+        {
+            if (eventOutboxFactoryTestDependency is not null && services.FirstOrDefault(d => d.ServiceType == typeof(IEventOutbox)) is null)
+            {
+                services.AddTransient(eventOutboxFactoryTestDependency);
+            }
+        }
+
+        private static void AddDefaultCommandNotificationSettingsReader(IServiceCollection services, Func<IServiceProvider, ICommandNotificationSettingsReader>? commandNotificationSettingsReaderFactory)
+        {
             if (commandNotificationSettingsReaderFactory is null)
             {
                 services.AddTransient<ConfigurationCommandNotificationSettingsReader>();
                 commandNotificationSettingsReaderFactory = static (prov) => prov.GetRequiredService<ConfigurationCommandNotificationSettingsReader>();
             }
-
-            services.AddScoped<CommandNotificationsEventOutboxWrapper>();
-            services.Decorate<IEventOutbox, CommandNotificationsEventOutboxWrapper>();
-
-            services.AddTransient<ICommandNotificationSettingsReader>((prov) => commandNotificationSettingsReaderFactory(prov));
-            services.AddTransient<IEventConsumerCallbacks, ReadModelEventCallbacks>();
-            services.AddTransient<ICommandHandlerCallbacks, ReadModelCommandCallbacks>();
-
-            services.AddTransient<ISagaNotifications>((prov) => sagaNotificationsFactory(prov));
-            services.AddTransient<IImmediateNotifications>((prov) => immediateNotificationsFactory(prov));
-            services.Decorate<ISagaNotifications, TracedSagaNotifications>();
-            services.Decorate<IImmediateNotifications, TracedImmediateNotifications>();
-
-            services.Add(new ServiceDescriptor(typeof(ReadModelNotificationsSettings), 
-                (prov) => new ReadModelNotificationsSettings(prov.GetRequiredService<ICommandNotificationSettingsReader>()), ServiceLifetime.Transient));
+            services.AddTransient((prov) => commandNotificationSettingsReaderFactory(prov));
         }
     }
 }
