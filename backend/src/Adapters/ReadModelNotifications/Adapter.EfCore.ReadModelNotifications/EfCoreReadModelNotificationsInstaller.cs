@@ -8,11 +8,11 @@ namespace Adapter.EfCore.ReadModelNotifications
 
     public static class EfCoreReadModelNotificationsInstaller
     {
-        public static void AddCommandEfCoreReadModelNotifications(this IServiceCollection services, IConfiguration? configuration = null,
+        public static void AddCommandEfCoreReadModelNotifications(this IServiceCollection services, IConfiguration configuration,
             EfCoreReadModelNotificaitonsOptions? settings = null)
         {
             AddCoreServices(services, configuration, settings);
-            services.AddCommandReadModelNotifications<EfCoreSagaNotifications, EfCoreSagaNotifications>();
+            services.AddCommandReadModelNotifications<EfCoreSagaNotifications, EfCoreSagaNotifications>(configuration);
         }
 
         public static void AddQueryEfCoreReadModelNotifications(this IServiceCollection services, IConfiguration? configuration = null,
@@ -23,7 +23,7 @@ namespace Adapter.EfCore.ReadModelNotifications
         }
 
 
-        private static void AddCoreServices(IServiceCollection services, IConfiguration configuration, EfCoreReadModelNotificaitonsOptions? settings)
+        private static void AddCoreServices(IServiceCollection services, IConfiguration? configuration, EfCoreReadModelNotificaitonsOptions? settings)
         {
             settings ??= configuration!.GetSection(nameof(EfCoreReadModelNotificaitonsOptions)).Get<EfCoreReadModelNotificaitonsOptions>();
             services.AddSingleton(settings);

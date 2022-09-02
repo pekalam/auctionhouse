@@ -47,7 +47,7 @@ namespace ReadModelNotifications.Tests.DefaultCommandNotificationSettingsReader
         [Fact]
         public void Reads_saga_configuration_from_registered_configuration()
         {
-            _sut = SetupConfigurationSettingsReader((services) => services.AddSingleton(SetupSagaConfiguration()));
+            _sut = SetupConfigurationSettingsReader(SetupSagaConfiguration());
 
             CommandNotificationSettings[] settings = _sut.Read();
 
@@ -61,7 +61,7 @@ namespace ReadModelNotifications.Tests.DefaultCommandNotificationSettingsReader
         [Fact]
         public void Throws_exception_when_element_in_saga_configuration_does_not_contain_CompletionCommandName()
         {
-            _sut = SetupConfigurationSettingsReader((services) => services.AddSingleton(SetupInvalidSagaConfigurationWithEmptyCompletionNames()));
+            _sut = SetupConfigurationSettingsReader(SetupInvalidSagaConfigurationWithEmptyCompletionNames());
 
             var action = () => _sut.Read();
 

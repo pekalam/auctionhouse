@@ -3,27 +3,29 @@ using Common.Application.Events;
 using Common.Application.ReadModelNotifications;
 using Common.Application.SagaNotifications;
 using Core.Query.EventHandlers;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ReadModelNotifications
 {
     public static class ReadModelNotificationsInstaller
     {
-        public static void AddCommandReadModelNotifications<TImmediateNotifications, TSagaNotifications>(this IServiceCollection services)
+        public static void AddCommandReadModelNotifications<TImmediateNotifications, TSagaNotifications>(this IServiceCollection services, IConfiguration configuration)
             where TImmediateNotifications : class, IImmediateNotifications
             where TSagaNotifications : class, ISagaNotifications
         {
-            AddCommandReadModelNotifications(services, static (prov) => prov.GetRequiredService<TImmediateNotifications>(), static (prov) => prov.GetRequiredService<TSagaNotifications>());
+            AddCommandReadModelNotifications(services, static (prov) => prov.GetRequiredService<TImmediateNotifications>(), static (prov) => prov.GetRequiredService<TSagaNotifications>(), configuration);
         }
 
         public static void AddCommandReadModelNotifications(
             this IServiceCollection services,
             Func<IServiceProvider, IImmediateNotifications> immediateNotificationsFactory,
             Func<IServiceProvider, ISagaNotifications> sagaNotificationsFactory,
+            IConfiguration? configuration = null,
             Func<IServiceProvider, ICommandNotificationSettingsReader>? commandNotificationSettingsReaderFactory = null,
             Func<IServiceProvider, IEventOutbox>? eventOutboxFactoryTestDependency = null)
         {
-            AddDefaultCommandNotificationSettingsReader(services, commandNotificationSettingsReaderFactory);
+            AddDefaultCommandNotificationSettingsReader(services, configuration, commandNotificationSettingsReaderFactory);
             services.AddScoped<CommandNotificationsEventOutboxWrapper>();
             services.AddTransient<ICommandHandlerCallbacks, ReadModelCommandCallbacks>();
             services.Add(new ServiceDescriptor(typeof(ReadModelNotificationsSettings),
@@ -73,11 +75,11 @@ namespace ReadModelNotifications
             }
         }
 
-        private static void AddDefaultCommandNotificationSettingsReader(IServiceCollection services, Func<IServiceProvider, ICommandNotificationSettingsReader>? commandNotificationSettingsReaderFactory)
+        private static void AddDefaultCommandNotificationSettingsReader(IServiceCollection services, IConfiguration? configuration, Func<IServiceProvider, ICommandNotificationSettingsReader>? commandNotificationSettingsReaderFactory)
         {
             if (commandNotificationSettingsReaderFactory is null)
             {
-                services.AddTransient<ConfigurationCommandNotificationSettingsReader>();
+                services.AddSingleton(new ConfigurationCommandNotificationSettingsReader(configuration ?? throw new NullReferenceException("Nulll ReadModel notificiations configuration")));
                 commandNotificationSettingsReaderFactory = static (prov) => prov.GetRequiredService<ConfigurationCommandNotificationSettingsReader>();
             }
             services.AddTransient((prov) => commandNotificationSettingsReaderFactory(prov));

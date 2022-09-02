@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System;
 using Common.Application.Events;
+using Microsoft.Extensions.Configuration;
 
 namespace ReadModelNotifications.Tests.DefaultCommandNotificationSettingsReader
 {
@@ -10,11 +11,10 @@ namespace ReadModelNotifications.Tests.DefaultCommandNotificationSettingsReader
     {
         protected ICommandNotificationSettingsReader _sut;
 
-        protected ICommandNotificationSettingsReader SetupConfigurationSettingsReader(Action<IServiceCollection> configureServices)
+        protected ICommandNotificationSettingsReader SetupConfigurationSettingsReader(IConfigurationRoot configuration)
         {
             var services = new ServiceCollection();
-            services.AddCommandReadModelNotifications((_) => Mock.Of<IImmediateNotifications>(), (_) => Mock.Of<ISagaNotifications>(), eventOutboxFactoryTestDependency: (_) => Mock.Of<IEventOutbox>());
-            configureServices(services);
+            services.AddCommandReadModelNotifications((_) => Mock.Of<IImmediateNotifications>(), (_) => Mock.Of<ISagaNotifications>(), configuration, eventOutboxFactoryTestDependency: (_) => Mock.Of<IEventOutbox>());
             return services.BuildServiceProvider().GetRequiredService<ICommandNotificationSettingsReader>();
         }
         protected static string GetNotificationsModeSettingsValue(ReadModelNotificationsMode notificationsMode)

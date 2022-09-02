@@ -5,9 +5,9 @@ namespace ReadModelNotifications
 {
     internal class ConfigurationCommandNotificationSettingsReader : ICommandNotificationSettingsReader
     {
-        private readonly IConfigurationRoot _configuration;
+        private readonly IConfiguration _configuration;
 
-        public ConfigurationCommandNotificationSettingsReader(IConfigurationRoot configuration)
+        public ConfigurationCommandNotificationSettingsReader(IConfiguration configuration)
         {
             _configuration = configuration;
         }

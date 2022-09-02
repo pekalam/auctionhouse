@@ -77,7 +77,7 @@ namespace ReadModelNotifications.Tests.DefaultCommandNotificationSettingsReader
         [InlineData(ReadModelNotificationsMode.Immediate)]
         public void Reads_configuration_from_registered_configuration_with_mode(ReadModelNotificationsMode notificationsMode)
         {
-            _sut = SetupConfigurationSettingsReader((services) => services.AddSingleton(SetupConfiguration(notificationsMode)));
+            _sut = SetupConfigurationSettingsReader(SetupConfiguration(notificationsMode));
 
             CommandNotificationSettings[] settings = _sut.Read();
 
@@ -93,7 +93,7 @@ namespace ReadModelNotifications.Tests.DefaultCommandNotificationSettingsReader
         [InlineData(ReadModelNotificationsMode.Disabled)]
         public void Throws_exception_when_element_in_configuration_contains_CompletionCommandName_and_has_mode(ReadModelNotificationsMode notificationsMode)
         {
-            _sut = SetupConfigurationSettingsReader((services) => services.AddSingleton(SetupConfigurationWithCompletionCommandNames(notificationsMode)));
+            _sut = SetupConfigurationSettingsReader(SetupConfigurationWithCompletionCommandNames(notificationsMode));
 
             var action = () => _sut.Read();
 
@@ -103,7 +103,7 @@ namespace ReadModelNotifications.Tests.DefaultCommandNotificationSettingsReader
         [Fact]
         public void Throws_exception_when_element_in_configuration_does_not_contain_NotificaitonsMode()
         {
-            _sut = SetupConfigurationSettingsReader((services) => services.AddSingleton(SetupInvalidConfigurationWithMissingNotificationsMode()));
+            _sut = SetupConfigurationSettingsReader(SetupInvalidConfigurationWithMissingNotificationsMode());
 
             var action = () => _sut.Read();
 
@@ -113,7 +113,7 @@ namespace ReadModelNotifications.Tests.DefaultCommandNotificationSettingsReader
         [Fact]
         public void Throws_exception_when_element_in_configuration_contains_invalid_NotifcationsMode()
         {
-            _sut = SetupConfigurationSettingsReader((services) => services.AddSingleton(SetupInvalidConfigurationWithInvalidNotificationsMode()));
+            _sut = SetupConfigurationSettingsReader(SetupInvalidConfigurationWithInvalidNotificationsMode());
 
             var action = () => _sut.Read();
 
@@ -123,7 +123,7 @@ namespace ReadModelNotifications.Tests.DefaultCommandNotificationSettingsReader
         [Fact]
         public void Return_empty_configuration_if_registered_configuration_is_empty()
         {
-            _sut = SetupConfigurationSettingsReader((services) => services.AddSingleton(SetupEmptyConfifguration()));
+            _sut = SetupConfigurationSettingsReader(SetupEmptyConfifguration());
 
             var settings = _sut.Read();
 
