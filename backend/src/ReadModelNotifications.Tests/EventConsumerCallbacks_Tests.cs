@@ -1,5 +1,4 @@
-﻿using Castle.Core.Logging;
-using Common.Application;
+﻿using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
 using Core.Common.Domain;
@@ -8,18 +7,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using ReadModelNotifications.ImmediateNotifications;
 using ReadModelNotifications.SagaNotifications;
-using ReadModelNotifications.Settings;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace ReadModelNotifications.Tests
 {
 
-    public class ReadModelEventCallbacks_Tests
+    public class EventConsumerCallbacks_Tests
     {
         public class StubAppEvent : Event
         {
@@ -33,7 +28,7 @@ namespace ReadModelNotifications.Tests
         private readonly Mock<IAppEvent<StubAppEvent>> _mockAppEvent = new Mock<IAppEvent<StubAppEvent>>();
         private readonly IEventConsumerCallbacks _sut;
 
-        public ReadModelEventCallbacks_Tests()
+        public EventConsumerCallbacks_Tests()
         {
             _sut = SetupEventConsumerCallbacks();
         }
@@ -102,7 +97,7 @@ namespace ReadModelNotifications.Tests
                     "ReadModelNotificationsMode", mode switch {
                             ReadModelNotificationsMode.Immediate => "0",
                             ReadModelNotificationsMode.Saga => "1",
-                            ReadModelNotificationsMode.Disabled => "2", 
+                            ReadModelNotificationsMode.Disabled => "2",
                             _ => throw new NotImplementedException(),
                         }
                 }

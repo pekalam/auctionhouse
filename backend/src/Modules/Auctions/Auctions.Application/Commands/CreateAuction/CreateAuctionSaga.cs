@@ -90,7 +90,7 @@ namespace Auctions.Application.Commands.CreateAuction
             Lazy<IAuctionImageRepository> auctionImages, IUnitOfWorkFactory unitOfWorkFactory) :
             base(ReadModelNotificationsMode.Saga, dependencies)
         {
-            _commandHandlerCallbacks = dependencies.CommandHandlerLi;
+            _commandHandlerCallbacks = dependencies.CommandHandlerCallbacks;
             _eventOutbox = dependencies.EventOutbox;
             _auctionEndScheduler = auctionEndScheduler;
             _auctions = auctions;

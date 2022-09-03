@@ -14,12 +14,12 @@ using System.Threading.Tasks;
 
 namespace ReadModelNotifications.EventCallbacks
 {
-    internal class ReadModelEventCallbacks : IEventConsumerCallbacks
+    internal class ReadModelNotificationsEventConsumerCallbacks : IEventConsumerCallbacks
     {
         private readonly Lazy<IImmediateNotifications> _immediateNotifications;
         private readonly Lazy<ISagaNotifications> _sagaNotifications;
 
-        public ReadModelEventCallbacks(Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications)
+        public ReadModelNotificationsEventConsumerCallbacks(Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications)
         {
             _immediateNotifications = immediateNotifications;
             _sagaNotifications = sagaNotifications;

@@ -31,7 +31,7 @@ namespace ReadModelNotifications
         {
             AddDefaultCommandNotificationSettingsReader(services, configuration, commandNotificationSettingsReaderFactory);
             services.AddScoped<CommandNotificationsEventOutboxWrapper>();
-            services.AddTransient<ICommandHandlerCallbacks, ReadModelCommandCallbacks>();
+            services.AddTransient<ICommandHandlerCallbacks, ReadModelNotificationsCommandCallbacks>();
             services.Add(new ServiceDescriptor(typeof(ReadModelNotificationsSettings),
                 (prov) => new ReadModelNotificationsSettings(prov.GetRequiredService<ICommandNotificationSettingsReader>()), ServiceLifetime.Transient));
 
@@ -53,7 +53,7 @@ namespace ReadModelNotifications
                 Func<IServiceProvider, IImmediateNotifications> immediateNotificationsFactory,
                 Func<IServiceProvider, ISagaNotifications> sagaNotificationsFactory)
         {
-            services.AddTransient<IEventConsumerCallbacks, ReadModelEventCallbacks>();
+            services.AddTransient<IEventConsumerCallbacks, ReadModelNotificationsEventConsumerCallbacks>();
             services.AddCommonReadModelNotificationsDependencies(immediateNotificationsFactory, sagaNotificationsFactory);
         }
 

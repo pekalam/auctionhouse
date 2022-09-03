@@ -14,7 +14,7 @@ using Xunit;
 
 namespace ReadModelNotifications.Tests
 {
-    public class ReadModelCommandCallbacks_Tests
+    public class CommandCallbacks_Tests
     {
         private class StubNotificationReader : ICommandNotificationSettingsReader
         {
@@ -45,7 +45,7 @@ namespace ReadModelNotifications.Tests
         private readonly Mock<IImmediateNotifications> _mockImmediateNotifications;
         private readonly Mock<ISagaNotifications> _mockSagaNotifications;
 
-        public ReadModelCommandCallbacks_Tests()
+        public CommandCallbacks_Tests()
         {
             _mockImmediateNotifications = new Mock<IImmediateNotifications>();
             _mockSagaNotifications = new Mock<ISagaNotifications>();

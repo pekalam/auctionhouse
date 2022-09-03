@@ -16,7 +16,7 @@ namespace ReadModelNotifications.CommandCallbacks
 {
 
 
-    internal class ReadModelCommandCallbacks : ICommandHandlerCallbacks
+    internal class ReadModelNotificationsCommandCallbacks : ICommandHandlerCallbacks
     {
         private readonly IImmediateNotifications _immediateNotifications;
         private readonly ISagaNotifications _sagaNotifications;
@@ -24,7 +24,7 @@ namespace ReadModelNotifications.CommandCallbacks
 
         private ReadModelNotificationsMode? _overridenMode;
 
-        public ReadModelCommandCallbacks(ReadModelNotificationsSettings settings, ISagaNotifications sagaNotifications, IImmediateNotifications immediateNotifications)
+        public ReadModelNotificationsCommandCallbacks(ReadModelNotificationsSettings settings, ISagaNotifications sagaNotifications, IImmediateNotifications immediateNotifications)
         {
             _settings = settings;
             _sagaNotifications = sagaNotifications;

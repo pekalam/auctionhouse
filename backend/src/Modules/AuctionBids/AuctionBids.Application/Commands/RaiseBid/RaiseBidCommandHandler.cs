@@ -22,7 +22,7 @@ namespace Core.Command.Commands.Bid
         public RaiseBidCommandHandler(ILogger<RaiseBidCommandHandler> logger, CommandHandlerBaseDependencies dependencies, IUnitOfWorkFactory uowFactory, IAuctionBidsRepository auctionBids)
             : base(ReadModelNotificationsMode.Immediate, dependencies)
         {
-            _commandHandlerCallbacks = dependencies.CommandHandlerLi;
+            _commandHandlerCallbacks = dependencies.CommandHandlerCallbacks;
             _logger = logger;
             _uowFactory = uowFactory;
             _allAuctionBids = auctionBids;

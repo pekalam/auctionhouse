@@ -24,14 +24,14 @@ namespace Common.Application.Commands
             EventOutbox = eventOutbox;
             EventOutboxSender = eventOutboxSender;
             EventOutboxSavedItems = eventOutboxSavedItems;
-            CommandHandlerLi = commandHandlerLi;
+            CommandHandlerCallbacks = commandHandlerLi;
         }
 
         public ILogger<RequestStatus> Logger { get; set; }
         public IEventOutbox EventOutbox { get; set; }
         public EventOutboxSender EventOutboxSender { get; set; }
         public IEventOutboxSavedItems EventOutboxSavedItems { get; set; }
-        public ICommandHandlerCallbacks CommandHandlerLi { get; set; }
+        public ICommandHandlerCallbacks CommandHandlerCallbacks { get; set; }
     }
 
 
@@ -39,21 +39,19 @@ namespace Common.Application.Commands
     {
         private readonly ILogger<RequestStatus> _logger;
         // subclass provides value of this field to decide which mode should be used when saving command status
-        private readonly ReadModelNotificationsMode _notificationsMode;
         private readonly IEventOutbox _eventOutbox;
         private readonly EventOutboxSender _eventOutboxSender;
         private readonly IEventOutboxSavedItems _eventOutboxSavedItems;
-        private readonly ICommandHandlerCallbacks _commandHandlerLi;
+        private readonly ICommandHandlerCallbacks _commandHandlerCallbacks;
 
 
         protected CommandHandlerBase(ReadModelNotificationsMode notificationsMode, CommandHandlerBaseDependencies dependencies)
         {
             _logger = dependencies.Logger;
-            _notificationsMode = notificationsMode;
             _eventOutbox = dependencies.EventOutbox;
             _eventOutboxSender = dependencies.EventOutboxSender;
             _eventOutboxSavedItems = dependencies.EventOutboxSavedItems;
-            _commandHandlerLi = dependencies.CommandHandlerLi;
+            _commandHandlerCallbacks = dependencies.CommandHandlerCallbacks;
         }
 
         private async Task<RequestStatus> HandleCommandInternal(AppCommand<T> request, CancellationToken cancellationToken)
@@ -81,15 +79,15 @@ namespace Common.Application.Commands
             _logger.LogDebug("Handling command {name}", typeof(T).Name);
             if (Validator.TryValidateObject(request.Command, validationContext, validationResults, true))
             {
-                await _commandHandlerLi.OnExecute(request);
+                await _commandHandlerCallbacks.OnExecute(request);
 
                 //when exception is thrown then it should be handled by api
                 //failed status can result in events being sent
                 var requestStatus = await HandleCommandInternal(request, cancellationToken);
-                await _commandHandlerLi.OnCompleted(request);
+                await _commandHandlerCallbacks.OnCompleted(request);
 
                 await _eventOutboxSender.SendEvents(_eventOutboxSavedItems.SavedOutboxStoreItems);
-                await _commandHandlerLi.OnEventsSent(_eventOutboxSavedItems.SavedOutboxStoreItems);
+                await _commandHandlerCallbacks.OnEventsSent(_eventOutboxSavedItems.SavedOutboxStoreItems);
 
                 if (requestStatus.Status == Status.COMPLETED) Activity.Current.TraceOkStatus();
                 if (requestStatus.Status == Status.FAILED) Activity.Current.TraceErrorStatus();

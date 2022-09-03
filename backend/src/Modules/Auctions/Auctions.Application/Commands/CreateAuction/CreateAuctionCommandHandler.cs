@@ -27,7 +27,7 @@ namespace Auctions.Application.Commands.CreateAuction
             ISagaCoordinator sagaCoordinator, CreateAuctionService createAuctionService, IUnitOfWorkFactory uow, CommandHandlerBaseDependencies dependencies, IAuctionRepository auctions)
             : base(ReadModelNotificationsMode.Saga, dependencies)
         {
-            _commandHandlerCallbacks = dependencies.CommandHandlerLi;
+            _commandHandlerCallbacks = dependencies.CommandHandlerCallbacks;
             _logger = logger;
             _categoryNamesToTreeIdsConversion = categoryNamesToTreeIdsConversion;
             _sagaCoordinator = sagaCoordinator;

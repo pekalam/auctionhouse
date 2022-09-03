@@ -16,7 +16,7 @@ namespace Users.Application.Commands.SignUp.AssignUserPayments
         {
             _users = users;
             _unitOfWorkFactory = unitOfWorkFactory;
-            _commandHandlerCallbacks = dependencies.CommandHandlerLi;
+            _commandHandlerCallbacks = dependencies.CommandHandlerCallbacks;
         }
 
         protected override async Task<RequestStatus> HandleCommand(AppCommand<AssignUserPaymentsCommand> request, IEventOutbox eventOutbox, CancellationToken cancellationToken)
