@@ -1,10 +1,14 @@
 ﻿using Common.Application.Commands;
 using Common.Application.Events;
-using Common.Application.ReadModelNotifications;
-using Common.Application.SagaNotifications;
 using Core.Query.EventHandlers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ReadModelNotifications.CommandCallbacks;
+using ReadModelNotifications.EventCallbacks;
+using ReadModelNotifications.EventOutbox;
+using ReadModelNotifications.ImmediateNotifications;
+using ReadModelNotifications.SagaNotifications;
+using ReadModelNotifications.Settings;
 
 namespace ReadModelNotifications
 {

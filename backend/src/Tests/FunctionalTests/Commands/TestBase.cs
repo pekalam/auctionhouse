@@ -4,7 +4,6 @@ using Auctions.Application.Commands.CreateAuction;
 using Auctions.Domain.Repositories;
 using Auctions.Domain.Services;
 using Common.Application;
-using Common.Application.SagaNotifications;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;

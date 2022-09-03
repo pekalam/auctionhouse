@@ -1,6 +1,6 @@
 ﻿using Common.Application.Events;
 
-namespace ReadModelNotifications
+namespace ReadModelNotifications.Settings
 {
     // TODO: use alias to setting instead of command name that will be used as a reference for saga handlers that will mark as notified / complete
     /// <summary>

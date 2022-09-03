@@ -1,7 +1,7 @@
 ﻿using Common.Application.Commands;
 using Common.Application.Events;
 
-namespace Common.Application.SagaNotifications
+namespace ReadModelNotifications.SagaNotifications
 {
     public class SagaEventsConfirmation
     {

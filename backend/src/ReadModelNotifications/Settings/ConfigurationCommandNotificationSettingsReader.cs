@@ -1,7 +1,7 @@
 ﻿using Common.Application.Events;
 using Microsoft.Extensions.Configuration;
 
-namespace ReadModelNotifications
+namespace ReadModelNotifications.Settings
 {
     internal class ConfigurationCommandNotificationSettingsReader : ICommandNotificationSettingsReader
     {
@@ -15,7 +15,7 @@ namespace ReadModelNotifications
         public CommandNotificationSettings[] Read()
         {
             var settings = _configuration.GetSection("CommandNotificationSettings").Get<CommandNotificationSettings[]>();
-            if(settings is null)
+            if (settings is null)
             {
                 return Array.Empty<CommandNotificationSettings>();
             }
@@ -25,15 +25,15 @@ namespace ReadModelNotifications
 
         private void ValidateSettings(CommandNotificationSettings[] settings)
         {
-            if(settings.Any(s => s is null))
+            if (settings.Any(s => s is null))
             {
                 throw new ArgumentException("Invalid configuration");
             }
-            if(settings.Any(s => !s.NotificationsMode.HasValue))
+            if (settings.Any(s => !s.NotificationsMode.HasValue))
             {
                 throw new ArgumentException("Missing NotificationsMode");
             }
-            if(settings.Any(s => s.NotificationsMode == ReadModelNotificationsMode.Saga && (s.SagaCompletionCommandNames is null && s.SagaFailureCommandNames is null)))
+            if (settings.Any(s => s.NotificationsMode == ReadModelNotificationsMode.Saga && s.SagaCompletionCommandNames is null && s.SagaFailureCommandNames is null))
             {
                 throw new ArgumentException("Null completion command names");
             }
@@ -41,7 +41,7 @@ namespace ReadModelNotifications
             {
                 throw new ArgumentException("Empty completion command names");
             }
-            if(settings.Any(s => s.NotificationsMode != ReadModelNotificationsMode.Saga && (s.SagaCompletionCommandNames is not null || s.SagaFailureCommandNames is not null)) )
+            if (settings.Any(s => s.NotificationsMode != ReadModelNotificationsMode.Saga && (s.SagaCompletionCommandNames is not null || s.SagaFailureCommandNames is not null)))
             {
                 throw new ArgumentException("Cannot contain other notifications mode than saga and have completion or failure command names");
             }

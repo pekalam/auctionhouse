@@ -1,4 +1,4 @@
-﻿namespace ReadModelNotifications
+﻿namespace ReadModelNotifications.Settings
 {
     public interface ICommandNotificationSettingsReader
     {

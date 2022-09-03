@@ -1,9 +1,10 @@
 ﻿using Common.Application;
 using Common.Application.Events;
-using Common.Application.SagaNotifications;
 using Core.Common.Domain;
 using Core.Query.EventHandlers;
 using Microsoft.Extensions.Logging;
+using ReadModelNotifications.ImmediateNotifications;
+using ReadModelNotifications.SagaNotifications;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ReadModelNotifications
+namespace ReadModelNotifications.EventCallbacks
 {
     internal class ReadModelEventCallbacks : IEventConsumerCallbacks
     {

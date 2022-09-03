@@ -2,7 +2,7 @@
 using Common.Application.Events;
 using System.Diagnostics;
 
-namespace ReadModelNotifications
+namespace ReadModelNotifications.Settings
 {
 
     public class ReadModelNotificationsSettings
@@ -19,7 +19,7 @@ namespace ReadModelNotifications
         public CommandNotificationSettings[] CommandSettings => _settingsReader.Read();
 
 
-        public ReadModelNotificationsMode GetNotificationMode<T>(AppCommand<T> appCommand) where T: ICommand
+        public ReadModelNotificationsMode GetNotificationMode<T>(AppCommand<T> appCommand) where T : ICommand
         {
             return GetNotificationMode(appCommand.CommandContext.Name);
         }

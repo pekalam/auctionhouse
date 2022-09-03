@@ -1,9 +1,9 @@
 ﻿using Common.Application.Commands;
 using Common.Application.Events;
-using Common.Application.SagaNotifications;
 using Core.Common.Domain;
+using ReadModelNotifications.SagaNotifications;
 
-namespace ReadModelNotifications
+namespace ReadModelNotifications.EventOutbox
 {
 
 

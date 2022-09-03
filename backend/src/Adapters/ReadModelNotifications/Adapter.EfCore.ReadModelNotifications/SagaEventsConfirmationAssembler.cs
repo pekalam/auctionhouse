@@ -1,6 +1,7 @@
-﻿namespace Adapter.EfCore.ReadModelNotifications
+﻿using ReadModelNotifications.SagaNotifications;
+
+namespace Adapter.EfCore.ReadModelNotifications
 {
-    using Common.Application.SagaNotifications;
     using Common.Application.Events;
     using Common.Application.Commands;
 

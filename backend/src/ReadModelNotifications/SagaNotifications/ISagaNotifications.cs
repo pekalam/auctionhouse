@@ -2,7 +2,7 @@
 using Common.Application.Events;
 using Core.Common.Domain;
 
-namespace Common.Application.SagaNotifications
+namespace ReadModelNotifications.SagaNotifications
 {
     /// <summary>
     /// Responsible for sending notification / saving outcome of saga. 

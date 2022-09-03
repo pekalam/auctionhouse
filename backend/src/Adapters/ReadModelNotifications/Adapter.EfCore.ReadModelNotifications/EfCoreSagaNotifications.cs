@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ReadModelNotifications.ImmediateNotifications;
+using ReadModelNotifications.SagaNotifications;
 using static Adapter.EfCore.ReadModelNotifications.SagaEventsConfirmationAssembler;
 
 namespace Adapter.EfCore.ReadModelNotifications
 {
-    using Common.Application.SagaNotifications;
     using Common.Application.Events;
     using Common.Application.Commands;
     using System.Threading.Tasks;

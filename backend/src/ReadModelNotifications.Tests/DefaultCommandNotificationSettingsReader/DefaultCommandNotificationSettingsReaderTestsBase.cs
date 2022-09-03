@@ -1,9 +1,11 @@
-﻿using Common.Application.SagaNotifications;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System;
 using Common.Application.Events;
 using Microsoft.Extensions.Configuration;
+using ReadModelNotifications.Settings;
+using ReadModelNotifications.ImmediateNotifications;
+using ReadModelNotifications.SagaNotifications;
 
 namespace ReadModelNotifications.Tests.DefaultCommandNotificationSettingsReader
 {

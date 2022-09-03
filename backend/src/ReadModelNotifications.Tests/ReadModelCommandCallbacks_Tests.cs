@@ -1,9 +1,11 @@
 using Common.Application.Commands;
 using Common.Application.Events;
-using Common.Application.SagaNotifications;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using ReadModelNotifications.ImmediateNotifications;
+using ReadModelNotifications.SagaNotifications;
+using ReadModelNotifications.Settings;
 using System;
 using System.Collections;
 using System.Collections.Generic;

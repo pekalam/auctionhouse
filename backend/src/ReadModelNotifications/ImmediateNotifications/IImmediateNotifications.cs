@@ -1,7 +1,7 @@
 ﻿using Common.Application.Commands;
 using Common.Application.Events;
 
-namespace Common.Application.SagaNotifications
+namespace ReadModelNotifications.ImmediateNotifications
 {
     /// <summary>
     /// Responsible for sending notification / saving outcome of command.

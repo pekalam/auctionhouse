@@ -1,8 +1,10 @@
 ﻿using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
-using Common.Application.SagaNotifications;
 using Common.Extensions;
+using ReadModelNotifications.ImmediateNotifications;
+using ReadModelNotifications.SagaNotifications;
+using ReadModelNotifications.Settings;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,9 +12,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ReadModelNotifications
+namespace ReadModelNotifications.CommandCallbacks
 {
-   
+
 
     internal class ReadModelCommandCallbacks : ICommandHandlerCallbacks
     {
@@ -31,8 +33,8 @@ namespace ReadModelNotifications
 
         public async Task OnExecute<T>(AppCommand<T> appCommand) where T : ICommand
         {
-            var notificationMode = _overridenMode ?? _settings.GetNotificationMode(appCommand);   
-            if(notificationMode == ReadModelNotificationsMode.Disabled)
+            var notificationMode = _overridenMode ?? _settings.GetNotificationMode(appCommand);
+            if (notificationMode == ReadModelNotificationsMode.Disabled)
             {
                 return;
             }
@@ -83,7 +85,7 @@ namespace ReadModelNotifications
 
         public Task CallExtension(string key, string value)
         {
-            if(key == CommonExtensionKeys.ReadModelNotificationsMode)
+            if (key == CommonExtensionKeys.ReadModelNotificationsMode)
             {
                 _overridenMode = value switch
                 {
