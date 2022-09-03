@@ -116,7 +116,6 @@ namespace ReadModel.Tests.Integration
             updateEvent.UpdateEvents.AddRange(updateEvents);
             return new TestAppEventBuilder()
                 .WithCommandContext(CommandContext.CreateNew("test"))
-                .WithReadModelNotificationsMode(ReadModelNotificationsMode.Disabled)
                 .WithEvent(updateEvent)
                 .Build<AuctionUpdateEventGroup>();
         }

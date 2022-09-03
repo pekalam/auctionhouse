@@ -53,7 +53,6 @@ namespace Test.Adapter.SqlServer.EventOutbox
                     WSQueued = false
                 },
                 Event = SerializationUtils.ToJson(new TestEvent()),
-                ReadModelNotifications = ReadModelNotificationsMode.Disabled,
                 Timestamp = timestamp,
             };
         }

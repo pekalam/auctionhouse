@@ -8,7 +8,6 @@ namespace RabbitMq.EventBus
     {
         private Event _event;
         private CommandContext _commandContext;
-        private ReadModelNotificationsMode _consistencyMode;
         private int _redeliveryCount;
 
         public IAppEventBuilder WithCommandContext(CommandContext commandContext)
@@ -23,15 +22,9 @@ namespace RabbitMq.EventBus
             return this;
         }
 
-        public IAppEventBuilder WithReadModelNotificationsMode(ReadModelNotificationsMode consistencyMode)
-        {
-            _consistencyMode = consistencyMode;
-            return this;
-        }
-
         public IAppEvent<TEvent> Build<TEvent>() where TEvent : Event
         {
-            return new AppEventRabbitMQ<TEvent>(_commandContext, (TEvent)_event, _consistencyMode, _redeliveryCount);
+            return new AppEventRabbitMQ<TEvent>(_commandContext, (TEvent)_event, _redeliveryCount);
         }
 
         public IAppEventBuilder WithRedeliveryCount(int redeliveryCount)

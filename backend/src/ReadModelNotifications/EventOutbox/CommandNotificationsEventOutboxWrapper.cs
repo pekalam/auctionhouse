@@ -29,6 +29,7 @@ namespace ReadModelNotifications.EventOutbox
         {
             //TODO: should every saved event be added to saga unhandled events? - make distinction between part of saga and initiator
             var item = await _eventOutbox.SaveEvent(@event, commandContext, notificationsMode);
+            commandContext.SetNotificationsMode(notificationsMode);
             await AddSagaUnhandledEvents(commandContext);
             return item;
         }
@@ -36,6 +37,7 @@ namespace ReadModelNotifications.EventOutbox
         public async Task<OutboxItem[]> SaveEvents(IEnumerable<Event> @event, CommandContext commandContext, ReadModelNotificationsMode notificationsMode)
         {
             var items = await _eventOutbox.SaveEvents(@event, commandContext, notificationsMode);
+            commandContext.SetNotificationsMode(notificationsMode);
             await AddSagaUnhandledEvents(commandContext);
             return items;
         }
@@ -43,7 +45,7 @@ namespace ReadModelNotifications.EventOutbox
         private async Task AddSagaUnhandledEvents(CommandContext commandContext)
         {
             var eventsWithSagaNotificationsMode = _eventOutboxSavedItems.SavedOutboxStoreItems
-                .Where(i => i.ReadModelNotifications == ReadModelNotificationsMode.Saga)
+                .Where(i => i.CommandContext.GetNotificationsMode() == ReadModelNotificationsMode.Saga)
                 .Select(i => i.Event)
                 .ToArray();
             if (eventsWithSagaNotificationsMode.Length > 0)

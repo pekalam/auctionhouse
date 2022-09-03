@@ -44,8 +44,17 @@ namespace ReadModelNotifications
             where TImmediateNotifications : class, IImmediateNotifications
             where TSagaNotifications : class, ISagaNotifications
         {
+            services.AddQueryReadModelNotificiations(
+                static (prov) => prov.GetRequiredService<TImmediateNotifications>(), 
+                static (prov) => prov.GetRequiredService<TSagaNotifications>());
+        }
+
+        public static void AddQueryReadModelNotificiations(this IServiceCollection services,
+                Func<IServiceProvider, IImmediateNotifications> immediateNotificationsFactory,
+                Func<IServiceProvider, ISagaNotifications> sagaNotificationsFactory)
+        {
             services.AddTransient<IEventConsumerCallbacks, ReadModelEventCallbacks>();
-            services.AddCommonReadModelNotificationsDependencies(static (prov) => prov.GetRequiredService<TImmediateNotifications>(), static (prov) => prov.GetRequiredService<TSagaNotifications>());
+            services.AddCommonReadModelNotificationsDependencies(immediateNotificationsFactory, sagaNotificationsFactory);
         }
 
         /// <summary>

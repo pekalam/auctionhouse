@@ -29,7 +29,6 @@ namespace FunctionalTests.Commands
         private IAppEvent<Event> BuildAppEvent(IAppEventBuilder builder, Event @event)
         {
             return builder.WithCommandContext(Common.Application.Commands.CommandContext.CreateNew("test"))
-                .WithReadModelNotificationsMode(ReadModelNotificationsMode.Disabled)
                 .WithEvent(@event).Build<Event>();
         }
 

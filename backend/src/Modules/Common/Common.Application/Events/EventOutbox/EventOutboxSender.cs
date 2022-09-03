@@ -25,7 +25,6 @@ namespace Common.Application.Events
             var appEvents = outboxItems
                 .Select(i => _appEventBuilder
                     .WithCommandContext(i.CommandContext)
-                    .WithReadModelNotificationsMode(i.ReadModelNotifications)
                     .WithEvent(i.Event)
                     .Build<Event>());
 

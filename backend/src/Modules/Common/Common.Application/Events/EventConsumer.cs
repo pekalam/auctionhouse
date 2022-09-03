@@ -50,7 +50,6 @@ namespace Core.Query.EventHandlers
                 await Consume(_appEventBuilder
                   .WithEvent(msg.Event)
                   .WithCommandContext(msg.CommandContext)
-                  .WithReadModelNotificationsMode(msg.ReadModelNotifications)
                   .WithRedeliveryCount(msg.RedeliveryCount)
                   .Build<T>());
             }

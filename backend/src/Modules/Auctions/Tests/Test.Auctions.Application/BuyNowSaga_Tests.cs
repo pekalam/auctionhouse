@@ -196,7 +196,6 @@ namespace Auctions.Application.Tests
             {
                 CommandContext = commandContext,
                 Event = @event,
-                ReadModelNotifications = notificationsMode,
             };
             _outboxItems.Add(item);
             return Task.FromResult(item);
@@ -208,7 +207,6 @@ namespace Auctions.Application.Tests
             {
                 CommandContext = commandContext,
                 Event = e,
-                ReadModelNotifications = notificationsMode,
             }).ToArray();
             _outboxItems.AddRange(outboxItems);
             return Task.FromResult(outboxItems);

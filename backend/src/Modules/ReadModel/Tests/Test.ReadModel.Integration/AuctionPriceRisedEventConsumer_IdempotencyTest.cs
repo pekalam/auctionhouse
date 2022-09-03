@@ -72,7 +72,6 @@ namespace Test.ReadModel.Integration
         {
             return new TestAppEventBuilder()
                 .WithCommandContext(CommandContext.CreateNew("test"))
-                .WithReadModelNotificationsMode(ReadModelNotificationsMode.Disabled)
                 .WithEvent(new AuctionPriceRised
                 {
                     AuctionId = Guid.Parse(auction.AuctionId),

@@ -82,7 +82,6 @@ namespace Common.Tests.Base.AdapterContracts
                 var appEventBuilder = new TestAppEventBuilder();
                 var cmdContext = CommandContext.CreateNew("test");
                 return new(new(new EventBusRedeliveryTestEventSubscriber(appEventBuilder), appEventBuilder.WithCommandContext(cmdContext)
-                .WithReadModelNotificationsMode(ReadModelNotificationsMode.Disabled)
                 .WithEvent(new EventBusRedeliveryEvent())
                 .Build<EventBusRedeliveryEvent>()), () =>
                 {
@@ -101,7 +100,6 @@ namespace Common.Tests.Base.AdapterContracts
                 var appEventBuilder = new TestAppEventBuilder();
                 var cmdContext = CommandContext.CreateNew("test");
                 return new(new(new(Mock.Of<ILogger<EventBusRedeliveryTestEventConsumer>>(), new EventConsumerDependencies(new TestAppEventBuilder(), Mock.Of<IEventConsumerCallbacks>())), appEventBuilder.WithCommandContext(cmdContext)
-                .WithReadModelNotificationsMode(ReadModelNotificationsMode.Disabled)
                 .WithEvent(new EventBusRedeliveryEvent())
                 .Build<EventBusRedeliveryEvent>()), () =>
                 {

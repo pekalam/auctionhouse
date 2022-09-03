@@ -5,7 +5,6 @@ namespace Common.Application.Events
 {
     public interface IAppEventBuilder
     {
-        IAppEventBuilder WithReadModelNotificationsMode(ReadModelNotificationsMode consistencyMode);
         IAppEventBuilder WithCommandContext(CommandContext commandContext);
         IAppEventBuilder WithEvent<TEvent>(TEvent @event) where TEvent : Event;
         IAppEventBuilder WithRedeliveryCount(int redeliveryCount);

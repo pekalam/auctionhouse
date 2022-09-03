@@ -11,7 +11,6 @@ namespace Adapter.SqlServer.EventOutbox
         public long Id { get; set; }
         public string Event { get; set; } = null!;
         public DbCommandContext CommandContext { get; set; } = null!;
-        public ReadModelNotificationsMode ReadModelNotifications { get; set; }
         public long Timestamp { get; set; }
         public bool Processed { get; set; }
     }
@@ -45,7 +44,6 @@ namespace Adapter.SqlServer.EventOutbox
                     WSQueued = outboxStoreItem.CommandContext.WSQueued,
                     ExtraData = JsonSerializer.Serialize(outboxStoreItem.CommandContext.ExtraData)
                 },
-                ReadModelNotifications = outboxStoreItem.ReadModelNotifications,
                 Timestamp = outboxStoreItem.Timestamp,
                 Processed = outboxStoreItem.Processed,
             };
@@ -66,7 +64,6 @@ namespace Adapter.SqlServer.EventOutbox
                     DeserializeExtraData(dbItem)
                 ),
                 Timestamp = dbItem.Timestamp,
-                ReadModelNotifications = dbItem.ReadModelNotifications,
                 Event = SerializationUtils.FromJson(dbItem.Event),
                 Processed = dbItem.Processed,
             };

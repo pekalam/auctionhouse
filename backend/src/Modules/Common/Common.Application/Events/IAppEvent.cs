@@ -9,6 +9,5 @@ namespace Common.Application.Events
         int RedeliveryCount { get; }
         CommandContext CommandContext { get; }
         T Event { get; }
-        ReadModelNotificationsMode ReadModelNotifications { get; }
     }
 }

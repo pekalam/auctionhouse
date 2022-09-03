@@ -29,11 +29,11 @@ namespace ReadModelNotifications.EventCallbacks
         {
             try
             {
-                if (msg.ReadModelNotifications == ReadModelNotificationsMode.Saga)
+                if (msg.CommandContext.GetNotificationsMode() == ReadModelNotificationsMode.Saga)
                 {
                     await _sagaNotifications.Value.MarkEventAsHandled(msg.CommandContext.CorrelationId, msg.Event);
                 }
-                if (msg.ReadModelNotifications == ReadModelNotificationsMode.Immediate)
+                if (msg.CommandContext.GetNotificationsMode() == ReadModelNotificationsMode.Immediate)
                 {
                     await _immediateNotifications.Value.NotifyCompleted(msg.CommandContext.CorrelationId);
                 }
