@@ -2,7 +2,6 @@
 using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
-using Common.Application.SagaNotifications;
 using Core.Common.Domain;
 using Microsoft.Extensions.Logging;
 

@@ -5,7 +5,6 @@ using Auctions.Domain.Services;
 using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
-using Common.Application.SagaNotifications;
 using Microsoft.Extensions.Logging;
 
 namespace Auctions.Application.Commands.UpdateAuction

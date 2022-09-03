@@ -1,0 +1,17 @@
+{
+  "CommandNotificationSettings:0:CommandName": "CreateAuctionCommand",
+  "CommandNotificationSettings:0:NotificationsMode": "Saga",
+  "CommandNotificationSettings:0:SagaCompletionCommandNames:0": "EndCreateAuctionCommand",
+
+  "CommandNotificationSettings:1:CommandName": "BuyNowCommand",
+  "CommandNotificationSettings:1:NotificationsMode": "Saga",
+  "CommandNotificationSettings:1:SagaCompletionCommandNames:0": "ConfirmBuyCommand",
+  "CommandNotificationSettings:1:SagaFailureCommandNames:0": "CancelBuyCommand",
+
+  "CommandNotificationSettings:2:CommandName": "SignUpCommand",
+  "CommandNotificationSettings:2:NotificationsMode": "Saga",
+  "CommandNotificationSettings:2:SagaCompletionCommandNames:0": "AssignUserPaymentsCommand",
+
+  "CommandNotificationSettings:3:CommandName": "UpdateAuctionCommand",
+  "CommandNotificationSettings:3:NotificationsMode": "Immediate"
+}

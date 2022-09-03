@@ -1,5 +1,5 @@
-xcopy 'AuctionhouseDatabase\bin\Debug\*' AuctionhouseDatabase.Docker\buildArtifacts /i /y
+xcopy '..\..\AuctionhouseDatabase\bin\Debug\*' ..\..\AuctionhouseDatabase.Docker\buildArtifacts /i /y
 
-docker build --target build -t pekalam/auctionhouse-sqlserver .\AuctionhouseDatabase.Docker
+docker build --target build -t pekalam/auctionhouse-sqlserver ..\..\AuctionhouseDatabase.Docker
 
-Remove-Item -Recurse .\AuctionhouseDatabase.Docker\buildArtifacts
+Remove-Item -Recurse ..\..\AuctionhouseDatabase.Docker\buildArtifacts

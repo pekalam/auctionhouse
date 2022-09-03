@@ -1,7 +1,6 @@
 using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
-using Common.Application.SagaNotifications;
 using Core.Common.Domain;
 using Core.Query.EventHandlers;
 using FluentAssertions;
@@ -60,12 +59,11 @@ namespace Test.RabbitMq.EventBus
 
             var ctx = CommandContext.CreateNew("test", Guid.NewGuid());
             var toPublish = new AppEventRabbitMQBuilder()
-                .WithReadModelNotificationsMode(ReadModelNotificationsMode.Saga)
                 .WithCommandContext(ctx)
                 .WithEvent(new TestEvent())
                 .Build<TestEvent>();
 
-            var handler = new TestHandler(new EventConsumerDependencies(new AppEventRabbitMQBuilder(), null, null)
+            var handler = new TestHandler(new EventConsumerDependencies(new AppEventRabbitMQBuilder(), Mock.Of<IEventConsumerCallbacks>())
             , (ev) =>
             {
                 try

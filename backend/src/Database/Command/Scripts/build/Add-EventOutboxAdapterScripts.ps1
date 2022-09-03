@@ -1,7 +1,7 @@
-dotnet ef migrations script -p 'Adapter.SqlServer.EventOutboxStorage\Adapter.SqlServer.EventOutboxStorage.csproj' --configuration Test -o .\AuctionhouseDatabase\dbo\Scripts\Generated\EventOutbox.sql
+dotnet ef migrations script -p '..\..\..\..\Adapters\EventOutboxStorage\Adapter.SqlServer.EventOutboxStorage\Adapter.SqlServer.EventOutboxStorage.csproj' --configuration Test -o ..\..\AuctionhouseDatabase\dbo\Scripts\Generated\EventOutbox.sql
 
 #patch to allow idempotency
-$generatedFile = "$PSScriptRoot\AuctionhouseDatabase\dbo\Scripts\Generated\EventOutbox.sql"
+$generatedFile = "..\..\AuctionhouseDatabase\dbo\Scripts\Generated\EventOutbox.sql"
 $existingContent = [String]((Get-Content $generatedFile) -join "`n")
 $existingContent = $existingContent.Replace('GO', '')
 

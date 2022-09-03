@@ -8,7 +8,6 @@ namespace Common.Application.Events
         public long Id { get; set; }
         public CommandContext CommandContext { get; set; }
         public Event Event { get; set; }
-        public ReadModelNotificationsMode ReadModelNotifications { get; set; }
         public long Timestamp { get; set; }
         public bool Processed { get; set; }
 
@@ -18,7 +17,6 @@ namespace Common.Application.Events
             {
                 Event = appEvent.Event,
                 CommandContext = appEvent.CommandContext,
-                ReadModelNotifications = appEvent.ReadModelNotifications,
                 Timestamp = SysTime.Now.ToFileTime(),
                 Processed = processed,
             };

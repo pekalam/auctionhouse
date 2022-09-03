@@ -1,7 +1,7 @@
-dotnet ef migrations script -p 'Adapter.EfCore.ReadModelNotifications\Adapter.EfCore.ReadModelNotifications.csproj' --configuration Test -o .\AuctionhouseDatabase\dbo\Scripts\Generated\SagaNotifications.sql
+dotnet ef migrations script -p '..\..\..\..\Adapters\ReadModelNotifications\Adapter.EfCore.ReadModelNotifications\Adapter.EfCore.ReadModelNotifications.csproj' --configuration Test -o ..\..\AuctionhouseDatabase\dbo\Scripts\Generated\SagaNotifications.sql
 
 #patch to allow idempotency
-$generatedFile = "$PSScriptRoot\AuctionhouseDatabase\dbo\Scripts\Generated\SagaNotifications.sql"
+$generatedFile = "..\..\AuctionhouseDatabase\dbo\Scripts\Generated\SagaNotifications.sql"
 $existingContent = [String]((Get-Content $generatedFile) -join "`n")
 $existingContent = $existingContent.Replace('GO', '')
 

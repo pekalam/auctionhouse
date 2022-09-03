@@ -63,12 +63,12 @@ function Add-PostDeploymentScript {
         [String]$srcFile
     )
     $postDeployScriptContent1 = "--:r .\Job_ResetPasswordCode.sql"
-    Write-Output $postDeployScriptContent1 > "$PSScriptRoot\AuctionhouseDatabase\dbo\Scripts\Script.PostDeployment.sql"
+    Write-Output $postDeployScriptContent1 > (Resolve-Path "..\..\AuctionhouseDatabase\dbo\Scripts\Script.PostDeployment.sql")
 
     foreach($file in $scripts)
     {
         $pathParts = ([System.String]$file).Split('\')
-        Write-Output (":r .\" + $pathParts[2] + '\' + $pathParts[3]) >> "$PSScriptRoot\AuctionhouseDatabase\dbo\Scripts\Script.PostDeployment.sql"
+        Write-Output (":r .\" + $pathParts[2] + '\' + $pathParts[3]) >> (Resolve-Path "..\..\AuctionhouseDatabase\dbo\Scripts\Script.PostDeployment.sql")
     }
 
     $postDeployScriptContent2 = "ALTER DATABASE AuctionhouseDatabase
@@ -77,11 +77,12 @@ function Add-PostDeploymentScript {
     ALTER DATABASE AuctionhouseDatabase
     SET ALLOW_SNAPSHOT_ISOLATION ON
     GO"
-    Write-Output $postDeployScriptContent2 >> "$PSScriptRoot\AuctionhouseDatabase\dbo\Scripts\Script.PostDeployment.sql"
+    Write-Output $postDeployScriptContent2 >> (Resolve-Path "..\..\AuctionhouseDatabase\dbo\Scripts\Script.PostDeployment.sql")
 }
 
 
-$scripts = [String[]](Get-ChildItem .\AuctionhouseDatabase\dbo\Scripts\Generated | Select-Object @{name="Name"; expression={"dbo\Scripts\Generated\"+$_.Name}} | Select-Object -ExpandProperty Name)
+$generatedPath = (Resolve-Path "..\..\AuctionhouseDatabase\dbo\Scripts\Generated")
+$scripts = [String[]](Get-ChildItem $generatedPath | Select-Object @{name="Name"; expression={"dbo\Scripts\Generated\"+$_.Name}} | Select-Object -ExpandProperty Name)
 $l = $scripts.Length
 Write-Host "Found $l scripts"
 
@@ -90,9 +91,9 @@ if($scripts.Length -eq 0){
 }
 
 
-$srcFile = "$PSScriptRoot\AuctionhouseDatabase\AuctionhouseDatabase.sqlproj"
-$resultFile = "$PSScriptRoot\AuctionhouseDatabase\AuctionhouseDatabase.sqlproj2"
-$projDir = "$PSScriptRoot\AuctionhouseDatabase"
+$projDir = (Resolve-Path "..\..\AuctionhouseDatabase")
+$srcFile = (Join-Path "$projDir" "AuctionhouseDatabase.sqlproj")
+$resultFile = (Join-Path "$projDir" "AuctionhouseDatabase.sqlproj2")
 Write-Host "Adding scripts to $projDir"
 Add-ScriptsToProj $scripts $srcFile $resultFile $projDir
 
@@ -107,5 +108,5 @@ Rename-Item "$resultFile" "$srcFile"
 
 # add generated scripts to post deployment script
 Write-Host "Generating post deployment script"
-$postDeploymentScript = "$PSScriptRoot\AuctionhouseDatabase\dbo\Scripts\Script.PostDeployment.sql"
+$postDeploymentScript = (Resolve-Path "..\..\AuctionhouseDatabase\dbo\Scripts\Script.PostDeployment.sql")
 Add-PostDeploymentScript $postDeploymentScript

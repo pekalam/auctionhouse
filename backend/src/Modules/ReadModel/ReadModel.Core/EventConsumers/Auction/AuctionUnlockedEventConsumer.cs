@@ -1,6 +1,5 @@
 ﻿using Auctions.DomainEvents;
 using Common.Application.Events;
-using Common.Application.SagaNotifications;
 using Core.Query.EventHandlers;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;

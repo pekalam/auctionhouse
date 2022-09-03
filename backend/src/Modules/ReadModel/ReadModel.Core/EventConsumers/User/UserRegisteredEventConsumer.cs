@@ -1,10 +1,8 @@
 ﻿using Common.Application.Events;
-using Common.Application.SagaNotifications;
 using Core.Query.EventHandlers;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using ReadModel.Core.Model;
-using Users.Domain.Events;
 using Users.DomainEvents;
 
 namespace ReadModel.Core.EventConsumers

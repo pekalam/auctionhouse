@@ -34,7 +34,6 @@ namespace Test.Adapter.RabbitMq.EventBus
             var cmdContext = CommandContext.CreateNew("test");
 
             var appEvent = _appEventBuilder.WithCommandContext(cmdContext)
-                .WithReadModelNotificationsMode(ReadModelNotificationsMode.Immediate)
                 .WithEvent(new Event("event"))
                 .WithRedeliveryCount(redeliveryCount)
                 .Build<Event>();

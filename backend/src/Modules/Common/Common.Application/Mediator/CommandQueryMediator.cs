@@ -30,7 +30,7 @@ namespace Common.Application.Mediator
             var appCommand = new AppCommand<T>
             {
                 Command = command,
-                CommandContext = commandContext ?? CommandContext.CreateNew(typeof(T).Name),
+                CommandContext = commandContext?.CloneWithName(typeof(T).Name) ?? CommandContext.CreateNew(typeof(T).Name),
             };
 
             if (AttributeStrategies.PreHandleCommandAttributeStrategies.ContainsKey(command.GetType()))

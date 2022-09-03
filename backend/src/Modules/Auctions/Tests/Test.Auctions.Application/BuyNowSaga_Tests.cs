@@ -9,7 +9,6 @@ using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
 using Common.Application.Mediator;
-using Common.Application.SagaNotifications;
 using Common.Tests.Base.Mocks;
 using Common.Tests.Base.Mocks.Events;
 using Core.Common.Domain;
@@ -170,7 +169,7 @@ namespace Auctions.Application.Tests
             serviceCollection.AddTransient<IEventOutbox, EventOutboxMock>(s => s.GetRequiredService<EventOutboxMock>());
             serviceCollection.AddTransient<IEventOutboxSavedItems, EventOutboxMock>(s => s.GetRequiredService<EventOutboxMock>());
             serviceCollection.AddTransient(s => UnitOfWorkFactoryMock.Instance.Object);
-            serviceCollection.AddTransient(s => Mock.Of<ISagaNotifications>());
+            serviceCollection.AddTransient(s => Mock.Of<ICommandHandlerCallbacks>());
             serviceCollection.AddTransient<OptimisticConcurrencyHandler>();
 
             serviceCollection.AddSingleton(eventBus);
@@ -197,7 +196,6 @@ namespace Auctions.Application.Tests
             {
                 CommandContext = commandContext,
                 Event = @event,
-                ReadModelNotifications = notificationsMode,
             };
             _outboxItems.Add(item);
             return Task.FromResult(item);
@@ -209,7 +207,6 @@ namespace Auctions.Application.Tests
             {
                 CommandContext = commandContext,
                 Event = e,
-                ReadModelNotifications = notificationsMode,
             }).ToArray();
             _outboxItems.AddRange(outboxItems);
             return Task.FromResult(outboxItems);

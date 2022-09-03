@@ -1,7 +1,6 @@
 ﻿using Auctions.DomainEvents;
 using AutoMapper;
 using Common.Application.Events;
-using Common.Application.SagaNotifications;
 using Core.Common.Domain.Categories;
 using Core.Query.EventHandlers;
 using Microsoft.Extensions.Logging;

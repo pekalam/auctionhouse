@@ -3,7 +3,10 @@
 namespace TestConfigurationAccessor
 {
     /// <summary>
-    /// Provides access to test configuration from provider selected by env name. Lazy initialized
+    /// Provides access to test configuration from provider selected by env name. 
+    /// Source of configuration is obtained by checking "ENV" environment variable.
+    /// If the environment variable contains prefix (ENV="exampleprefix-suffix") then source of configuration is obtained using provider configured for this prefix.
+    /// Default value of "ENV" is "local".
     /// </summary>
     public static class TestConfig
     {
@@ -11,6 +14,9 @@ namespace TestConfigurationAccessor
         private const string AppConfigPrefix = "appcfg";
         private static Lazy<IConfigurationRoot> _instance = new Lazy<IConfigurationRoot>(BuildConfiguration);
         
+        /// <summary>
+        /// Lazy initialized configuration instance
+        /// </summary>
         public static IConfigurationRoot Instance => _instance.Value;
 
 
@@ -29,10 +35,16 @@ namespace TestConfigurationAccessor
             }
             else
             {
+                AddDefaultJsonFile(cfgManager);
                 AddJsonFile(cfgManager, envName);
             }
 
             return cfgManager;
+        }
+
+        private static void AddDefaultJsonFile(IConfigurationBuilder builder)
+        {
+            builder.AddJsonFile("settings.json", optional: true);
         }
 
         private static void AddJsonFile(IConfigurationBuilder builder, string envName)

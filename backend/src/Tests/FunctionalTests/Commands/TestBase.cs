@@ -4,7 +4,6 @@ using Auctions.Application.Commands.CreateAuction;
 using Auctions.Domain.Repositories;
 using Auctions.Domain.Services;
 using Common.Application;
-using Common.Application.SagaNotifications;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -150,6 +149,8 @@ namespace FunctionalTests.Commands
         {
             return DiTestUtils.CreateServiceProvider((services) =>
             {
+                services.AddSingleton(TestConfig.Instance);
+
                 var commandHandlerAssemblies = assemblyNames.Select(n => Assembly.Load(n)).ToArray();
                 //missing query dependencies
                 services.AddCommonCommandDependencies(commandHandlerAssemblies);
@@ -182,7 +183,8 @@ namespace FunctionalTests.Commands
 
                 services.AddTransient<IAuctionImageConversion>((s) => Mock.Of<IAuctionImageConversion>());
 
-                services.AddEfCoreReadModelNotifications(settings: TestConfig.Instance.GetEfCoreReadModelNotificaitonsOptions());
+                services.AddCommandEfCoreReadModelNotifications(TestConfig.Instance, settings: TestConfig.Instance.GetEfCoreReadModelNotificaitonsOptions());
+                services.AddQueryEfCoreReadModelNotifications(TestConfig.Instance, settings: TestConfig.Instance.GetEfCoreReadModelNotificaitonsOptions());
 
                 services.AddTransient<IAuctionPaymentVerification, AuctionPaymentVerification>();
                 services.AddTransient<IAuctionUnlockScheduler>(s => Mock.Of<IAuctionUnlockScheduler>());

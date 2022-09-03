@@ -3,7 +3,6 @@ using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
 using Common.Application.Mediator;
-using Common.Application.SagaNotifications;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -29,16 +28,17 @@ namespace Users.Application.Commands.SignUp
         private readonly Lazy<IUserAuthenticationDataRepository> _userAuthenticationData;
         private readonly Lazy<IUnitOfWorkFactory> _uowFactory;
         private readonly Lazy<ILogger<SignUpSaga>> _logger;
-        private readonly Lazy<ISagaNotifications> _sagaNotifications;
+        private readonly ICommandHandlerCallbacks _commandHandlerCallbacks;
 
-        public SignUpSaga(Lazy<ImmediateCommandQueryMediator> mediator, Lazy<IUserRepository> users, Lazy<IUserAuthenticationDataRepository> userAuthenticationData, Lazy<IUnitOfWorkFactory> uowFactory, Lazy<ILogger<SignUpSaga>> logger, Lazy<ISagaNotifications> sagaNotifications)
+        public SignUpSaga(Lazy<ImmediateCommandQueryMediator> mediator, Lazy<IUserRepository> users, Lazy<IUserAuthenticationDataRepository> userAuthenticationData, Lazy<IUnitOfWorkFactory> uowFactory, 
+            Lazy<ILogger<SignUpSaga>> logger, ICommandHandlerCallbacks commandHandlerCallbacks)
         {
             _mediator = mediator;
             _users = users;
             _userAuthenticationData = userAuthenticationData;
             _uowFactory = uowFactory;
             _logger = logger;
-            _sagaNotifications = sagaNotifications;
+            _commandHandlerCallbacks = commandHandlerCallbacks;
         }
 
         private CommandContext GetCommandContext(ISagaContext context)
@@ -62,7 +62,7 @@ namespace Users.Application.Commands.SignUp
             {
                 _users.Value.DeleteUser(new(message.UserId)); //delete should be idempotent
                 _userAuthenticationData.Value.DeleteUserAuth(message.UserId); //delete should be idempotent
-                await _sagaNotifications.Value.MarkSagaAsFailed(GetCommandContext(context).CorrelationId);
+                await _commandHandlerCallbacks.OnUowCommit(GetCommandContext(context));
                 uow.Commit();
             }
         }

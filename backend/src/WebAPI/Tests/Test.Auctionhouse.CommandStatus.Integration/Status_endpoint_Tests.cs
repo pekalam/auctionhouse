@@ -28,14 +28,14 @@ namespace Test.Auctionhouse.CommandStatus.Integration
 
                         services.AddSingleton(new CommandStatusServiceOptions
                         {
-                            ConnectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Marek\\source\\repos\\Csharp\\auctionhouse\\backend\\src\\Tests\\FunctionalTestsServer.mdf;Integrated Security=True",
+                            ConnectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Marek\\source\\repos\\Csharp\\auctionhouse\\backend\\src\\Tests\\FunctionalTests\\FunctionalTestsServer.mdf;Integrated Security=True",
                         });
                     });
                     // ... Configure test services
                 });
 
             var dbContext = new SagaEventsConfirmationDbContext(new DbContextOptionsBuilder<SagaEventsConfirmationDbContext>()
-                .UseSqlServer("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Marek\\source\\repos\\Csharp\\auctionhouse\\backend\\src\\Tests\\FunctionalTestsServer.mdf;Integrated Security=True")
+                .UseSqlServer("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Marek\\source\\repos\\Csharp\\auctionhouse\\backend\\src\\Tests\\FunctionalTests\\FunctionalTestsServer.mdf;Integrated Security=True")
                 .Options);
 
             var testConfirmations = new DbSagaEventsConfirmation

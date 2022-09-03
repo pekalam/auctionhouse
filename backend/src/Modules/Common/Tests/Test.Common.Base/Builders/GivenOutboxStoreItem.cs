@@ -35,7 +35,6 @@ namespace Common.Tests.Base.Builders
             {
                 CommandContext = _commandContext,
                 Event = _event,
-                ReadModelNotifications = _readModelNotificationsMode,
                 Timestamp = _timestamp,
             };
         }

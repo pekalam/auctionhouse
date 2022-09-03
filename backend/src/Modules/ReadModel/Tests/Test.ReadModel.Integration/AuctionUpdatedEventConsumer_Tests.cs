@@ -2,7 +2,6 @@
 using Auctions.DomainEvents.Update;
 using Common.Application.Commands;
 using Common.Application.Events;
-using Common.Application.SagaNotifications;
 using Common.Tests.Base.Mocks.Events;
 using Core.Common.Domain;
 using Core.Common.Domain.Categories;
@@ -117,15 +116,13 @@ namespace ReadModel.Tests.Integration
             updateEvent.UpdateEvents.AddRange(updateEvents);
             return new TestAppEventBuilder()
                 .WithCommandContext(CommandContext.CreateNew("test"))
-                .WithReadModelNotificationsMode(ReadModelNotificationsMode.Disabled)
                 .WithEvent(updateEvent)
                 .Build<AuctionUpdateEventGroup>();
         }
 
         private static EventConsumerDependencies GivenMockEventConsumerDependencies()
         {
-            return new EventConsumerDependencies(new TestAppEventBuilder(),
-                new(() => Mock.Of<ISagaNotifications>()), new(() => Mock.Of<IImmediateNotifications>()));
+            return new EventConsumerDependencies(new TestAppEventBuilder(), Mock.Of<IEventConsumerCallbacks>());
         }
 
         public void Dispose()

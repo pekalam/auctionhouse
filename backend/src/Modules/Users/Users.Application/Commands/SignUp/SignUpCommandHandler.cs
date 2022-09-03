@@ -3,7 +3,6 @@ using Chronicle;
 using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
-using Common.Application.SagaNotifications;
 using Core.Common.Domain.Users;
 using Microsoft.Extensions.Logging;
 using Users.Application.Exceptions;

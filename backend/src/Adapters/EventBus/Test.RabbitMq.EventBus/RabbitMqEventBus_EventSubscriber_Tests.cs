@@ -57,7 +57,6 @@ namespace Test.RabbitMq.EventBus
 
             var ctx = CommandContext.CreateNew("test", Guid.NewGuid());
             var toPublish = new AppEventRabbitMQBuilder()
-                .WithReadModelNotificationsMode(ReadModelNotificationsMode.Immediate)
                 .WithCommandContext(ctx)
                 .WithEvent(new TestSubEvent())
                 .Build<TestSubEvent>();

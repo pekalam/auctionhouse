@@ -19,7 +19,6 @@ namespace Common.Tests.Base.Mocks
             {
                 CommandContext = commandContext,
                 Event = @event,
-                ReadModelNotifications = notificationsMode,
             };
             _outboxItems.Add(item);
             return Task.FromResult(item);
@@ -31,7 +30,6 @@ namespace Common.Tests.Base.Mocks
             {
                 CommandContext = commandContext,
                 Event = e,
-                ReadModelNotifications = notificationsMode,
             }).ToArray();
             _outboxItems.AddRange(outboxItems);
             return Task.FromResult(outboxItems);

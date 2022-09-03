@@ -3,11 +3,6 @@ using Core.Common.Domain;
 
 namespace Common.Application.Events
 {
-    public interface IEventOutboxSavedItems
-    {
-        IReadOnlyList<OutboxItem> SavedOutboxStoreItems { get; }
-    }
-
     /// <summary>
     /// Saves events with <see cref="IOutboxItemStore"/>.
     /// </summary>
@@ -29,7 +24,6 @@ namespace Common.Application.Events
         {
             var appEvent = _appEventBuilder.WithCommandContext(commandContext)
                 .WithEvent(@event)
-                .WithReadModelNotificationsMode(notificationsMode)
                 .Build<Event>();
 
             var outboxItem = OutboxItem.CreateNew(appEvent, false);
@@ -46,7 +40,6 @@ namespace Common.Application.Events
             {
                 appEvents.Add(_appEventBuilder.WithCommandContext(commandContext)
                     .WithEvent(@event)
-                    .WithReadModelNotificationsMode(notificationsMode)
                     .Build<Event>());
             }
 

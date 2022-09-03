@@ -18,11 +18,9 @@ namespace Adapter.SqlServer.EventOutbox
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<DbOutboxItem>()
-                    .OwnsOne(m => m.CommandContext)
-                    .OwnsOne(c => c.CorrelationId);
+                    .OwnsOne(m => m.CommandContext);
             modelBuilder.Entity<DbOutboxItem>()
-                  .OwnsOne(m => m.CommandContext)
-                  .OwnsOne(c => c.CommandId);
+                  .OwnsOne(m => m.CommandContext);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

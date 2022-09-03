@@ -4,6 +4,7 @@ using Auctions.Domain.Repositories;
 using Auctions.Domain.Services;
 using Auctions.Tests.Base.Domain.ModelBuilders;
 using Common.Application;
+using Common.Application.Commands;
 using Common.Application.Events;
 using Common.Tests.Base.Mocks;
 using Hangfire;
