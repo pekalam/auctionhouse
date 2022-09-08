@@ -17,5 +17,14 @@ namespace ChronicleEfCoreStorage
                 });
             });
         }
+
+
+        public static void AddChronicleSQLServerStorage(this IChronicleBuilder builder, IServiceCollection services, GetSagaType getSagaTypeDelegate, string connectionString)
+        {
+            builder.UseEfCorePersistence<SagaLogDataSerialization, SagaDataSerialization>(services, getSagaTypeDelegate, opt =>
+            {
+                opt.UseSqlServer(connectionString);
+            });
+        }
     }
 }

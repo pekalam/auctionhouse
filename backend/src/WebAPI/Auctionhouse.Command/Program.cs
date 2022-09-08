@@ -10,6 +10,7 @@ using Auctionhouse.Command;
 using Auctionhouse.Command.Adapters;
 using Auctionhouse.Command.Controllers;
 using Auctions.Application;
+using Auctions.DI;
 using Azure.Identity;
 using Categories.Domain;
 using ChronicleEfCoreStorage;
@@ -68,9 +69,35 @@ var modules = moduleNames.Select(n => Assembly.Load(n)).ToArray();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 //MODULES
-builder.Services.AddCommonCommandDependencies(modules);
+new AuctionsInstaller(builder.Services)
+    .Domain
+        .AddDapperAuctionRepositoryAdapter(builder.Configuration)
+        .AddAuctionImageConversionAdapter()
+        .AddMongoDbImageRepositoryAdapter(builder.Configuration)
+        .AddQuartzTimeTaskServiceAuctionEndSchedulerAdapter(builder.Configuration)
+        .AddHangfireAuctionUnlockSchedulerAdapter(builder.Configuration)
+        .AddAuctionCreateSessionStoreAdapter()
+        //INTEGRATION SERVICES
+        .AddCategoryNamesToTreeIdsConversionAdapter()
+        .AddAuctionPaymentVerificationAdapter();
+new AuctionsInstaller(builder.Services)
+    .Application
+        .AddTempFileServiceAdapter()
+        .AddFileStreamAccessorAdapter();
+
+new CommonApplicationInstaller(builder.Services)
+    .AddCommandCoreDependencies(modules)
+    //OUTBOX PROCESSOR BG SERVICE
+    .AddEventOutbox(new EventOutboxProcessorSettings
+    {
+        MinMilisecondsDiff = ToInt32(builder.Configuration.GetSection(nameof(EventOutboxProcessorSettings))[nameof(EventOutboxProcessorSettings.MinMilisecondsDiff)]),
+        EnableLogging = ToBoolean(builder.Configuration.GetSection(nameof(EventOutboxProcessorSettings))[nameof(EventOutboxProcessorSettings.EnableLogging)]),
+    })
+    .AddSqlServerEventOutboxStorageAdapter(builder.Configuration)
+    .AddRabbitMqAppEventBuilderAdapter()
+    .AddRabbitMqEventBusAdapter(builder.Configuration, eventSubscriptionAssemblies: modules);
+
 builder.Services.AddAuctionBidsModule();
-builder.Services.AddAuctionsModule();
 builder.Services.AddCategoriesModule();
 builder.Services.AddUserPaymentsModule();
 builder.Services.AddUsersModule();
@@ -81,25 +108,10 @@ builder.Services.AddOptions<DemoModeOptions>().Bind(builder.Configuration.GetSec
 
 //ADAPTERS
 builder.Services.AddWebApiAdapters();
-builder.Services.AddAuctionImageConversion();
-builder.Services.AddMongoDbImageDb(builder.Configuration);
-builder.Services.AddRabbitMq(builder.Configuration, eventSubscriptionAssemblies: modules);
 builder.Services.AddXmlCategoryTreeStore(builder.Configuration);
 builder.Services.AddAuctionhouseDatabaseRepositories(builder.Configuration);
-builder.Services.AddQuartzTimeTaskServiceAuctionEndScheduler(builder.Configuration);
 builder.Services.AddCommandEfCoreReadModelNotifications(builder.Configuration);
-builder.Services.AddSqlServerEventOutboxStorage(builder.Configuration);
-builder.Services.AddHangfireServices(builder.Configuration);
 
-//INTEGRATION SERVICES
-builder.Services.AddAuctionPaymentVerification();
-builder.Services.AddCategoryNamesToTreeIdsConversion();
-//OUTBOX PROCESSOR BG SERVICE
-builder.Services.AddOutboxProcessorService(new EventOutboxProcessorSettings
-{
-    MinMilisecondsDiff = ToInt32(builder.Configuration.GetSection(nameof(EventOutboxProcessorSettings))[nameof(EventOutboxProcessorSettings.MinMilisecondsDiff)]),
-    EnableLogging = ToBoolean(builder.Configuration.GetSection(nameof(EventOutboxProcessorSettings))[nameof(EventOutboxProcessorSettings.EnableLogging)]),
-});
 //REDELIVERY SERVICE
 builder.Services.AddSingleton(new EventBusSettings
 {

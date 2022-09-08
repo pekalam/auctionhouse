@@ -38,5 +38,7 @@ namespace FunctionalTests.Mocks
         {
             return Task.FromResult(_userIdToPayments.ContainsKey(id) ? _userIdToPayments[id] : null);
         }
+
+        internal void Clear() => _userPaymentsIdToPayments.Clear();
     }
 }

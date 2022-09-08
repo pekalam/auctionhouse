@@ -9,9 +9,12 @@ namespace IntegrationService.AuctionPaymentVerification
 {
     public static class AuctionPaymentVerificationInstaller
     {
-        public static void AddAuctionPaymentVerification(this IServiceCollection services)
+        public static AuctionsDomainInstaller AddAuctionPaymentVerificationAdapter(this AuctionsDomainInstaller installer)
         {
-            services.AddTransient<IAuctionPaymentVerification, AuctionPaymentVerification>();
+            installer.Services.AddTransient<AuctionPaymentVerification>();
+
+            installer.AddAuctionPaymentVerification((prov) => prov.GetRequiredService<AuctionPaymentVerification>());
+            return installer;
         }
 
     }

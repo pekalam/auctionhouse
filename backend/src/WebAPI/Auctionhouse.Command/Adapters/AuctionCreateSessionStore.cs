@@ -37,6 +37,7 @@ namespace Auctionhouse.Command.Adapters
         }
     }
 
+    //TODO make this more testable
     internal class AuctionCreateSessionStore : IAuctionCreateSessionStore
     {
         private string GetSessionKey(UserId userIdentity) => $"user-{userIdentity}";

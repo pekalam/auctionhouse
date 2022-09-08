@@ -1,19 +1,16 @@
 using Adapter.QuartzTimeTaskService.AuctionEndScheduler;
 using Auctions.Domain;
-using Auctions.Domain.Repositories;
 using Auctions.Domain.Services;
+using Auctions.Tests.Base;
 using Auctions.Tests.Base.Domain.Services.Fakes;
 using Auctions.Tests.Base.Domain.Services.ServiceContracts;
+using Chronicle;
 using Common.Application;
-using Common.Application.Commands;
 using Common.Application.Events;
-using Common.Application.Mediator;
 using Common.Tests.Base.Mocks;
 using Common.Tests.Base.Mocks.Events;
 using Core.Command.Commands.EndAuction;
 using FluentAssertions;
-using MediatR;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -21,9 +18,7 @@ using Moq;
 using QuartzTimeTaskService.AuctionEndScheduler;
 using RestEase;
 using System;
-using System.Linq;
 using System.Net.Http;
-using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -35,26 +30,6 @@ using Xunit;
 
 namespace Test.Adapter.QuartzServiceAuctionEndScheduler
 {
-    internal class ImplProviderMock : IImplProvider
-    {
-        private readonly IServiceProvider _serviceProvider;
-
-        public ImplProviderMock(IServiceProvider serviceProvider)
-        {
-            _serviceProvider = serviceProvider;
-        }
-
-        public T Get<T>() where T : class
-        {
-            return _serviceProvider.GetService<T>();
-        }
-
-        public object Get(Type t)
-        {
-            return _serviceProvider.GetService(t);
-        }
-    }
-
     [Trait("Category", "Integration")]
     public class QuartzAuctionEndSchedulerTests
     {
@@ -76,13 +51,13 @@ namespace Test.Adapter.QuartzServiceAuctionEndScheduler
             var auctions = new FakeAuctionRepository();
             auctions.AddAuction(scenario.given.auction);
             var auctionEndScheduler = SetupTest(auctions, scenario, cts);
-            
+
             var expected = await scenario.ctrl.WaitUntilEndCallIsDue(auctionEndScheduler, cts.Token);
 
             scenario.given.auction.Completed.Should().Be(expected.completed);
         }
 
-        private static QuartzAuctionEndScheduler SetupTest(FakeAuctionRepository auctions, AuctionEndSchedulerScenario scenario, CancellationTokenSource cts)
+        private static IAuctionEndScheduler SetupTest(FakeAuctionRepository auctions, AuctionEndSchedulerScenario scenario, CancellationTokenSource cts)
         {
             var application = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
@@ -95,7 +70,7 @@ namespace Test.Adapter.QuartzServiceAuctionEndScheduler
             var url = server.Urls[0];
             TimeTaskServiceSettingsFactory.Url = url;
 
-            SetupServices(new ServiceCollection(), auctions);
+            var provider = SetupServices(new ServiceCollection(), auctions);
             var client = application.CreateClient();
             var respo = Response.Create()
                     .WithStatusCode(200)
@@ -118,32 +93,38 @@ namespace Test.Adapter.QuartzServiceAuctionEndScheduler
                     })
                     .WithBody("");
 
-            
+
             server
             .Given(Request.Create().WithPath("/foo").UsingPost())
             .RespondWith(
                   respo
                 );
 
-            var settings = TimeTaskServiceSettingsFactory.Create();
-            return new QuartzAuctionEndScheduler(RestClient.For<ITimeTaskClient>(settings.ConnectionString), settings);
+            
+            return provider.GetRequiredService<IAuctionEndScheduler>();
         }
 
         private static IServiceProvider SetupServices(IServiceCollection services, FakeAuctionRepository auctions)
         {
-            services.AddTransient<IRequestHandler<AppCommand<EndAuctionCommand>, RequestStatus>, EndAuctionCommandHandler>();
-            services.AddSingleton<IAuctionRepository>(auctions);
             services.AddLogging(b => b.AddXUnit());
-            services.AddSingleton<IEventBus>(EventBusMock.Instance);
-            services.AddTransient<IAppEventBuilder, TestAppEventBuilder>();
-            services.AddTransient(s => Mock.Of<IOutboxItemStore>());
-            services.AddTransient<IImplProvider, ImplProviderMock>();
-            
-            services.AddConcurrencyUtils();
-            services.AddCommandHandling<EventOutboxMock>(typeof(QuartzAuctionEndSchedulerTests).Assembly);
-            services.AddDefaultCommandHandlerExtensions();
-            services.AddTransient(s => TimeTaskServiceSettingsFactory.Create());
-            AttributeStrategies.LoadCommandAttributeStrategies(Assembly.Load("Auctions.Application"));
+
+            new CommonApplicationInstaller(services)
+                .AddCommandCoreDependencies(
+                    eventOutboxFactory: (prov) => EventOutboxMock.Instance,
+                    eventOutboxSavedItemsFactory: (prov) => EventOutboxMock.Instance,
+                    implProviderFactory: ImplProviderMock.Factory,
+                typeof(QuartzAuctionEndSchedulerTests).Assembly, typeof(EndAuctionCommandHandler).Assembly)
+                .AddEventBus(_ => EventBusMock.Instance)
+                .AddAppEventBuilder(_ => TestAppEventBuilder.Instance)
+                .AddOutboxItemStore(_ => Mock.Of<IOutboxItemStore>());
+
+            var settings = TimeTaskServiceSettingsFactory.Create();
+            new AuctionsDomainMockInstaller(services)
+                .AddAuctionRepository((prov) => auctions)
+                .AddQuartzTimeTaskServiceAuctionEndSchedulerAdapter(_ => RestClient.For<ITimeTaskClient>(settings.ConnectionString), null, settings);
+
+            services.AddChronicle(b => b.UseInMemoryPersistence());
+
             var provider = services.BuildServiceProvider();
             return provider;
         }

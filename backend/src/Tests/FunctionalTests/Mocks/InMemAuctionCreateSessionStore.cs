@@ -10,6 +10,10 @@ namespace FunctionalTests.Mocks
 {
     internal class InMemAuctionCreateSessionStore : IAuctionCreateSessionStore
     {
+        public static InMemAuctionCreateSessionStore Instance { get; } = new InMemAuctionCreateSessionStore();
+
+        public static InMemAuctionCreateSessionStore Create() => new InMemAuctionCreateSessionStore();
+
         private AuctionCreateSession? _auctionCreateSession;
 
         public AuctionCreateSession GetExistingSession()

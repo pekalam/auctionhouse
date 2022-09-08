@@ -1,10 +1,14 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Common.Application;
+using Microsoft.Extensions.DependencyInjection;
 using System;
-using Common.Application;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace FunctionalTests.Mocks
+namespace Common.Tests.Base.Mocks
 {
-    internal class ImplProviderMock : IImplProvider
+    public class ImplProviderMock : IImplProvider
     {
         private readonly IServiceProvider _serviceProvider;
 
@@ -12,6 +16,8 @@ namespace FunctionalTests.Mocks
         {
             _serviceProvider = serviceProvider;
         }
+
+        public static Func<IServiceProvider, ImplProviderMock> Factory => (prov) => new ImplProviderMock(prov);
 
         public T Get<T>() where T : class
         {

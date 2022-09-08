@@ -84,11 +84,11 @@ namespace Test.Adapter.Hangfire.Auctionhouse
                         //TODO hangfire logger based on _outputHelper
                     });
 
-                    services.AddTransient<IAuctionRepository>(s => auctionRepositoryMock.Object);
-                    services.AddTransient<IEventOutbox>(s => Mock.Of<IEventOutbox>());
-                    services.AddTransient<IUnitOfWorkFactory>(s => UnitOfWorkFactoryMock.Instance.Object);
                     services.AddTransient<AuctionUnlockService>();
-                    services.AddHangfireServices(connectionString: TestConfig.Instance.GetHangfireDbConnectionString());
+                    services.AddHangfireAuctionUnlockSchedulerAdapter(connectionString: TestConfig.Instance.GetHangfireDbConnectionString(),
+                        auctionRepositoryFactory: s => auctionRepositoryMock.Object,
+                        eventOutboxFactory: s => Mock.Of<IEventOutbox>(),
+                        unitOfWorkFactory: s => UnitOfWorkFactoryMock.Instance.Object);
                 })
                 .Build();
             HangfireAdapterInstaller.Initialize(host.Services);

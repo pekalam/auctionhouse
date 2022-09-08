@@ -9,6 +9,10 @@ namespace FunctionalTests.Mocks
 {
     internal class InMemoryPostProcessOutboxItemService : IOutboxItemFinder
     {
+        public static InMemoryPostProcessOutboxItemService Instance { get; private set; } = Create();
+
+        public static InMemoryPostProcessOutboxItemService Create() => new InMemoryPostProcessOutboxItemService();
+
         public Task<int> GetTotalUnprocessedItemsOlderThan(long diff, long currentTimestamp)
         {
             return Task.FromResult(0);

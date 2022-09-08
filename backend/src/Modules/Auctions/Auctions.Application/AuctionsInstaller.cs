@@ -1,21 +1,41 @@
 ﻿using Auctions.Application.CommandAttributes;
-using Auctions.Domain.Services;
-using Chronicle;
 using Common.Application;
+using Core.Common;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Auctions.Application
 {
-    public static class AuctionsInstaller
+    public class AuctionsApplicationInstaller
     {
-        public static void AddAuctionsModule(this IServiceCollection services)
+        public AuctionsApplicationInstaller(IServiceCollection services)
         {
-            InAuctionCreateSessionAttribute.LoadAuctionCreateSessionCommandMembers(typeof(AuctionsInstaller).Assembly);
-            SaveTempAuctionImageAttribute.LoadImagePathCommandMembers(typeof(AuctionsInstaller).Assembly);
-            services.AddTransient<AuctionImageService>();
-            services.AddTransient<CreateAuctionService>();
-            services.AddTransient<AuctionUnlockService>();
-            services.AddEventSubscribers(typeof(AuctionsInstaller));
+            Services = services;
+            AddCoreServices(services);
         }
+
+        public IServiceCollection Services { get; }
+
+        private static void AddCoreServices(IServiceCollection services)
+        {
+            InAuctionCreateSessionAttribute.LoadAuctionCreateSessionCommandMembers(typeof(AuctionsApplicationInstaller).Assembly);
+            SaveTempAuctionImageAttribute.LoadImagePathCommandMembers(typeof(AuctionsApplicationInstaller).Assembly);
+            services.AddEventSubscribers(typeof(AuctionsApplicationInstaller));
+        }
+
+        public AuctionsApplicationInstaller AddFileStreamAccessor(Func<IServiceProvider, IFileStreamAccessor> factory)
+        {
+            Services.AddTransient(factory);
+            return this;
+        }
+
+        public AuctionsApplicationInstaller AddTempFileService(Func<IServiceProvider, ITempFileService> factory)
+        {
+            Services.AddTransient(factory);
+            return this;
+        }
+
+
+
+        public void Build() { }
     }
 }

@@ -35,6 +35,45 @@ namespace RabbitMq.EventBus
             }
         }
 
+        public static CommonApplicationInstaller AddRabbitMqEventBusAdapter(this CommonApplicationInstaller installer, 
+            IConfiguration? configuration = null, 
+            RabbitMqSettings? rabbitMqSettings = null,
+            Assembly[]? eventSubscriptionAssemblies = null,
+            Assembly[]? eventConsumerAssemblies = null)
+        {
+            rabbitMqSettings ??= configuration!.GetSection(nameof(RabbitMqSettings)).Get<RabbitMqSettings>();
+            rabbitMqSettings.ValidateSettings();
+
+            installer.Services.AddSingleton(rabbitMqSettings);
+            installer.Services.AddSingleton<RabbitMqEventBus>();
+            installer.Services.AddTransient<IRabbitMqEventBus>(s => s.GetRequiredService<RabbitMqEventBus>());
+            installer.Services.AddErrorEventOutbox(new());
+
+            installer.AddEventBus(s => s.GetRequiredService<RabbitMqEventBus>());
+
+            if (eventSubscriptionAssemblies != null || eventConsumerAssemblies != null)
+            {
+                Debug.Assert((eventConsumerAssemblies != null && eventConsumerAssemblies.Length > 0) ||
+                    (eventSubscriptionAssemblies != null && eventSubscriptionAssemblies.Length > 0));
+
+                installer.Services.AddHostedService((provider) =>
+                {
+                    return new RabbitMqSubscriptionInitializer(eventSubscriptionAssemblies, eventConsumerAssemblies, provider);
+                });
+            }
+
+            return installer;
+        }
+
+        public static CommonApplicationInstaller AddRabbitMqAppEventBuilderAdapter(this CommonApplicationInstaller installer)
+        {
+            installer.Services.AddTransient<AppEventRabbitMQBuilder>();
+
+            installer.AddAppEventBuilder((prov) => prov.GetRequiredService<AppEventRabbitMQBuilder>());
+
+            return installer;
+        }
+
         public static void AddErrorEventRedeliveryProcessorService(this IServiceCollection services)
         {
             services.AddHostedService<ErrorEventOutboxProcessor>();

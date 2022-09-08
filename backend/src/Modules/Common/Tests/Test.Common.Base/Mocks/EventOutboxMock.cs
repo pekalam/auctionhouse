@@ -9,6 +9,8 @@ namespace Common.Tests.Base.Mocks
 {
     public class EventOutboxMock : IEventOutbox, IEventOutboxSavedItems
     {
+        public static EventOutboxMock Instance { get; } = new EventOutboxMock();
+
         private readonly List<OutboxItem> _outboxItems = new();
 
         public IReadOnlyList<OutboxItem> SavedOutboxStoreItems => _outboxItems;

@@ -10,6 +10,8 @@ namespace Auctions.Tests.Base.Domain.Services.Fakes
 {
     public class FakeAuctionRepository : IAuctionRepository
     {
+        public static FakeAuctionRepository Instance { get; } = new FakeAuctionRepository();
+
         private readonly Dictionary<AuctionId, Auction> _auctions = new();
 
         public IReadOnlyList<Auction> All => _auctions.Values.ToList();
@@ -43,5 +45,7 @@ namespace Auctions.Tests.Base.Domain.Services.Fakes
         {
             _auctions[auction.AggregateId] = auction;
         }
+
+        public void Clear() => _auctions.Clear();
     }
 }

@@ -7,6 +7,10 @@ namespace FunctionalTests.Mocks
 {
     public class AuctionEndSchedulerMock : IAuctionEndScheduler
     {
+        public static AuctionEndSchedulerMock Instance { get; } = new AuctionEndSchedulerMock();
+
+        public static AuctionEndSchedulerMock Create() => new AuctionEndSchedulerMock();
+
         public Task CancelAuctionEnd(ScheduledTaskId id)
         {
             return Task.CompletedTask;

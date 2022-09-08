@@ -1,4 +1,5 @@
-﻿using Auctions.Domain.Services;
+﻿using Auctions.Domain;
+using Auctions.Domain.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,18 +10,35 @@ namespace Adapter.QuartzTimeTaskService.AuctionEndScheduler
 {
     public static class AuctionEndSchedulerInstaller
     {
-        public static void AddQuartzTimeTaskServiceAuctionEndScheduler(this IServiceCollection services, IConfiguration? configuration = null, 
+        public static AuctionsDomainInstaller AddQuartzTimeTaskServiceAuctionEndSchedulerAdapter(this AuctionsDomainInstaller installer,
+            Func<IServiceProvider, ITimeTaskClient> timeTaskClientFactory = null,
+            IConfiguration? configuration = null,
             TimeTaskServiceSettings? settings = null)
         {
             settings ??= configuration!.GetSection(nameof(TimeTaskServiceSettings)).Get<TimeTaskServiceSettings>();
-            services.AddSingleton(provider =>
-            {
-                var client = RestClient.For<ITimeTaskClient>(settings.ConnectionString);
-                client.ApiKey = settings.ApiKey;
-                return client;
-            });
-            services.AddSingleton(settings);
-            services.AddTransient<IAuctionEndScheduler, QuartzAuctionEndScheduler>();
+            installer.Services.AddTransient(timeTaskClientFactory);
+            installer.Services.AddSingleton(settings);
+            installer.Services.AddTransient<QuartzAuctionEndScheduler>();
+
+            installer.AddAuctionEndScheduler((prov) => prov.GetRequiredService<QuartzAuctionEndScheduler>());
+            return installer;
+        }
+
+        public static AuctionsDomainInstaller AddQuartzTimeTaskServiceAuctionEndSchedulerAdapter(this AuctionsDomainInstaller installer, 
+            IConfiguration? configuration = null, 
+            TimeTaskServiceSettings? settings = null)
+        {
+            installer.AddQuartzTimeTaskServiceAuctionEndSchedulerAdapter(
+                provider =>
+                {
+                    var client = RestClient.For<ITimeTaskClient>(settings.ConnectionString);
+                    client.ApiKey = settings.ApiKey;
+                    return client;
+                },
+                configuration, settings
+                );
+
+            return installer;
         }
 
         public static void AddQuartzTimeTaskServiceAuctionEndSchedulerServices(this IMvcBuilder builder)

@@ -13,6 +13,10 @@ namespace FunctionalTests.Mocks
 {
     internal class InMemoryOutboxItemStore : IOutboxItemStore
     {
+        public static InMemoryOutboxItemStore Instance { get; private set; } = Create();
+
+        public static InMemoryOutboxItemStore Create() => new InMemoryOutboxItemStore();
+
         public Task<OutboxItem> Save(OutboxItem item)
         {
             return Task.FromResult(item);

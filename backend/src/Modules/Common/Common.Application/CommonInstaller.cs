@@ -12,6 +12,132 @@ using System.Reflection;
 
 namespace Common.Application
 {
+    public class CommonApplicationInstaller
+    {
+        public CommonApplicationInstaller(IServiceCollection services)
+        {
+            Services = services;
+        }
+
+        public IServiceCollection Services { get; set; }
+
+        public CommonApplicationInstaller AddEventOutbox(EventOutboxProcessorSettings outboxProcessorSettings)
+        {
+            Services.AddSingleton(outboxProcessorSettings);
+            Services.AddTransient<EventOutboxProcessor>();
+            Services.AddHostedService<EventOutboxProcessorService>();
+
+            return this;
+        }
+
+        public CommonApplicationInstaller AddCommandCoreDependencies(
+            params Assembly[] commandHandlerAssemblies) => 
+                AddCommandCoreDependencies(null,null,null,commandHandlerAssemblies);
+
+        public CommonApplicationInstaller AddCommandCoreDependencies(
+            Func<IServiceProvider, IEventOutbox>? eventOutboxFactory = null, 
+            Func<IServiceProvider, IEventOutboxSavedItems>? eventOutboxSavedItemsFactory = null, 
+            Func<IServiceProvider, IImplProvider>? implProviderFactory = null,
+            params Assembly[] commandHandlerAssemblies)
+        {
+            Services.AddTransient(typeof(Lazy<>), typeof(LazyInstance<>));
+
+            if (implProviderFactory is null) 
+            {
+                Services.AddTransient<IImplProvider, DefaultDIImplProvider>();
+            }
+            else
+            {
+                Services.AddTransient(implProviderFactory);
+            }
+
+            Services.AddTransient<IUnitOfWorkFactory, DefaultUnitOfWorkFactory>();
+            Services.AddTransient<OptimisticConcurrencyHandler>();
+
+            Services.AddMediatR(commandHandlerAssemblies,
+            cfg =>
+            {
+                cfg.AsTransient();
+            });
+
+            if(eventOutboxFactory is null)
+            {
+                Services.AddScoped<EventOutbox>();
+                Services.AddScoped<IEventOutbox>(s => s.GetRequiredService<EventOutbox>());
+            }
+            else
+            {
+                Services.AddTransient(eventOutboxFactory);
+            }
+
+            if(eventOutboxSavedItemsFactory is null)
+            {
+                Services.AddScoped<IEventOutboxSavedItems>(s => s.GetRequiredService<EventOutbox>());
+            }
+            else
+            {
+                Services.AddTransient(eventOutboxSavedItemsFactory);
+            }
+
+            Services.AddTransient<EventOutboxSender>();
+            Services.AddTransient<ImmediateCommandQueryMediator>();
+            Services.AddTransient<CommandHandlerBaseDependencies>();
+
+            Services.AddTransient<ICommandHandlerCallbacks, DefaultCommandHandlerCallbacks>();
+
+            AttributeStrategies.LoadCommandAttributeStrategies(commandHandlerAssemblies);
+            AuthorizationRequiredAttribute.LoadSignedInUserCmdAndQueryMembers(commandHandlerAssemblies);
+
+            return this;
+        }
+
+        public CommonApplicationInstaller AddQueryCoreDependencies(params Assembly[] queryHandlerAssemblies)
+        {
+            Services.AddTransient(typeof(Lazy<>), typeof(LazyInstance<>));
+            Services.AddTransient<IImplProvider, DefaultDIImplProvider>();
+            Services.AddTransient<EventConsumerDependencies>();
+
+            Services.AddMediatR(queryHandlerAssemblies, cfg =>
+            {
+                cfg.AsTransient();
+            });
+            Services.AddTransient<ImmediateCommandQueryMediator>();
+            AttributeStrategies.LoadQueryAttributeStrategies(queryHandlerAssemblies);
+            AuthorizationRequiredAttribute.LoadSignedInUserCmdAndQueryMembers(queryHandlerAssemblies);
+
+            return this;
+        }
+
+        public CommonApplicationInstaller AddAppEventBuilder(Func<IServiceProvider, IAppEventBuilder> factory)
+        {
+            Services.AddTransient(factory);
+            return this;
+        }
+
+        public CommonApplicationInstaller AddEventBus(Func<IServiceProvider, IEventBus> factory)
+        {
+            Services.AddTransient(factory);
+            return this;
+        }
+
+        public CommonApplicationInstaller AddUserIdentityService(Func<IServiceProvider, IUserIdentityService> factory)
+        {
+            Services.AddTransient(factory);
+            return this;
+        }
+
+        public CommonApplicationInstaller AddOutboxItemFinder(Func<IServiceProvider, IOutboxItemFinder> factory)
+        {
+            Services.AddTransient(factory);
+            return this;
+        }
+
+        public CommonApplicationInstaller AddOutboxItemStore(Func<IServiceProvider, IOutboxItemStore> factory)
+        {
+            Services.AddTransient(factory);
+            return this;
+        }
+    }
 
     public static class CommonInstaller
     {
@@ -37,63 +163,6 @@ namespace Common.Application
             AttributeStrategies.LoadQueryAttributeStrategies(commandHandlerAssemblies);
             AuthorizationRequiredAttribute.LoadSignedInUserCmdAndQueryMembers(commandHandlerAssemblies);
         }
-
-        /// <summary>
-        /// Registers common dependencies for command application
-        /// </summary>
-        public static void AddCommonCommandDependencies(this IServiceCollection services, params Assembly[] commandHandlerAssemblies)
-        {
-            if(commandHandlerAssemblies.Length == 0)
-            {
-                throw new ArgumentException($"{nameof(commandHandlerAssemblies)} cannot be an empty array");
-            }
-
-            services.AddTransient(typeof(Lazy<>), typeof(LazyInstance<>));
-            services.AddTransient<IImplProvider, DefaultDIImplProvider>();
-
-
-            services.AddConcurrencyUtils();
-            services.AddCommandHandling<EventOutbox>(commandHandlerAssemblies);
-            services.AddDefaultCommandHandlerExtensions();
-            AttributeStrategies.LoadCommandAttributeStrategies(commandHandlerAssemblies);
-            AuthorizationRequiredAttribute.LoadSignedInUserCmdAndQueryMembers(commandHandlerAssemblies);
-        }
-
-        public static void AddConcurrencyUtils(this IServiceCollection services)
-        {
-            services.AddTransient<IUnitOfWorkFactory, DefaultUnitOfWorkFactory>();
-            services.AddTransient<OptimisticConcurrencyHandler>();
-        }
-
-        public static void AddCommandHandling<TEventOutbox>(this IServiceCollection services, params Assembly[] commandHandlerAssemblies)
-            where TEventOutbox : class, IEventOutbox, IEventOutboxSavedItems
-        {
-            services.AddTransient(typeof(Lazy<>), typeof(LazyInstance<>));
-            services.AddMediatR(commandHandlerAssemblies,
-        cfg =>
-        {
-            cfg.AsTransient();
-        });
-            services.AddScoped<TEventOutbox>();
-            services.AddScoped<IEventOutbox>(s => s.GetRequiredService<TEventOutbox>());
-            services.AddScoped<IEventOutboxSavedItems>(s => s.GetRequiredService<TEventOutbox>());
-            services.AddTransient<EventOutboxSender>();
-            services.AddTransient<ImmediateCommandQueryMediator>();
-            services.AddTransient<CommandHandlerBaseDependencies>();
-        }
-
-        public static void AddDefaultCommandHandlerExtensions(this IServiceCollection services)
-        {
-            services.AddTransient<ICommandHandlerCallbacks, DefaultCommandHandlerCallbacks>();
-        }
-
-        public static void AddOutboxProcessorService(this IServiceCollection services, EventOutboxProcessorSettings outboxProcessorSettings)
-        {
-            services.AddSingleton(outboxProcessorSettings);
-            services.AddTransient<EventOutboxProcessor>();
-            services.AddHostedService<EventOutboxProcessorService>();
-        }
-
 
         private static TracerProviderBuilder? _tracerProviderBuilder;
 

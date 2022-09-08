@@ -19,6 +19,7 @@ namespace FunctionalTests.Commands
     using Auctions.Application.Commands.BuyNow;
     using Auctions.Application.Commands.StartAuctionCreateSession;
     using Auctions.Domain;
+    using Auctions.Tests.Base;
     using Auctions.Tests.Base.Domain.Services.Fakes;
     using Categories.Domain;
     using Chronicle.Integrations.SQLServer;
@@ -27,6 +28,8 @@ namespace FunctionalTests.Commands
     using Common.Application.Commands.Attributes;
     using Common.Application.Events;
     using Common.Application.Mediator;
+    using Common.Tests.Base;
+    using Common.Tests.Base.Mocks;
     using Core.Common.Domain;
     using Core.Query.EventHandlers;
     using IntegrationService.AuctionPaymentVerification;
@@ -153,12 +156,31 @@ namespace FunctionalTests.Commands
 
                 var commandHandlerAssemblies = assemblyNames.Select(n => Assembly.Load(n)).ToArray();
                 //missing query dependencies
-                services.AddCommonCommandDependencies(commandHandlerAssemblies);
-                services.AddTransient<EventConsumerDependencies>();
-                AttributeStrategies.LoadQueryAttributeStrategies(commandHandlerAssemblies);
-                //
+                new CommonApplicationMockInstaller(services)
+                    .AddCommandCoreDependencies(
+                        null,
+                        null, 
+                           ImplProviderMock.Factory, 
+                           commandHandlerAssemblies)
+                    .AddRabbitMqEventBusAdapter(null, rabbitMqSettings: TestConfig.Instance.GetRabbitMqSettings())
+                    .AddRabbitMqAppEventBuilderAdapter()
+                    .AddOutboxItemStore(_ => InMemoryOutboxItemStore.Create())
+                    .AddOutboxItemFinder(_ => InMemoryPostProcessOutboxItemService.Create())
+                    .AddUserIdentityService(_ => _userIdentityService);
 
-                services.AddAuctionsModule();
+                services.Decorate<IEventBus, InMemoryEventBusDecorator>();
+
+                services.AddTransient<EventConsumerDependencies>();
+
+                new AuctionsApplicationMockInstaller(services);
+
+                new AuctionsDomainMockInstaller(services)
+                    .AddAuctionCreateSessionStore((prov) => InMemAuctionCreateSessionStore.Instance)
+                    .AddAuctionRepository((prov) => FakeAuctionRepository.Instance)
+                    .AddCategoryNamesToTreeIdsConversion((prov) => ConvertCategoryNamesToRootToLeafIdsMock.Create())
+                    .AddAuctionEndScheduler((prov) => AuctionEndSchedulerMock.Create())
+                    .AddAuctionPaymentVerificationAdapter();
+
                 services.AddAuctionBidsModule();
                 services.AddUserPaymentsModule();
                 services.AddUsersModule();
@@ -170,24 +192,11 @@ namespace FunctionalTests.Commands
                     _ => throw new NotImplementedException(),
                 }, TestConfig.Instance.GetChronicleSQLServerStorageConnectionString());
 
-                services.AddSingleton<IAuctionCreateSessionStore, InMemAuctionCreateSessionStore>();
-                services.AddSingleton<IAuctionRepository, FakeAuctionRepository>();
-                services.AddSingleton<IAuctionBidsRepository, InMemoryAuctionBidsRepository>();
-                services.AddSingleton<IUserRepository, InMemoryUserRepository>();
-                services.AddTransient<ICategoryNamesToTreeIdsConversion, ConvertCategoryNamesToRootToLeafIdsMock>();
-                services.AddTransient(s => Mock.Of<ILogger<CreateAuctionCommandHandler>>());
-                services.AddTransient<CreateAuctionService>();
-                services.AddTransient<IAuctionEndScheduler, AuctionEndSchedulerMock>();
-                services.AddTransient(s => Mock.Of<IAuctionImageRepository>());
-                services.AddSingleton<IUserIdentityService, UserIdentityServiceMock>(s => _userIdentityService);
-
-                services.AddTransient<IAuctionImageConversion>((s) => Mock.Of<IAuctionImageConversion>());
+                services.AddSingleton<IAuctionBidsRepository>(InMemoryAuctionBidsRepository.Instance);
+                services.AddSingleton<IUserRepository>(InMemoryUserRepository.Instance);
 
                 services.AddCommandEfCoreReadModelNotifications(TestConfig.Instance, settings: TestConfig.Instance.GetEfCoreReadModelNotificaitonsOptions());
                 services.AddQueryEfCoreReadModelNotifications(TestConfig.Instance, settings: TestConfig.Instance.GetEfCoreReadModelNotificaitonsOptions());
-
-                services.AddTransient<IAuctionPaymentVerification, AuctionPaymentVerification>();
-                services.AddTransient<IAuctionUnlockScheduler>(s => Mock.Of<IAuctionUnlockScheduler>());
 
                 services.AddSingleton<IUserPaymentsRepository>(s => new InMemortUserPaymentsRepository());
                 services.AddSingleton<IUserAuthenticationDataRepository>(s => new InMemUserAuthenticationDataRepository());
@@ -198,9 +207,7 @@ namespace FunctionalTests.Commands
                     c.SetMinimumLevel(LogLevel.Debug);
                 });
 
-                services.AddRabbitMq(rabbitMqSettings: TestConfig.Instance.GetRabbitMqSettings());
-
-                services.AddTransient<IImplProvider>((p) => new ImplProviderMock(p));
+                //services.AddTransient<IImplProvider>((p) => new ImplProviderMock(p));
 
                 services.AddReadModel(TestConfig.Instance.GetReadModelSettings());
                 services.AddEventConsumers(typeof(ReadModelInstaller));
@@ -208,14 +215,11 @@ namespace FunctionalTests.Commands
                 services.AddCategoriesModule();
                 services.AddXmlCategoryTreeStore(settings: TestConfig.Instance.GetXmlStoreSettings());
 
-
-                services.AddTransient<IOutboxItemStore, InMemoryOutboxItemStore>();
-                services.AddTransient<IOutboxItemFinder, InMemoryPostProcessOutboxItemService>();
-
-                services.AddSingleton<IEventBus>(s => new InMemoryEventBusDecorator(s.GetRequiredService<RabbitMqEventBus>()));
                 services.AddSingleton(Mock.Of<IBidRaisedNotifications>());
                 
                 AddServices(services);
+
+                AttributeStrategies.LoadQueryAttributeStrategies(commandHandlerAssemblies);
             });
         }
 
@@ -237,6 +241,10 @@ namespace FunctionalTests.Commands
             {
                 rabbit.Dispose();
             }
+            InMemAuctionCreateSessionStore.Instance.RemoveSession();
+            InMemoryAuctionBidsRepository.Instance.Clear();
+            InMemoryUserRepository.Instance.Clear();
+            FakeAuctionRepository.Instance.Clear();
         }
     }
 

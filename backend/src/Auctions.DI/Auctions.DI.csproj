@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Modules\Auctions\Auctions.Application\Auctions.Application.csproj" />
+    <ProjectReference Include="..\Modules\Auctions\Auctions.Domain\Auctions.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
