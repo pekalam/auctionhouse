@@ -91,16 +91,29 @@ namespace Common.Application
             return this;
         }
 
-        public CommonApplicationInstaller AddQueryCoreDependencies(params Assembly[] queryHandlerAssemblies)
+        public CommonApplicationInstaller AddQueryCoreDependencies(params Assembly[] queryHandlerAssemblies) 
+            => AddQueryCoreDependencies(null, queryHandlerAssemblies);
+
+        public CommonApplicationInstaller AddQueryCoreDependencies(
+            Func<IServiceProvider, IImplProvider>? implProviderFactory = null,
+            params Assembly[] queryHandlerAssemblies)
         {
             Services.AddTransient(typeof(Lazy<>), typeof(LazyInstance<>));
-            Services.AddTransient<IImplProvider, DefaultDIImplProvider>();
+            if(implProviderFactory is null)
+            {
+                Services.AddTransient<IImplProvider, DefaultDIImplProvider>();
+            }
+            else
+            {
+                Services.AddTransient(implProviderFactory);
+            }
             Services.AddTransient<EventConsumerDependencies>();
 
             Services.AddMediatR(queryHandlerAssemblies, cfg =>
             {
                 cfg.AsTransient();
             });
+
             Services.AddTransient<ImmediateCommandQueryMediator>();
             AttributeStrategies.LoadQueryAttributeStrategies(queryHandlerAssemblies);
             AuthorizationRequiredAttribute.LoadSignedInUserCmdAndQueryMembers(queryHandlerAssemblies);

@@ -30,6 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Adapters\Adapter.ChronicleEfCoreStorage\ChronicleEfCoreStorage.csproj" />
     <ProjectReference Include="..\..\Adapters\ReadModelNotifications\Adapter.EfCore.ReadModelNotifications\Adapter.EfCore.ReadModelNotifications.csproj" />
+    <ProjectReference Include="..\..\Categories.DI\Categories.DI.csproj" />
     <ProjectReference Include="..\..\Modules\Common\Tests\Test.Common.Base\Common.Tests.Base.csproj" />
     <ProjectReference Include="..\..\Modules\IntegrationServices\IntegrationService.AuctionPaymentVerification\IntegrationService.AuctionPaymentVerification.csproj" />
     <ProjectReference Include="..\..\Modules\AuctionBids\AuctionBids.Application\AuctionBids.Application.csproj" />

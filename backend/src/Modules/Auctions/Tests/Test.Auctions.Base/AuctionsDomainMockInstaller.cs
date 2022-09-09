@@ -31,4 +31,19 @@ namespace Auctions.Tests.Base
                 .AddTempFileService(_ => Mock.Of<ITempFileService>());
         }
     }
+
+    public class AuctionsMockInstaller
+    {
+        private readonly AuctionsDomainMockInstaller _domainInstaller;
+        private readonly AuctionsApplicationMockInstaller _applicationInstaller;
+
+        public AuctionsMockInstaller(IServiceCollection services)
+        {
+            _domainInstaller = new(services);
+            _applicationInstaller = new(services);
+        }
+
+        public AuctionsDomainMockInstaller Domain => _domainInstaller;
+        public AuctionsApplicationMockInstaller Application => _applicationInstaller;
+    }
 }

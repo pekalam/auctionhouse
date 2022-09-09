@@ -12,7 +12,7 @@ using Auctionhouse.Command.Controllers;
 using Auctions.Application;
 using Auctions.DI;
 using Azure.Identity;
-using Categories.Domain;
+using Categories.DI;
 using ChronicleEfCoreStorage;
 using Common.Application;
 using Common.Application.Events;
@@ -97,8 +97,10 @@ new CommonApplicationInstaller(builder.Services)
     .AddRabbitMqAppEventBuilderAdapter()
     .AddRabbitMqEventBusAdapter(builder.Configuration, eventSubscriptionAssemblies: modules);
 
+new CategoriesInstaller(builder.Services)
+    .AddXmlCategoryTreeStoreAdapter(builder.Configuration);
+
 builder.Services.AddAuctionBidsModule();
-builder.Services.AddCategoriesModule();
 builder.Services.AddUserPaymentsModule();
 builder.Services.AddUsersModule();
 builder.Services.AddChronicleSQLServerStorage(SagaTypeSerialization.GetSagaType, builder.Configuration.GetSection(nameof(AuctionhouseRepositorySettings)).Get<AuctionhouseRepositorySettings>().ConnectionString);
@@ -108,7 +110,6 @@ builder.Services.AddOptions<DemoModeOptions>().Bind(builder.Configuration.GetSec
 
 //ADAPTERS
 builder.Services.AddWebApiAdapters();
-builder.Services.AddXmlCategoryTreeStore(builder.Configuration);
 builder.Services.AddAuctionhouseDatabaseRepositories(builder.Configuration);
 builder.Services.AddCommandEfCoreReadModelNotifications(builder.Configuration);
 

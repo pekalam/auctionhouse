@@ -3,7 +3,7 @@ using Adapter.MongoDb;
 using Auctionhouse.Query;
 using Auctionhouse.Query.Adapters;
 using Azure.Identity;
-using Categories.Domain;
+using Categories.DI;
 using Common.Application;
 using Common.WebAPI;
 using Common.WebAPI.Auth;
@@ -48,11 +48,12 @@ builder.Host.UseSerilog();
 builder.Services.AddCommonQueryDependencies(typeof(ReadModelInstaller).Assembly);
 var mongoDbSettings = builder.Configuration.GetSection("MongoDb").Get<MongoDbSettings>();
 builder.Services.AddReadModel(mongoDbSettings);
-builder.Services.AddCategoriesModule();
+
+new CategoriesInstaller(builder.Services)
+    .AddXmlCategoryTreeStoreAdapter(builder.Configuration);
 
 //ADAPTERS
 builder.Services.AddRabbitMq(builder.Configuration, eventConsumerAssemblies: new[] { typeof(ReadModelInstaller).Assembly });
-builder.Services.AddXmlCategoryTreeStore(builder.Configuration);
 builder.Services.AddMongoDbImageDb(builder.Configuration);
 builder.Services.AddQueryEfCoreReadModelNotifications(builder.Configuration);
 builder.Services.AddTransient<IBidRaisedNotifications, BidRaisedNotifications>();

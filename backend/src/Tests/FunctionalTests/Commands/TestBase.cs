@@ -21,7 +21,7 @@ namespace FunctionalTests.Commands
     using Auctions.Domain;
     using Auctions.Tests.Base;
     using Auctions.Tests.Base.Domain.Services.Fakes;
-    using Categories.Domain;
+    using Categories.DI;
     using Chronicle.Integrations.SQLServer;
     using ChronicleEfCoreStorage;
     using Common.Application.Commands;
@@ -162,6 +162,10 @@ namespace FunctionalTests.Commands
                         null, 
                            ImplProviderMock.Factory, 
                            commandHandlerAssemblies)
+                    .AddQueryCoreDependencies(
+                        implProviderFactory: ImplProviderMock.Factory,
+                        commandHandlerAssemblies
+                    )
                     .AddRabbitMqEventBusAdapter(null, rabbitMqSettings: TestConfig.Instance.GetRabbitMqSettings())
                     .AddRabbitMqAppEventBuilderAdapter()
                     .AddOutboxItemStore(_ => InMemoryOutboxItemStore.Create())
@@ -170,16 +174,16 @@ namespace FunctionalTests.Commands
 
                 services.Decorate<IEventBus, InMemoryEventBusDecorator>();
 
-                services.AddTransient<EventConsumerDependencies>();
+                new AuctionsMockInstaller(services)
+                    .Domain
+                        .AddAuctionCreateSessionStore((prov) => InMemAuctionCreateSessionStore.Instance)
+                        .AddAuctionRepository((prov) => FakeAuctionRepository.Instance)
+                        .AddCategoryNamesToTreeIdsConversion((prov) => ConvertCategoryNamesToRootToLeafIdsMock.Create())
+                        .AddAuctionEndScheduler((prov) => AuctionEndSchedulerMock.Create())
+                        .AddAuctionPaymentVerificationAdapter();
 
-                new AuctionsApplicationMockInstaller(services);
-
-                new AuctionsDomainMockInstaller(services)
-                    .AddAuctionCreateSessionStore((prov) => InMemAuctionCreateSessionStore.Instance)
-                    .AddAuctionRepository((prov) => FakeAuctionRepository.Instance)
-                    .AddCategoryNamesToTreeIdsConversion((prov) => ConvertCategoryNamesToRootToLeafIdsMock.Create())
-                    .AddAuctionEndScheduler((prov) => AuctionEndSchedulerMock.Create())
-                    .AddAuctionPaymentVerificationAdapter();
+                new CategoriesInstaller(services)
+                    .AddXmlCategoryTreeStoreAdapter(settings: TestConfig.Instance.GetXmlStoreSettings());
 
                 services.AddAuctionBidsModule();
                 services.AddUserPaymentsModule();
@@ -212,14 +216,12 @@ namespace FunctionalTests.Commands
                 services.AddReadModel(TestConfig.Instance.GetReadModelSettings());
                 services.AddEventConsumers(typeof(ReadModelInstaller));
                 services.AddAutoMapper(typeof(Auctionhouse.Query.QueryMapperProfile).Assembly);
-                services.AddCategoriesModule();
-                services.AddXmlCategoryTreeStore(settings: TestConfig.Instance.GetXmlStoreSettings());
+
+
 
                 services.AddSingleton(Mock.Of<IBidRaisedNotifications>());
                 
                 AddServices(services);
-
-                AttributeStrategies.LoadQueryAttributeStrategies(commandHandlerAssemblies);
             });
         }
 
