@@ -5,9 +5,6 @@ using Common.Application.Mediator;
 using Core.Query.EventHandlers;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using OpenTelemetry;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 using System.Reflection;
 
 namespace Common.Application
@@ -149,50 +146,6 @@ namespace Common.Application
         {
             Services.AddTransient(factory);
             return this;
-        }
-    }
-
-    public static class CommonInstaller
-    {
-        /// <summary>
-        /// Registers common dependencies for query application
-        /// </summary>
-        public static void AddCommonQueryDependencies(this IServiceCollection services, params Assembly[] commandHandlerAssemblies)
-        {
-            if (commandHandlerAssemblies.Length == 0)
-            {
-                throw new ArgumentException($"{nameof(commandHandlerAssemblies)} cannot be an empty array");
-            }
-
-            services.AddTransient(typeof(Lazy<>), typeof(LazyInstance<>));
-            services.AddTransient<IImplProvider, DefaultDIImplProvider>();
-            services.AddTransient<EventConsumerDependencies>();
-
-            services.AddMediatR(commandHandlerAssemblies, cfg =>
-            {
-                cfg.AsTransient();
-            });
-            services.AddTransient<ImmediateCommandQueryMediator>();
-            AttributeStrategies.LoadQueryAttributeStrategies(commandHandlerAssemblies);
-            AuthorizationRequiredAttribute.LoadSignedInUserCmdAndQueryMembers(commandHandlerAssemblies);
-        }
-
-        private static TracerProviderBuilder? _tracerProviderBuilder;
-
-        public static void AddTracing(this IServiceCollection services, Action<TracerProviderBuilder>? action = null)
-        {
-            Tracing.InitializeTracingSource();
-            _tracerProviderBuilder = Sdk.CreateTracerProviderBuilder();
-            action?.Invoke(_tracerProviderBuilder);
-        }
-
-        public static TracerProvider CreateModuleTracing(string serviceName)
-        {
-            return (_tracerProviderBuilder ?? Sdk.CreateTracerProviderBuilder())
-                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(serviceName))
-                .AddZipkinExporter()
-                .AddSource(Tracing.Source.Name)
-                .Build();
         }
     }
 }

@@ -1,21 +1,16 @@
 ﻿using Auctions.Application;
 using Auctions.Domain;
-using Auctions.Domain.Services;
-using Common.Application;
-using Common.WebAPI.Auth;
-using Core.Common;
-using Users.Domain.Services;
+using Users.Domain;
 
 namespace Auctionhouse.Command.Adapters
 {
     internal static class AdaptersInstaller
     {
-        public static void AddWebApiAdapters(this IServiceCollection services)
+        public static UsersDomainInstaller AddResetLinkSenderServiceAdapter(this UsersDomainInstaller installer)
         {
-            services.AddTransient<JwtService>();
-            services.AddTransient<ITempFileService, TempFileService>();
-            services.AddTransient<IResetLinkSenderService, ResetLinkSenderService>();
-            services.AddTransient<IAuctionCreateSessionStore, AuctionCreateSessionStore>();
+            installer.Services.AddTransient<ResetLinkSenderService>();
+            installer.AddResetLinkSenderService((prov) => prov.GetRequiredService<ResetLinkSenderService>());
+            return installer;
         }
 
         public static AuctionsDomainInstaller AddAuctionCreateSessionStoreAdapter(this AuctionsDomainInstaller installer)
@@ -30,7 +25,7 @@ namespace Auctionhouse.Command.Adapters
         {
             installer.Services.AddTransient<TempFileService>();
             installer.AddTempFileService((prov) => prov.GetRequiredService<TempFileService>());
-            
+
             return installer;
         }
 

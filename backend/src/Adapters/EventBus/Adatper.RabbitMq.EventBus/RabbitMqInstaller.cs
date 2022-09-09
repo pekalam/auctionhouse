@@ -4,7 +4,6 @@ using Common.Application;
 using Common.Application.Events;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -12,31 +11,8 @@ namespace RabbitMq.EventBus
 {
     public static class RabbitMqInstaller
     {
-        public static void AddRabbitMq(this IServiceCollection services, IConfiguration? configuration = null, RabbitMqSettings? rabbitMqSettings = null, 
-            Assembly[]? eventSubscriptionAssemblies = null,
-            Assembly[]? eventConsumerAssemblies = null)
-        {
-            rabbitMqSettings ??= configuration!.GetSection(nameof(RabbitMqSettings)).Get<RabbitMqSettings>();
-            rabbitMqSettings.ValidateSettings();
-            services.AddTransient<IAppEventBuilder, AppEventRabbitMQBuilder>();
-            services.AddRabbitMqEventBus(rabbitMqSettings);
-            services.AddErrorEventOutbox(new());
-            services.AddSingleton<IEventBus>(s => s.GetRequiredService<RabbitMqEventBus>());
-
-            if(eventSubscriptionAssemblies != null || eventConsumerAssemblies != null)
-            {
-                Debug.Assert((eventConsumerAssemblies != null && eventConsumerAssemblies.Length > 0) ||
-                    (eventSubscriptionAssemblies != null && eventSubscriptionAssemblies.Length > 0));
-
-                services.AddHostedService((provider) =>
-                {
-                    return new RabbitMqSubscriptionInitializer(eventSubscriptionAssemblies, eventConsumerAssemblies, provider);
-                });
-            }
-        }
-
-        public static CommonApplicationInstaller AddRabbitMqEventBusAdapter(this CommonApplicationInstaller installer, 
-            IConfiguration? configuration = null, 
+        public static CommonApplicationInstaller AddRabbitMqEventBusAdapter(this CommonApplicationInstaller installer,
+            IConfiguration? configuration = null,
             RabbitMqSettings? rabbitMqSettings = null,
             Assembly[]? eventSubscriptionAssemblies = null,
             Assembly[]? eventConsumerAssemblies = null)
@@ -74,8 +50,9 @@ namespace RabbitMq.EventBus
             return installer;
         }
 
-        public static void AddErrorEventRedeliveryProcessorService(this IServiceCollection services)
+        public static void AddErrorEventRedeliveryProcessorService(this IServiceCollection services, EventBusSettings settings)
         {
+            services.AddSingleton(settings);
             services.AddHostedService<ErrorEventOutboxProcessor>();
         }
 

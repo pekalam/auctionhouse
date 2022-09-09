@@ -1,5 +1,4 @@
 ﻿using Auctions.Domain;
-using Auctions.Domain.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,8 +23,8 @@ namespace Adapter.QuartzTimeTaskService.AuctionEndScheduler
             return installer;
         }
 
-        public static AuctionsDomainInstaller AddQuartzTimeTaskServiceAuctionEndSchedulerAdapter(this AuctionsDomainInstaller installer, 
-            IConfiguration? configuration = null, 
+        public static AuctionsDomainInstaller AddQuartzTimeTaskServiceAuctionEndSchedulerAdapter(this AuctionsDomainInstaller installer,
+            IConfiguration? configuration = null,
             TimeTaskServiceSettings? settings = null)
         {
             installer.AddQuartzTimeTaskServiceAuctionEndSchedulerAdapter(

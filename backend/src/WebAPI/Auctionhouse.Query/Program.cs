@@ -45,7 +45,11 @@ switch (environmentName)
 builder.Host.UseSerilog();
 
 //MODULES
-builder.Services.AddCommonQueryDependencies(typeof(ReadModelInstaller).Assembly);
+new CommonApplicationInstaller(builder.Services)
+    .AddQueryCoreDependencies(typeof(ReadModelInstaller).Assembly)
+    .AddRabbitMqAppEventBuilderAdapter()
+    .AddRabbitMqEventBusAdapter(builder.Configuration, eventConsumerAssemblies: new[] { typeof(ReadModelInstaller).Assembly });
+
 var mongoDbSettings = builder.Configuration.GetSection("MongoDb").Get<MongoDbSettings>();
 builder.Services.AddReadModel(mongoDbSettings);
 
@@ -53,7 +57,6 @@ new CategoriesInstaller(builder.Services)
     .AddXmlCategoryTreeStoreAdapter(builder.Configuration);
 
 //ADAPTERS
-builder.Services.AddRabbitMq(builder.Configuration, eventConsumerAssemblies: new[] { typeof(ReadModelInstaller).Assembly });
 builder.Services.AddMongoDbImageDb(builder.Configuration);
 builder.Services.AddQueryEfCoreReadModelNotifications(builder.Configuration);
 builder.Services.AddTransient<IBidRaisedNotifications, BidRaisedNotifications>();
@@ -95,7 +98,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-var tracing = CommonInstaller.CreateModuleTracing("Query");
+var tracing = TracingInstaller.CreateModuleTracing("Query");
 
 app.UseIdTokenManager();
 app.UseIdTokenSlidingExpiration();
