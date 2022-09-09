@@ -45,6 +45,7 @@ namespace FunctionalTests.Commands
     using Test.ReadModel.Base;
     using TestConfigurationAccessor;
     using UserPayments.Application;
+    using UserPayments.DI;
     using UserPayments.Domain.Repositories;
     using UserPayments.Domain.Services;
     using Users.Application;
@@ -197,7 +198,10 @@ namespace FunctionalTests.Commands
                         .AddUserRepository(_ => InMemoryUserRepository.Instance)
                         .AddUserAuthenticationDataRepository(s => new InMemUserAuthenticationDataRepository());
 
-                services.AddUserPaymentsModule();
+                new UserPaymentsInstaller(services)
+                    .Domain
+                        .AddUserPaymentsRepository(s => InMemortUserPaymentsRepository.Instance);
+
                 services.AddChronicleSQLServerStorage((sagaType) => sagaType switch
                 {
                     nameof(BuyNowSaga) => typeof(BuyNowSaga),
@@ -209,15 +213,12 @@ namespace FunctionalTests.Commands
                 services.AddCommandEfCoreReadModelNotifications(TestConfig.Instance, settings: TestConfig.Instance.GetEfCoreReadModelNotificaitonsOptions());
                 services.AddQueryEfCoreReadModelNotifications(TestConfig.Instance, settings: TestConfig.Instance.GetEfCoreReadModelNotificaitonsOptions());
 
-                services.AddSingleton<IUserPaymentsRepository>(s => new InMemortUserPaymentsRepository());
-
                 services.AddLogging(c =>
                 {
                     c.AddXUnit(_outputHelper);
                     c.SetMinimumLevel(LogLevel.Debug);
                 });
 
-                //services.AddTransient<IImplProvider>((p) => new ImplProviderMock(p));
 
                 services.AddReadModel(TestConfig.Instance.GetReadModelSettings());
                 services.AddEventConsumers(typeof(ReadModelInstaller));

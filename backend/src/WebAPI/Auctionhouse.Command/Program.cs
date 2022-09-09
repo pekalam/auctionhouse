@@ -30,6 +30,7 @@ using Serilog;
 using System.Diagnostics;
 using System.Reflection;
 using UserPayments.Application;
+using UserPayments.DI;
 using Users.Application;
 using Users.DI;
 using XmlCategoryTreeStore;
@@ -113,7 +114,10 @@ new UsersInstaller(builder.Services)
         .AddDapperUserRepositoryAdapter(builder.Configuration)
         .AddDapperUserAuthenticationDataRepositoryAdapter(builder.Configuration);
 
-builder.Services.AddUserPaymentsModule();
+new UserPaymentsInstaller(builder.Services)
+    .Domain
+        .AddDapperUserPaymentsRepositoryAdapter(builder.Configuration);
+
 builder.Services.AddChronicleSQLServerStorage(SagaTypeSerialization.GetSagaType, builder.Configuration.GetSection(nameof(AuctionhouseRepositorySettings)).Get<AuctionhouseRepositorySettings>().ConnectionString);
 
 //DEMO MODE

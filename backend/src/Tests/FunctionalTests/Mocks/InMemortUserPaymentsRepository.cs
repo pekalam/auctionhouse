@@ -12,6 +12,8 @@ namespace FunctionalTests.Mocks
 
     public class InMemortUserPaymentsRepository : IUserPaymentsRepository
     {
+        public static InMemortUserPaymentsRepository Instance { get; } = new InMemortUserPaymentsRepository();
+
         private Dictionary<UserId, UserPayments> _userIdToPayments = new();
         private Dictionary<UserPaymentsId, UserPayments> _userPaymentsIdToPayments = new();
 

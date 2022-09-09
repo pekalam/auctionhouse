@@ -5,13 +5,15 @@ using UserPayments.Domain.Services;
 
 namespace UserPayments.Application
 {
-    public static class ModuleInstaller
+    public class UserPaymentsApplicationInstaller
     {
-        public static void AddUserPaymentsModule(this IServiceCollection services)
+        public UserPaymentsApplicationInstaller(IServiceCollection services)
         {
-            services.AddEventSubscribers(typeof(ModuleInstaller));
-            services.AddTransient<IPaymentMethodRepository, InMemoryPaymentMethodRepository>();
+            Services = services;
+            services.AddEventSubscribers(typeof(UserPaymentsApplicationInstaller));
             services.AddTransient<PaymentMethodVerificationService>();
         }
+
+        public IServiceCollection Services { get; }
     }
 }

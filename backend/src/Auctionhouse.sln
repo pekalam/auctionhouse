@@ -281,6 +281,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionBids.DI", "AuctionBi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Users.DI", "Users.DI\Users.DI.csproj", "{B62FDB60-8381-4A0C-9510-9D1A4394425F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserPayments.DI", "UserPayments.DI\UserPayments.DI.csproj", "{8D7F733D-0CB6-4DAC-B6DB-6FFD3E2466D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -579,6 +581,10 @@ Global
 		{B62FDB60-8381-4A0C-9510-9D1A4394425F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B62FDB60-8381-4A0C-9510-9D1A4394425F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B62FDB60-8381-4A0C-9510-9D1A4394425F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D7F733D-0CB6-4DAC-B6DB-6FFD3E2466D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D7F733D-0CB6-4DAC-B6DB-6FFD3E2466D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D7F733D-0CB6-4DAC-B6DB-6FFD3E2466D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D7F733D-0CB6-4DAC-B6DB-6FFD3E2466D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -695,6 +701,7 @@ Global
 		{79B10B22-41EB-4446-AF1B-A29923408B8A} = {FBCD4725-8EA6-45ED-80DC-EA06CD47027C}
 		{E2F219ED-88B8-4E9E-90A4-F79EE6B1A19E} = {FC0CD23E-9DC9-4BA7-98B1-79C3FCC63FDF}
 		{B62FDB60-8381-4A0C-9510-9D1A4394425F} = {171D635D-FE40-4BCF-B615-E372E96693F2}
+		{8D7F733D-0CB6-4DAC-B6DB-6FFD3E2466D1} = {A82DE09D-91E6-4C6A-9341-F6ADE7800B7C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F4E77E2A-13ED-428A-962C-F0BDF00E9A14}

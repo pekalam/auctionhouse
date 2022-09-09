@@ -37,6 +37,7 @@
     <ProjectReference Include="..\..\Modules\Categories\Categories.Domain\Categories.Domain.csproj" />
     <ProjectReference Include="..\..\Modules\IntegrationServices\IntegrationService.AuctionPaymentVerification\IntegrationService.AuctionPaymentVerification.csproj" />
     <ProjectReference Include="..\..\Modules\IntegrationServices\IntegrationService.CategoryNamesToTreeIdsConversion\IntegrationService.CategoryNamesToTreeIdsConversion.csproj" />
+    <ProjectReference Include="..\..\UserPayments.DI\UserPayments.DI.csproj" />
     <ProjectReference Include="..\..\Users.DI\Users.DI.csproj" />
     <ProjectReference Include="..\Common.WebAPI\Common.WebAPI.csproj" />
     <ProjectReference Include="..\..\Adapters\Repositories\Adapter.Dapper.AuctionhouseDatabase\Adapter.Dapper.AuctionhouseDatabase.csproj" />

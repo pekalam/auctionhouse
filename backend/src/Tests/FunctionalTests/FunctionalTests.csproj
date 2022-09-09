@@ -36,6 +36,7 @@
     <ProjectReference Include="..\..\Modules\IntegrationServices\IntegrationService.AuctionPaymentVerification\IntegrationService.AuctionPaymentVerification.csproj" />
     <ProjectReference Include="..\..\Modules\AuctionBids\AuctionBids.Application\AuctionBids.Application.csproj" />
     <ProjectReference Include="..\..\TestConfigurationAccessor\TestConfigurationAccessor.csproj" />
+    <ProjectReference Include="..\..\UserPayments.DI\UserPayments.DI.csproj" />
     <ProjectReference Include="..\..\Users.DI\Users.DI.csproj" />
     <ProjectReference Include="..\..\WebAPI\Auctionhouse.Query\Auctionhouse.Query.csproj" />
     <ProjectReference Include="..\..\Modules\Auctions\Auctions.Application\Auctions.Application.csproj" />
