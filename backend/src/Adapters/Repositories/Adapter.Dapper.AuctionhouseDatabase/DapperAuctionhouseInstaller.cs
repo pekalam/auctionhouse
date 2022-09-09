@@ -1,4 +1,5 @@
 ﻿using Adapter.Dapper.AuctionhouseDatabase.UserPayments_;
+using AuctionBids.Domain;
 using AuctionBids.Domain.Repositories;
 using Auctions.Domain;
 using Auctions.Domain.Repositories;
@@ -27,6 +28,17 @@ namespace Adapter.Dapper.AuctionhouseDatabase
 
             installer.Services.AddTransient<MsSqlAuctionRepository>();
             installer.AddAuctionRepository((prov) => prov.GetRequiredService<MsSqlAuctionRepository>());
+
+            return installer;
+        }
+
+        public static AuctionBidsDomainInstaller AddDapperAuctionBidsRepositoryAdapter(this AuctionBidsDomainInstaller installer, IConfiguration? configuration = null, AuctionhouseRepositorySettings? settings = null)
+        {
+            settings ??= configuration!.GetSection(nameof(AuctionhouseRepositorySettings)).Get<AuctionhouseRepositorySettings>();
+            installer.Services.AddSingleton(settings);
+
+            installer.Services.AddTransient<MsSqlAuctionBidsRepository>();
+            installer.AddAuctionBidsRepository((prov) => prov.GetRequiredService<MsSqlAuctionBidsRepository>());
 
             return installer;
         }

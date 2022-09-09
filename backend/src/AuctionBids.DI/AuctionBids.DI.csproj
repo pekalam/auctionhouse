@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -11,8 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Common\Core.DomainFramework\Common.DomainFramework.csproj" />
-    <ProjectReference Include="..\AuctionBids.DomainEvents\AuctionBids.DomainEvents.csproj" />
+    <ProjectReference Include="..\Modules\AuctionBids\AuctionBids.Application\AuctionBids.Application.csproj" />
   </ItemGroup>
 
 </Project>

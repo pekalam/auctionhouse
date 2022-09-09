@@ -16,6 +16,8 @@ namespace FunctionalTests.Commands
 {
     using Adapter.EfCore.ReadModelNotifications;
     using AuctionBids.Application;
+    using AuctionBids.DI;
+    using AuctionBids.Domain;
     using Auctions.Application.Commands.BuyNow;
     using Auctions.Application.Commands.StartAuctionCreateSession;
     using Auctions.Domain;
@@ -185,7 +187,10 @@ namespace FunctionalTests.Commands
                 new CategoriesInstaller(services)
                     .AddXmlCategoryTreeStoreAdapter(settings: TestConfig.Instance.GetXmlStoreSettings());
 
-                services.AddAuctionBidsModule();
+                new AuctionBidsInstaller(services)
+                    .Domain
+                     .AddAuctionBidsRepository(_ => InMemoryAuctionBidsRepository.Instance);
+
                 services.AddUserPaymentsModule();
                 services.AddUsersModule();
                 services.AddChronicleSQLServerStorage((sagaType) => sagaType switch
@@ -196,7 +201,6 @@ namespace FunctionalTests.Commands
                     _ => throw new NotImplementedException(),
                 }, TestConfig.Instance.GetChronicleSQLServerStorageConnectionString());
 
-                services.AddSingleton<IAuctionBidsRepository>(InMemoryAuctionBidsRepository.Instance);
                 services.AddSingleton<IUserRepository>(InMemoryUserRepository.Instance);
 
                 services.AddCommandEfCoreReadModelNotifications(TestConfig.Instance, settings: TestConfig.Instance.GetEfCoreReadModelNotificaitonsOptions());

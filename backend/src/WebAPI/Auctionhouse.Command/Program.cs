@@ -6,6 +6,8 @@ using Adapter.MongoDb;
 using Adapter.QuartzTimeTaskService.AuctionEndScheduler;
 using Adapter.SqlServer.EventOutbox;
 using AuctionBids.Application;
+using AuctionBids.DI;
+using AuctionBids.Domain;
 using Auctionhouse.Command;
 using Auctionhouse.Command.Adapters;
 using Auctionhouse.Command.Controllers;
@@ -100,7 +102,10 @@ new CommonApplicationInstaller(builder.Services)
 new CategoriesInstaller(builder.Services)
     .AddXmlCategoryTreeStoreAdapter(builder.Configuration);
 
-builder.Services.AddAuctionBidsModule();
+new AuctionBidsInstaller(builder.Services)
+    .Domain
+        .AddDapperAuctionBidsRepositoryAdapter(builder.Configuration);
+
 builder.Services.AddUserPaymentsModule();
 builder.Services.AddUsersModule();
 builder.Services.AddChronicleSQLServerStorage(SagaTypeSerialization.GetSagaType, builder.Configuration.GetSection(nameof(AuctionhouseRepositorySettings)).Get<AuctionhouseRepositorySettings>().ConnectionString);

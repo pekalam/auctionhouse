@@ -3,11 +3,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace AuctionBids.Application
 {
-    public static class AuctionBidsInstaller
+    public class AuctionBidsApplicationInstaller
     {
-        public static void AddAuctionBidsModule(this IServiceCollection services)
+        public AuctionBidsApplicationInstaller(IServiceCollection services)
         {
-            services.AddEventSubscribers(typeof(AuctionBidsInstaller));
+            Services = services;
+            services.AddEventSubscribers(typeof(AuctionBidsApplicationInstaller));
         }
+
+        public IServiceCollection Services { get; }
     }
 }
