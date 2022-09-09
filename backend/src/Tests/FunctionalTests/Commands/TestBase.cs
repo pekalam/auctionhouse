@@ -49,6 +49,7 @@ namespace FunctionalTests.Commands
     using UserPayments.Domain.Services;
     using Users.Application;
     using Users.Application.Commands.SignUp;
+    using Users.DI;
     using Users.Domain.Repositories;
     using Users.Tests.Base.Mocks;
     using XmlCategoryTreeStore;
@@ -191,8 +192,12 @@ namespace FunctionalTests.Commands
                     .Domain
                      .AddAuctionBidsRepository(_ => InMemoryAuctionBidsRepository.Instance);
 
+                new UsersInstaller(services)
+                    .Domain
+                        .AddUserRepository(_ => InMemoryUserRepository.Instance)
+                        .AddUserAuthenticationDataRepository(s => new InMemUserAuthenticationDataRepository());
+
                 services.AddUserPaymentsModule();
-                services.AddUsersModule();
                 services.AddChronicleSQLServerStorage((sagaType) => sagaType switch
                 {
                     nameof(BuyNowSaga) => typeof(BuyNowSaga),
@@ -201,13 +206,10 @@ namespace FunctionalTests.Commands
                     _ => throw new NotImplementedException(),
                 }, TestConfig.Instance.GetChronicleSQLServerStorageConnectionString());
 
-                services.AddSingleton<IUserRepository>(InMemoryUserRepository.Instance);
-
                 services.AddCommandEfCoreReadModelNotifications(TestConfig.Instance, settings: TestConfig.Instance.GetEfCoreReadModelNotificaitonsOptions());
                 services.AddQueryEfCoreReadModelNotifications(TestConfig.Instance, settings: TestConfig.Instance.GetEfCoreReadModelNotificaitonsOptions());
 
                 services.AddSingleton<IUserPaymentsRepository>(s => new InMemortUserPaymentsRepository());
-                services.AddSingleton<IUserAuthenticationDataRepository>(s => new InMemUserAuthenticationDataRepository());
 
                 services.AddLogging(c =>
                 {

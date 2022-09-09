@@ -31,6 +31,7 @@ using System.Diagnostics;
 using System.Reflection;
 using UserPayments.Application;
 using Users.Application;
+using Users.DI;
 using XmlCategoryTreeStore;
 using static System.Convert;
 
@@ -106,8 +107,13 @@ new AuctionBidsInstaller(builder.Services)
     .Domain
         .AddDapperAuctionBidsRepositoryAdapter(builder.Configuration);
 
+new UsersInstaller(builder.Services)
+    .Domain
+        .AddDapperResetPasswordCodeRepositoryAdapter(builder.Configuration)
+        .AddDapperUserRepositoryAdapter(builder.Configuration)
+        .AddDapperUserAuthenticationDataRepositoryAdapter(builder.Configuration);
+
 builder.Services.AddUserPaymentsModule();
-builder.Services.AddUsersModule();
 builder.Services.AddChronicleSQLServerStorage(SagaTypeSerialization.GetSagaType, builder.Configuration.GetSection(nameof(AuctionhouseRepositorySettings)).Get<AuctionhouseRepositorySettings>().ConnectionString);
 
 //DEMO MODE
