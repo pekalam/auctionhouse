@@ -1,25 +1,18 @@
-﻿using AuctionBids.Domain.Repositories;
-using Auctions.Application;
-using Auctions.Application.Commands.CreateAuction;
-using Auctions.Domain.Repositories;
-using Auctions.Domain.Services;
+﻿using Auctions.Application.Commands.CreateAuction;
 using Common.Application;
+using FunctionalTests.Mocks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using RabbitMq.EventBus;
 using System;
 using System.Reflection;
-using FunctionalTests.Mocks;
 
 namespace FunctionalTests.Commands
 {
     using Adapter.EfCore.ReadModelNotifications;
-    using AuctionBids.Application;
     using AuctionBids.DI;
-    using AuctionBids.Domain;
     using Auctions.Application.Commands.BuyNow;
-    using Auctions.Application.Commands.StartAuctionCreateSession;
     using Auctions.Domain;
     using Auctions.Tests.Base;
     using Auctions.Tests.Base.Domain.Services.Fakes;
@@ -27,13 +20,11 @@ namespace FunctionalTests.Commands
     using Chronicle.Integrations.SQLServer;
     using ChronicleEfCoreStorage;
     using Common.Application.Commands;
-    using Common.Application.Commands.Attributes;
     using Common.Application.Events;
     using Common.Application.Mediator;
     using Common.Tests.Base;
     using Common.Tests.Base.Mocks;
     using Core.Common.Domain;
-    using Core.Query.EventHandlers;
     using IntegrationService.AuctionPaymentVerification;
     using Polly;
     using ReadModel.Core;
@@ -44,14 +35,9 @@ namespace FunctionalTests.Commands
     using System.Threading.Tasks;
     using Test.ReadModel.Base;
     using TestConfigurationAccessor;
-    using UserPayments.Application;
     using UserPayments.DI;
-    using UserPayments.Domain.Repositories;
-    using UserPayments.Domain.Services;
-    using Users.Application;
     using Users.Application.Commands.SignUp;
     using Users.DI;
-    using Users.Domain.Repositories;
     using Users.Tests.Base.Mocks;
     using XmlCategoryTreeStore;
     using Xunit;
@@ -59,10 +45,10 @@ namespace FunctionalTests.Commands
 
     public class TestBase : IDisposable
     {
-        private string[] assemblyNames;
-        private ITestOutputHelper _outputHelper;
-        private UserIdentityServiceMock _userIdentityService;
-        private ReadModelUserReadTestHelper _modelUserReadTestHelper = new();
+        private readonly string[] assemblyNames;
+        private readonly ITestOutputHelper _outputHelper;
+        private readonly UserIdentityServiceMock _userIdentityService;
+        private readonly ReadModelUserReadTestHelper _modelUserReadTestHelper = new();
 
         public IServiceProvider ServiceProvider { get; }
 
@@ -163,8 +149,8 @@ namespace FunctionalTests.Commands
                 new CommonApplicationMockInstaller(services)
                     .AddCommandCoreDependencies(
                         null,
-                        null, 
-                           ImplProviderMock.Factory, 
+                        null,
+                           ImplProviderMock.Factory,
                            commandHandlerAssemblies)
                     .AddQueryCoreDependencies(
                         implProviderFactory: ImplProviderMock.Factory,
@@ -227,7 +213,7 @@ namespace FunctionalTests.Commands
 
 
                 services.AddSingleton(Mock.Of<IBidRaisedNotifications>());
-                
+
                 AddServices(services);
             });
         }
@@ -246,7 +232,7 @@ namespace FunctionalTests.Commands
         {
             _modelUserReadTestHelper.Dispose();
             var eventBusDecorator = (InMemoryEventBusDecorator)ServiceProvider.GetRequiredService<IEventBus>();
-            if(eventBusDecorator._eventBus is RabbitMqEventBus rabbit)
+            if (eventBusDecorator._eventBus is RabbitMqEventBus rabbit)
             {
                 rabbit.Dispose();
             }
