@@ -1,11 +1,6 @@
-﻿using Common.Application;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using ReadModel.Core.Model;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Users.Application.Commands.SignUp;
 using Xunit;
 using Xunit.Abstractions;

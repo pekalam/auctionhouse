@@ -4,7 +4,7 @@ using Users.Domain;
 
 namespace Auctionhouse.Command.Adapters
 {
-    internal static class AdaptersInstaller
+    public static class AdaptersInstaller
     {
         public static UsersDomainInstaller AddResetLinkSenderServiceAdapter(this UsersDomainInstaller installer)
         {

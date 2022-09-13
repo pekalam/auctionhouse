@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Adapters\Adapter.ChronicleEfCoreStorage\ChronicleEfCoreStorage.csproj" />
+    <ProjectReference Include="..\..\Adapters\AuctionImageConversion\Adapter.AuctionImageConversion\Adapter.AuctionImageConversion.csproj" />
     <ProjectReference Include="..\..\Adapters\ReadModelNotifications\Adapter.EfCore.ReadModelNotifications\Adapter.EfCore.ReadModelNotifications.csproj" />
     <ProjectReference Include="..\..\AuctionBids.DI\AuctionBids.DI.csproj" />
     <ProjectReference Include="..\..\Categories.DI\Categories.DI.csproj" />
@@ -38,6 +39,7 @@
     <ProjectReference Include="..\..\TestConfigurationAccessor\TestConfigurationAccessor.csproj" />
     <ProjectReference Include="..\..\UserPayments.DI\UserPayments.DI.csproj" />
     <ProjectReference Include="..\..\Users.DI\Users.DI.csproj" />
+    <ProjectReference Include="..\..\WebAPI\Auctionhouse.Command\Auctionhouse.Command.csproj" />
     <ProjectReference Include="..\..\WebAPI\Auctionhouse.Query\Auctionhouse.Query.csproj" />
     <ProjectReference Include="..\..\Modules\Auctions\Auctions.Application\Auctions.Application.csproj" />
     <ProjectReference Include="..\..\Modules\Categories\Categories.Domain\Categories.Domain.csproj" />

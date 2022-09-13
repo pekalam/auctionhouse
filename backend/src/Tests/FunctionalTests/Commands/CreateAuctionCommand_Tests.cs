@@ -45,7 +45,8 @@ namespace FunctionalTests.Commands
             //create auction in session
             var createAuctionCmd = GivenCreateAuctionCommand().Build();
             await SendCommand(createAuctionCmd);
-            AssertEventual(() => {
+            AssertEventual(() =>
+            {
                 using var scope = ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
                 var _readModelNotificationsDbContext = scope.ServiceProvider.GetRequiredService<SagaEventsConfirmationDbContext>();
                 return _readModelNotificationsDbContext.SagaEventsConfirmations.FirstOrDefault() != null;
@@ -70,7 +71,7 @@ namespace FunctionalTests.Commands
 
         private bool AssertReadModel(Auctions.Domain.Auction? createdAuction)
         {
-            if(createdAuction == null) return false;
+            if (createdAuction == null) return false;
 
             var auctionRead = ReadModelDbContext.AuctionsReadModel
                 .Find(a => a.AuctionId == createdAuction.AggregateId.ToString())

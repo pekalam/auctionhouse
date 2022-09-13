@@ -8,9 +8,7 @@ using Core.Common.Domain.Users;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Users.Domain.Repositories;
 using Xunit;
@@ -46,7 +44,7 @@ namespace FunctionalTests.Commands
             auctions.AddAuction(auction);
 
             var allAuctionBids = ServiceProvider.GetRequiredService<IAuctionBidsRepository>();
-            var auctionBids = AuctionBids.Domain.AuctionBids.CreateNew(new(auction.AggregateId), new(1,2,3), new(auction.Owner));
+            var auctionBids = AuctionBids.Domain.AuctionBids.CreateNew(new(auction.AggregateId), new(1, 2, 3), new(auction.Owner));
             ReadModelDbContext.AuctionBidsReadModel.InsertOne(new()
             {
                 AuctionId = auction.AggregateId.ToString(),
@@ -91,7 +89,7 @@ namespace FunctionalTests.Commands
                 var winnerSet = auctionRead?.Winner?.UserId == cmd.SignedInUser.ToString() && auctionRead?.Winner.UserName == "test";
                 var winnerBidSet = auctionRead?.WinningBid != null;
                 var userBidAdded = userRead.UserBids.Count == 1 && userRead.UserBids[0].AuctionId == auction.AggregateId.ToString();
-                
+
                 return priceRaised && winnerSet && winnerBidSet && userBidAdded;
             });
         }

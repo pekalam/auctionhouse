@@ -1,24 +1,19 @@
-﻿using Auctions.Application.Commands.StartAuctionCreateSession;
+﻿using Adapter.EfCore.ReadModelNotifications;
+using AuctionBids.Domain.Repositories;
+using Auctions.Application.Commands.StartAuctionCreateSession;
 using Auctions.Application.Commands.UpdateAuction;
 using Auctions.Domain;
+using Auctions.Domain.Repositories;
+using Auctions.Tests.Base.Domain.Services.Fakes;
 using FunctionalTests.Mocks;
-using System;
-using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
+using ReadModel.Core.Model;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
-using System.Linq;
 using static FunctionalTests.Builders.CreateAuctionCommandBuilder;
-using MongoDB.Driver;
-using ReadModel.Core.Model;
-using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
-using Auctions.Domain.Repositories;
-using AuctionBids.Domain.Repositories;
-using Adapter.EfCore.ReadModelNotifications;
-using Auctions.Tests.Base.Domain.Services.Fakes;
 
 namespace FunctionalTests.Commands
 {
@@ -53,7 +48,8 @@ namespace FunctionalTests.Commands
 
             Auction? createdAuction = null!;
             //get id of created auction
-            AssertEventual(() => {
+            AssertEventual(() =>
+            {
                 createdAuction = auctions.All.FirstOrDefault();
                 var auctionUnlocked = createdAuction != null && !createdAuction.Locked;
                 return createdAuction != null && auctionUnlocked;
@@ -68,7 +64,8 @@ namespace FunctionalTests.Commands
             var requestStatus = await SendCommand(updateAuctionCommand);
             await Task.Delay(2000);
 
-            AssertEventual(() => {
+            AssertEventual(() =>
+            {
                 //assert confirmations
                 var _readModelNotificationsDbContext = ServiceProvider.GetRequiredService<SagaEventsConfirmationDbContext>();
                 var confirmationsMarkedAsCompleted = _readModelNotificationsDbContext.SagaEventsConfirmations

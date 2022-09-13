@@ -1,7 +1,9 @@
 ﻿using Adapter.EfCore.ReadModelNotifications;
 using AuctionBids.DI;
+using Auctions.Application;
 using Auctions.Application.Commands.BuyNow;
 using Auctions.Application.Commands.CreateAuction;
+using Auctions.Domain;
 using Auctions.Tests.Base;
 using Auctions.Tests.Base.Domain.Services.Fakes;
 using Categories.DI;
@@ -32,6 +34,21 @@ namespace FunctionalTests.Commands
 {
     public partial class TestBase
     {
+        protected virtual void ConfigureCommonModule(CommonApplicationInstaller installer)
+        {
+
+        }
+
+        protected virtual void ConfigureAuctionsDomainModule(AuctionsDomainInstaller installer)
+        {
+
+        }
+        
+        protected virtual void ConfigureAuctionsApplicationModule(AuctionsApplicationInstaller installer)
+        {
+
+        }
+
         private IServiceProvider BuildConfiguredServiceProvider()
         {
             var services = new ServiceCollection();
@@ -40,7 +57,7 @@ namespace FunctionalTests.Commands
 
             var commandHandlerAssemblies = assemblyNames.Select(n => Assembly.Load(n)).ToArray();
             //missing query dependencies
-            new CommonApplicationMockInstaller(services)
+            var common = new CommonApplicationMockInstaller(services)
                 .AddCommandCoreDependencies(
                     null,
                     null,
@@ -55,16 +72,19 @@ namespace FunctionalTests.Commands
                 .AddOutboxItemStore(_ => InMemoryOutboxItemStore.Create())
                 .AddOutboxItemFinder(_ => InMemoryPostProcessOutboxItemService.Create())
                 .AddUserIdentityService(_ => _userIdentityService);
+            ConfigureCommonModule(common);
 
             services.Decorate<IEventBus, InMemoryEventBusDecorator>();
 
-            new AuctionsMockInstaller(services)
-                .Domain
+            var auctions = new AuctionsMockInstaller(services);
+                auctions.Domain
                     .AddAuctionCreateSessionStore((prov) => InMemAuctionCreateSessionStore.Instance)
                     .AddAuctionRepository((prov) => FakeAuctionRepository.Instance)
                     .AddCategoryNamesToTreeIdsConversion((prov) => ConvertCategoryNamesToRootToLeafIdsMock.Create())
                     .AddAuctionEndScheduler((prov) => AuctionEndSchedulerMock.Create())
                     .AddAuctionPaymentVerificationAdapter();
+            ConfigureAuctionsApplicationModule(auctions.Application);
+            ConfigureAuctionsDomainModule(auctions.Domain);
 
             new CategoriesInstaller(services)
                 .AddXmlCategoryTreeStoreAdapter(settings: TestConfig.Instance.GetXmlStoreSettings());

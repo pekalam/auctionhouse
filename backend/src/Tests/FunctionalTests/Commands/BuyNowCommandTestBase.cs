@@ -8,26 +8,18 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using UserPayments.Domain.Repositories;
-using Xunit;
 using Xunit.Abstractions;
-using static FunctionalTests.Builders.CreateAuctionCommandBuilder;
-using static UserPayments.DomainEvents.Events.V1;
 
 namespace FunctionalTests.Commands
 {
     using Auctions.Application.Commands.CreateAuction;
     using Auctions.Domain;
     using Auctions.Tests.Base.Domain.Services.Fakes;
-    using Core.Common.Domain;
     using Core.Common.Domain.Users;
     using MongoDB.Driver;
     using UserPayments.Domain;
-    using UserPayments.Domain.Events;
-    using UserPayments.Domain.Shared;
     using Users.Domain;
-    using Users.Domain.Events;
     using Users.Domain.Repositories;
-    using Users.DomainEvents;
     using Users.Tests.Base.Mocks;
 
     public class BuyNowCommandTestBase : TestBase, IDisposable
@@ -39,7 +31,7 @@ namespace FunctionalTests.Commands
         protected ITestOutputHelper outputHelper;
 
 
-        public BuyNowCommandTestBase(ITestOutputHelper outputHelper) 
+        public BuyNowCommandTestBase(ITestOutputHelper outputHelper)
             : base(outputHelper, "AuctionBids.Application", "Auctions.Application", "UserPayments.Application", "Users.Application")
         {
             this.outputHelper = outputHelper;
@@ -49,7 +41,7 @@ namespace FunctionalTests.Commands
             users = (InMemoryUserRepository)ServiceProvider.GetRequiredService<IUserRepository>();
         }
 
-      
+
 
         protected async Task CreateAuction(CreateAuctionCommand cmd)
         {

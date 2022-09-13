@@ -9,9 +9,9 @@ using static UserPayments.DomainEvents.Events.V1;
 
 namespace FunctionalTests.Commands
 {
+    using Auctions.Tests.Base.Domain.Services.TestDoubleBuilders;
     using Microsoft.Extensions.DependencyInjection;
     using MongoDB.Driver;
-    using Auctions.Tests.Base.Domain.Services.TestDoubleBuilders;
     using UserPayments.Domain;
     using UserPayments.Domain.Events;
     using Users.DomainEvents;
