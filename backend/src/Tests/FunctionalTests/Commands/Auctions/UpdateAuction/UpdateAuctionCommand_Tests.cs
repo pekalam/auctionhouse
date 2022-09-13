@@ -13,7 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
-using static FunctionalTests.Builders.CreateAuctionCommandBuilder;
+using static FunctionalTests.Builders.TestCreateAuctionCommandBuilder;
 
 namespace FunctionalTests.Commands
 {

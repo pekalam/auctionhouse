@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace FunctionalTests.Builders
 {
-    public class CreateAuctionCommandBuilder
+    public class TestCreateAuctionCommandBuilder
     {
         private BuyNowPrice buyNowPrice = new BuyNowPrice(1m);
         private Product product = new Product("testxxx", "descss", Condition.New);
@@ -16,9 +16,9 @@ namespace FunctionalTests.Builders
         private AuctionName name = new AuctionName("namewq123");
         private bool buyNowOnly = false;
 
-        public static CreateAuctionCommandBuilder GivenCreateAuctionCommand() => new();
+        public static TestCreateAuctionCommandBuilder GivenCreateAuctionCommand() => new();
 
-        public CreateAuctionCommandBuilder WithBuyNowOnly(bool buyNowOnly)
+        public TestCreateAuctionCommandBuilder WithBuyNowOnly(bool buyNowOnly)
         {
             this.buyNowOnly = buyNowOnly;
             return this;
