@@ -36,9 +36,9 @@ namespace FunctionalTests.Commands
         {
         }
 
-        protected override void AddServices(IServiceCollection services)
+        protected override void AddCustomServices(IServiceCollection services)
         {
-            base.AddServices(services);
+            base.AddCustomServices(services);
             services.AddTransient(s => new GivenAuctionPaymentVerification().BuildAlwaysValidMock().Object);
         }
 

@@ -150,11 +150,5 @@ namespace FunctionalTests.Commands
             return allEventsPublished;
         }
 
-        public override void Dispose()
-        {
-            base.Dispose();
-            TruncateReadModelNotificaitons(ServiceProvider);
-        }
-
     }
 }

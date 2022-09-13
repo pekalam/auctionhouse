@@ -43,7 +43,7 @@ namespace FunctionalTests.Commands
                 .Returns<AuctionImageRepresentation, AuctionImageSize>((i, sz) => i);
         }
 
-        protected override void AddServices(IServiceCollection services)
+        protected override void AddCustomServices(IServiceCollection services)
         {
             services.AddTransient((s) => tempFileServiceMock.Object);
             services.AddTransient((s) => imageConversionMock.Object);

@@ -46,7 +46,6 @@ namespace FunctionalTests.Commands
         {
             base.Dispose();
             ReadModelDbContext.UsersReadModel.DeleteMany(Builders<UserRead>.Filter.Empty);
-            TruncateReadModelNotificaitons(ServiceProvider);
         }
     }
 }

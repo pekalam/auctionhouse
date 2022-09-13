@@ -37,12 +37,6 @@ namespace FunctionalTests.Commands
             auctionBids = (InMemoryAuctionBidsRepository)ServiceProvider.GetRequiredService<IAuctionBidsRepository>();
         }
 
-        public override void Dispose()
-        {
-            base.Dispose();
-            TruncateReadModelNotificaitons(ServiceProvider);
-        }
-
 
         [Fact]
         public async Task Updates_created_auction()
