@@ -15,8 +15,6 @@ namespace FunctionalTests.Commands
     using Auctions.Domain.Services;
     using FluentAssertions;
     using FunctionalTests.Mocks;
-    using Moq;
-    using System.IO;
     using Xunit.Abstractions;
 
     [Trait("Category", "Functional")]
