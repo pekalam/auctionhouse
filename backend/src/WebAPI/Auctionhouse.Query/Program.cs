@@ -56,10 +56,16 @@ builder.Services.AddReadModel(mongoDbSettings);
 new CategoriesInstaller(builder.Services)
     .AddXmlCategoryTreeStoreAdapter(builder.Configuration);
 
+new ReadModelInstaller(builder.Services, mongoDbSettings)
+    //ADAPTERS
+    .AddBidRaisedNotificationsAdapter();
+
 //ADAPTERS
+//TODO: remove?
 builder.Services.AddMongoDbImageDb(builder.Configuration);
+
+//EXTENSIONS
 builder.Services.AddQueryEfCoreReadModelNotifications(builder.Configuration);
-builder.Services.AddTransient<IBidRaisedNotifications, BidRaisedNotifications>();
 
 //WEB API SERVICES
 //jwt auth

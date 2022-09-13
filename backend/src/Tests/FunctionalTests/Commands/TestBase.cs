@@ -14,6 +14,7 @@ namespace FunctionalTests.Commands
     using Common.Application.Commands;
     using Common.Application.Events;
     using Common.Application.Mediator;
+    using Common.Application.Queries;
     using Core.Common.Domain;
     using Polly;
     using ReadModel.Core;
@@ -86,6 +87,13 @@ namespace FunctionalTests.Commands
         {
             using var scope = ServiceProvider.CreateScope();
             var result = await scope.ServiceProvider.GetRequiredService<ImmediateCommandQueryMediator>().Send(command);
+            return result;
+        }
+
+        public async Task<TResponse> SendQuery<T, TResponse>(T query) where T : IQuery<TResponse>
+        {
+            using var scope = ServiceProvider.CreateScope();
+            var result = await scope.ServiceProvider.GetRequiredService<ImmediateCommandQueryMediator>().SendQuery(query);
             return result;
         }
 
