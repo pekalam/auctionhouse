@@ -51,11 +51,8 @@ namespace FunctionalTests.Commands
 
         protected async Task<User> CreateUser(decimal initialCredits)
         {
-            var user = User.Create(await Username.Create("test user"), initialCredits);
-            users.AddUser(user);
-            user.MarkPendingEventsAsHandled();
-            ChangeSignedInUser(user.AggregateId.Value);
-            return user;
+            ChangeSignedInUser(initialCredits);
+            return SignedInUser;
         }
 
         protected void CreateUserPayments(User user)

@@ -16,6 +16,8 @@ namespace FunctionalTests.Commands
     using Common.Application.Mediator;
     using Common.Application.Queries;
     using Core.Common.Domain;
+    using Core.Common.Domain.Users;
+    using Moq;
     using Polly;
     using ReadModel.Core;
     using ReadModel.Core.Model;
@@ -23,6 +25,7 @@ namespace FunctionalTests.Commands
     using System.Linq;
     using System.Threading.Tasks;
     using Test.ReadModel.Base;
+    using Users.Tests.Base;
     using Users.Tests.Base.Mocks;
     using XmlCategoryTreeStore;
     using Xunit;
@@ -32,8 +35,9 @@ namespace FunctionalTests.Commands
     {
         private readonly string[] assemblyNames;
         private readonly ITestOutputHelper _outputHelper;
-        private readonly UserIdentityServiceMock _userIdentityService;
+        private readonly Mock<IUserIdentityService> _userIdentityService;
         private readonly ReadModelUserReadTestHelper _modelUserReadTestHelper = new();
+        private User _signedInUser;
 
         public IServiceProvider ServiceProvider { get; }
 
@@ -45,7 +49,7 @@ namespace FunctionalTests.Commands
             }
         }
 
-        public UserId CurrentUser { get; } = UserId.New();
+        public User SignedInUser => _signedInUser;
 
         public ReadModelDbContext ReadModelDbContext { get; }
 
@@ -61,9 +65,8 @@ namespace FunctionalTests.Commands
 
         public TestBase(ITestOutputHelper outputHelper, params string[] assemblyNames)
         {
+            _userIdentityService = new Mock<IUserIdentityService>();
             _outputHelper = outputHelper;
-            var userId = Guid.NewGuid();
-            _userIdentityService = new(userId);
             this.assemblyNames = assemblyNames;
             ServiceProvider = BuildConfiguredServiceProvider();
 
@@ -74,13 +77,17 @@ namespace FunctionalTests.Commands
             XmlCategoryTreeStoreInstaller.Init(ServiceProvider);
             ReadModelDbContext = ServiceProvider.GetRequiredService<ReadModelDbContext>();
 
-            _modelUserReadTestHelper.TryInsertUserRead(userId, ReadModelDbContext);
+            ChangeSignedInUser(0);
         }
 
-        public void ChangeSignedInUser(Guid userId)
+        public void ChangeSignedInUser(decimal initialCredits, string? userName = null)
         {
-            _userIdentityService.UserId = userId;
-            _modelUserReadTestHelper.TryInsertUserRead(userId, ReadModelDbContext);
+            _signedInUser = new GivenUser()
+                .WithInitialCredits(initialCredits)
+                .WithUserName(userName)
+                .LoggedIn(_userIdentityService)
+                .Build(InMemoryUserRepository.Instance);
+            _modelUserReadTestHelper.TryInsertUserRead(_signedInUser.AggregateId, ReadModelDbContext);
         }
 
         public async Task<RequestStatus> SendCommand<T>(T command) where T : ICommand

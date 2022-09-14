@@ -33,13 +33,10 @@ namespace FunctionalTests.Commands
         [Fact]
         public async Task RaiseBidCommand_test()
         {
-            var user = User.Create(new("test"), 2000);
-            var users = ServiceProvider.GetRequiredService<IUserRepository>();
-            users.AddUser(user);
-            ChangeSignedInUser(user.AggregateId);
+            ChangeSignedInUser(2000);
 
             var auctions = ServiceProvider.GetRequiredService<IAuctionRepository>();
-            var auctionArgs = new GivenAuctionArgs().WithOwner(new(user.AggregateId.Value)).Build();
+            var auctionArgs = new GivenAuctionArgs().WithOwner(new(SignedInUser.AggregateId.Value)).Build();
             var auction = new GivenAuction().WithAuctionArgs(auctionArgs).Build();
             auctions.AddAuction(auction);
 
@@ -64,7 +61,7 @@ namespace FunctionalTests.Commands
 
             AssertEventual(() =>
             {
-                var userReadCreated = ReadModelDbContext.UsersReadModel.Find(u => u.UserIdentity.UserId == user.AggregateId.Value.ToString()).FirstOrDefault()
+                var userReadCreated = ReadModelDbContext.UsersReadModel.Find(u => u.UserIdentity.UserId == SignedInUser.AggregateId.Value.ToString()).FirstOrDefault()
                 != null;
                 var auctionReadCreated = ReadModelDbContext.AuctionsReadModel.Find(a => a.AuctionId == auction.AggregateId.Value.ToString()).FirstOrDefault()
                 != null;
@@ -74,8 +71,7 @@ namespace FunctionalTests.Commands
             });
 
 
-            var newUser = Guid.NewGuid();
-            ChangeSignedInUser(newUser);
+            ChangeSignedInUser(2000, "test");
             var cmd = new RaiseBidCommand(auction.AggregateId.Value, auctionBids.CurrentPrice + 1);
             await SendCommand(cmd);
 

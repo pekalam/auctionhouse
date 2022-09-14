@@ -71,7 +71,7 @@ namespace FunctionalTests.Commands
                 .AddRabbitMqAppEventBuilderAdapter()
                 .AddOutboxItemStore(_ => InMemoryOutboxItemStore.Create())
                 .AddOutboxItemFinder(_ => InMemoryPostProcessOutboxItemService.Create())
-                .AddUserIdentityService(_ => _userIdentityService);
+                .AddUserIdentityService(_ => _userIdentityService.Object);
             ConfigureCommonModule(common);
 
             services.Decorate<IEventBus, InMemoryEventBusDecorator>();

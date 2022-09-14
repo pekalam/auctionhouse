@@ -52,6 +52,7 @@ namespace FunctionalTests.Commands
             await CreateAuction(createAuctionCommand);
             var initialCredits = 1000m;
             var user = await CreateUser(initialCredits);
+            user.MarkPendingEventsAsHandled();
             CreateUserPayments(user);
 
             var buyNowCommand = new BuyNowCommand
