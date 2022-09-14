@@ -90,30 +90,6 @@ namespace FunctionalTests.Commands
             return result;
         }
 
-        public async Task<TResponse> SendQuery<T, TResponse>(T query) where T : IQuery<TResponse>
-        {
-            using var scope = ServiceProvider.CreateScope();
-            var result = await scope.ServiceProvider.GetRequiredService<ImmediateCommandQueryMediator>().SendQuery(query);
-            return result;
-        }
-
-        internal (bool sagaCompleted, bool allEventsProcessed) SagaShouldBeCompletedAndAllEventsShouldBeProcessed(RequestStatus requestStatus)
-        {
-            var eventConfirmations = SagaEventsConfirmationDbContext.SagaEventsConfirmations.FirstOrDefault(e => e.CommandId == requestStatus.CommandId.Id);
-            var sagaCompleted = eventConfirmations?.Completed == true;
-            var allEventsProcessed = false;
-            if (eventConfirmations != null)
-            {
-                var eventsToProcess = SagaEventsConfirmationDbContext.SagaEventsToConfirm
-                 .Where(e => e.CorrelationId == eventConfirmations.CorrelationId).ToList();
-
-                allEventsProcessed = eventsToProcess.Count > 0 && eventsToProcess.All(e => e.Processed);
-            }
-
-            return (sagaCompleted, allEventsProcessed);
-        }
-
-
         protected void AssertEventual(Func<bool> getResults)
         {
             var policy = Policy

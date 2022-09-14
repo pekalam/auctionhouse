@@ -119,14 +119,8 @@ namespace FunctionalTests.Commands
                 c.SetMinimumLevel(LogLevel.Debug);
             });
 
-
-            services.AddReadModel(TestConfig.Instance.GetReadModelSettings());
-            services.AddEventConsumers(typeof(ReadModelInstaller));
-            services.AddAutoMapper(typeof(Auctionhouse.Query.QueryMapperProfile).Assembly);
-
-
-
-            services.AddSingleton(Mock.Of<IBidRaisedNotifications>());
+            new ReadModelInstaller(services, TestConfig.Instance.GetReadModelSettings())
+                .AddBidRaisedNotifications(_ => Mock.Of<IBidRaisedNotifications>());
 
             AddCustomServices(services);
 

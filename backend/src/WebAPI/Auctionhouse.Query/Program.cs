@@ -9,11 +9,9 @@ using Common.WebAPI;
 using Common.WebAPI.Auth;
 using Common.WebAPI.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using OpenTelemetry.Trace;
 using RabbitMq.EventBus;
 using ReadModel.Core;
 using ReadModel.Core.Model;
-using ReadModel.Core.Services;
 using Serilog;
 using XmlCategoryTreeStore;
 
@@ -50,12 +48,11 @@ new CommonApplicationInstaller(builder.Services)
     .AddRabbitMqAppEventBuilderAdapter()
     .AddRabbitMqEventBusAdapter(builder.Configuration, eventConsumerAssemblies: new[] { typeof(ReadModelInstaller).Assembly });
 
-var mongoDbSettings = builder.Configuration.GetSection("MongoDb").Get<MongoDbSettings>();
-builder.Services.AddReadModel(mongoDbSettings);
 
 new CategoriesInstaller(builder.Services)
     .AddXmlCategoryTreeStoreAdapter(builder.Configuration);
 
+var mongoDbSettings = builder.Configuration.GetSection("MongoDb").Get<MongoDbSettings>();
 new ReadModelInstaller(builder.Services, mongoDbSettings)
     //ADAPTERS
     .AddBidRaisedNotificationsAdapter();
@@ -83,7 +80,6 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
 builder.Services.AddCacheServices(builder.Configuration);

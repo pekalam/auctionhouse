@@ -2,19 +2,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using ReadModel.Core.Model;
 using ReadModel.Core.Services;
+using System.Reflection;
 
 namespace ReadModel.Core
 {
-    public static class ReadModelInstallerX
-    {
-        public static void AddReadModel(this IServiceCollection services, MongoDbSettings mongoDbSettings)
-        {
-            services.AddEventConsumers(typeof(ReadModelInstaller));
-            services.AddSingleton(mongoDbSettings);
-            services.AddSingleton<ReadModelDbContext>();
-        }
-    }
-
     public class ReadModelInstaller
     {
         public IServiceCollection Services { get; }
@@ -30,6 +21,7 @@ namespace ReadModel.Core
             services.AddEventConsumers(typeof(ReadModelInstaller));
             services.AddSingleton(mongoDbSettings);
             services.AddSingleton<ReadModelDbContext>();
+            services.AddAutoMapper(typeof(ReadModelInstaller).Assembly, Assembly.GetExecutingAssembly());
         }
 
         public ReadModelInstaller AddBidRaisedNotifications(Func<IServiceProvider, IBidRaisedNotifications> factory)
