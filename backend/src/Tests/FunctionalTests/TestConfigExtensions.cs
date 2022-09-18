@@ -1,4 +1,5 @@
-﻿using Adapter.EfCore.ReadModelNotifications;
+﻿using Adapter.Dapper.AuctionhouseDatabase;
+using Adapter.EfCore.ReadModelNotifications;
 using Microsoft.Extensions.Configuration;
 using RabbitMq.EventBus;
 using ReadModel.Core.Model;
@@ -44,6 +45,11 @@ namespace FunctionalTests
         public static EfCoreReadModelNotificaitonsOptions GetEfCoreReadModelNotificaitonsOptions(this IConfigurationRoot configuration)
         {
             return configuration.GetSection(SectionName).GetSection("ReadModelNotificaitons").Get<EfCoreReadModelNotificaitonsOptions>();
+        }
+
+        public static AuctionhouseRepositorySettings GetAuctionhouseRepositorySettings(this IConfigurationRoot configuration)
+        {
+            return configuration.GetSection(SectionName).GetSection("AuctionhouseRepositorySettings").Get<AuctionhouseRepositorySettings>();
         }
     }
 }

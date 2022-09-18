@@ -4,10 +4,12 @@ using AuctionBids.Domain.Repositories;
 using Auctions.Application.Commands.StartAuctionCreateSession;
 using Auctions.Domain.Repositories;
 using Auctions.Tests.Base.Domain.Services.Fakes;
+using Core.Common.Domain.Users;
 using FunctionalTests.Mocks;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using ReadModel.Core.Model;
+using ReadModel.Core.Queries.User.UserAuctions;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,36 +22,27 @@ namespace FunctionalTests.Commands
     public class CreateAuctionProbe
     {
         private readonly TestBase _testBase;
+        private readonly User _creator;
 
-        public CreateAuctionProbe(TestBase testBase)
+        public CreateAuctionProbe(TestBase testBase, User creator)
         {
             _testBase = testBase;
+            _creator = creator;
         }
 
         public bool Check()
         {
             using var scope = _testBase.ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
-            var auctions = (FakeAuctionRepository)_testBase.ServiceProvider.GetRequiredService<IAuctionRepository>();
+            var auctions = _testBase.ServiceProvider.GetRequiredService<IAuctionRepository>();
             var auctionBids = (InMemoryAuctionBidsRepository)_testBase.ServiceProvider.GetRequiredService<IAuctionBidsRepository>();
             var _readModelNotificationsDbContext = scope.ServiceProvider.GetRequiredService<SagaEventsConfirmationDbContext>();
             var confirmationsMarkedAsCompleted = _readModelNotificationsDbContext.SagaEventsConfirmations.FirstOrDefault()?.Completed == true;
             var confirmationEventsProcessed = _readModelNotificationsDbContext.SagaEventsToConfirm.All(e => e.Processed);
-            var createdAuction = auctions.All.FirstOrDefault();
+            var createdAuction = _testBase.SendQuery<UserAuctionsQuery, UserAuctionsQueryResult>(new UserAuctionsQuery()).GetAwaiter().GetResult().Auctions.FirstOrDefault();
             var auctionUnlocked = createdAuction != null && !createdAuction.Locked;
-            var idEqual = (auctionBids.All.Count > 0 && auctionBids.All.FirstOrDefault(a => a.AuctionId.Value == createdAuction?.AggregateId.Value) is not null);
+            var idEqual = (auctionBids.All.Count > 0 && auctionBids.All.FirstOrDefault(a => a.AuctionId.Value == (createdAuction != null ? Guid.Parse(createdAuction.AuctionId) : null)) is not null);
             //if (!confirmationsMarkedAsCompleted) outputHelper.WriteLine("Notifications not marked as completed");
-            return auctionUnlocked && idEqual && confirmationsMarkedAsCompleted && confirmationEventsProcessed && AssertReadModel(createdAuction);
-        }
-
-        private bool AssertReadModel(Auctions.Domain.Auction? createdAuction)
-        {
-            if (createdAuction == null) return false;
-
-            var auctionRead = _testBase.ReadModelDbContext.AuctionsReadModel
-                .Find(a => a.AuctionId == createdAuction.AggregateId.ToString())
-                .SingleOrDefault();
-
-            return auctionRead != null;
+            return auctionUnlocked && idEqual && confirmationsMarkedAsCompleted && confirmationEventsProcessed && createdAuction != null;
         }
     }
 
@@ -79,7 +72,7 @@ namespace FunctionalTests.Commands
             var createAuctionCmd = GivenCreateAuctionCommand().Build();
             await SendCommand(createAuctionCmd);
 
-            AssertEventual(new CreateAuctionProbe(this).Check);
+            AssertEventual(new CreateAuctionProbe(this, SignedInUser).Check);
         }
 
         [Fact]

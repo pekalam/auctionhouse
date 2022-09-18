@@ -49,7 +49,7 @@ namespace FunctionalTests.Commands
         public async Task BuyNowCommand_creates_confirmed_payment_and_sets_auction_to_completed()
         {
             var createAuctionCommand = GivenCreateAuctionCommand().Build();
-            await CreateAuction(createAuctionCommand);
+            var createdAuction = await CreateAuction(createAuctionCommand);
             var initialCredits = 1000m;
             var user = await CreateUser(initialCredits);
             user.MarkPendingEventsAsHandled();
@@ -57,7 +57,7 @@ namespace FunctionalTests.Commands
 
             var buyNowCommand = new BuyNowCommand
             {
-                AuctionId = auctions.All.First(a => a.Owner.Value == createAuctionCommand.SignedInUser).AggregateId,
+                AuctionId = Guid.Parse(createdAuction.AuctionId),
             };
             var status = await SendCommand(buyNowCommand);
 
@@ -92,8 +92,8 @@ namespace FunctionalTests.Commands
 
         public bool Check()
         {
-            var auctions = (FakeAuctionRepository)_testBase.ServiceProvider.GetRequiredService<IAuctionRepository>();
-            var auction = auctions.All.FirstOrDefault(a => a.AggregateId == _auctionId);
+            var auctions = _testBase.ServiceProvider.GetRequiredService<IAuctionRepository>();
+            var auction = auctions.FindAuction(_auctionId);
             var allUserPayments = (InMemortUserPaymentsRepository)_testBase.ServiceProvider.GetRequiredService<IUserPaymentsRepository>();
 
             var auctionCompleted = auction?.Completed == true;

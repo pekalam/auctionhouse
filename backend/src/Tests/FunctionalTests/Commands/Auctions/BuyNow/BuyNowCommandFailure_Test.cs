@@ -17,6 +17,7 @@ namespace FunctionalTests.Commands
     using FunctionalTests.Mocks;
     using Microsoft.Extensions.DependencyInjection;
     using MongoDB.Driver;
+    using ReadModel.Core.Queries.User.UserAuctions;
     using UserPayments.Domain;
     using UserPayments.Domain.Events;
     using UserPayments.Domain.Repositories;
@@ -53,14 +54,14 @@ namespace FunctionalTests.Commands
         //case when there is not enough credits at the time the request is handled by UserPayments
         {
             var createAuctionCommand = GivenCreateAuctionCommand().Build();
-            await CreateAuction(createAuctionCommand);
+            var createdAuction = await CreateAuction(createAuctionCommand);
             var initialCredits = 0m;
             var user = await CreateUser(initialCredits);
             CreateUserPayments(user);
 
             var buyNowCommand = new BuyNowCommand
             {
-                AuctionId = auctions.All.First(a => a.Owner.Value == createAuctionCommand.SignedInUser).AggregateId,
+                AuctionId = Guid.Parse(createdAuction.AuctionId),
             };
             var status = await SendCommand(buyNowCommand);
 
@@ -92,9 +93,9 @@ namespace FunctionalTests.Commands
 
         public bool Check()
         {
-            var auctions = (FakeAuctionRepository)_testBase.ServiceProvider.GetRequiredService<IAuctionRepository>();
+            var auctions = _testBase.ServiceProvider.GetRequiredService<IAuctionRepository>();
             var expectedEventsAssertion = ExpectedEventsShouldBePublished(_expectedEvents);
-            var auction = auctions.All.FirstOrDefault(a => a.AggregateId == _auctionId);
+            var auction = auctions.FindAuction(_auctionId);
             var (sagaCompleted, allEventsProcessed) = _testBase.SagaShouldBeCompletedAndAllEventsShouldBeProcessed(_status);
             var allUserPayments = (InMemortUserPaymentsRepository)_testBase.ServiceProvider.GetRequiredService<IUserPaymentsRepository>();
 

@@ -129,7 +129,6 @@ namespace FunctionalTests.Commands
             }
             InMemoryAuctionBidsRepository.Instance.Clear();
             InMemoryUserRepository.Instance.Clear();
-            FakeAuctionRepository.Instance.Clear();
             TruncateReadModelNotificaitons(ServiceProvider);
         }
     }

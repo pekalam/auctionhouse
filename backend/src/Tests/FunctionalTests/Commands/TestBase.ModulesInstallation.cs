@@ -1,4 +1,5 @@
-﻿using Adapter.EfCore.ReadModelNotifications;
+﻿using Adapter.Dapper.AuctionhouseDatabase;
+using Adapter.EfCore.ReadModelNotifications;
 using AuctionBids.DI;
 using Auctionhouse.Command.Adapters;
 using Auctions.Application;
@@ -80,9 +81,8 @@ namespace FunctionalTests.Commands
 
             var auctions = new AuctionsMockInstaller(services);
                 auctions.Domain
-                    //.AddAuctionCreateSessionStore((prov) => InMemAuctionCreateSessionStore.Instance)
                     .AddAuctionCreateSessionStoreAdapter()
-                    .AddAuctionRepository((prov) => FakeAuctionRepository.Instance)
+                    .AddDapperAuctionRepositoryAdapter(settings: TestConfig.Instance.GetAuctionhouseRepositorySettings())
                     .AddCategoryNamesToTreeIdsConversion((prov) => ConvertCategoryNamesToRootToLeafIdsMock.Create())
                     .AddAuctionEndScheduler((prov) => AuctionEndSchedulerMock.Create())
                     .AddAuctionPaymentVerificationAdapter();

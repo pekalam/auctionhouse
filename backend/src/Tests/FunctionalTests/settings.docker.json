@@ -1,14 +1,18 @@
 {
-  "FunctionalTests:RabbitMq:ConnectionString": "host=rabbitmq;publisherConfirms=true;persistentMessages=true;prefetchcount=0",
+    "FunctionalTests:RabbitMq:ConnectionString": "host=rabbitmq;publisherConfirms=true;persistentMessages=true;prefetchcount=0",
 
-  "FunctionalTests:ReadModelSettings:ConnectionString": "mongodb://auctionhouse-user:Test-1234@mongodb:27017/appDb",
-  "FunctionalTests:ReadModelSettings:DatabaseName": "appDb",
+    "FunctionalTests:ReadModelSettings:ConnectionString": "mongodb://auctionhouse-user:Test-1234@mongodb:27017/appDb",
+    "FunctionalTests:ReadModelSettings:DatabaseName": "appDb",
 
-  "FunctionalTests:XmlCategoryTreeStore:CategoriesFilePath": "_Categories-xml-data/categories.xml",
-  "FunctionalTests:XmlCategoryTreeStore:SchemaFilePath": "_Categories-xml-data/categories.xsd",
+    "FunctionalTests:XmlCategoryTreeStore:CategoriesFilePath": "_Categories-xml-data/categories.xml",
+    "FunctionalTests:XmlCategoryTreeStore:SchemaFilePath": "_Categories-xml-data/categories.xsd",
 
-  "FunctionalTests:ChronicleSQLServerStorage:ConnectionString": "Data Source=sql_server;Initial Catalog=AuctionhouseDatabase;MultipleActiveResultSets=True;TrustServerCertificate=True;User ID=sa;Password=Qwerty1234;",
+    "FunctionalTests:ChronicleSQLServerStorage:ConnectionString": "Data Source=sql_server;Initial Catalog=AuctionhouseDatabase;MultipleActiveResultSets=True;TrustServerCertificate=True;User ID=sa;Password=Qwerty1234;",
 
-  "FunctionalTests:ReadModelNotificaitons:ConnectionString": "Data Source=sql_server;Initial Catalog=AuctionhouseDatabase;MultipleActiveResultSets=True;TrustServerCertificate=True;User ID=sa;Password=Qwerty1234;",
-  "FunctionalTests:ReadModelNotificaitons:Provider": "sqlserver"
+    "FunctionalTests:ReadModelNotificaitons:ConnectionString": "Data Source=sql_server;Initial Catalog=AuctionhouseDatabase;MultipleActiveResultSets=True;TrustServerCertificate=True;User ID=sa;Password=Qwerty1234;",
+    "FunctionalTests:ReadModelNotificaitons:Provider": "sqlserver",
+
+    "FunctionalTests:AuctionhouseRepositorySettings": {
+        "ConnectionString": "Data Source=sqlserver;Initial Catalog=AuctionhouseDatabase;MultipleActiveResultSets=True;TrustServerCertificate=True;User ID=sa;Password=Qwerty1234;"
+    }
 }

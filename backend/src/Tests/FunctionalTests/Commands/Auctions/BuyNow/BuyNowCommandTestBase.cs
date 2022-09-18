@@ -12,6 +12,9 @@ namespace FunctionalTests.Commands
     using Auctions.Application.Commands.CreateAuction;
     using Auctions.Tests.Base.Domain.Services.Fakes;
     using Core.Common.Domain.Users;
+    using ReadModel.Core.Model;
+    using ReadModel.Core.Queries.User.UserAuctions;
+    using System.Linq;
     using UserPayments.Domain;
     using Users.Domain;
     using Users.Domain.Repositories;
@@ -19,24 +22,22 @@ namespace FunctionalTests.Commands
 
     public class BuyNowCommandTestBase : TestBase, IDisposable
     {
-        protected FakeAuctionRepository auctions;
         protected InMemortUserPaymentsRepository allUserPayments;
         protected InMemoryUserRepository users;
         protected ITestOutputHelper outputHelper;
 
 
         public BuyNowCommandTestBase(ITestOutputHelper outputHelper)
-            : base(outputHelper, "AuctionBids.Application", "Auctions.Application", "UserPayments.Application", "Users.Application")
+            : base(outputHelper, "AuctionBids.Application", "Auctions.Application", "UserPayments.Application", "Users.Application", "ReadModel.Core")
         {
             this.outputHelper = outputHelper;
-            auctions = (FakeAuctionRepository)ServiceProvider.GetRequiredService<IAuctionRepository>();
             allUserPayments = (InMemortUserPaymentsRepository)ServiceProvider.GetRequiredService<IUserPaymentsRepository>();
             users = (InMemoryUserRepository)ServiceProvider.GetRequiredService<IUserRepository>();
         }
 
 
 
-        protected async Task CreateAuction(CreateAuctionCommand cmd)
+        protected async Task<AuctionRead> CreateAuction(CreateAuctionCommand cmd)
         {
             //start session
             var startSessionCmd = new StartAuctionCreateSessionCommand();
@@ -45,8 +46,11 @@ namespace FunctionalTests.Commands
             //create auction in session
             await SendCommand(cmd);
             await Task.Delay(3000);
-            AssertEventual(new CreateAuctionProbe(this).Check);
+            AssertEventual(new CreateAuctionProbe(this, SignedInUser).Check);
             InMemoryEventBusDecorator.ClearSentEvents();
+
+            var createdAuctions = await SendQuery<UserAuctionsQuery, UserAuctionsQueryResult>(new UserAuctionsQuery());
+            return createdAuctions.Auctions.First();
         }
 
         protected async Task<User> CreateUser(decimal initialCredits)
