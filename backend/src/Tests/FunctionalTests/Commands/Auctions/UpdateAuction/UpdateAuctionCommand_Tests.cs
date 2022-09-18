@@ -23,13 +23,11 @@ namespace FunctionalTests.Commands
     [Trait("Category", "Functional")]
     public class UpdateAuctionCommand_Tests : TestBase
     {
-        private readonly InMemoryAuctionBidsRepository auctionBids;
         private readonly ITestOutputHelper outputHelper;
 
         public UpdateAuctionCommand_Tests(ITestOutputHelper outputHelper) : base(outputHelper, "AuctionBids.Application", "Auctions.Application", "ReadModel.Core")
         {
             this.outputHelper = outputHelper;
-            auctionBids = (InMemoryAuctionBidsRepository)ServiceProvider.GetRequiredService<IAuctionBidsRepository>();
         }
 
 

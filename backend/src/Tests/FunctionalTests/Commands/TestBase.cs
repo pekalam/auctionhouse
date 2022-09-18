@@ -127,7 +127,6 @@ namespace FunctionalTests.Commands
             {
                 rabbit.Dispose();
             }
-            InMemoryAuctionBidsRepository.Instance.Clear();
             InMemoryUserRepository.Instance.Clear();
             TruncateReadModelNotificaitons(ServiceProvider);
         }

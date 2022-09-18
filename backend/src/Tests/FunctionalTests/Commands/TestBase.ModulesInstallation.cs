@@ -97,7 +97,7 @@ namespace FunctionalTests.Commands
 
             new AuctionBidsInstaller(services)
                 .Domain
-                 .AddAuctionBidsRepository(_ => InMemoryAuctionBidsRepository.Instance);
+                 .AddDapperAuctionBidsRepositoryAdapter(settings: TestConfig.Instance.GetAuctionhouseRepositorySettings());
 
             new UsersInstaller(services)
                 .Domain

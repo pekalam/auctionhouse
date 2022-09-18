@@ -46,7 +46,7 @@ namespace FunctionalTests.Commands
             //create auction in session
             await SendCommand(cmd);
             await Task.Delay(3000);
-            AssertEventual(new CreateAuctionProbe(this, SignedInUser).Check);
+            AssertEventual(new CreateAuctionProbe(this).Check);
             InMemoryEventBusDecorator.ClearSentEvents();
 
             var createdAuctions = await SendQuery<UserAuctionsQuery, UserAuctionsQueryResult>(new UserAuctionsQuery());
