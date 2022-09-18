@@ -25,7 +25,7 @@ namespace FunctionalTests.Mocks
         }
     }
 
-    internal static class FileSystemFileStreamAccessor
+    internal static class TestFileStreamAccessor
     {
         public static IFileStreamAccessor ForFile(string filePath)
         {

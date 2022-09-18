@@ -1,5 +1,6 @@
 ﻿using Adapter.EfCore.ReadModelNotifications;
 using AuctionBids.DI;
+using Auctionhouse.Command.Adapters;
 using Auctions.Application;
 using Auctions.Application.Commands.BuyNow;
 using Auctions.Application.Commands.CreateAuction;
@@ -14,6 +15,7 @@ using Common.Tests.Base;
 using Common.Tests.Base.Mocks;
 using FunctionalTests.Mocks;
 using IntegrationService.AuctionPaymentVerification;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -78,13 +80,17 @@ namespace FunctionalTests.Commands
 
             var auctions = new AuctionsMockInstaller(services);
                 auctions.Domain
-                    .AddAuctionCreateSessionStore((prov) => InMemAuctionCreateSessionStore.Instance)
+                    //.AddAuctionCreateSessionStore((prov) => InMemAuctionCreateSessionStore.Instance)
+                    .AddAuctionCreateSessionStoreAdapter()
                     .AddAuctionRepository((prov) => FakeAuctionRepository.Instance)
                     .AddCategoryNamesToTreeIdsConversion((prov) => ConvertCategoryNamesToRootToLeafIdsMock.Create())
                     .AddAuctionEndScheduler((prov) => AuctionEndSchedulerMock.Create())
                     .AddAuctionPaymentVerificationAdapter();
             ConfigureAuctionsApplicationModule(auctions.Application);
             ConfigureAuctionsDomainModule(auctions.Domain);
+
+            // adding httpcontext accessor with singleton session in order to satisfy AuctionCreateSessionStore requirements
+            services.AddScoped<IHttpContextAccessor, TestHttpContextAccessor>();
 
             new CategoriesInstaller(services)
                 .AddXmlCategoryTreeStoreAdapter(settings: TestConfig.Instance.GetXmlStoreSettings());

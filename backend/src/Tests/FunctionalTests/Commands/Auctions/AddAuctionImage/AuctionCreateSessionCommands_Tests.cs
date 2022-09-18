@@ -20,11 +20,11 @@ namespace FunctionalTests.Commands
     [Trait("Category", "Functional")]
     public class AuctionCreateSessionCommands_Tests : TestBase
     {
-        private readonly InMemAuctionCreateSessionStore auctionCreateSessionStore;
+        private readonly IAuctionCreateSessionStore auctionCreateSessionStore;
 
         public AuctionCreateSessionCommands_Tests(ITestOutputHelper outputHelper) : base(outputHelper, "AuctionBids.Application", "Auctions.Application")
         {
-            auctionCreateSessionStore = (InMemAuctionCreateSessionStore)ServiceProvider.GetRequiredService<IAuctionCreateSessionStore>();
+            auctionCreateSessionStore = ServiceProvider.GetRequiredService<IAuctionCreateSessionStore>();
         }
 
         protected override void ConfigureAuctionsDomainModule(AuctionsDomainInstaller installer)
@@ -47,7 +47,7 @@ namespace FunctionalTests.Commands
 
             var addImg = new AddAuctionImageCommand()
             {
-                Img = FileSystemFileStreamAccessor.ForFile("imageData/1200x600.jpg"),
+                Img = TestFileStreamAccessor.ForFile("imageData/1200x600.jpg"),
                 Extension = "jpg",
                 ImgNum = 0,
             };
@@ -64,7 +64,7 @@ namespace FunctionalTests.Commands
 
             var addImg = new AddAuctionImageCommand()
             {
-                Img = FileSystemFileStreamAccessor.ForFile("imageData/1200x600.jpg"),
+                Img = TestFileStreamAccessor.ForFile("imageData/1200x600.jpg"),
                 Extension = "jpg",
                 ImgNum = 0,
             };

@@ -44,15 +44,12 @@ namespace Auctionhouse.Command.Adapters
 
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserIdentityService _userIdentityService;
-        private readonly IDistributedCache _distributedCache;
         private readonly ILogger<AuctionCreateSessionStore> _logger;
 
-        public AuctionCreateSessionStore(IHttpContextAccessor httpContextAccessor, IUserIdentityService userIdentityService, IDistributedCache distributedCache,
-            ILogger<AuctionCreateSessionStore> logger)
+        public AuctionCreateSessionStore(IHttpContextAccessor httpContextAccessor, IUserIdentityService userIdentityService, ILogger<AuctionCreateSessionStore> logger)
         {
             _httpContextAccessor = httpContextAccessor;
             _userIdentityService = userIdentityService;
-            _distributedCache = distributedCache;
             _logger = logger;
         }
 

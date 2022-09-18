@@ -127,7 +127,6 @@ namespace FunctionalTests.Commands
             {
                 rabbit.Dispose();
             }
-            InMemAuctionCreateSessionStore.Instance.RemoveSession();
             InMemoryAuctionBidsRepository.Instance.Clear();
             InMemoryUserRepository.Instance.Clear();
             FakeAuctionRepository.Instance.Clear();
