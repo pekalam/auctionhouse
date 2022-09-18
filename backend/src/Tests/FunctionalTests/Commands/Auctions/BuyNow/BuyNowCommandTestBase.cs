@@ -16,14 +16,12 @@ namespace FunctionalTests.Commands
     using ReadModel.Core.Queries.User.UserAuctions;
     using System.Linq;
     using UserPayments.Domain;
-    using Users.Domain;
     using Users.Domain.Repositories;
-    using Users.Tests.Base.Mocks;
 
     public class BuyNowCommandTestBase : TestBase, IDisposable
     {
-        protected InMemortUserPaymentsRepository allUserPayments;
-        protected InMemoryUserRepository users;
+        protected IUserPaymentsRepository allUserPayments;
+        protected IUserRepository users;
         protected ITestOutputHelper outputHelper;
 
 
@@ -31,8 +29,8 @@ namespace FunctionalTests.Commands
             : base(outputHelper, "AuctionBids.Application", "Auctions.Application", "UserPayments.Application", "Users.Application", "ReadModel.Core")
         {
             this.outputHelper = outputHelper;
-            allUserPayments = (InMemortUserPaymentsRepository)ServiceProvider.GetRequiredService<IUserPaymentsRepository>();
-            users = (InMemoryUserRepository)ServiceProvider.GetRequiredService<IUserRepository>();
+            allUserPayments = ServiceProvider.GetRequiredService<IUserPaymentsRepository>();
+            users = ServiceProvider.GetRequiredService<IUserRepository>();
         }
 
 
@@ -62,7 +60,6 @@ namespace FunctionalTests.Commands
         protected void CreateUserPayments(User user)
         {
             var userPayments = UserPayments.CreateNew(new global::UserPayments.Domain.Shared.UserId(user.AggregateId.Value));
-            userPayments.MarkPendingEventsAsHandled();
             allUserPayments.Add(userPayments);
         }
     }

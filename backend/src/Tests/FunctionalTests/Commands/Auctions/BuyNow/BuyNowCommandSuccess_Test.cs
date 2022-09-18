@@ -11,15 +11,10 @@ namespace FunctionalTests.Commands
 {
     using Auctions.Domain;
     using Auctions.Domain.Repositories;
-    using Auctions.Tests.Base.Domain.Services.Fakes;
     using Common.Application;
     using Core.Common.Domain.Users;
-    using FunctionalTests.Mocks;
     using Microsoft.Extensions.DependencyInjection;
     using MongoDB.Driver;
-    using UserPayments.Domain;
-    using UserPayments.Domain.Events;
-    using UserPayments.Domain.Repositories;
     using Users.Domain.Events;
     using Users.DomainEvents;
 
@@ -30,14 +25,14 @@ namespace FunctionalTests.Commands
         readonly Type[] SuccessExpectedEvents = new[] {
                     typeof(Auctions.DomainEvents.AuctionLocked),
                     typeof(Auctions.DomainEvents.Events.V1.BuyNowTXStarted),
-                    typeof(BuyNowPaymentCreated),
+                    typeof(UserPayments.Domain.Events.BuyNowPaymentCreated),
                     typeof(LockedFundsCreated),
                     typeof(UserCreditsLockedForBuyNowAuction),
                     typeof(BuyNowPaymentConfirmed),
-                    typeof(PaymentStatusChangedToConfirmed),
+                    typeof(UserPayments.Domain.Events.PaymentStatusChangedToConfirmed),
                     typeof(Auctions.DomainEvents.AuctionUnlocked),
                     typeof(Auctions.DomainEvents.Events.V1.BuyNowTXSuccess),
-                    typeof(PaymentStatusChangedToCompleted),
+                    typeof(UserPayments.Domain.Events.PaymentStatusChangedToCompleted),
                     typeof(CreditsWithdrawn),
                 };
 
@@ -94,12 +89,12 @@ namespace FunctionalTests.Commands
         {
             var auctions = _testBase.ServiceProvider.GetRequiredService<IAuctionRepository>();
             var auction = auctions.FindAuction(_auctionId);
-            var allUserPayments = (InMemortUserPaymentsRepository)_testBase.ServiceProvider.GetRequiredService<IUserPaymentsRepository>();
+            var allUserPayments = _testBase.ServiceProvider.GetRequiredService<UserPayments.Domain.Repositories.IUserPaymentsRepository>();
 
             var auctionCompleted = auction?.Completed == true;
             var (sagaCompleted, allEventsProcessed) = _testBase.SagaShouldBeCompletedAndAllEventsShouldBeProcessed(_status);
             var expectedEventsAssertion = ExpectedEventsShouldBePublished(_expectedEvents);
-            var paymentCompletedAssertion = PaymentStatusShouldBe(PaymentStatus.Completed);
+            var paymentCompletedAssertion = PaymentStatusShouldBe(UserPayments.Domain.PaymentStatus.Completed);
             var userCreditsAssertion = UserCreditsShouldBe(_initialCredits - _buyNowPrice);
             var userReadCreditsAssertion = UserReadCreditsShouldBe(_initialCredits - _buyNowPrice);
 
@@ -112,11 +107,10 @@ namespace FunctionalTests.Commands
             userReadCreditsAssertion;
 
 
-            bool PaymentStatusShouldBe(PaymentStatus paymentStatus)
+            bool PaymentStatusShouldBe(UserPayments.Domain.PaymentStatus paymentStatus)
             {
-                return allUserPayments.All
-                                        .FirstOrDefault(u => u.UserId.Value == _user.AggregateId.Value)
-                                        ?.Payments.FirstOrDefault(p => p.PaymentTargetId?.Value == _auctionId)?.Status == paymentStatus;
+                return allUserPayments.WithUserId(new UserPayments.Domain.Shared.UserId(_user.AggregateId.Value)).GetAwaiter().GetResult()
+                    ?.Payments.FirstOrDefault(p => p.PaymentTargetId?.Value == _auctionId)?.Status == paymentStatus;
             }
 
             bool UserReadCreditsShouldBe(decimal credits)

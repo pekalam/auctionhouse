@@ -106,7 +106,7 @@ namespace FunctionalTests.Commands
 
             new UserPaymentsInstaller(services)
                 .Domain
-                    .AddUserPaymentsRepository(s => InMemortUserPaymentsRepository.Instance);
+                    .AddDapperUserPaymentsRepositoryAdapter(settings: TestConfig.Instance.GetAuctionhouseRepositorySettings());
 
             services.AddChronicleSQLServerStorage((sagaType) => sagaType switch
             {
