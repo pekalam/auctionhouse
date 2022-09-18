@@ -31,6 +31,7 @@ namespace Users.Tests.Base
             return this;
         }
 
+        //TODO: call command instead??
         public GivenUser LoggedIn(Mock<IUserIdentityService> userIdentityService)
         {
             _identityServiceSetup = () 

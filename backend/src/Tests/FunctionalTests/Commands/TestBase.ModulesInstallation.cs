@@ -73,7 +73,7 @@ namespace FunctionalTests.Commands
                 .AddRabbitMqEventBusAdapter(null, rabbitMqSettings: TestConfig.Instance.GetRabbitMqSettings())
                 .AddRabbitMqAppEventBuilderAdapter()
                 .AddOutboxItemStore(_ => InMemoryOutboxItemStore.Create())
-                .AddOutboxItemFinder(_ => InMemoryPostProcessOutboxItemService.Create())
+                .AddOutboxItemFinder(_ => InMemoryOutboxItemFinder.Create())
                 .AddUserIdentityService(_ => _userIdentityService.Object);
             ConfigureCommonModule(common);
 
@@ -101,8 +101,8 @@ namespace FunctionalTests.Commands
 
             new UsersInstaller(services)
                 .Domain
-                    .AddUserRepository(_ => InMemoryUserRepository.Instance)
-                    .AddUserAuthenticationDataRepository(s => new InMemUserAuthenticationDataRepository());
+                    .AddDapperUserRepositoryAdapter(settings: TestConfig.Instance.GetAuctionhouseRepositorySettings())
+                    .AddDapperUserAuthenticationDataRepositoryAdapter(settings: TestConfig.Instance.GetAuctionhouseRepositorySettings());
 
             new UserPaymentsInstaller(services)
                 .Domain

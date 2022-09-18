@@ -1,6 +1,7 @@
 ﻿using Common.Application;
 using MongoDB.Driver;
 using ReadModel.Core.Model;
+using System;
 using System.Linq;
 using Users.Application.Commands.SignUp;
 using Xunit;
@@ -20,7 +21,7 @@ namespace FunctionalTests.Commands
         [Fact]
         public async void SignUpCommand_creates_user_and_user_payments()
         {
-            var cmd = new SignUpCommand("test_signup", "pass", "mail@mail.com");
+            var cmd = new SignUpCommand("singup_test", "pass", "mail@mail.com");
 
             var requestStatus = await SendCommand(cmd);
 
@@ -31,6 +32,7 @@ namespace FunctionalTests.Commands
         {
             base.Dispose();
             ReadModelDbContext.UsersReadModel.DeleteMany(Builders<UserRead>.Filter.Empty);
+            CommandDbHelper.ClearUsersAuthenticationData();
         }
     }
 

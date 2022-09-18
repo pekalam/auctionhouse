@@ -21,10 +21,12 @@ namespace FunctionalTests.Commands
     using Polly;
     using ReadModel.Core;
     using ReadModel.Core.Model;
+    using ReflectionMagic;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Test.ReadModel.Base;
+    using Users.Domain.Repositories;
     using Users.Tests.Base;
     using Users.Tests.Base.Mocks;
     using XmlCategoryTreeStore;
@@ -86,7 +88,7 @@ namespace FunctionalTests.Commands
                 .WithInitialCredits(initialCredits)
                 .WithUserName(userName)
                 .LoggedIn(_userIdentityService)
-                .Build(InMemoryUserRepository.Instance);
+                .Build(ServiceProvider.GetRequiredService<IUserRepository>());
             _modelUserReadTestHelper.TryInsertUserRead(_signedInUser.AggregateId, ReadModelDbContext);
         }
 
@@ -127,7 +129,6 @@ namespace FunctionalTests.Commands
             {
                 rabbit.Dispose();
             }
-            InMemoryUserRepository.Instance.Clear();
             TruncateReadModelNotificaitons(ServiceProvider);
         }
     }

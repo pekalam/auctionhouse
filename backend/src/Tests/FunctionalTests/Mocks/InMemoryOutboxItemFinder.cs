@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace FunctionalTests.Mocks
 {
-    internal class InMemoryPostProcessOutboxItemService : IOutboxItemFinder
+    internal class InMemoryOutboxItemFinder : IOutboxItemFinder
     {
-        public static InMemoryPostProcessOutboxItemService Instance { get; private set; } = Create();
+        public static InMemoryOutboxItemFinder Instance { get; private set; } = Create();
 
-        public static InMemoryPostProcessOutboxItemService Create() => new InMemoryPostProcessOutboxItemService();
+        public static InMemoryOutboxItemFinder Create() => new InMemoryOutboxItemFinder();
 
         public Task<int> GetTotalUnprocessedItemsOlderThan(long diff, long currentTimestamp)
         {

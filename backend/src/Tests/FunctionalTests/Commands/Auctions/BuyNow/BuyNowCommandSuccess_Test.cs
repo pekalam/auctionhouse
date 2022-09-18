@@ -90,6 +90,7 @@ namespace FunctionalTests.Commands
             var auctions = _testBase.ServiceProvider.GetRequiredService<IAuctionRepository>();
             var auction = auctions.FindAuction(_auctionId);
             var allUserPayments = _testBase.ServiceProvider.GetRequiredService<UserPayments.Domain.Repositories.IUserPaymentsRepository>();
+            var users = _testBase.ServiceProvider.GetRequiredService<Users.Domain.Repositories.IUserRepository>();
 
             var auctionCompleted = auction?.Completed == true;
             var (sagaCompleted, allEventsProcessed) = _testBase.SagaShouldBeCompletedAndAllEventsShouldBeProcessed(_status);
@@ -121,7 +122,7 @@ namespace FunctionalTests.Commands
 
             bool UserCreditsShouldBe(decimal credits)
             {
-                return _user.Credits == credits;
+                return users.FindUser(_user.AggregateId)?.Credits == credits;
             }
         }
 
