@@ -11,6 +11,7 @@ namespace FunctionalTests.Commands
     using Auctions.Application.Commands.AddAuctionImage;
     using Auctions.Application.Commands.RemoveImage;
     using Auctions.Application.Commands.StartAuctionCreateSession;
+    using Auctions.DI;
     using Auctions.Domain;
     using Auctions.Domain.Services;
     using FluentAssertions;
@@ -20,6 +21,7 @@ namespace FunctionalTests.Commands
     [Trait("Category", "Functional")]
     public class AuctionCreateSessionCommands_Tests : TestBase
     {
+        private const string TestImagePath = "imageData/1200x600.jpg";
         private readonly IAuctionCreateSessionStore auctionCreateSessionStore;
 
         public AuctionCreateSessionCommands_Tests(ITestOutputHelper outputHelper) : base(outputHelper, "AuctionBids.Application", "Auctions.Application")
@@ -27,16 +29,11 @@ namespace FunctionalTests.Commands
             auctionCreateSessionStore = ServiceProvider.GetRequiredService<IAuctionCreateSessionStore>();
         }
 
-        protected override void ConfigureAuctionsDomainModule(AuctionsDomainInstaller installer)
+        protected override void ConfigureAuctionsModuleCustomDependencies(AuctionsInstaller installer)
         {
-            base.ConfigureAuctionsDomainModule(installer);
-            installer.AddAuctionImageConversionAdapter();
-        }
-
-        protected override void ConfigureAuctionsApplicationModule(AuctionsApplicationInstaller installer)
-        {
-            base.ConfigureAuctionsApplicationModule(installer);
-            installer.AddTempFileServiceAdapter();
+            base.ConfigureAuctionsModuleCustomDependencies(installer);
+            installer.Application.AddTempFileServiceAdapter();
+            installer.Domain.AddAuctionImageConversionAdapter();
         }
 
         [Fact]
@@ -47,7 +44,7 @@ namespace FunctionalTests.Commands
 
             var addImg = new AddAuctionImageCommand()
             {
-                Img = TestFileStreamAccessor.ForFile("imageData/1200x600.jpg"),
+                Img = TestFileStreamAccessor.ForFile(TestImagePath),
                 Extension = "jpg",
                 ImgNum = 0,
             };
@@ -64,7 +61,7 @@ namespace FunctionalTests.Commands
 
             var addImg = new AddAuctionImageCommand()
             {
-                Img = TestFileStreamAccessor.ForFile("imageData/1200x600.jpg"),
+                Img = TestFileStreamAccessor.ForFile(TestImagePath),
                 Extension = "jpg",
                 ImgNum = 0,
             };

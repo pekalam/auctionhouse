@@ -1,4 +1,5 @@
 ﻿using Auctions.Application;
+using Auctions.DI;
 using Auctions.Domain;
 using Auctions.Domain.Repositories;
 using Auctions.Domain.Services;
@@ -32,18 +33,18 @@ namespace Auctions.Tests.Base
         }
     }
 
-    public class AuctionsMockInstaller
+    public class AuctionsMockInstaller : AuctionsInstaller
     {
         private readonly AuctionsDomainMockInstaller _domainInstaller;
         private readonly AuctionsApplicationMockInstaller _applicationInstaller;
 
-        public AuctionsMockInstaller(IServiceCollection services)
+        public AuctionsMockInstaller(IServiceCollection services) : base(services)
         {
             _domainInstaller = new(services);
             _applicationInstaller = new(services);
         }
 
-        public AuctionsDomainMockInstaller Domain => _domainInstaller;
-        public AuctionsApplicationMockInstaller Application => _applicationInstaller;
+        public override AuctionsDomainMockInstaller Domain => _domainInstaller;
+        public override AuctionsApplicationMockInstaller Application => _applicationInstaller;
     }
 }

@@ -6,17 +6,14 @@ namespace Auctions.DI
 {
     public class AuctionsInstaller
     {
-        private readonly AuctionsDomainInstaller _domainInstaller;
-        private readonly AuctionsApplicationInstaller _applicationInstaller;
-
         public AuctionsInstaller(IServiceCollection services)
         {
-            _domainInstaller = new AuctionsDomainInstaller(services);
-            _applicationInstaller = new AuctionsApplicationInstaller(services);
+            Domain = new AuctionsDomainInstaller(services);
+            Application = new AuctionsApplicationInstaller(services);
         }
 
-        public AuctionsDomainInstaller Domain => _domainInstaller;
-        public AuctionsApplicationInstaller Application => _applicationInstaller;
+        public virtual AuctionsDomainInstaller Domain { get; }
+        public virtual AuctionsApplicationInstaller Application { get; }
     }
 
 }

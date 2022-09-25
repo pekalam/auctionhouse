@@ -10,14 +10,11 @@ using static UserPayments.DomainEvents.Events.V1;
 namespace FunctionalTests.Commands
 {
     using Auctions.Domain.Repositories;
-    using Auctions.Tests.Base.Domain.Services.Fakes;
     using Auctions.Tests.Base.Domain.Services.TestDoubleBuilders;
     using Common.Application;
     using Core.Common.Domain.Users;
-    using FunctionalTests.Mocks;
     using Microsoft.Extensions.DependencyInjection;
     using MongoDB.Driver;
-    using ReadModel.Core.Queries.User.UserAuctions;
     using Users.DomainEvents;
 
 
@@ -63,25 +60,23 @@ namespace FunctionalTests.Commands
             var status = await SendCommand(buyNowCommand);
 
             AssertEventual(
-                new BuyNowCommandFailureProbe(this, FailureExpectedEvents, outputHelper, buyNowCommand.AuctionId, status, user, initialCredits).Check);
+                new BuyNowCommandFailureProbe(this, FailureExpectedEvents, buyNowCommand.AuctionId, status, user, initialCredits).Check);
         }
     }
 
     public class BuyNowCommandFailureProbe
     {
         private readonly TestBase _testBase;
-        private readonly ITestOutputHelper outputHelper;
         private readonly Type[] _expectedEvents;
         private readonly Guid _auctionId;
         private readonly RequestStatus _status;
         private readonly User _user;
         private readonly decimal _initialCredits;
 
-        public BuyNowCommandFailureProbe(TestBase testBase, Type[] expectedEvents, ITestOutputHelper outputHelper, Guid auctionId, RequestStatus status, User user, decimal initialCredits)
+        public BuyNowCommandFailureProbe(TestBase testBase, Type[] expectedEvents, Guid auctionId, RequestStatus status, User user, decimal initialCredits)
         {
             _testBase = testBase;
             _expectedEvents = expectedEvents;
-            this.outputHelper = outputHelper;
             _auctionId = auctionId;
             _status = status;
             _user = user;
@@ -91,7 +86,7 @@ namespace FunctionalTests.Commands
         public bool Check()
         {
             var auctions = _testBase.ServiceProvider.GetRequiredService<IAuctionRepository>();
-            var expectedEventsAssertion = ExpectedEventsShouldBePublished(_expectedEvents);
+            var expectedEventsAssertion = _testBase.ExpectedEventsShouldBePublished(_expectedEvents);
             var auction = auctions.FindAuction(_auctionId);
             var (sagaCompleted, allEventsProcessed) = _testBase.SagaShouldBeCompletedAndAllEventsShouldBeProcessed(_status);
             var allUserPayments = _testBase.ServiceProvider.GetRequiredService<UserPayments.Domain.Repositories.IUserPaymentsRepository>();
@@ -123,35 +118,6 @@ namespace FunctionalTests.Commands
             {
                 return _user.Credits == credits;
             }
-        }
-
-        private bool ExpectedEventsShouldBePublished(Type[] expectedEvents)
-        {
-            var allEventsPublished = _testBase.SentEvents.Select(e => e.Event.GetType()).Except(expectedEvents).Any() == false;
-
-            if (_testBase.SentEvents.Count > expectedEvents.Length)
-            {
-                outputHelper.WriteLine("Not all events were included in expected");
-                foreach (var ev in _testBase.SentEvents.Select(e => e.Event.GetType()).Except(expectedEvents))
-                {
-                    outputHelper.WriteLine("Event: " + ev.Name);
-                }
-            }
-            else if (!allEventsPublished)
-            {
-                var notPublished = expectedEvents.Except(_testBase.SentEvents.Select(e => e.Event.GetType()));
-                outputHelper.WriteLine($"Not all expected events were published ({notPublished.Count()}/{expectedEvents.Length}):");
-                foreach (var ev in notPublished)
-                {
-                    outputHelper.WriteLine("Not published: " + ev.Name);
-                }
-            }
-            else
-            {
-                outputHelper.WriteLine("All events were published");
-            }
-
-            return allEventsPublished;
         }
     }
 }

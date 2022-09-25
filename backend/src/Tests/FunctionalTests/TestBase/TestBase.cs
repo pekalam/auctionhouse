@@ -8,27 +8,23 @@ using System.Reflection;
 namespace FunctionalTests.Commands
 {
     using Adapter.EfCore.ReadModelNotifications;
-    using Auctions.Domain;
-    using Auctions.Tests.Base.Domain.Services.Fakes;
     using Chronicle.Integrations.SQLServer;
     using Common.Application.Commands;
     using Common.Application.Events;
     using Common.Application.Mediator;
-    using Common.Application.Queries;
     using Core.Common.Domain;
     using Core.Common.Domain.Users;
     using Moq;
     using Polly;
     using ReadModel.Core;
     using ReadModel.Core.Model;
-    using ReflectionMagic;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading.Tasks;
     using Test.ReadModel.Base;
     using Users.Domain.Repositories;
     using Users.Tests.Base;
-    using Users.Tests.Base.Mocks;
     using XmlCategoryTreeStore;
     using Xunit;
     using Xunit.Abstractions;
@@ -36,6 +32,7 @@ namespace FunctionalTests.Commands
     public partial class TestBase : IDisposable
     {
         private readonly string[] assemblyNames;
+        private readonly Assembly[] assemblies;
         private readonly ITestOutputHelper _outputHelper;
         private readonly Mock<IUserIdentityService> _userIdentityService;
         private readonly ReadModelUserReadTestHelper _modelUserReadTestHelper = new();
@@ -70,6 +67,7 @@ namespace FunctionalTests.Commands
             _userIdentityService = new Mock<IUserIdentityService>();
             _outputHelper = outputHelper;
             this.assemblyNames = assemblyNames;
+            this.assemblies = assemblyNames.Select(n => Assembly.Load(n)).ToArray();
             ServiceProvider = BuildConfiguredServiceProvider();
 
             ChronicleEfCoreIntegrationInitializer.Initialize(ServiceProvider);
@@ -82,6 +80,7 @@ namespace FunctionalTests.Commands
             ChangeSignedInUser(0);
         }
 
+        [MemberNotNull(nameof(_signedInUser))]
         public void ChangeSignedInUser(decimal initialCredits, string? userName = null)
         {
             _signedInUser = new GivenUser()
@@ -97,39 +96,6 @@ namespace FunctionalTests.Commands
             using var scope = ServiceProvider.CreateScope();
             var result = await scope.ServiceProvider.GetRequiredService<ImmediateCommandQueryMediator>().Send(command);
             return result;
-        }
-
-        protected void AssertEventual(Func<bool> getResults)
-        {
-            var policy = Policy
-              .HandleResult<bool>(p => p == false)
-              .WaitAndRetry(5, retryAttempt =>
-                TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
-              );
-            Assert.True(policy.Execute(getResults));
-        }
-
-        private static void TruncateReadModelNotificaitons(IServiceProvider serviceProvider)
-        {
-            var dbContext = serviceProvider.GetRequiredService<SagaEventsConfirmationDbContext>();
-            var confirmations = dbContext.SagaEventsConfirmations.ToList();
-            dbContext.SagaEventsConfirmations.RemoveRange(confirmations);
-
-            var eventsToConfirm = dbContext.SagaEventsToConfirm.ToList();
-            dbContext.SagaEventsToConfirm.RemoveRange(eventsToConfirm);
-
-            dbContext.SaveChanges();
-        }
-
-        public virtual void Dispose()
-        {
-            _modelUserReadTestHelper.Dispose();
-            var eventBusDecorator = (InMemoryEventBusDecorator)ServiceProvider.GetRequiredService<IEventBus>();
-            if (eventBusDecorator._eventBus is RabbitMqEventBus rabbit)
-            {
-                rabbit.Dispose();
-            }
-            TruncateReadModelNotificaitons(ServiceProvider);
         }
     }
 }

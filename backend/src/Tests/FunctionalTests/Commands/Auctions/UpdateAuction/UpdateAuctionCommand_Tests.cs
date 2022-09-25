@@ -1,11 +1,6 @@
 ﻿using Adapter.EfCore.ReadModelNotifications;
-using AuctionBids.Domain.Repositories;
 using Auctions.Application.Commands.StartAuctionCreateSession;
 using Auctions.Application.Commands.UpdateAuction;
-using Auctions.Domain;
-using Auctions.Domain.Repositories;
-using Auctions.Tests.Base.Domain.Services.Fakes;
-using FunctionalTests.Mocks;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using ReadModel.Core.Model;
@@ -76,3 +71,4 @@ namespace FunctionalTests.Commands
         }
     }
 }
+ 
