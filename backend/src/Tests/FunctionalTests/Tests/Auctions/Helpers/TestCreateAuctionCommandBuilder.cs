@@ -3,7 +3,7 @@ using Auctions.Domain;
 using System;
 using System.Collections.Generic;
 
-namespace FunctionalTests.Commands
+namespace FunctionalTests.Tests.Auctions.Helpers
 {
     public class TestCreateAuctionCommandBuilder
     {

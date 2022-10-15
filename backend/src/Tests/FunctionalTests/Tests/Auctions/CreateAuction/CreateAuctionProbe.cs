@@ -1,12 +1,13 @@
 ﻿using Adapter.EfCore.ReadModelNotifications;
 using AuctionBids.Domain.Repositories;
 using Auctions.Domain.Repositories;
+using FunctionalTests.Commands;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using ReadModel.Core.Queries.User.UserAuctions;
 using System.Linq;
 
-namespace FunctionalTests.Commands
+namespace FunctionalTests.Tests.Auctions.CreateAuction
 {
     public class CreateAuctionProbe
     {

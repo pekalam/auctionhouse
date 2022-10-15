@@ -1,12 +1,13 @@
-﻿using System;
+﻿using FunctionalTests.Commands;
+using System;
 using System.Linq;
 
-namespace FunctionalTests.Commands
+namespace FunctionalTests.Tests.Auctions.BuyNow
 {
-    using Auctions.Domain;
-    using Auctions.Domain.Repositories;
     using Common.Application;
     using Core.Common.Domain.Users;
+    using global::Auctions.Domain;
+    using global::Auctions.Domain.Repositories;
     using Microsoft.Extensions.DependencyInjection;
     using MongoDB.Driver;
 
@@ -37,7 +38,7 @@ namespace FunctionalTests.Commands
             var auctions = _testBase.ServiceProvider.GetRequiredService<IAuctionRepository>();
             var auction = auctions.FindAuction(_auctionId);
             var allUserPayments = _testBase.ServiceProvider.GetRequiredService<UserPayments.Domain.Repositories.IUserPaymentsRepository>();
-            var users = _testBase.ServiceProvider.GetRequiredService<Users.Domain.Repositories.IUserRepository>();
+            var users = _testBase.ServiceProvider.GetRequiredService<global::Users.Domain.Repositories.IUserRepository>();
 
             var auctionCompleted = auction?.Completed == true;
             var (sagaCompleted, allEventsProcessed) = _testBase.SagaShouldBeCompletedAndAllEventsShouldBeProcessed(_status);

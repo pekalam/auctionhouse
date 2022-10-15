@@ -1,5 +1,6 @@
 ﻿using Auctions.Application.Commands.StartAuctionCreateSession;
 using Auctions.Domain.Repositories;
+using FunctionalTests.Commands;
 using FunctionalTests.Mocks;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -7,16 +8,16 @@ using System.Threading.Tasks;
 using UserPayments.Domain.Repositories;
 using Xunit.Abstractions;
 
-namespace FunctionalTests.Commands
+namespace FunctionalTests.Tests.Auctions.BuyNow
 {
-    using Auctions.Application.Commands.CreateAuction;
-    using Auctions.Tests.Base.Domain.Services.Fakes;
     using Core.Common.Domain.Users;
+    using FunctionalTests.Tests.Auctions.CreateAuction;
+    using global::Auctions.Application.Commands.CreateAuction;
+    using global::Users.Domain.Repositories;
     using ReadModel.Core.Model;
     using ReadModel.Core.Queries.User.UserAuctions;
     using System.Linq;
     using UserPayments.Domain;
-    using Users.Domain.Repositories;
 
     public class BuyNowCommandTestBase : TestBase, IDisposable
     {

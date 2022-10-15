@@ -1,21 +1,20 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FunctionalTests.Commands;
+using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
+using Auctions.Domain.Services;
+using Auctions.DI;
+using Auctions.Application.Commands.StartAuctionCreateSession;
 
-namespace FunctionalTests.Commands
+namespace FunctionalTests.Tests.Auctions.AddAuctionImage
 {
     using Adapter.AuctionImageConversion;
     using Auctionhouse.Command.Adapters;
-    using Auctions.Application;
-    using Auctions.Application.Commands.AddAuctionImage;
-    using Auctions.Application.Commands.RemoveImage;
-    using Auctions.Application.Commands.StartAuctionCreateSession;
-    using Auctions.DI;
-    using Auctions.Domain;
-    using Auctions.Domain.Services;
     using FluentAssertions;
     using FunctionalTests.Mocks;
+    using global::Auctions.Application.Commands.AddAuctionImage;
+    using global::Auctions.Application.Commands.RemoveImage;
     using Xunit.Abstractions;
 
     [Trait("Category", "Functional")]

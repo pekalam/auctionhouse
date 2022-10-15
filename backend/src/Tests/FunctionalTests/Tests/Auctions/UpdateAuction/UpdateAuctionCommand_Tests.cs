@@ -1,6 +1,8 @@
 ﻿using Adapter.EfCore.ReadModelNotifications;
 using Auctions.Application.Commands.StartAuctionCreateSession;
 using Auctions.Application.Commands.UpdateAuction;
+using FunctionalTests.Commands;
+using FunctionalTests.Tests.Auctions.CreateAuction;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using ReadModel.Core.Model;
@@ -10,9 +12,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
-using static FunctionalTests.Commands.TestCreateAuctionCommandBuilder;
+using static FunctionalTests.Tests.Auctions.Helpers.TestCreateAuctionCommandBuilder;
 
-namespace FunctionalTests.Commands
+namespace FunctionalTests.Tests.Auctions.UpdateAuction
 {
     [Collection(nameof(CommandTestsCollection))]
     [Trait("Category", "Functional")]
@@ -71,4 +73,3 @@ namespace FunctionalTests.Commands
         }
     }
 }
- 

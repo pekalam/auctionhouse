@@ -1,4 +1,6 @@
 ﻿using Common.Application;
+using FunctionalTests.Commands;
+using FunctionalTests.Tests.Auctions.CreateAuction;
 using MongoDB.Driver;
 using ReadModel.Core.Model;
 using System;
@@ -7,7 +9,7 @@ using Users.Application.Commands.SignUp;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace FunctionalTests.Commands
+namespace FunctionalTests.Tests.Users
 {
     [Collection(nameof(CommandTestsCollection))]
     [Trait("Category", "Functional")]

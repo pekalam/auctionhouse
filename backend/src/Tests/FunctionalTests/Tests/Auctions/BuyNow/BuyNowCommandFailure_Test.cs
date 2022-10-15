@@ -1,21 +1,23 @@
 ﻿using Auctions.Application.Commands.BuyNow;
+using FunctionalTests.Commands;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
-using static FunctionalTests.Commands.TestCreateAuctionCommandBuilder;
+using static FunctionalTests.Tests.Auctions.Helpers.TestCreateAuctionCommandBuilder;
 using static UserPayments.DomainEvents.Events.V1;
 
-namespace FunctionalTests.Commands
+namespace FunctionalTests.Tests.Auctions.BuyNow
 {
-    using Auctions.Domain.Repositories;
-    using Auctions.Tests.Base.Domain.Services.TestDoubleBuilders;
     using Common.Application;
     using Core.Common.Domain.Users;
+    using FunctionalTests.Tests.Auctions.CreateAuction;
+    using global::Auctions.Domain.Repositories;
+    using global::Auctions.Tests.Base.Domain.Services.TestDoubleBuilders;
+    using global::Users.DomainEvents;
     using Microsoft.Extensions.DependencyInjection;
     using MongoDB.Driver;
-    using Users.DomainEvents;
 
 
     [Collection(nameof(CommandTestsCollection))]
@@ -23,14 +25,14 @@ namespace FunctionalTests.Commands
     public class BuyNowCommandFailure_Test : BuyNowCommandTestBase, IDisposable
     {
         readonly Type[] FailureExpectedEvents = new[] {
-                    typeof(Auctions.DomainEvents.AuctionLocked),
-                    typeof(Auctions.DomainEvents.Events.V1.BuyNowTXStarted),
+                    typeof(global::Auctions.DomainEvents.AuctionLocked),
+                    typeof(global::Auctions.DomainEvents.Events.V1.BuyNowTXStarted),
                     typeof(UserPayments.Domain.Events.BuyNowPaymentCreated),
                     typeof(UserCreditsFailedToLockForBuyNowAuction),
                     typeof(BuyNowPaymentFailed),
                     typeof(UserPayments.Domain.Events.PaymentStatusChangedToFailed),
-                    typeof(Auctions.DomainEvents.AuctionUnlocked),
-                    typeof(Auctions.DomainEvents.Events.V1.BuyNowTXCanceled),
+                    typeof(global::Auctions.DomainEvents.AuctionUnlocked),
+                    typeof(global::Auctions.DomainEvents.Events.V1.BuyNowTXCanceled),
                 };
 
         public BuyNowCommandFailure_Test(ITestOutputHelper outputHelper) : base(outputHelper)

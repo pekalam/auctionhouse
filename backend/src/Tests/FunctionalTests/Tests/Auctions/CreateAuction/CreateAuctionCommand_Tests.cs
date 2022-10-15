@@ -1,11 +1,12 @@
 using Auctions.Application.Commands.StartAuctionCreateSession;
+using FunctionalTests.Commands;
 using System;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
-using static FunctionalTests.Commands.TestCreateAuctionCommandBuilder;
+using static FunctionalTests.Tests.Auctions.Helpers.TestCreateAuctionCommandBuilder;
 
-namespace FunctionalTests.Commands
+namespace FunctionalTests.Tests.Auctions.CreateAuction
 {
     [CollectionDefinition(nameof(CommandTestsCollection), DisableParallelization = true)]
     public class CommandTestsCollection { }

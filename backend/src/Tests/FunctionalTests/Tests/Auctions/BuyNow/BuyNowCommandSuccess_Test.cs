@@ -3,28 +3,29 @@ using System;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
-using static FunctionalTests.Commands.TestCreateAuctionCommandBuilder;
+using static FunctionalTests.Tests.Auctions.Helpers.TestCreateAuctionCommandBuilder;
 using static UserPayments.DomainEvents.Events.V1;
 
-namespace FunctionalTests.Commands
+namespace FunctionalTests.Tests.Auctions.BuyNow
 {
-    using Users.Domain.Events;
-    using Users.DomainEvents;
+    using FunctionalTests.Tests.Auctions.CreateAuction;
+    using global::Users.Domain.Events;
+    using global::Users.DomainEvents;
 
     [Collection(nameof(CommandTestsCollection))]
     [Trait("Category", "Functional")]
     public class BuyNowCommandSuccess_Test : BuyNowCommandTestBase
     {
         readonly Type[] SuccessExpectedEvents = new[] {
-                    typeof(Auctions.DomainEvents.AuctionLocked),
-                    typeof(Auctions.DomainEvents.Events.V1.BuyNowTXStarted),
+                    typeof(global::Auctions.DomainEvents.AuctionLocked),
+                    typeof(global::Auctions.DomainEvents.Events.V1.BuyNowTXStarted),
                     typeof(UserPayments.Domain.Events.BuyNowPaymentCreated),
                     typeof(LockedFundsCreated),
                     typeof(UserCreditsLockedForBuyNowAuction),
                     typeof(BuyNowPaymentConfirmed),
                     typeof(UserPayments.Domain.Events.PaymentStatusChangedToConfirmed),
-                    typeof(Auctions.DomainEvents.AuctionUnlocked),
-                    typeof(Auctions.DomainEvents.Events.V1.BuyNowTXSuccess),
+                    typeof(global::Auctions.DomainEvents.AuctionUnlocked),
+                    typeof(global::Auctions.DomainEvents.Events.V1.BuyNowTXSuccess),
                     typeof(UserPayments.Domain.Events.PaymentStatusChangedToCompleted),
                     typeof(CreditsWithdrawn),
                 };
