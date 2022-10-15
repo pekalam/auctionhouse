@@ -1,3 +1,5 @@
+$ErrorActionPreference = 'Stop'
+
 dotnet ef migrations script -p '..\..\..\..\Adapters\ReadModelNotifications\Adapter.EfCore.ReadModelNotifications\Adapter.EfCore.ReadModelNotifications.csproj' --configuration Test -o ..\..\AuctionhouseDatabase\dbo\Scripts\Generated\SagaNotifications.sql
 
 #patch to allow idempotency

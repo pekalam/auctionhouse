@@ -1,3 +1,5 @@
+$ErrorActionPreference = 'Stop'
+
 function Add-ScriptsToProj {
     param(
         [Parameter(Mandatory,Position=0)]

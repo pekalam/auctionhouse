@@ -1,3 +1,5 @@
+$ErrorActionPreference = 'Stop'
+
 dotnet ef migrations script -p '..\..\..\..\Adapters\EventOutboxStorage\Adapter.SqlServer.EventOutboxStorage\Adapter.SqlServer.EventOutboxStorage.csproj' --configuration Test -o ..\..\AuctionhouseDatabase\dbo\Scripts\Generated\EventOutbox.sql
 
 #patch to allow idempotency

@@ -1,3 +1,5 @@
+$ErrorActionPreference = 'Stop'
+
 & MSBuild.exe ..\..\AuctionhouseDatabase\AuctionhouseDatabase.sqlproj
 
 & .\Add-EventOutboxAdapterScripts.ps1
