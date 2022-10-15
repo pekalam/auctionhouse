@@ -26,7 +26,7 @@ namespace Adapter.EfCore.ReadModelNotifications
         {
             base.OnConfiguring(optionsBuilder);
 #if TEST
-            optionsBuilder.UseSqlServer("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Marek\\source\\repos\\Csharp\\auctionhouse\\backend\\src\\Tests\\FunctionalTestsServer.mdf;Integrated Security=True");
+            optionsBuilder.UseSqlServer(System.Environment.GetEnvironmentVariable("ConnectionString"));
 #endif
         }
     }

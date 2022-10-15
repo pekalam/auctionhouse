@@ -1,6 +1,7 @@
 $ErrorActionPreference = 'Stop'
 
-dotnet ef migrations script -p '..\..\..\..\Adapters\ReadModelNotifications\Adapter.EfCore.ReadModelNotifications\Adapter.EfCore.ReadModelNotifications.csproj' --configuration Test -o ..\..\AuctionhouseDatabase\dbo\Scripts\Generated\SagaNotifications.sql
+$env:ConnectionString = 'Data Source=127.0.0.1;Initial Catalog=AuctionhouseDatabase;MultipleActiveResultSets=True;TrustServerCertificate=True;User ID=sa;Password=Qwerty1234;'
+dotnet ef migrations script -p '..\..\..\..\Adapters\ReadModelNotifications\Adapter.EfCore.ReadModelNotifications\Adapter.EfCore.ReadModelNotifications.csproj' -i --configuration Test -o ..\..\AuctionhouseDatabase\dbo\Scripts\Generated\SagaNotifications.sql
 
 #patch to allow idempotency
 $generatedFile = "..\..\AuctionhouseDatabase\dbo\Scripts\Generated\SagaNotifications.sql"
