@@ -4,6 +4,7 @@ using Core.Common.Domain;
 using Core.DomainFramework;
 using EasyNetQ;
 using EasyNetQ.Consumer;
+using EasyNetQ.Logging;
 using EasyNetQ.SystemMessages;
 using EasyNetQ.Topology;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,44 +21,36 @@ namespace RabbitMq.EventBus
         IBus Bus { get; }
     }
 
-    internal class RabbitMqEventBus : Common.Application.Events.IEventBus, IDisposable, IRabbitMqEventBus
+    internal class EasyMQBusHolder : IDisposable
     {
         private readonly RabbitMqSettings _settings;
-        private readonly ILogger<RabbitMqEventBus> _logger;
-        private readonly IBus _bus;
-        private readonly IServiceScopeFactory _serviceScopeFactory;
-
         private readonly RabbitMqEventBusSubscriptions _eventSubscriptions;
         private readonly RabbitMqEventBusSubscriptions _eventConsumers;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly ILogger<EasyMQBusHolder> _logger;
 
-        public IBus Bus => _bus;
-        public IExchange EventExchange { get; private set; }
+        public IBus Bus { get; private set; }
+        public IExchange EventExchange { get; }
 
-        public RabbitMqEventBus(RabbitMqSettings settings, ILogger<RabbitMqEventBus> logger, IServiceScopeFactory serviceScopeFactory)
+        public EasyMQBusHolder(RabbitMqSettings settings, IServiceScopeFactory serviceScopeFactory, ILogger<EasyMQBusHolder> logger)
         {
-            settings.ValidateSettings();
-            _settings = settings;
-            _logger = logger;
-            _serviceScopeFactory = serviceScopeFactory;
-
-            _bus = RabbitHutch.CreateBus(_settings.ConnectionString, s =>
+            Bus = RabbitHutch.CreateBus(settings.ConnectionString, s =>
             {
                 s.Register<IConsumerErrorStrategy, CustomErrorStrategy>();
             });
+            _settings = settings;
+            _serviceScopeFactory = serviceScopeFactory;
+            _logger = logger;
 
-            EventExchange = _bus.Advanced.ExchangeDeclare("Common.Application.Events.IAppEvent`1[[Core.Common.Domain.Event, Common.DomainFramework]], Common.Application",
-cfg =>
+            _eventSubscriptions = new(Bus, _logger, _serviceScopeFactory);
+            _eventConsumers = new(Bus, _logger, _serviceScopeFactory);
+
+            EventExchange = Bus.Advanced.ExchangeDeclare("Common.Application.Events.IAppEvent`1[[Core.Common.Domain.Event, Common.DomainFramework]], Common.Application",
+            cfg =>
             {
-                cfg.WithType("topic");
-                cfg.AsDurable(true);
+            cfg.WithType("topic");
+            cfg.AsDurable(true);
             });
-
-            _bus.Advanced.Disconnected += (sender, args) =>
-            {
-                Disconnected?.Invoke(args, _logger);
-            };
-            _eventSubscriptions = new(_bus, _logger,_serviceScopeFactory);
-            _eventConsumers = new(_bus, _logger, _serviceScopeFactory);
         }
 
         public void InitEventSubscriptions(IImplProvider implProvider, params Assembly[] assemblies)
@@ -91,6 +84,29 @@ cfg =>
 
         }
 
+        public void Dispose()
+        {
+            Bus.Advanced.Dispose();
+            Bus.Dispose();
+        }
+    }
+
+    internal class RabbitMqEventBus : Common.Application.Events.IEventBus, IRabbitMqEventBus
+    {
+        private readonly RabbitMqSettings _settings;
+        private readonly ILogger<RabbitMqEventBus> _logger;
+        private readonly EasyMQBusHolder _busHolder;
+
+        public IBus Bus => _busHolder.Bus;
+        public IExchange EventExchange => _busHolder.EventExchange;
+
+        public RabbitMqEventBus(RabbitMqSettings settings, ILogger<RabbitMqEventBus> logger, EasyMQBusHolder busHolder)
+        {
+            settings.ValidateSettings();
+            _settings = settings;
+            _logger = logger;
+            _busHolder = busHolder;
+        }
 
         private void HandleErrorMessage(IMessage<Error> message, MessageReceivedInfo info)
         {
@@ -140,14 +156,5 @@ cfg =>
                 await Publish(@event);
             }
         }
-
-        public void Dispose()
-        {
-            CancelSubscriptions();
-            _bus.Advanced.Dispose();
-            _bus.Dispose();
-        }
-
-        public event Action<EventArgs, ILogger> Disconnected = null!;
     }
 }

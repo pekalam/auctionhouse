@@ -4,6 +4,7 @@ using Common.Application;
 using Common.Application.Events;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OpenTelemetry.Metrics;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -21,8 +22,9 @@ namespace RabbitMq.EventBus
             rabbitMqSettings.ValidateSettings();
 
             installer.Services.AddSingleton(rabbitMqSettings);
-            installer.Services.AddSingleton<RabbitMqEventBus>();
-            installer.Services.AddTransient<IRabbitMqEventBus>(s => s.GetRequiredService<RabbitMqEventBus>());
+            installer.Services.AddSingleton<EasyMQBusHolder>();
+            installer.Services.AddTransient<RabbitMqEventBus>();
+            installer.Services.AddTransient<IRabbitMqEventBus>(prov => prov.GetRequiredService<RabbitMqEventBus>());
             installer.Services.AddErrorEventOutbox(new());
 
             installer.AddEventBus(s => s.GetRequiredService<RabbitMqEventBus>());
@@ -59,8 +61,8 @@ namespace RabbitMq.EventBus
         internal static void AddRabbitMqEventBus(this IServiceCollection services, RabbitMqSettings rabbitMqSettings)
         {
             services.AddSingleton(rabbitMqSettings);
-            services.AddSingleton<RabbitMqEventBus>();
-            services.AddTransient<IRabbitMqEventBus>(s => s.GetRequiredService<RabbitMqEventBus>());
+            services.AddSingleton<EasyMQBusHolder>();
+            services.AddTransient<IRabbitMqEventBus, RabbitMqEventBus>();
         }
 
         internal static void AddErrorEventOutbox(this IServiceCollection services, RocksDbOptions rocksDbOptions)
@@ -73,13 +75,13 @@ namespace RabbitMq.EventBus
 
         public static void InitializeEventSubscriptions(IServiceProvider serviceProvider, params Assembly[] assemblies)
         {
-            var eventBus = serviceProvider.GetRequiredService<RabbitMqEventBus>();
+            var eventBus = serviceProvider.GetRequiredService<EasyMQBusHolder>();
             eventBus.InitEventSubscriptions(serviceProvider.GetRequiredService<IImplProvider>(), assemblies);
         }
 
         public static void InitializeEventConsumers(IServiceProvider serviceProvider, params Assembly[] assemblies)
         {
-            var eventBus = serviceProvider.GetRequiredService<RabbitMqEventBus>();
+            var eventBus = serviceProvider.GetRequiredService<EasyMQBusHolder>();
             eventBus.InitEventConsumers(serviceProvider.GetRequiredService<IImplProvider>(), assemblies);
         }
     }

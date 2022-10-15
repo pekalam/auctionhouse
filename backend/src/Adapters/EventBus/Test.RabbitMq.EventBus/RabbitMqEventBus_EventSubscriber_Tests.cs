@@ -76,8 +76,8 @@ namespace Test.RabbitMq.EventBus
 
             var stubImplProvider = SetupImplProvider(handler);
 
-            var bus = new RabbitMqEventBus(TestConfig.Instance.GetRabbitMqSettings(), stubImplProvider.Get<ILogger<RabbitMqEventBus>>(), stubImplProvider.Get<IServiceScopeFactory>());
-            bus.InitEventSubscriptions(stubImplProvider, Assembly.Load("Test.Adapter.RabbitMq.EventBus"));
+            var bus = new RabbitMqEventBus(TestConfig.Instance.GetRabbitMqSettings(), stubImplProvider.Get<ILogger<RabbitMqEventBus>>(), stubImplProvider.Get<EasyMQBusHolder>());
+            stubImplProvider.Get<EasyMQBusHolder>().InitEventSubscriptions(stubImplProvider, Assembly.Load("Test.Adapter.RabbitMq.EventBus"));
 
             await bus.Publish(toPublish);
 

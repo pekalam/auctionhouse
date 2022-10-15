@@ -13,6 +13,5 @@ namespace Common.Application.Events
         /// Sends event to queue named like each <see cref="IAppEvent<T>"/>
         /// </summary>
         Task Publish<T>(IEnumerable<IAppEvent<T>> events) where T : Event;
-        event Action<EventArgs, ILogger> Disconnected;
     }
 }
