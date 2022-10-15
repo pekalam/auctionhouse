@@ -38,8 +38,7 @@ namespace Auctionhouse.Command.ModuleInstallation
                     .AddAuctionPaymentVerificationAdapter();
             new AuctionsInstaller(services)
                 .Application
-                    .AddTempFileServiceAdapter()
-                    .AddFileStreamAccessorAdapter();
+                    .AddTempFileServiceAdapter();
         }
 
         public static void AddCommonModule(this IServiceCollection services, IConfiguration configuration, Assembly[] modules)

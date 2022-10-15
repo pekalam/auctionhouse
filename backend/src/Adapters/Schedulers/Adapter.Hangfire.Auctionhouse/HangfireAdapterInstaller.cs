@@ -21,7 +21,7 @@ namespace Adapter.Hangfire_.Auctionhouse
     {
         public static AuctionsDomainInstaller AddHangfireAuctionUnlockSchedulerAdapter(this AuctionsDomainInstaller installer, IConfiguration? configuration = null, string? connectionString = null)
         {
-            installer.Services.AddHangfireAuctionUnlockSchedulerAdapter();
+            installer.Services.AddHangfireAuctionUnlockSchedulerAdapter(configuration, connectionString);
 
             installer.AddAuctionUnlockScheduler((prov) => prov.GetRequiredService<AuctionUnlockScheduler>());
             return installer;
@@ -35,9 +35,13 @@ namespace Adapter.Hangfire_.Auctionhouse
             Func<IServiceProvider, IUnitOfWorkFactory>? unitOfWorkFactory = null,
             Func<IServiceProvider, AuctionUnlockService>? auctionUnlockServiceFactory = null)
         {
+            if(configuration is null && connectionString is null)
+            {
+                throw new ArgumentException("Invalid configuration");
+            }
+
             services.AddCoreServices(configuration, connectionString);
 
-            Debug.Assert(auctionRepositoryFactory != null ^ eventOutboxFactory != null ^ unitOfWorkFactory != null);
             if (auctionRepositoryFactory != null && eventOutboxFactory != null && unitOfWorkFactory != null) 
             {
                 services.AddTransient((prov) => auctionRepositoryFactory(prov));

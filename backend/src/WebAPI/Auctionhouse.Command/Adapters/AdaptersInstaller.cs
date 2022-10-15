@@ -28,13 +28,5 @@ namespace Auctionhouse.Command.Adapters
 
             return installer;
         }
-
-        public static AuctionsApplicationInstaller AddFileStreamAccessorAdapter(this AuctionsApplicationInstaller installer)
-        {
-            installer.Services.AddTransient<FileStreamAccessor>();
-            installer.AddFileStreamAccessor((prov) => prov.GetRequiredService<FileStreamAccessor>());
-
-            return installer;
-        }
     }
 }
