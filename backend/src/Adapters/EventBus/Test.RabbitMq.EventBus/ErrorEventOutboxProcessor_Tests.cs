@@ -116,7 +116,7 @@ namespace Test.Adapter.RabbitMq.EventBus
                 .Returns(outboxItems);
 
             mockErrorEventOutboxStore = new Mock<IErrorEventOutboxStore>();
-            var rabbitMqEventBus = new Mock<IRabbitMqEventBus>();
+            var rabbitMqEventBus = new Mock<IEasyMQBusInstance>();
             advancedBus = new Mock<IAdvancedBus>();
             var exchange = new Mock<IExchange>();
             var bus = new Mock<IBus>();

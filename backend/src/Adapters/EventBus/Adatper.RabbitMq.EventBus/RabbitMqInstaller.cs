@@ -22,9 +22,8 @@ namespace RabbitMq.EventBus
             rabbitMqSettings.ValidateSettings();
 
             installer.Services.AddSingleton(rabbitMqSettings);
-            installer.Services.AddSingleton<EasyMQBusHolder>();
+            installer.Services.AddSingleton<IEasyMQBusInstance, EasyMQBusInstance>();
             installer.Services.AddTransient<RabbitMqEventBus>();
-            installer.Services.AddTransient<IRabbitMqEventBus>(prov => prov.GetRequiredService<RabbitMqEventBus>());
             installer.Services.AddErrorEventOutbox(new());
 
             installer.AddEventBus(s => s.GetRequiredService<RabbitMqEventBus>());
@@ -60,9 +59,9 @@ namespace RabbitMq.EventBus
 
         internal static void AddRabbitMqEventBus(this IServiceCollection services, RabbitMqSettings rabbitMqSettings)
         {
+            services.AddTransient<RabbitMqEventBus>();
             services.AddSingleton(rabbitMqSettings);
-            services.AddSingleton<EasyMQBusHolder>();
-            services.AddTransient<IRabbitMqEventBus, RabbitMqEventBus>();
+            services.AddSingleton<IEasyMQBusInstance, EasyMQBusInstance>();
         }
 
         internal static void AddErrorEventOutbox(this IServiceCollection services, RocksDbOptions rocksDbOptions)
@@ -75,13 +74,13 @@ namespace RabbitMq.EventBus
 
         public static void InitializeEventSubscriptions(IServiceProvider serviceProvider, params Assembly[] assemblies)
         {
-            var eventBus = serviceProvider.GetRequiredService<EasyMQBusHolder>();
+            var eventBus = serviceProvider.GetRequiredService<IEasyMQBusInstance>();
             eventBus.InitEventSubscriptions(serviceProvider.GetRequiredService<IImplProvider>(), assemblies);
         }
 
         public static void InitializeEventConsumers(IServiceProvider serviceProvider, params Assembly[] assemblies)
         {
-            var eventBus = serviceProvider.GetRequiredService<EasyMQBusHolder>();
+            var eventBus = serviceProvider.GetRequiredService<IEasyMQBusInstance>();
             eventBus.InitEventConsumers(serviceProvider.GetRequiredService<IImplProvider>(), assemblies);
         }
     }

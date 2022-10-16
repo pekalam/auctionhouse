@@ -15,24 +15,26 @@ using System.Reflection;
 
 namespace RabbitMq.EventBus
 {
-    internal interface IRabbitMqEventBus
+    internal interface IEasyMQBusInstance : IDisposable
     {
-        IExchange EventExchange { get; }
         IBus Bus { get; }
+        IExchange EventExchange { get; }
+        void InitEventSubscriptions(IImplProvider implProvider, params Assembly[] assemblies);
+        void InitEventConsumers(IImplProvider implProvider, params Assembly[] assemblies);
     }
 
-    internal class EasyMQBusHolder : IDisposable
+    internal class EasyMQBusInstance : IEasyMQBusInstance
     {
         private readonly RabbitMqSettings _settings;
         private readonly RabbitMqEventBusSubscriptions _eventSubscriptions;
         private readonly RabbitMqEventBusSubscriptions _eventConsumers;
         private readonly IServiceScopeFactory _serviceScopeFactory;
-        private readonly ILogger<EasyMQBusHolder> _logger;
+        private readonly ILogger<EasyMQBusInstance> _logger;
 
         public IBus Bus { get; private set; }
         public IExchange EventExchange { get; }
 
-        public EasyMQBusHolder(RabbitMqSettings settings, IServiceScopeFactory serviceScopeFactory, ILogger<EasyMQBusHolder> logger)
+        public EasyMQBusInstance(RabbitMqSettings settings, IServiceScopeFactory serviceScopeFactory, ILogger<EasyMQBusInstance> logger)
         {
             Bus = RabbitHutch.CreateBus(settings.ConnectionString, s =>
             {
@@ -91,21 +93,18 @@ namespace RabbitMq.EventBus
         }
     }
 
-    internal class RabbitMqEventBus : Common.Application.Events.IEventBus, IRabbitMqEventBus
+    internal class RabbitMqEventBus : Common.Application.Events.IEventBus
     {
         private readonly RabbitMqSettings _settings;
         private readonly ILogger<RabbitMqEventBus> _logger;
-        private readonly EasyMQBusHolder _busHolder;
+        private readonly IEasyMQBusInstance _rabbitMq;
 
-        public IBus Bus => _busHolder.Bus;
-        public IExchange EventExchange => _busHolder.EventExchange;
-
-        public RabbitMqEventBus(RabbitMqSettings settings, ILogger<RabbitMqEventBus> logger, EasyMQBusHolder busHolder)
+        public RabbitMqEventBus(RabbitMqSettings settings, ILogger<RabbitMqEventBus> logger, IEasyMQBusInstance rabbitmq)
         {
             settings.ValidateSettings();
             _settings = settings;
             _logger = logger;
-            _busHolder = busHolder;
+            _rabbitMq = rabbitmq;
         }
 
         private void HandleErrorMessage(IMessage<Error> message, MessageReceivedInfo info)
@@ -126,15 +125,15 @@ namespace RabbitMq.EventBus
         public void SetupErrorQueueSubscribtion()
         {
             var errorQueueName = "EasyNetQ_Default_Error_Queue";
-            var queue = Bus.Advanced.QueueDeclare(errorQueueName);
-            Bus.Advanced.Consume<Error>(queue, HandleErrorMessage);
+            var queue = _rabbitMq.Bus.Advanced.QueueDeclare(errorQueueName);
+            _rabbitMq.Bus.Advanced.Consume<Error>(queue, HandleErrorMessage);
         }
 
         private async Task PublishInternal (IAppEvent<Event> @event)
         {
             try
             {
-                await Bus.PubSub.PublishAsync(@event, @event.Event.GetType().Name);
+                await _rabbitMq.Bus.PubSub.PublishAsync(@event, @event.Event.GetType().Name);
             }
             catch (Exception e)
             {

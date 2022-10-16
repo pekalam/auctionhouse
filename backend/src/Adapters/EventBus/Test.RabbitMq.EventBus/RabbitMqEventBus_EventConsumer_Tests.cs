@@ -1,10 +1,12 @@
 using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
+using Common.Tests.Base;
 using Core.Common.Domain;
 using Core.Query.EventHandlers;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
@@ -19,52 +21,62 @@ using Xunit;
 
 namespace Test.RabbitMq.EventBus
 {
-    public class TestEvent : Event
+    public class TestConsumerEvent : Event
     {
-        public TestEvent() : base("testEvent")
+        public TestConsumerEvent() : base("testEvent")
         {
         }
     }
 
-    public class TestHandler : EventConsumer<TestEvent, TestHandler>
+    public class TestEventConsumer : EventConsumer<TestConsumerEvent, TestEventConsumer>
     {
-        private Action<IAppEvent<TestEvent>> OnConsume;
-        public bool Throws { get; set; }
+        public static Action<IAppEvent<TestConsumerEvent>> OnConsume = delegate { };
 
-        public TestHandler(EventConsumerDependencies dependencies, Action<IAppEvent<TestEvent>> onConsume) : base(Mock.Of<ILogger<TestHandler>>(), dependencies)
+        public TestEventConsumer(EventConsumerDependencies dependencies) : base(Mock.Of<ILogger<TestEventConsumer>>(), dependencies)
         {
-            OnConsume = onConsume;
         }
 
-        public override Task Consume(IAppEvent<TestEvent> appEvent)
+        public override Task Consume(IAppEvent<TestConsumerEvent> appEvent)
         {
-            OnConsume?.Invoke(appEvent);
-            if (Throws)
-            {
-                throw new Exception();
-            }
+            OnConsume(appEvent);
             return Task.CompletedTask;
         }
     }
 
     [Trait("Category", "Integration")]
-    public class RabbitMqEventBus_EventConsumer_Tests
+    public class RabbitMqEventBus_EventConsumer_Tests : IDisposable
     {
+        private Task? _hostTask;
+        private IEventBus _bus;
+
+        public RabbitMqEventBus_EventConsumer_Tests()
+        {
+            var host = Host.CreateDefaultBuilder().ConfigureServices((ctx, services) =>
+            {
+                services.AddEventConsumers(typeof(TestEventConsumer));
+                services.AddTransient<IImplProvider, ImplProviderMock>();
+                new CommonApplicationMockInstaller(services)
+                    .AddQueryCoreDependencies(new[] { Assembly.Load("Test.Adapter.RabbitMq.EventBus") })
+                    .AddRabbitMqAppEventBuilderAdapter()
+                    .AddRabbitMqEventBusAdapter(rabbitMqSettings: TestConfig.Instance.GetRabbitMqSettings(), eventConsumerAssemblies: new[] { Assembly.Load("Test.Adapter.RabbitMq.EventBus") });
+            }).Build();
+            _hostTask = host.StartAsync();
+            _bus = host.Services.GetRequiredService<IEventBus>();
+        }
+
         [Fact]
         public async Task Published_event_gets_handled_by_EventConsumer()
         {
             var failed = false;
             var sem = new SemaphoreSlim(0, 1);
 
-
             var ctx = CommandContext.CreateNew("test", Guid.NewGuid());
             var toPublish = new AppEventRabbitMQBuilder()
                 .WithCommandContext(ctx)
-                .WithEvent(new TestEvent())
-                .Build<TestEvent>();
+                .WithEvent(new TestConsumerEvent())
+                .Build<TestConsumerEvent>();
 
-            var handler = new TestHandler(new EventConsumerDependencies(new AppEventRabbitMQBuilder(), Mock.Of<IEventConsumerCallbacks>())
-            , (ev) =>
+            TestEventConsumer.OnConsume += (ev) =>
             {
                 try
                 {
@@ -75,26 +87,18 @@ namespace Test.RabbitMq.EventBus
                     failed = true;
                 }
                 sem.Release();
-            });
-            var stubImplProvider = SetupImplProvider(handler);
+            };
 
-            var bus = new RabbitMqEventBus(TestConfig.Instance.GetRabbitMqSettings(), stubImplProvider.Get<ILogger<RabbitMqEventBus>>(), stubImplProvider.Get<EasyMQBusHolder>());
-            stubImplProvider.Get<EasyMQBusHolder>().InitEventConsumers(stubImplProvider, Assembly.Load("Test.Adapter.RabbitMq.EventBus"));
-
-            await bus.Publish(toPublish);
+            await _bus.Publish(toPublish);
 
             if (!sem.Wait(TimeSpan.FromSeconds(60)))
                 Assert.False(true);
             Assert.False(failed);
         }
 
-        private static ImplProviderMock SetupImplProvider(TestHandler handler)
+        public void Dispose()
         {
-            var serviceCollection = new ServiceCollection();
-            serviceCollection.AddLogging(b => b.AddXUnit());
-            serviceCollection.AddSingleton(handler);
-            var serviceProvider = serviceCollection.BuildServiceProvider();
-            return new ImplProviderMock(serviceProvider);
+            _hostTask?.Wait();
         }
     }
 }
