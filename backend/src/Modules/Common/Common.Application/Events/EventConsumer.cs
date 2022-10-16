@@ -9,9 +9,9 @@ namespace Core.Query.EventHandlers
     public class EventConsumerDependencies
     {
         public IAppEventBuilder AppEventBuilder { get; set; } = null!;
-        public IEventConsumerCallbacks EventConsumerCallbacks { get; }
+        public IEventConsumerCallbacks? EventConsumerCallbacks { get; }
 
-        public EventConsumerDependencies(IAppEventBuilder appEventBuilder, IEventConsumerCallbacks eventConsumerCallbacks)
+        public EventConsumerDependencies(IAppEventBuilder appEventBuilder, IEventConsumerCallbacks? eventConsumerCallbacks = null)
         {
             AppEventBuilder = appEventBuilder;
             EventConsumerCallbacks = eventConsumerCallbacks;
@@ -22,7 +22,7 @@ namespace Core.Query.EventHandlers
     {
         private readonly IAppEventBuilder _appEventBuilder;
         private readonly ILogger<TImpl> _logger;
-        private readonly IEventConsumerCallbacks _eventConsumerCallbacks;
+        private readonly IEventConsumerCallbacks? _eventConsumerCallbacks;
 
         protected EventConsumer(ILogger<TImpl> logger, EventConsumerDependencies dependencies)
         {
@@ -38,7 +38,7 @@ namespace Core.Query.EventHandlers
             using var activity = Tracing.StartTracing(GetType().Name + "_" + msg.Event.EventName, msg.CommandContext.CorrelationId);
 
             await ConsumeEvent(msg);
-            await _eventConsumerCallbacks.OnEventProcessed(msg, _logger);
+            await (_eventConsumerCallbacks?.OnEventProcessed(msg, _logger) ?? Task.CompletedTask);
 
             activity.TraceOkStatus();
         }

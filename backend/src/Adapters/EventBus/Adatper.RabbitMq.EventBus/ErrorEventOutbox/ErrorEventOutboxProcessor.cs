@@ -55,7 +55,7 @@ namespace Adatper.RabbitMq.EventBus.ErrorEventOutbox
             var scope = _serviceScopeFactory.CreateScope();
             var errorEventOutboxStore = scope.ServiceProvider.GetRequiredService<IErrorEventOutboxStore>();
             var errorEventOutboxUnprocesseItems = scope.ServiceProvider.GetRequiredService<IErrorEventOutboxUnprocessedItemsFinder>();
-            var eventBus = scope.ServiceProvider.GetRequiredService<IRabbitMqEventBus>();
+            var eventBus = scope.ServiceProvider.GetRequiredService<IEasyMQBusInstance>();
 
             var unprocessedItems = errorEventOutboxUnprocesseItems.FindUnprocessed(10);
             if(unprocessedItems.Length > 0)

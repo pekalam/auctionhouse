@@ -1,4 +1,5 @@
 ﻿using Adapter.XmlCategoryTreeStore;
+using Categories.DI;
 using Core.Common.Domain.Categories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,15 +8,29 @@ namespace XmlCategoryTreeStore
 {
     public static class XmlCategoryTreeStoreInstaller
     {
-        public static void AddXmlCategoryTreeStore(this IServiceCollection services, IConfiguration? configuration = null, XmlCategoryNameStoreSettings? settings = null)
+        public static CategoriesInstaller AddXmlCategoryTreeStoreAdapter(this CategoriesInstaller installer,
+            IConfiguration? configuration = null,
+            XmlCategoryNameStoreSettings? settings = null)
+        {
+            installer.Services.AddSingleton<XmlCategoryTreeStore>();
+            installer.AddXmlCategoryTreeStoreAdapter((prov) => prov.GetRequiredService<XmlCategoryTreeStore>(), configuration, settings);
+            return installer;
+        }
+
+        public static CategoriesInstaller AddXmlCategoryTreeStoreAdapter(this CategoriesInstaller installer,
+            Func<IServiceProvider, ICategoryTreeStore> categoryTreeStoreFactory,
+            IConfiguration? configuration = null, 
+            XmlCategoryNameStoreSettings? settings = null)
         {
             settings ??= configuration!.GetSection(nameof(XmlCategoryNameStoreSettings)).Get<XmlCategoryNameStoreSettings>();
-            services.AddSingleton(settings);
-            services.AddSingleton<ICategoryTreeStore, XmlCategoryTreeStore>();
-            services.AddHostedService(provider =>
+            installer.Services.AddSingleton(settings);
+            installer.Services.AddHostedService(provider =>
             {
                 return new XmlCategoryTreeInitializer(provider);
             });
+
+            installer.AddCategoryTreeStore(categoryTreeStoreFactory);
+            return installer;
         }
 
         public static void Init(IServiceProvider serviceProvider)

@@ -1,0 +1,1 @@
+docker push "${env:DOCKER_REGISTRY}pekalam/auctionhouse-sqlserver"

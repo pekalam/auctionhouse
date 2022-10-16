@@ -22,6 +22,8 @@ namespace Common.Tests.Base.Mocks.Events
 
     public class TestAppEventBuilder : IAppEventBuilder
     {
+        public static TestAppEventBuilder Instance { get; } = new TestAppEventBuilder();
+
         private CommandContext _commandContext;
         private ReadModelNotificationsMode _readModelNotificationsMode;
         private Event _event;

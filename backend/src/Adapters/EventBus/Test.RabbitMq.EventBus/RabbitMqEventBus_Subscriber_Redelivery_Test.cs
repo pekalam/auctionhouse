@@ -84,13 +84,13 @@ namespace Test.Adapter.RabbitMq.EventBus
             scenario = EventBusRedeliveryAdapterContract.EventConsumerRedeliveryScenario;
             stubImplProvider = SetupImplProvider(scenario.given.eventConsumer);
             bus = stubImplProvider.Get<RabbitMqEventBus>();
-            bus.InitEventConsumers(stubImplProvider, Assembly.Load("Common.Tests.Base"));
+            stubImplProvider.Get<IEasyMQBusInstance>().InitEventConsumers(stubImplProvider, Assembly.Load("Common.Tests.Base"));
             bus.SetupErrorQueueSubscribtion();
         }
 
         public void Dispose()
         {
-            bus.Dispose();
+            stubImplProvider.Get<IEasyMQBusInstance>().Dispose();
             RabbitMqUtils.PurgeQueues();
         }
 
@@ -127,15 +127,15 @@ namespace Test.Adapter.RabbitMq.EventBus
         {
             scenario = EventBusRedeliveryAdapterContract.EventSubscriberRedeliveryScenario;
             stubImplProvider = SetupImplProvider(scenario.given.eventSubscriber);
-            bus = new RabbitMqEventBus(TestConfig.Instance.GetRabbitMqSettings(), stubImplProvider.Get<ILogger<RabbitMqEventBus>>(), stubImplProvider.Get<IServiceScopeFactory>());
+            bus = new RabbitMqEventBus(TestConfig.Instance.GetRabbitMqSettings(), stubImplProvider.Get<ILogger<RabbitMqEventBus>>(), stubImplProvider.Get<IEasyMQBusInstance>());
 
-            bus.InitEventSubscriptions(stubImplProvider, Assembly.Load("Common.Tests.Base"));
+            stubImplProvider.Get<IEasyMQBusInstance>().InitEventSubscriptions(stubImplProvider, Assembly.Load("Common.Tests.Base"));
             bus.SetupErrorQueueSubscribtion();
         }
 
         public void Dispose()
         {
-            bus.Dispose();
+            stubImplProvider.Get<IEasyMQBusInstance>().Dispose();
             RabbitMqUtils.PurgeQueues();
         }
 

@@ -11,6 +11,8 @@ namespace Users.Tests.Base.Mocks
 {
     public class InMemoryUserRepository : IUserRepository
     {
+        public static InMemoryUserRepository Instance { get; } = new InMemoryUserRepository();
+
         private Dictionary<UserId, User> _users = new Dictionary<UserId, User>();
 
         public User AddUser(User user)
@@ -32,6 +34,11 @@ namespace Users.Tests.Base.Mocks
         public void UpdateUser(User user)
         {
             _users[user.AggregateId] = user;
+        }
+
+        public void Clear()
+        {
+            _users.Clear();
         }
     }
 }

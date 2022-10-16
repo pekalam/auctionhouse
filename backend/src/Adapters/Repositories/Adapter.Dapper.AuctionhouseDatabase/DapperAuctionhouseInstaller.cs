@@ -1,48 +1,79 @@
 ﻿using Adapter.Dapper.AuctionhouseDatabase.UserPayments_;
-using AuctionBids.Domain.Repositories;
-using Auctions.Domain.Repositories;
+using AuctionBids.Domain;
+using Auctions.Domain;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using UserPayments.Domain.Repositories;
-using Users.Domain.Repositories;
+using UserPayments.Domain;
+using Users.Domain;
 
 namespace Adapter.Dapper.AuctionhouseDatabase
 {
     public static class DapperAuctionhouseInstaller
     {
-        public static void AddAuctionhouseDatabaseRepositories(this IServiceCollection services, IConfiguration? configuration = null, AuctionhouseRepositorySettings? settings = null)
+        public static AuctionsDomainInstaller AddDapperAuctionRepositoryAdapter(this AuctionsDomainInstaller installer, IConfiguration? configuration = null, AuctionhouseRepositorySettings? settings = null)
         {
             settings ??= configuration!.GetSection(nameof(AuctionhouseRepositorySettings)).Get<AuctionhouseRepositorySettings>();
-            services.AddUserModuleRepositories(settings);
-            services.AddAuctionBidsModuleRepositories(settings);
-            services.AddAuctionModuleRepositories(settings);
-            services.AddUserPaymentsModuleRepositories(settings);
+            installer.Services.AddSingleton(settings);
+
+            installer.Services.AddTransient<MsSqlAuctionRepository>();
+            installer.AddAuctionRepository((prov) => prov.GetRequiredService<MsSqlAuctionRepository>());
+
+            return installer;
         }
 
-        public static void AddUserPaymentsModuleRepositories(this IServiceCollection services, AuctionhouseRepositorySettings settings)
+        public static AuctionBidsDomainInstaller AddDapperAuctionBidsRepositoryAdapter(this AuctionBidsDomainInstaller installer, IConfiguration? configuration = null, AuctionhouseRepositorySettings? settings = null)
         {
-            services.AddSingleton(settings);
-            services.AddTransient<IUserPaymentsRepository, MsSqlUserPaymentsRepository>();
+            settings ??= configuration!.GetSection(nameof(AuctionhouseRepositorySettings)).Get<AuctionhouseRepositorySettings>();
+            installer.Services.AddSingleton(settings);
+
+            installer.Services.AddTransient<MsSqlAuctionBidsRepository>();
+            installer.AddAuctionBidsRepository((prov) => prov.GetRequiredService<MsSqlAuctionBidsRepository>());
+
+            return installer;
         }
 
-        public static void AddAuctionBidsModuleRepositories(this IServiceCollection services, AuctionhouseRepositorySettings settings)
+        public static UserPaymentsDomainInstaller AddDapperUserPaymentsRepositoryAdapter(this UserPaymentsDomainInstaller installer, IConfiguration? configuration = null, AuctionhouseRepositorySettings? settings = null)
         {
-            services.AddSingleton(settings);
-            services.AddTransient<IAuctionBidsRepository, MsSqlAuctionBidsRepository>();
+            settings ??= configuration!.GetSection(nameof(AuctionhouseRepositorySettings)).Get<AuctionhouseRepositorySettings>();
+            installer.Services.AddSingleton(settings);
+
+            installer.Services.AddTransient<MsSqlUserPaymentsRepository>();
+            installer.AddUserPaymentsRepository((prov) => prov.GetRequiredService<MsSqlUserPaymentsRepository>());
+
+            return installer;
         }
 
-        public static void AddAuctionModuleRepositories(this IServiceCollection services, AuctionhouseRepositorySettings settings)
+        public static UsersDomainInstaller AddDapperUserRepositoryAdapter(this UsersDomainInstaller installer, IConfiguration? configuration = null, AuctionhouseRepositorySettings? settings = null)
         {
-            services.AddSingleton(settings);
-            services.AddTransient<IAuctionRepository, MsSqlAuctionRepository>();
+            settings ??= configuration!.GetSection(nameof(AuctionhouseRepositorySettings)).Get<AuctionhouseRepositorySettings>();
+            installer.Services.AddSingleton(settings);
+
+            installer.Services.AddTransient<MsSqlUserRepository>();
+            installer.AddUserRepository((prov) => prov.GetRequiredService<MsSqlUserRepository>());
+
+            return installer;
         }
 
-        public static void AddUserModuleRepositories(this IServiceCollection services, AuctionhouseRepositorySettings settings)
+        public static UsersDomainInstaller AddDapperUserAuthenticationDataRepositoryAdapter(this UsersDomainInstaller installer, IConfiguration? configuration = null, AuctionhouseRepositorySettings? settings = null)
         {
-            services.AddSingleton(settings);
-            services.AddTransient<IUserRepository, MsSqlUserRepository>();
-            services.AddTransient<IUserAuthenticationDataRepository, UserAuthenticationDataRepository>();
-            services.AddTransient<IResetPasswordCodeRepository, ResetPasswordCodeRepository>();
+            settings ??= configuration!.GetSection(nameof(AuctionhouseRepositorySettings)).Get<AuctionhouseRepositorySettings>();
+            installer.Services.AddSingleton(settings);
+
+            installer.Services.AddTransient<UserAuthenticationDataRepository>();
+            installer.AddUserAuthenticationDataRepository((prov) => prov.GetRequiredService<UserAuthenticationDataRepository>());
+
+            return installer;
+        }
+
+        public static UsersDomainInstaller AddDapperResetPasswordCodeRepositoryAdapter(this UsersDomainInstaller installer, IConfiguration? configuration = null, AuctionhouseRepositorySettings? settings = null)
+        {
+            settings ??= configuration!.GetSection(nameof(AuctionhouseRepositorySettings)).Get<AuctionhouseRepositorySettings>();
+            installer.Services.AddSingleton(settings);
+
+            installer.Services.AddTransient<ResetPasswordCodeRepository>();
+            installer.AddResetPasswordCodeRepository((prov) => prov.GetRequiredService<ResetPasswordCodeRepository>());
+
+            return installer;
         }
     }
 }

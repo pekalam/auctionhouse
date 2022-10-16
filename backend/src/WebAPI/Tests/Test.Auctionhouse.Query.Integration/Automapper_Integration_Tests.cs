@@ -13,7 +13,7 @@ namespace Test.Auctionhouse.Query.Integration
             var configuration = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<QueryMapperProfile>();
-                cfg.AddProfile<AuctionReadProfile>();
+                //cfg.AddProfile<AuctionReadProfile>();
             });
 
             configuration.AssertConfigurationIsValid();

@@ -34,9 +34,12 @@ namespace IntegrationService.CategoryNamesToTreeIdsConversion
 
     public static class CategoryNamesToTreeIdsConversionInstaller
     {
-        public static void AddCategoryNamesToTreeIdsConversion(this IServiceCollection services)
+        public static AuctionsDomainInstaller AddCategoryNamesToTreeIdsConversionAdapter(this AuctionsDomainInstaller installer)
         {
-            services.AddTransient<ICategoryNamesToTreeIdsConversion, CategoryNamesToTreeIdsConversion>();
+            installer.Services.AddTransient<CategoryNamesToTreeIdsConversion>();
+
+            installer.AddCategoryNamesToTreeIdsConversion((prov) => prov.GetRequiredService<CategoryNamesToTreeIdsConversion>());
+            return installer;
         }
     }
 }

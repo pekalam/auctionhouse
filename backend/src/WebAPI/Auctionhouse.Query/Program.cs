@@ -3,17 +3,15 @@ using Adapter.MongoDb;
 using Auctionhouse.Query;
 using Auctionhouse.Query.Adapters;
 using Azure.Identity;
-using Categories.Domain;
+using Categories.DI;
 using Common.Application;
 using Common.WebAPI;
 using Common.WebAPI.Auth;
 using Common.WebAPI.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using OpenTelemetry.Trace;
 using RabbitMq.EventBus;
 using ReadModel.Core;
 using ReadModel.Core.Model;
-using ReadModel.Core.Services;
 using Serilog;
 using XmlCategoryTreeStore;
 
@@ -45,17 +43,26 @@ switch (environmentName)
 builder.Host.UseSerilog();
 
 //MODULES
-builder.Services.AddCommonQueryDependencies(typeof(ReadModelInstaller).Assembly);
+new CommonApplicationInstaller(builder.Services)
+    .AddQueryCoreDependencies(typeof(ReadModelInstaller).Assembly)
+    .AddRabbitMqAppEventBuilderAdapter()
+    .AddRabbitMqEventBusAdapter(builder.Configuration, eventConsumerAssemblies: new[] { typeof(ReadModelInstaller).Assembly });
+
+
+new CategoriesInstaller(builder.Services)
+    .AddXmlCategoryTreeStoreAdapter(builder.Configuration);
+
 var mongoDbSettings = builder.Configuration.GetSection("MongoDb").Get<MongoDbSettings>();
-builder.Services.AddReadModel(mongoDbSettings);
-builder.Services.AddCategoriesModule();
+new ReadModelInstaller(builder.Services, mongoDbSettings)
+    //ADAPTERS
+    .AddBidRaisedNotificationsAdapter();
 
 //ADAPTERS
-builder.Services.AddRabbitMq(builder.Configuration, eventConsumerAssemblies: new[] { typeof(ReadModelInstaller).Assembly });
-builder.Services.AddXmlCategoryTreeStore(builder.Configuration);
+//TODO: remove?
 builder.Services.AddMongoDbImageDb(builder.Configuration);
+
+//EXTENSIONS
 builder.Services.AddQueryEfCoreReadModelNotifications(builder.Configuration);
-builder.Services.AddTransient<IBidRaisedNotifications, BidRaisedNotifications>();
 
 //WEB API SERVICES
 //jwt auth
@@ -73,7 +80,6 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
 builder.Services.AddCacheServices(builder.Configuration);
@@ -94,7 +100,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-var tracing = CommonInstaller.CreateModuleTracing("Query");
+var tracing = TracingInstaller.CreateModuleTracing("Query");
 
 app.UseIdTokenManager();
 app.UseIdTokenSlidingExpiration();

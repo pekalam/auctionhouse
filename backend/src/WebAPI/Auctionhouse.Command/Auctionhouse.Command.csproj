@@ -30,11 +30,15 @@
     <ProjectReference Include="..\..\Adapters\Schedulers\Adapter.Hangfire.Auctionhouse\Adapter.Hangfire_.Auctionhouse.csproj" />
     <ProjectReference Include="..\..\Adapters\AuctionImageRepository\Adapter.MongoDb.AuctionImageRepository\Adapter.MongoDb.AuctionImageRepository.csproj" />
     <ProjectReference Include="..\..\Adapters\EventOutboxStorage\Adapter.SqlServer.EventOutboxStorage\Adapter.SqlServer.EventOutboxStorage.csproj" />
+    <ProjectReference Include="..\..\AuctionBids.DI\AuctionBids.DI.csproj" />
+    <ProjectReference Include="..\..\Auctions.DI\Auctions.DI.csproj" />
     <ProjectReference Include="..\..\Modules\AuctionBids\AuctionBids.Application\AuctionBids.Application.csproj" />
     <ProjectReference Include="..\..\Modules\Auctions\Auctions.Application\Auctions.Application.csproj" />
     <ProjectReference Include="..\..\Modules\Categories\Categories.Domain\Categories.Domain.csproj" />
     <ProjectReference Include="..\..\Modules\IntegrationServices\IntegrationService.AuctionPaymentVerification\IntegrationService.AuctionPaymentVerification.csproj" />
     <ProjectReference Include="..\..\Modules\IntegrationServices\IntegrationService.CategoryNamesToTreeIdsConversion\IntegrationService.CategoryNamesToTreeIdsConversion.csproj" />
+    <ProjectReference Include="..\..\UserPayments.DI\UserPayments.DI.csproj" />
+    <ProjectReference Include="..\..\Users.DI\Users.DI.csproj" />
     <ProjectReference Include="..\Common.WebAPI\Common.WebAPI.csproj" />
     <ProjectReference Include="..\..\Adapters\Repositories\Adapter.Dapper.AuctionhouseDatabase\Adapter.Dapper.AuctionhouseDatabase.csproj" />
     <ProjectReference Include="..\..\Adapters\Schedulers\Adapter.QuartzTimeTaskService.AuctionEndScheduler\Adapter.QuartzTimeTaskService.AuctionEndScheduler.csproj" />

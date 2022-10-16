@@ -1,11 +1,12 @@
 using Adapter.EfCore.ReadModelNotifications;
 using Auctionhouse.CommandStatus;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using TestConfigurationAccessor;
 using Xunit;
 
 namespace Test.Auctionhouse.CommandStatus.Integration
@@ -19,23 +20,11 @@ namespace Test.Auctionhouse.CommandStatus.Integration
             var application = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
                 {
-                    builder.ConfigureAppConfiguration((ctx, configBuilder) =>
-                    {
-                    });
-                    
-                    builder.ConfigureServices(services =>
-                    {
-
-                        services.AddSingleton(new CommandStatusServiceOptions
-                        {
-                            ConnectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Marek\\source\\repos\\Csharp\\auctionhouse\\backend\\src\\Tests\\FunctionalTests\\FunctionalTestsServer.mdf;Integrated Security=True",
-                        });
-                    });
-                    // ... Configure test services
+                    builder.UseConfiguration(TestConfig.Instance);
                 });
 
             var dbContext = new SagaEventsConfirmationDbContext(new DbContextOptionsBuilder<SagaEventsConfirmationDbContext>()
-                .UseSqlServer("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Marek\\source\\repos\\Csharp\\auctionhouse\\backend\\src\\Tests\\FunctionalTests\\FunctionalTestsServer.mdf;Integrated Security=True")
+                .UseSqlServer(TestConfig.Instance["CommandStatusServiceOptions:ConnectionString"])
                 .Options);
 
             var testConfirmations = new DbSagaEventsConfirmation
