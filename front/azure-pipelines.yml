@@ -6,8 +6,7 @@ trigger:
    include:
      - front
 
-pool:
-  vmImage: ubuntu-latest
+pool: myserver
 
 variables:
   npm_config_cache: $(Pipeline.Workspace)/front/.npm
@@ -59,7 +58,7 @@ stages:
   displayName: 'Deploy Prod stage'
   jobs:
     - deployment: 'VPSDeployment'
-      displayName: 'VPS Deployment' 
+      displayName: 'VPS Deployment'
       environment: vps-production
       strategy:
         runOnce:
