@@ -13,5 +13,8 @@
   "CommandNotificationSettings:2:SagaCompletionCommandNames:0": "AssignUserPaymentsCommand",
 
   "CommandNotificationSettings:3:CommandName": "UpdateAuctionCommand",
-  "CommandNotificationSettings:3:NotificationsMode": "Immediate"
+  "CommandNotificationSettings:3:NotificationsMode": "Immediate",
+
+  "CommandNotificationSettings:4:CommandName": "RaiseBidCommand",
+  "CommandNotificationSettings:4:NotificationsMode": "Immediate"
 }
