@@ -59,7 +59,7 @@ new ReadModelInstaller(builder.Services, mongoDbSettings)
 
 //ADAPTERS
 //TODO: remove?
-builder.Services.AddMongoDbImageDb(builder.Configuration);
+builder.Services.AddMongoDbImageRepositoryAdapter(builder.Configuration);
 
 //EXTENSIONS
 builder.Services.AddQueryEfCoreReadModelNotifications(builder.Configuration);
