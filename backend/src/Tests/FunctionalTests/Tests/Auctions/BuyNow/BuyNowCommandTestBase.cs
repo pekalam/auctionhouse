@@ -43,9 +43,9 @@ namespace FunctionalTests.Tests.Auctions.BuyNow
             await SendCommand(startSessionCmd);
             await Task.Delay(3000);
             //create auction in session
-            await SendCommand(cmd);
+            var createRequestStatus = await SendCommand(cmd);
             await Task.Delay(3000);
-            AssertEventual(new CreateAuctionProbe(this).Check);
+            AssertEventual(new CreateAuctionProbe(this, createRequestStatus).Check);
             InMemoryEventBusDecorator.ClearSentEvents();
 
             var createdAuctions = await SendQuery<UserAuctionsQuery, UserAuctionsQueryResult>(new UserAuctionsQuery());

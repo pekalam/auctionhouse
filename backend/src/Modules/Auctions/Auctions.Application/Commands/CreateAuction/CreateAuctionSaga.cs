@@ -103,6 +103,7 @@ namespace Auctions.Application.Commands.CreateAuction
             var createAuctionService = new CreateAuctionService(_auctionImages, _auctionEndScheduler, _auctions, request.Command.CreateAuctionServiceData);
             var auction = createAuctionService.EndCreate(new Domain.AuctionBidsId(request.Command.AuctionBidsId));
 
+            //TODO rm:
             // auctionBidsAdded doesn't need to be projected in read model
             var eventsToSend = auction.PendingEvents.Where(e => e.EventName != "auctionBidsAdded");
             // there is no need to handle concurrency issues

@@ -32,9 +32,9 @@ namespace FunctionalTests.Tests.Auctions.CreateAuction
 
             //create auction in session
             var createAuctionCmd = GivenCreateAuctionCommand().Build();
-            await SendCommand(createAuctionCmd);
+            var createRequestStatus = await SendCommand(createAuctionCmd);
 
-            AssertEventual(new CreateAuctionProbe(this).Check);
+            AssertEventual(new CreateAuctionProbe(this, createRequestStatus).Check);
         }
 
         [Fact]

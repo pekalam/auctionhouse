@@ -10,13 +10,17 @@ namespace ReadModelNotifications.Settings
     {
         public string CommandName { get; set; }
 
-        /// <summary>
+
         /// Nullable to prevent default initialization when configuration is invalid
-        /// </summary>
         public ReadModelNotificationsMode? NotificationsMode { get; set; }
 
         public string[] SagaCompletionCommandNames { get; set; }
 
         public string[] SagaFailureCommandNames { get; set; }
+
+        /// <summary>
+        /// Events to confirm for Saga or Immediate mode
+        /// </summary>
+        public string[] EventsToConfirm { get; set; }
     }
 }

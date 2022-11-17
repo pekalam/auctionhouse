@@ -1,8 +1,9 @@
 ﻿namespace Auctions.DomainEvents
 {
-    public sealed class EventNames
+    public static class EventNames
     {
         public const string AuctionCreated = "auctionCreated";
+        public const string BuyNowAuctionCreated = "buyNowAuctionCreated";
         public const string AuctionCompleted = "auctionCompleted";
         public const string AuctionBought = "auctionBought";
         public const string AuctionRaised = "auctionRaised";
@@ -22,7 +23,5 @@
         public const string AuctionUpdated = "auctionUpdateEventGroup";
         public const string AuctionDescriptionChanged = "auctionDescriptionChanged";
 
-
-        private EventNames() { }
     }
 }

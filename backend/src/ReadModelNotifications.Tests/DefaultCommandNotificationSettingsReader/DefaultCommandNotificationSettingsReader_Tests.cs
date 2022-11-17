@@ -11,68 +11,6 @@ namespace ReadModelNotifications.Tests.DefaultCommandNotificationSettingsReader
 {
     public class DefaultCommandNotificationSettingsReader_Tests : DefaultCommandNotificationSettingsReaderTestsBase
     {
-        private IConfigurationRoot SetupInvalidConfigurationWithMissingNotificationsMode()
-        {
-            var config = new ConfigurationBuilder();
-
-            config.AddInMemoryCollection(new Dictionary<string, string>
-            {
-                {"CommandNotificationSettings:0:CommandName", "Test1"},
-                {"CommandNotificationSettings:0:SagaCompletionCommandNames:0", "Completion1"},
-                {"CommandNotificationSettings:0:SagaCompletionCommandNames:1", "Completion2"},
-            });
-
-            return config.Build();
-        }
-
-        private IConfigurationRoot SetupInvalidConfigurationWithInvalidNotificationsMode()
-        {
-            var config = new ConfigurationBuilder();
-
-            config.AddInMemoryCollection(new Dictionary<string, string>
-            {
-                {"CommandNotificationSettings:0:CommandName", "Test1"},
-                {"CommandNotificationSettings:0:NotificationsMode", "invalid"},
-                {"CommandNotificationSettings:0:SagaCompletionCommandNames:0", "Completion1"},
-                {"CommandNotificationSettings:0:SagaCompletionCommandNames:1", "Completion2"},
-            });
-
-            return config.Build();
-        }
-
-        private IConfigurationRoot SetupConfiguration(ReadModelNotificationsMode notificationsMode)
-        {
-            var config = new ConfigurationBuilder();
-
-            config.AddInMemoryCollection(new Dictionary<string, string>
-            {
-                {"CommandNotificationSettings:0:CommandName", "Test1"},
-                {"CommandNotificationSettings:0:NotificationsMode", GetNotificationsModeSettingsValue(notificationsMode)},
-            });
-
-            return config.Build();
-        }
-
-        private IConfigurationRoot SetupConfigurationWithCompletionCommandNames(ReadModelNotificationsMode notificationsMode)
-        {
-            var config = new ConfigurationBuilder();
-
-            config.AddInMemoryCollection(new Dictionary<string, string>
-            {
-                {"CommandNotificationSettings:0:CommandName", "Test1"},
-                {"CommandNotificationSettings:0:SagaCompletionCommandNames:0", "Completion1"},
-                {"CommandNotificationSettings:0:SagaCompletionCommandNames:1", "Completion2"},
-                {"CommandNotificationSettings:0:NotificationsMode", GetNotificationsModeSettingsValue(notificationsMode)},
-            });
-
-            return config.Build();
-        }
-
-        private IConfigurationRoot SetupEmptyConfifguration()
-        {
-            return new ConfigurationBuilder().Build();
-        }
-
         [Theory]
         [InlineData(ReadModelNotificationsMode.Disabled)]
         [InlineData(ReadModelNotificationsMode.Immediate)]
@@ -129,6 +67,69 @@ namespace ReadModelNotifications.Tests.DefaultCommandNotificationSettingsReader
             var settings = _sut.Read();
 
             settings.Should().BeEmpty();
+        }
+
+        private IConfigurationRoot SetupInvalidConfigurationWithMissingNotificationsMode()
+        {
+            var config = new ConfigurationBuilder();
+
+            config.AddInMemoryCollection(new Dictionary<string, string>
+            {
+                {"CommandNotificationSettings:0:CommandName", "Test1"},
+                {"CommandNotificationSettings:0:SagaCompletionCommandNames:0", "Completion1"},
+                {"CommandNotificationSettings:0:SagaCompletionCommandNames:1", "Completion2"},
+            });
+
+            return config.Build();
+        }
+
+        private IConfigurationRoot SetupInvalidConfigurationWithInvalidNotificationsMode()
+        {
+            var config = new ConfigurationBuilder();
+
+            config.AddInMemoryCollection(new Dictionary<string, string>
+            {
+                {"CommandNotificationSettings:0:CommandName", "Test1"},
+                {"CommandNotificationSettings:0:NotificationsMode", "invalid"},
+                {"CommandNotificationSettings:0:SagaCompletionCommandNames:0", "Completion1"},
+                {"CommandNotificationSettings:0:SagaCompletionCommandNames:1", "Completion2"},
+            });
+
+            return config.Build();
+        }
+
+        private IConfigurationRoot SetupConfiguration(ReadModelNotificationsMode notificationsMode)
+        {
+            var config = new ConfigurationBuilder();
+
+            config.AddInMemoryCollection(new Dictionary<string, string>
+            {
+                {"CommandNotificationSettings:0:CommandName", "Test1"},
+                {"CommandNotificationSettings:0:NotificationsMode", GetNotificationsModeSettingsValue(notificationsMode)},
+                {"CommandNotificationSettings:0:EventsToConfirm:0", "Event1"},
+            });
+
+            return config.Build();
+        }
+
+        private IConfigurationRoot SetupConfigurationWithCompletionCommandNames(ReadModelNotificationsMode notificationsMode)
+        {
+            var config = new ConfigurationBuilder();
+
+            config.AddInMemoryCollection(new Dictionary<string, string>
+            {
+                {"CommandNotificationSettings:0:CommandName", "Test1"},
+                {"CommandNotificationSettings:0:SagaCompletionCommandNames:0", "Completion1"},
+                {"CommandNotificationSettings:0:SagaCompletionCommandNames:1", "Completion2"},
+                {"CommandNotificationSettings:0:NotificationsMode", GetNotificationsModeSettingsValue(notificationsMode)},
+            });
+
+            return config.Build();
+        }
+
+        private IConfigurationRoot SetupEmptyConfifguration()
+        {
+            return new ConfigurationBuilder().Build();
         }
     }
 }

@@ -5,6 +5,7 @@ using Core.Query.EventHandlers;
 using Microsoft.Extensions.Logging;
 using ReadModelNotifications.ImmediateNotifications;
 using ReadModelNotifications.SagaNotifications;
+using ReadModelNotifications.Settings;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,22 +19,25 @@ namespace ReadModelNotifications.EventCallbacks
     {
         private readonly Lazy<IImmediateNotifications> _immediateNotifications;
         private readonly Lazy<ISagaNotifications> _sagaNotifications;
+        private readonly ReadModelNotificationsSettings _settigns;
 
-        public ReadModelNotificationsEventConsumerCallbacks(Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications)
+        public ReadModelNotificationsEventConsumerCallbacks(Lazy<IImmediateNotifications> immediateNotifications, Lazy<ISagaNotifications> sagaNotifications, ReadModelNotificationsSettings settigns)
         {
             _immediateNotifications = immediateNotifications;
             _sagaNotifications = sagaNotifications;
+            _settigns = settigns;
         }
 
         public async Task OnEventProcessed<T>(IAppEvent<T> msg, ILogger logger) where T : Event
         {
             try
             {
-                if (msg.CommandContext.GetNotificationsMode() == ReadModelNotificationsMode.Saga)
+                if (_settigns.IsEventToConfirmInSaga(msg.CommandContext, msg.Event.EventName))
                 {
                     await _sagaNotifications.Value.MarkEventAsHandled(msg.CommandContext.CorrelationId, msg.Event);
                 }
-                if (msg.CommandContext.GetNotificationsMode() == ReadModelNotificationsMode.Immediate)
+                if (_settigns.IsEventToConfirmInImmediateMode(msg.CommandContext, msg.Event.EventName)
+                    || _settigns.IsInImmediateModeWithoutConfirmationEvent(msg.CommandContext))
                 {
                     await _immediateNotifications.Value.NotifyCompleted(msg.CommandContext.CorrelationId);
                 }

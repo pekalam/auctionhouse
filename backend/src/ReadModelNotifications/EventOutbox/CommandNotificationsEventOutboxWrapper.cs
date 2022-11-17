@@ -2,6 +2,7 @@
 using Common.Application.Events;
 using Core.Common.Domain;
 using ReadModelNotifications.SagaNotifications;
+using ReadModelNotifications.Settings;
 
 namespace ReadModelNotifications.EventOutbox
 {
@@ -15,38 +16,34 @@ namespace ReadModelNotifications.EventOutbox
     internal class CommandNotificationsEventOutboxWrapper : IEventOutbox
     {
         private readonly IEventOutbox _eventOutbox;
-        private readonly IEventOutboxSavedItems _eventOutboxSavedItems;
         private readonly Lazy<ISagaNotifications> _sagaNotifications;
+        private readonly ReadModelNotificationsSettings _settings;
 
-        public CommandNotificationsEventOutboxWrapper(IEventOutbox eventOutbox, IEventOutboxSavedItems eventOutboxSavedItems, Lazy<ISagaNotifications> sagaNotifications)
+        public CommandNotificationsEventOutboxWrapper(IEventOutbox eventOutbox, Lazy<ISagaNotifications> sagaNotifications, ReadModelNotificationsSettings settings)
         {
             _eventOutbox = eventOutbox;
-            _eventOutboxSavedItems = eventOutboxSavedItems;
             _sagaNotifications = sagaNotifications;
+            _settings = settings;
         }
 
         public async Task<OutboxItem> SaveEvent(Event @event, CommandContext commandContext, ReadModelNotificationsMode notificationsMode)
         {
-            //TODO: should every saved event be added to saga unhandled events? - make distinction between part of saga and initiator
             var item = await _eventOutbox.SaveEvent(@event, commandContext, notificationsMode);
-            commandContext.SetNotificationsMode(notificationsMode);
-            await AddSagaUnhandledEvents(commandContext);
+            await AddSagaUnhandledEvents(commandContext, new[] {@event});
             return item;
         }
 
-        public async Task<OutboxItem[]> SaveEvents(IEnumerable<Event> @event, CommandContext commandContext, ReadModelNotificationsMode notificationsMode)
+        public async Task<OutboxItem[]> SaveEvents(IEnumerable<Event> events, CommandContext commandContext, ReadModelNotificationsMode notificationsMode)
         {
-            var items = await _eventOutbox.SaveEvents(@event, commandContext, notificationsMode);
-            commandContext.SetNotificationsMode(notificationsMode);
-            await AddSagaUnhandledEvents(commandContext);
+            var items = await _eventOutbox.SaveEvents(events, commandContext, notificationsMode);
+            await AddSagaUnhandledEvents(commandContext, events);
             return items;
         }
 
-        private async Task AddSagaUnhandledEvents(CommandContext commandContext)
+        private async Task AddSagaUnhandledEvents(CommandContext commandContext, IEnumerable<Event> events)
         {
-            var eventsWithSagaNotificationsMode = _eventOutboxSavedItems.SavedOutboxStoreItems
-                .Where(i => i.CommandContext.GetNotificationsMode() == ReadModelNotificationsMode.Saga)
-                .Select(i => i.Event)
+            var eventsWithSagaNotificationsMode = events
+                .Where(e => _settings.IsEventToConfirmInSaga(commandContext, e.EventName))
                 .ToArray();
             if (eventsWithSagaNotificationsMode.Length > 0)
             {

@@ -26,6 +26,8 @@ namespace ReadModelNotifications.Tests.DefaultCommandNotificationSettingsReader
                 {"CommandNotificationSettings:0:SagaCompletionCommandNames:1", "Completion2"},
                 {"CommandNotificationSettings:0:SagaFailureCommandNames:0", "Failure1"},
                 {"CommandNotificationSettings:0:SagaFailureCommandNames:1", "Failure2"},
+                {"CommandNotificationSettings:0:EventsToConfirm:0", "Event1"},
+                {"CommandNotificationSettings:0:EventsToConfirm:1", "Event2"},
             });
 
             return config.Build();
@@ -57,6 +59,7 @@ namespace ReadModelNotifications.Tests.DefaultCommandNotificationSettingsReader
             settings[0].NotificationsMode!.Value.Should().Be(ReadModelNotificationsMode.Saga);
             settings[0].SagaCompletionCommandNames.Should().BeEquivalentTo(new[] { "Completion1", "Completion2" });
             settings[0].SagaFailureCommandNames.Should().BeEquivalentTo(new[] { "Failure1", "Failure2" });
+            settings[0].EventsToConfirm.Should().BeEquivalentTo(new[] { "Event1", "Event2" });
         }
 
         [Fact]

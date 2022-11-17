@@ -45,6 +45,14 @@ namespace ReadModelNotifications.Settings
             {
                 throw new ArgumentException("Cannot contain other notifications mode than saga and have completion or failure command names");
             }
+            if (settings.Any(s => s.NotificationsMode == ReadModelNotificationsMode.Saga && s.EventsToConfirm is null))
+            {
+                throw new ArgumentException("Saga notification mode require event confimration to be configured");
+            }
+            if (settings.Any(s => s.NotificationsMode == ReadModelNotificationsMode.Immediate && s.EventsToConfirm?.Length > 1))
+            {
+                throw new ArgumentException("Configuring more than 1 confirmation events is not supported for immediate notifications mode");
+            }
         }
     }
 }

@@ -15,11 +15,11 @@ namespace Adapter.EfCore.ReadModelNotifications
             services.AddCommandReadModelNotifications<EfCoreSagaNotifications, EfCoreSagaNotifications>(configuration);
         }
 
-        public static void AddQueryEfCoreReadModelNotifications(this IServiceCollection services, IConfiguration? configuration = null,
+        public static void AddQueryEfCoreReadModelNotifications(this IServiceCollection services, IConfiguration configuration,
             EfCoreReadModelNotificaitonsOptions? settings = null)
         {
             AddCoreServices(services, configuration, settings);
-            services.AddQueryReadModelNotificiations<EfCoreSagaNotifications, EfCoreSagaNotifications>();
+            services.AddQueryReadModelNotificiations<EfCoreSagaNotifications, EfCoreSagaNotifications>(configuration);
         }
 
 
