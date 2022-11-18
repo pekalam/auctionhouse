@@ -20,7 +20,7 @@ namespace Common.Application.Events
         private List<OutboxItem> _outboxStoreItems = new();
         public IReadOnlyList<OutboxItem> SavedOutboxStoreItems => _outboxStoreItems;
 
-        public async Task<OutboxItem> SaveEvent(Event @event, CommandContext commandContext, ReadModelNotificationsMode notificationsMode)
+        public async Task<OutboxItem> SaveEvent(Event @event, CommandContext commandContext)
         {
             var appEvent = _appEventBuilder.WithCommandContext(commandContext)
                 .WithEvent(@event)
@@ -32,7 +32,7 @@ namespace Common.Application.Events
             return outboxItem;
         }
 
-        public async Task<OutboxItem[]> SaveEvents(IEnumerable<Event> events, CommandContext commandContext, ReadModelNotificationsMode notificationsMode)
+        public async Task<OutboxItem[]> SaveEvents(IEnumerable<Event> events, CommandContext commandContext)
         {
             var appEvents = new List<IAppEvent<Event>>(10);
 

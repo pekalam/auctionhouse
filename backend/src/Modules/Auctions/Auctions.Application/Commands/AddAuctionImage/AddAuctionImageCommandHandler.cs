@@ -17,7 +17,7 @@ namespace Auctions.Application.Commands.AddAuctionImage
         public AddAuctionImageCommandHandler(
             ILogger<AddAuctionImageCommandHandler> logger,
             AuctionImageService auctionImageService, CommandHandlerBaseDependencies dependencies) : 
-            base(ReadModelNotificationsMode.Disabled, dependencies)
+            base(dependencies)
         {
             _logger = logger;
             _auctionImageService = auctionImageService;

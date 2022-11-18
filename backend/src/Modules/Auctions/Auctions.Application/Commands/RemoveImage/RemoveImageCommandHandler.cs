@@ -13,7 +13,7 @@ namespace Auctions.Application.Commands.RemoveImage
         private readonly ILogger<RemoveImageCommandHandler> _logger;
 
         public RemoveImageCommandHandler(IAuctionCreateSessionStore auctionCreateSessionService, ILogger<RemoveImageCommandHandler> logger, 
-            CommandHandlerBaseDependencies dependencies) : base(ReadModelNotificationsMode.Immediate, dependencies)
+            CommandHandlerBaseDependencies dependencies) : base(dependencies)
         {
             _auctionCreateSessionService = auctionCreateSessionService;
             _logger = logger;

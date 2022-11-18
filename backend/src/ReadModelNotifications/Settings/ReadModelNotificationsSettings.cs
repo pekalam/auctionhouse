@@ -1,5 +1,4 @@
 ﻿using Common.Application.Commands;
-using Common.Application.Events;
 using System.Diagnostics;
 
 namespace ReadModelNotifications.Settings

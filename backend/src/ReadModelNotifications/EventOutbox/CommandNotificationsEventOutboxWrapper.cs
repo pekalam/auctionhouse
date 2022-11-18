@@ -26,16 +26,16 @@ namespace ReadModelNotifications.EventOutbox
             _settings = settings;
         }
 
-        public async Task<OutboxItem> SaveEvent(Event @event, CommandContext commandContext, ReadModelNotificationsMode notificationsMode)
+        public async Task<OutboxItem> SaveEvent(Event @event, CommandContext commandContext)
         {
-            var item = await _eventOutbox.SaveEvent(@event, commandContext, notificationsMode);
+            var item = await _eventOutbox.SaveEvent(@event, commandContext);
             await AddSagaUnhandledEvents(commandContext, new[] {@event});
             return item;
         }
 
-        public async Task<OutboxItem[]> SaveEvents(IEnumerable<Event> events, CommandContext commandContext, ReadModelNotificationsMode notificationsMode)
+        public async Task<OutboxItem[]> SaveEvents(IEnumerable<Event> events, CommandContext commandContext)
         {
-            var items = await _eventOutbox.SaveEvents(events, commandContext, notificationsMode);
+            var items = await _eventOutbox.SaveEvents(events, commandContext);
             await AddSagaUnhandledEvents(commandContext, events);
             return items;
         }

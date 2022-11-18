@@ -21,7 +21,7 @@ namespace Users.Application.Commands.RequestResetPassword
             IResetPasswordCodeRepository resetPasswordCodeRepository,
             IUserAuthenticationDataRepository userAuthenticationDataRepository,
             IResetLinkSenderService linkSenderService, CommandHandlerBaseDependencies dependencies) 
-            : base(ReadModelNotificationsMode.Disabled, dependencies)
+            : base(dependencies)
         {
             _logger = logger;
             _resetPasswordCodeRepository = resetPasswordCodeRepository;

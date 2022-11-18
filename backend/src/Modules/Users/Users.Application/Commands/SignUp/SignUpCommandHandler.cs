@@ -23,7 +23,7 @@ namespace Users.Application.Commands.SignUp
 
         public SignUpCommandHandler(IUserAuthenticationDataRepository userAuthenticationDataRepository,
             IUserRepository userRepository, ILogger<SignUpCommandHandler> logger, CommandHandlerBaseDependencies dependencies, IUnitOfWorkFactory unitOfWorkFactory, ISagaCoordinator sagaCoordinator)
-            : base(ReadModelNotificationsMode.Saga, dependencies)
+            : base(dependencies)
         {
             _userAuthenticationDataRepository = userAuthenticationDataRepository;
             _userRepository = userRepository;
@@ -71,7 +71,7 @@ namespace Users.Application.Commands.SignUp
                 _userRepository.AddUser(user);
                 await StartSaga(request, user);
                 // user created should not be confirmed
-                await eventOutbox.SaveEvents(user.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
+                await eventOutbox.SaveEvents(user.PendingEvents, request.CommandContext);
                 user.MarkPendingEventsAsHandled();
                 
                 uow.Commit();

@@ -10,7 +10,7 @@ namespace UserPayments.Application.Commands.SetPaymentStatusToFailed
         private readonly IUserPaymentsRepository _allUserPayments;
         private readonly OptimisticConcurrencyHandler _optimisticConcurrencyHandler;
 
-        public SetPaymentStatusToFailedCommandHandler(CommandHandlerBaseDependencies dependencies, IUserPaymentsRepository allUserPayments, OptimisticConcurrencyHandler optimisticConcurrencyHandler) : base(ReadModelNotificationsMode.Disabled, dependencies)
+        public SetPaymentStatusToFailedCommandHandler(CommandHandlerBaseDependencies dependencies, IUserPaymentsRepository allUserPayments, OptimisticConcurrencyHandler optimisticConcurrencyHandler) : base(dependencies)
         {
             _allUserPayments = allUserPayments;
             _optimisticConcurrencyHandler = optimisticConcurrencyHandler;
@@ -34,7 +34,7 @@ namespace UserPayments.Application.Commands.SetPaymentStatusToFailed
                 using (var uow = uowFactory.Begin())
                 {
                     _allUserPayments.Update(userPayments);
-                    await eventOutbox.SaveEvents(userPayments.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
+                    await eventOutbox.SaveEvents(userPayments.PendingEvents, request.CommandContext);
                     uow.Commit();
                 }
                 userPayments.MarkPendingEventsAsHandled();

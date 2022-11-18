@@ -15,8 +15,6 @@ namespace Common.Tests.Base.Mocks.Events
 
         public T Event { get; set; }
 
-        public ReadModelNotificationsMode ReadModelNotifications { get; set; }
-
         public int RedeliveryCount { get; set; }
     }
 
@@ -25,7 +23,6 @@ namespace Common.Tests.Base.Mocks.Events
         public static TestAppEventBuilder Instance { get; } = new TestAppEventBuilder();
 
         private CommandContext _commandContext;
-        private ReadModelNotificationsMode _readModelNotificationsMode;
         private Event _event;
         private int _redeliveryCount;
 
@@ -35,7 +32,6 @@ namespace Common.Tests.Base.Mocks.Events
             {
                 Event = (TEvent)_event,
                 CommandContext = _commandContext,
-                ReadModelNotifications = _readModelNotificationsMode,
                 RedeliveryCount = _redeliveryCount,
             };
         }
@@ -49,12 +45,6 @@ namespace Common.Tests.Base.Mocks.Events
         public IAppEventBuilder WithEvent<TEvent>(TEvent @event) where TEvent : Event
         {
             _event = @event;
-            return this;
-        }
-
-        public IAppEventBuilder WithReadModelNotificationsMode(ReadModelNotificationsMode consistencyMode)
-        {
-            _readModelNotificationsMode = consistencyMode;
             return this;
         }
 

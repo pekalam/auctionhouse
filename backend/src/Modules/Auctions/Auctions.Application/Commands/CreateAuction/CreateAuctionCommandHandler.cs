@@ -25,7 +25,7 @@ namespace Auctions.Application.Commands.CreateAuction
 
         public CreateAuctionCommandHandler(ILogger<CreateAuctionCommandHandler> logger, ICategoryNamesToTreeIdsConversion categoryNamesToTreeIdsConversion,
             ISagaCoordinator sagaCoordinator, CreateAuctionService createAuctionService, IUnitOfWorkFactory uow, CommandHandlerBaseDependencies dependencies, IAuctionRepository auctions)
-            : base(ReadModelNotificationsMode.Saga, dependencies)
+            : base(dependencies)
         {
             _commandHandlerCallbacks = dependencies.CommandHandlerCallbacks;
             _logger = logger;
@@ -50,12 +50,8 @@ namespace Auctions.Application.Commands.CreateAuction
                 if (!_createAuctionService.Finished) // when transaction is not finished it means that bids must be created and assigned by saga
                 {
                     await StartCreateAuctionSaga(request, auction);
-                    await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Saga);
                 }
-                else
-                {
-                    await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
-                }
+                await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext);
                 auction.MarkPendingEventsAsHandled();
                 uow.Commit();
             }

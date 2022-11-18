@@ -19,7 +19,7 @@ namespace Auctions.Application.Commands.UpdateAuction
         public UpdateAuctionCommandHandler(IAuctionRepository auctions, ILogger<UpdateAuctionCommandHandler> logger,
             CommandHandlerBaseDependencies dependencies, ICategoryNamesToTreeIdsConversion convertCategoryNamesToIds,
             OptimisticConcurrencyHandler optimisticConcurrencyHandler)
-            : base(ReadModelNotificationsMode.Immediate, dependencies)
+            : base(dependencies)
         {
             _auctions = auctions;
             _logger = logger;
@@ -73,7 +73,7 @@ namespace Auctions.Application.Commands.UpdateAuction
             using (var uow = uowFactory.Begin())
             {
                 _auctions.UpdateAuction(auction);
-                await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
+                await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext);
 
                 uow.Commit();
             }

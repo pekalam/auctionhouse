@@ -17,7 +17,7 @@ namespace Users.Application.Commands.CheckResetCode
         public CheckResetCodeCommandHandler(IResetPasswordCodeRepository resetPasswordCodeRepository,
             IUserAuthenticationDataRepository userAuthenticationDataRepository,
             ILogger<CheckResetCodeCommandHandler> logger, CommandHandlerBaseDependencies dependencies) 
-            : base(ReadModelNotificationsMode.Disabled, dependencies)
+            : base(dependencies)
         {
             _resetPasswordCodeRepository = resetPasswordCodeRepository;
             _userAuthenticationDataRepository = userAuthenticationDataRepository;

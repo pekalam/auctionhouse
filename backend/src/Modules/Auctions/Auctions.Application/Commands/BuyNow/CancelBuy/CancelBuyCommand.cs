@@ -21,7 +21,7 @@ namespace Auctions.Application.Commands.BuyNow.CancelBuy
 
         public CancelBuyCommandHandler(OptimisticConcurrencyHandler optimisticConcurrencyHandler, IAuctionRepository auctions, IAuctionUnlockScheduler auctionUnlockScheduler, ICommandHandlerCallbacks commandHandlerCallbacks,
             CommandHandlerBaseDependencies dependencies)
-            : base(ReadModelNotificationsMode.Disabled, dependencies)
+            : base(dependencies)
         {
             _optimisticConcurrencyHandler = optimisticConcurrencyHandler;
             _auctions = auctions;
@@ -46,7 +46,7 @@ namespace Auctions.Application.Commands.BuyNow.CancelBuy
                 using (var uow = uowFactory.Begin())
                 {
                     _auctions.UpdateAuction(auction);
-                    outboxItems = await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Saga);
+                    outboxItems = await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext);
                     await _commandHandlerCallbacks.OnUowCommit(request);
                     uow.Commit();
                 }

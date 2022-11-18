@@ -126,7 +126,6 @@ namespace Test.ReadModel.Integration
             {
                 CommandContext = CommandContext.CreateNew("test"),
                 Event = @event,
-                ReadModelNotifications = ReadModelNotificationsMode.Disabled,
             }).GetAwaiter().GetResult();
         }
 

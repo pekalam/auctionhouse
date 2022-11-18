@@ -13,7 +13,7 @@ namespace UserPayments.Application.Commands.CreateUserPayments
         private readonly IUserPaymentsRepository _allUserPayments;
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
 
-        public CreateUserPaymentsCommandHandler(CommandHandlerBaseDependencies dependencies, IUserPaymentsRepository userPaymentsRepository, IUnitOfWorkFactory unitOfWorkFactory) : base(ReadModelNotificationsMode.Disabled, dependencies)
+        public CreateUserPaymentsCommandHandler(CommandHandlerBaseDependencies dependencies, IUserPaymentsRepository userPaymentsRepository, IUnitOfWorkFactory unitOfWorkFactory) : base(dependencies)
         {
             _allUserPayments = userPaymentsRepository;
             _unitOfWorkFactory = unitOfWorkFactory;
@@ -36,7 +36,7 @@ namespace UserPayments.Application.Commands.CreateUserPayments
                 {
                     return RequestStatus.CreateCompleted(request.CommandContext);
                 }
-                await eventOutbox.SaveEvents(userPayments.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Saga);
+                await eventOutbox.SaveEvents(userPayments.PendingEvents, request.CommandContext);
                 uow.Commit();
             }
             userPayments.MarkPendingEventsAsHandled();

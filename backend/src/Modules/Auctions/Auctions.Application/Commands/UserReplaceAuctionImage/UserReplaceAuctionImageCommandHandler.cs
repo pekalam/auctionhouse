@@ -17,7 +17,7 @@ namespace Auctions.Application.Commands.UserReplaceAuctionImage
 
         public UserReplaceAuctionImageCommandHandler(AuctionImageService auctionImageService, IAuctionRepository auctionRepository,
             ILogger<UserReplaceAuctionImageCommandHandler> logger, CommandHandlerBaseDependencies dependencies, OptimisticConcurrencyHandler optimisticConcurrencyHandler)
-            : base(ReadModelNotificationsMode.Immediate, dependencies)
+            : base(dependencies)
         {
             _auctionImageService = auctionImageService;
             _auctionRepository = auctionRepository;
@@ -58,7 +58,7 @@ namespace Auctions.Application.Commands.UserReplaceAuctionImage
                         using (var uow = uowFactory.Begin())
                         {
                             _auctionRepository.UpdateAuction(auction);
-                            await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
+                            await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext);
                             uow.Commit();
                         }
                     });

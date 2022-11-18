@@ -19,7 +19,6 @@ namespace Common.Tests.Base.Builders
     public class GivenOutboxStoreItem
     {
         private CommandContext _commandContext = CommandContext.CreateNew("test");
-        private ReadModelNotificationsMode _readModelNotificationsMode;
         private long _timestamp = 1;
         private Event _event = new TestEvent();
 

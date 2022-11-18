@@ -1,5 +1,4 @@
-﻿using Common.Application.Events;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ReadModelNotifications.Settings;

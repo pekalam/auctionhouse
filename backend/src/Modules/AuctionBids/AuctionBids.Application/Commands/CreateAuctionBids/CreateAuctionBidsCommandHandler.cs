@@ -14,7 +14,7 @@ namespace AuctionBids.Application.Commands.CreateAuctionBids
         private readonly IAuctionBidsRepository _allAuctionBids;
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
 
-        public CreateAuctionBidsCommandHandler(CommandHandlerBaseDependencies dependencies, IAuctionBidsRepository allAuctionBids, IUnitOfWorkFactory unitOfWorkFactory) : base(ReadModelNotificationsMode.Disabled, dependencies)
+        public CreateAuctionBidsCommandHandler(CommandHandlerBaseDependencies dependencies, IAuctionBidsRepository allAuctionBids, IUnitOfWorkFactory unitOfWorkFactory) : base(dependencies)
         {
             _allAuctionBids = allAuctionBids;
             _unitOfWorkFactory = unitOfWorkFactory;
@@ -36,7 +36,7 @@ namespace AuctionBids.Application.Commands.CreateAuctionBids
                 {
                     return RequestStatus.CreateCompleted(request.CommandContext);
                 }
-                await eventOutbox.SaveEvents(auctionBids.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Saga);
+                await eventOutbox.SaveEvents(auctionBids.PendingEvents, request.CommandContext);
                 uow.Commit();
             }
             auctionBids.MarkPendingEventsAsHandled();

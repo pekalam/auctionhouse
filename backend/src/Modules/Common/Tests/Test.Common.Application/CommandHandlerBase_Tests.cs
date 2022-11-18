@@ -28,7 +28,7 @@ namespace Common.Application.Tests
         public class InvalidTestCommandHandler : CommandHandlerBase<TestCommand>
         {
 
-            public InvalidTestCommandHandler(ILogger<CommandHandlerBase<TestCommand>> logger) : base(ReadModelNotificationsMode.Disabled, new CommandHandlerBaseDependencies
+            public InvalidTestCommandHandler(ILogger<CommandHandlerBase<TestCommand>> logger) : base(new CommandHandlerBaseDependencies
             {
                 Logger = Mock.Of<ILogger<RequestStatus>>()
             })

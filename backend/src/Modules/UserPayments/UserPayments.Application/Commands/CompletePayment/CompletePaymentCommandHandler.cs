@@ -11,7 +11,7 @@ namespace UserPayments.Application.Commands.CompletePayment
         private readonly OptimisticConcurrencyHandler _optimisticConcurrencyHandler;
 
         public CompletePaymentCommandHandler(CommandHandlerBaseDependencies dependencies, IUserPaymentsRepository allUserPayments, OptimisticConcurrencyHandler optimisticConcurrencyHandler)
-            : base(ReadModelNotificationsMode.Disabled, dependencies)
+            : base(dependencies)
         {
             _allUserPayments = allUserPayments;
             _optimisticConcurrencyHandler = optimisticConcurrencyHandler;
@@ -33,7 +33,7 @@ namespace UserPayments.Application.Commands.CompletePayment
                 using (var uow = uowFatory.Begin())
                 {
                     _allUserPayments.Update(userPayments);
-                    await eventOutbox.SaveEvents(userPayments.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
+                    await eventOutbox.SaveEvents(userPayments.PendingEvents, request.CommandContext);
                     userPayments.MarkPendingEventsAsHandled();
                     uow.Commit();
                 }

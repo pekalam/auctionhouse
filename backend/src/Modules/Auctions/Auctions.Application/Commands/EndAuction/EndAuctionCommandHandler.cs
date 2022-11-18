@@ -15,7 +15,7 @@ namespace Core.Command.Commands.EndAuction
 
         public EndAuctionCommandHandler(IAuctionRepository auctionRepository, ILogger<EndAuctionCommandHandler> logger,
                 CommandHandlerBaseDependencies dependencies, OptimisticConcurrencyHandler optimisticConcurrencyHandler)
-            : base(ReadModelNotificationsMode.Disabled, dependencies)
+            : base(dependencies)
         {
             _auctions = auctionRepository;
             _logger = logger;
@@ -42,7 +42,7 @@ namespace Core.Command.Commands.EndAuction
                 {
                     auction.EndAuction();
                     _auctions.UpdateAuction(auction);
-                    await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
+                    await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext);
                     uow.Commit();
                 }
             });

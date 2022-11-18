@@ -16,7 +16,7 @@ namespace Users.Application.Commands.ChargeUser
 
         public LockCreditsForBuyNowAuctionCommandHandler(CommandHandlerBaseDependencies dependencies, IUserRepository users,
             OptimisticConcurrencyHandler optimisticConcurrencyHandler)
-            : base(ReadModelNotificationsMode.Disabled, dependencies)
+            : base(dependencies)
         {
             _users = users;
             _optimisticConcurrencyHandler = optimisticConcurrencyHandler;
@@ -40,19 +40,19 @@ namespace Users.Application.Commands.ChargeUser
                     {
                         TransactionId = request.Command.TransactionId,
                         UserId = request.Command.UserId,
-                    }, request.CommandContext, ReadModelNotificationsMode.Disabled);
+                    }, request.CommandContext);
                     return RequestStatus.CreateFromCommandContext(request.CommandContext, Status.FAILED);
                 }
 
                 using (var uow = uowFactory.Begin())
                 {
                     _users.UpdateUser(user);
-                    await eventOutbox.SaveEvents(user.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
+                    await eventOutbox.SaveEvents(user.PendingEvents, request.CommandContext);
                     await eventOutbox.SaveEvent(new UserCreditsLockedForBuyNowAuction
                     {
                         TransactionId = request.Command.TransactionId,
                         UserId = request.Command.UserId,
-                    }, request.CommandContext, ReadModelNotificationsMode.Disabled);
+                    }, request.CommandContext);
                     uow.Commit();
                 }
                 user.MarkPendingEventsAsHandled();

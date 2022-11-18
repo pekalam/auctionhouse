@@ -1,9 +1,6 @@
 ﻿using Common.Application.Commands;
 using Common.Application.Events;
 using Core.Common.Domain;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Common.Tests.Base.Mocks
 {
@@ -15,7 +12,7 @@ namespace Common.Tests.Base.Mocks
 
         public IReadOnlyList<OutboxItem> SavedOutboxStoreItems => _outboxItems;
 
-        public Task<OutboxItem> SaveEvent(Event @event, CommandContext commandContext, ReadModelNotificationsMode notificationsMode)
+        public Task<OutboxItem> SaveEvent(Event @event, CommandContext commandContext)
         {
             var item = new OutboxItem
             {
@@ -26,7 +23,7 @@ namespace Common.Tests.Base.Mocks
             return Task.FromResult(item);
         }
 
-        public Task<OutboxItem[]> SaveEvents(IEnumerable<Event> events, CommandContext commandContext, ReadModelNotificationsMode notificationsMode)
+        public Task<OutboxItem[]> SaveEvents(IEnumerable<Event> events, CommandContext commandContext)
         {
             var outboxItems = events.Select(e => new OutboxItem
             {

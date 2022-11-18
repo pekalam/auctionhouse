@@ -45,7 +45,7 @@ namespace Common.Application.Commands
         private readonly ICommandHandlerCallbacks _commandHandlerCallbacks;
 
 
-        protected CommandHandlerBase(ReadModelNotificationsMode notificationsMode, CommandHandlerBaseDependencies dependencies)
+        protected CommandHandlerBase(CommandHandlerBaseDependencies dependencies)
         {
             _logger = dependencies.Logger;
             _eventOutbox = dependencies.EventOutbox;

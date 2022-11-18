@@ -31,7 +31,7 @@ namespace ReadModelNotifications.Tests
             var ctx = CommandContext.CreateNew("Test1Cmd");
             ctx.ExtraData[SagaInitiatorExtraKey] = "Test1Cmd";
 
-            var items = await eventOutbox.SaveEvents(events, ctx, ReadModelNotificationsMode.Saga);
+            var items = await eventOutbox.SaveEvents(events, ctx);
 
             mockSagaNotifications.Verify(f => f.AddUnhandledEvents(ctx.CorrelationId,
                 It.Is<IEnumerable<Event>>(e => e.Except(eventsToConfirm).Count() == 0)), Times.Once());
@@ -83,12 +83,12 @@ namespace ReadModelNotifications.Tests
 
         public class StubEventOutbox : IEventOutbox
         {
-            public Task<OutboxItem> SaveEvent(Event @event, CommandContext commandContext, ReadModelNotificationsMode notificationsMode)
+            public Task<OutboxItem> SaveEvent(Event @event, CommandContext commandContext)
             {
                 throw new NotImplementedException();
             }
 
-            public async Task<OutboxItem[]> SaveEvents(IEnumerable<Event> @event, CommandContext commandContext, ReadModelNotificationsMode notificationsMode)
+            public async Task<OutboxItem[]> SaveEvents(IEnumerable<Event> @event, CommandContext commandContext)
             {
                 return @event.Select(e => new OutboxItem() { CommandContext = commandContext, Event = e, }).ToArray();
             }

@@ -19,7 +19,7 @@ namespace Auctions.Application.Commands.BuyNow.ConfirmBuy
         private readonly ICommandHandlerCallbacks _commandHandlerCallbacks;
         private readonly IAuctionUnlockScheduler _auctionUnlockScheduler;
 
-        public ConfirmBuyCommandHandler(CommandHandlerBaseDependencies dependencies, IAuctionRepository auctions, OptimisticConcurrencyHandler optimisticConcurrencyHandler, ICommandHandlerCallbacks commandHandlerCallbacks, IAuctionUnlockScheduler auctionUnlockScheduler) : base(ReadModelNotificationsMode.Disabled, dependencies)
+        public ConfirmBuyCommandHandler(CommandHandlerBaseDependencies dependencies, IAuctionRepository auctions, OptimisticConcurrencyHandler optimisticConcurrencyHandler, ICommandHandlerCallbacks commandHandlerCallbacks, IAuctionUnlockScheduler auctionUnlockScheduler) : base(dependencies)
         {
             _auctions = auctions;
             _optimisticConcurrencyHandler = optimisticConcurrencyHandler;
@@ -44,7 +44,7 @@ namespace Auctions.Application.Commands.BuyNow.ConfirmBuy
                 using (var uow = uowFactory.Begin())
                 {
                     _auctions.UpdateAuction(auction);
-                    outboxItems = await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Saga);
+                    outboxItems = await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext);
                     await _commandHandlerCallbacks.OnUowCommit(request); //TODO separate UOW for saga notifications
                     uow.Commit();
                 }

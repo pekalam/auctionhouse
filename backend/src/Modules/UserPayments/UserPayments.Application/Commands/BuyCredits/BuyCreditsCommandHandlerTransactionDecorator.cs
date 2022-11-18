@@ -14,7 +14,7 @@ namespace Core.Command.Commands.BuyCredits
         public BuyCreditsCommandHandlerTransactionDecorator(
             ILogger<BuyCreditsCommandHandlerTransactionDecorator> logger,
             BuyCreditsCommandHandler buyCreditsCommandHandler, CommandHandlerBaseDependencies dependencies) 
-            : base(ReadModelNotificationsMode.Disabled, dependencies)
+            : base(dependencies)
         {
             _buyCreditsCommandHandler = buyCreditsCommandHandler;
         }

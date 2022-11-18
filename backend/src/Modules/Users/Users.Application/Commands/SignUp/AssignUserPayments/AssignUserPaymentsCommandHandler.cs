@@ -12,7 +12,7 @@ namespace Users.Application.Commands.SignUp.AssignUserPayments
         private readonly ICommandHandlerCallbacks _commandHandlerCallbacks;
 
         public AssignUserPaymentsCommandHandler(IUserRepository users, IUnitOfWorkFactory unitOfWorkFactory,
-            CommandHandlerBaseDependencies dependencies) : base(ReadModelNotificationsMode.Disabled, dependencies)
+            CommandHandlerBaseDependencies dependencies) : base(dependencies)
         {
             _users = users;
             _unitOfWorkFactory = unitOfWorkFactory;
@@ -32,7 +32,7 @@ namespace Users.Application.Commands.SignUp.AssignUserPayments
 
             using var uow = _unitOfWorkFactory.Begin();
             _users.UpdateUser(user);
-            await eventOutbox.SaveEvents(user.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Saga);
+            await eventOutbox.SaveEvents(user.PendingEvents, request.CommandContext);
             //await _sagaNotifications.AddUnhandledEvents(request.CommandContext.CorrelationId, user.PendingEvents); //TODO this should be explicit
             await _commandHandlerCallbacks.OnUowCommit(request);
             user.MarkPendingEventsAsHandled();

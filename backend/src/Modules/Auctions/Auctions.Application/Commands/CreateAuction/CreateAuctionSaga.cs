@@ -88,7 +88,7 @@ namespace Auctions.Application.Commands.CreateAuction
         public EndCreateAuctionCommandHandler(CommandHandlerBaseDependencies dependencies,
             Lazy<IAuctionEndScheduler> auctionEndScheduler, Lazy<IAuctionRepository> auctions,
             Lazy<IAuctionImageRepository> auctionImages, IUnitOfWorkFactory unitOfWorkFactory) :
-            base(ReadModelNotificationsMode.Saga, dependencies)
+            base(dependencies)
         {
             _commandHandlerCallbacks = dependencies.CommandHandlerCallbacks;
             _eventOutbox = dependencies.EventOutbox;
@@ -110,7 +110,7 @@ namespace Auctions.Application.Commands.CreateAuction
             using (var uow = _unitOfWorkFactory.Begin())
             {
                 _auctions.Value.UpdateAuction(auction);
-                await _eventOutbox.SaveEvents(eventsToSend, request.CommandContext, ReadModelNotificationsMode.Saga);
+                await _eventOutbox.SaveEvents(eventsToSend, request.CommandContext);
                 await _commandHandlerCallbacks.OnUowCommit(request);
                 uow.Commit();
             }

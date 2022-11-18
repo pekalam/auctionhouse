@@ -14,7 +14,7 @@ namespace Users.Application.Commands.WithdrawCredits
 
         public WithdrawCreditsForBuyNowAuctionCommandHandler(CommandHandlerBaseDependencies dependencies, IUserRepository users,
             OptimisticConcurrencyHandler optimisticConcurrencyHandler)
-            : base(ReadModelNotificationsMode.Disabled, dependencies)
+            : base(dependencies)
         {
             _users = users;
             _optimisticConcurrencyHandler = optimisticConcurrencyHandler;
@@ -36,7 +36,7 @@ namespace Users.Application.Commands.WithdrawCredits
                 using (var uow = uowFactory.Begin())
                 {
                     _users.UpdateUser(user);
-                    await eventOutbox.SaveEvents(user.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
+                    await eventOutbox.SaveEvents(user.PendingEvents, request.CommandContext);
                     uow.Commit();
                 }
                 user.MarkPendingEventsAsHandled();

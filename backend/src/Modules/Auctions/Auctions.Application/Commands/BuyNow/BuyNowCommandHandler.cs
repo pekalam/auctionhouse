@@ -22,7 +22,7 @@ namespace Auctions.Application.Commands.BuyNow
         public BuyNowCommandHandler(IAuctionRepository auctions, ILogger<BuyNowCommandHandler> logger,
             IAuctionPaymentVerification auctionPaymentVerification, IAuctionUnlockScheduler auctionUnlockScheduler, ISagaCoordinator sagaCoordinator,
             CommandHandlerBaseDependencies dependencies, OptimisticConcurrencyHandler optimisticConcurrencyHandler)
-            : base(ReadModelNotificationsMode.Saga, dependencies)
+            : base(dependencies)
         {
             _logger = logger;
             _auctions = auctions;
@@ -50,7 +50,7 @@ namespace Auctions.Application.Commands.BuyNow
                 {
                     _auctions.UpdateAuction(auction);
                     await StartSaga(request, auction, transactionId);
-                    await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
+                    await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext);
                     uow.Commit();
                 }
                 auction.MarkPendingEventsAsHandled();

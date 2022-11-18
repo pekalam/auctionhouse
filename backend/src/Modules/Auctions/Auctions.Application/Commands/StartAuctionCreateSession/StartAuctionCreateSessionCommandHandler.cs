@@ -14,7 +14,7 @@ namespace Auctions.Application.Commands.StartAuctionCreateSession
         private readonly ILogger<StartAuctionCreateSessionCommandHandler> _logger;
 
         public StartAuctionCreateSessionCommandHandler(IAuctionCreateSessionStore auctionCreateSessionStore, ILogger<StartAuctionCreateSessionCommandHandler> logger,
-            CommandHandlerBaseDependencies dependencies) : base(ReadModelNotificationsMode.Disabled, dependencies)
+            CommandHandlerBaseDependencies dependencies) : base(dependencies)
         {
             _auctionCreateSessionStore = auctionCreateSessionStore;
             _logger = logger;

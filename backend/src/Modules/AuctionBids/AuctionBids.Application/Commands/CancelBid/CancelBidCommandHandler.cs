@@ -12,7 +12,7 @@ namespace Core.Command.Commands.CancelBid
         private readonly IAuctionBidsRepository _auctionBids;
 
         public CancelBidCommandHandler(IAuctionBidsRepository auctionBids, ILogger<CancelBidCommandHandler> logger, CommandHandlerBaseDependencies dependencies) 
-            : base(ReadModelNotificationsMode.Immediate, dependencies)
+            : base(dependencies)
         {
             _auctionBids = auctionBids;
         }

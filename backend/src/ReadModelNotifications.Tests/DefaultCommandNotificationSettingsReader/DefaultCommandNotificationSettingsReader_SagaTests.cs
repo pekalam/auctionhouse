@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Xunit;
 using Microsoft.Extensions.Configuration;
 using FluentAssertions;
-using Common.Application.Events;
 using ReadModelNotifications.Settings;
 
 namespace ReadModelNotifications.Tests.DefaultCommandNotificationSettingsReader

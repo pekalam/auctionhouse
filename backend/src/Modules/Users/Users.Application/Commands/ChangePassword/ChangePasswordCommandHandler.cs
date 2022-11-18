@@ -15,7 +15,7 @@ namespace Users.Application.Commands.ChangePassword
 
         public ChangePasswordCommandHandler(ILogger<ChangePasswordCommandHandler> logger, IUserAuthenticationDataRepository authenticationDataRepository, 
             CommandHandlerBaseDependencies dependencies) 
-            : base(ReadModelNotificationsMode.Disabled, dependencies)
+            : base(dependencies)
         {
             _logger = logger;
             _authenticationDataRepository = authenticationDataRepository;

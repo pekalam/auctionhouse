@@ -16,7 +16,7 @@ namespace UserPayments.Application.Commands.CreateBuyNowPayment
 
         public CreateBuyNowPaymentCommandHandler(ILogger<CreateBuyNowPaymentCommandHandler> logger, IUserPaymentsRepository userPayments,
             CommandHandlerBaseDependencies dependencies, OptimisticConcurrencyHandler optimisticConcurrencyHandler)
-            : base(ReadModelNotificationsMode.Disabled, dependencies)
+            : base(dependencies)
         {
             _userPayments = userPayments;
             _optimisticConcurrencyHandler = optimisticConcurrencyHandler;
@@ -38,7 +38,7 @@ namespace UserPayments.Application.Commands.CreateBuyNowPayment
                 using (var uow = uowFactory.Begin())
                 {
                     _userPayments.Update(userPayments);
-                    await eventOutbox.SaveEvents(userPayments.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Saga);
+                    await eventOutbox.SaveEvents(userPayments.PendingEvents, request.CommandContext);
                     uow.Commit();
                 }
             });

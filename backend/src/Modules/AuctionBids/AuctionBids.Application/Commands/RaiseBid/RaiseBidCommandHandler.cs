@@ -20,7 +20,7 @@ namespace Core.Command.Commands.Bid
         private readonly ICommandHandlerCallbacks _commandHandlerCallbacks;
 
         public RaiseBidCommandHandler(ILogger<RaiseBidCommandHandler> logger, CommandHandlerBaseDependencies dependencies, IUnitOfWorkFactory uowFactory, IAuctionBidsRepository auctionBids)
-            : base(ReadModelNotificationsMode.Immediate, dependencies)
+            : base(dependencies)
         {
             _commandHandlerCallbacks = dependencies.CommandHandlerCallbacks;
             _logger = logger;
@@ -52,15 +52,7 @@ namespace Core.Command.Commands.Bid
             {
                 _allAuctionBids.Update(auctionBids);
                 await SetExtensionValues(bid);
-                //TODO: remove if
-                if (bid.Accepted) //accepted bid should be visible immediatedly
-                {
-                    await eventOutbox.SaveEvents(auctionBids.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Immediate);
-                }
-                else //bid that is not accepted dont't need that
-                {
-                    await eventOutbox.SaveEvents(auctionBids.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
-                }
+                await eventOutbox.SaveEvents(auctionBids.PendingEvents, request.CommandContext);
                 auctionBids.MarkPendingEventsAsHandled();
                 uow.Commit();
             }

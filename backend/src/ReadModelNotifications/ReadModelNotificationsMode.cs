@@ -1,4 +1,4 @@
-﻿namespace Common.Application.Events
+﻿namespace ReadModelNotifications
 {
     public enum ReadModelNotificationsMode
     {

@@ -12,7 +12,7 @@ namespace UserPayments.Application.Commands.ConfirmPayment
 
         public ConfirmPaymentCommandHandler(CommandHandlerBaseDependencies dependencies, IUserPaymentsRepository allUserPayments,
             OptimisticConcurrencyHandler optimisticConcurrencyHandler)
-            : base(ReadModelNotificationsMode.Disabled, dependencies)
+            : base(dependencies)
         {
             _allUserPayments = allUserPayments;
             _optimisticConcurrencyHandler = optimisticConcurrencyHandler;
@@ -36,7 +36,7 @@ namespace UserPayments.Application.Commands.ConfirmPayment
                 using (var uow = uowFactory.Begin())
                 {
                     _allUserPayments.Update(userPayments);
-                    await eventOutbox.SaveEvents(userPayments.PendingEvents, request.CommandContext, ReadModelNotificationsMode.Disabled);
+                    await eventOutbox.SaveEvents(userPayments.PendingEvents, request.CommandContext);
                     userPayments.MarkPendingEventsAsHandled();
                     uow.Commit();
                 }

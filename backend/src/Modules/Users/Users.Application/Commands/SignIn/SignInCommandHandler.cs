@@ -14,7 +14,7 @@ namespace Users.Application.Commands.SignIn
         private readonly ILogger<SignInCommandHandler> _logger;
 
         public SignInCommandHandler(IUserAuthenticationDataRepository userAuthenticationDataRepository, ILogger<SignInCommandHandler> logger, CommandHandlerBaseDependencies dependencies)
-        : base(ReadModelNotificationsMode.Disabled, dependencies)
+        : base(dependencies)
         {
             _userAuthenticationDataRepository = userAuthenticationDataRepository;
             _logger = logger;

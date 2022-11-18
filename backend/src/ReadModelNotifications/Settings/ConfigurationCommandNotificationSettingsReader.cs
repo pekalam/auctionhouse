@@ -1,5 +1,4 @@
-﻿using Common.Application.Events;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 
 namespace ReadModelNotifications.Settings
 {

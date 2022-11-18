@@ -100,8 +100,7 @@ namespace Adapter.Hangfire_.Auctionhouse
                 // there is no need to try to send events faster like in CommandHandlerBase because this unlocked event has not strict timing requirements
                 _auctions.UpdateAuction(unlockedAuction);
                 await _eventOutbox.SaveEvents(unlockedAuction.PendingEvents,
-                    CommandContext.CreateNew(nameof(AuctionUnlockScheduler)),
-                    ReadModelNotificationsMode.Disabled);
+                    CommandContext.CreateNew(nameof(AuctionUnlockScheduler)));
                 uow.Commit();
             }
             unlockedAuction.MarkPendingEventsAsHandled();

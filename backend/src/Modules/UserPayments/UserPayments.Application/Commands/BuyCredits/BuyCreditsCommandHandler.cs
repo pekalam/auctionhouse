@@ -10,7 +10,7 @@ namespace Core.Command.Commands.BuyCredits
     public class BuyCreditsCommandHandler : CommandHandlerBase<BuyCreditsCommand>
     {
         public BuyCreditsCommandHandler(ILogger<BuyCreditsCommandHandler> logger, CommandHandlerBaseDependencies dependencies) 
-            : base(ReadModelNotificationsMode.Immediate, dependencies)
+            : base(dependencies)
         {
         }
 
