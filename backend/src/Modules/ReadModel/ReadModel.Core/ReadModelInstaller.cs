@@ -21,7 +21,7 @@ namespace ReadModel.Core
             services.AddEventConsumers(typeof(ReadModelInstaller));
             services.AddSingleton(mongoDbSettings);
             services.AddSingleton<ReadModelDbContext>();
-            services.AddAutoMapper(typeof(ReadModelInstaller).Assembly, Assembly.GetExecutingAssembly());
+            services.AddAutoMapper(typeof(ReadModelInstaller).Assembly, Assembly.GetEntryAssembly());
         }
 
         public ReadModelInstaller AddBidRaisedNotifications(Func<IServiceProvider, IBidRaisedNotifications> factory)
