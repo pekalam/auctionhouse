@@ -31,7 +31,7 @@ namespace Users.Application.Commands.SignUp
         [MinLength(MIN_USERNAME_LENGTH)]
         public string Username { get; }
         [Required]
-        [Regex(@"(?=.*[a-z])(?!.*[\!\@\#\$\%\^\&\*\+\=\)\(_\`\~\'\""\,\.\|])(?=.{4,})")]
+        [Regex(@"(?=.*[a-z])(?=.{4,})")]
         public string Password { get; }
         [Required]
         [EmailAddress]
