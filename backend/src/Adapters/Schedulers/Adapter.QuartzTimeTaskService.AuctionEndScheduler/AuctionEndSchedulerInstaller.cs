@@ -41,15 +41,10 @@ namespace Adapter.QuartzTimeTaskService.AuctionEndScheduler
             return installer;
         }
 
-        public static void AddQuartzTimeTaskServiceAuctionEndSchedulerServices(this IMvcBuilder builder)
+        public static void AddQuartzTimeTaskServiceWebApiServices(IMvcBuilder builder, AuthenticationBuilder authenticationBuilder)
         {
             builder.AddApplicationPart(typeof(AuctionEndSchedulerInstaller).Assembly).AddControllersAsServices();
-        }
-
-        public static void AddQuartzTimeTaskServiceAuth(this AuthenticationBuilder builder)
-        {
-            builder.AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(ApiKeyAuthenticationOptions.Scheme,
-                        null);
+            authenticationBuilder.AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(ApiKeyAuthenticationOptions.Scheme, null);
         }
     }
 }

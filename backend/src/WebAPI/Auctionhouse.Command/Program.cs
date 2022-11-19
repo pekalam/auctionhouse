@@ -80,7 +80,8 @@ builder.Services.AddErrorEventRedeliveryProcessorService(new EventBusSettings
 //WEB API SERVICES
 //jwt auth
 var jwtConfig = builder.Configuration.GetSection("JWT").Get<JwtSettings>();
-var authBuilder = builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
+var authBuilder = builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
 builder.Services.AddCommonJwtAuth(jwtConfig, authBuilder);
 //logging and tracing
 builder.Services.AddSerilogLogging(builder.Configuration, "Command");
@@ -130,9 +131,7 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.IsEssential = true;
 });
-builder.Services.AddControllers()
-    //ADAPTER
-    .AddQuartzTimeTaskServiceAuctionEndSchedulerServices();
+AuctionEndSchedulerInstaller.AddQuartzTimeTaskServiceWebApiServices(builder.Services.AddControllers(), authBuilder);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
