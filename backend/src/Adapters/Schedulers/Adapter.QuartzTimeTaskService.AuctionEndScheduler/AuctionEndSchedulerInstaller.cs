@@ -10,7 +10,7 @@ namespace Adapter.QuartzTimeTaskService.AuctionEndScheduler
     public static class AuctionEndSchedulerInstaller
     {
         public static AuctionsDomainInstaller AddQuartzTimeTaskServiceAuctionEndSchedulerAdapter(this AuctionsDomainInstaller installer,
-            Func<IServiceProvider, ITimeTaskClient> timeTaskClientFactory = null,
+            Func<IServiceProvider, ITimeTaskClient> timeTaskClientFactory,
             IConfiguration? configuration = null,
             TimeTaskServiceSettings? settings = null)
         {
@@ -30,6 +30,7 @@ namespace Adapter.QuartzTimeTaskService.AuctionEndScheduler
             installer.AddQuartzTimeTaskServiceAuctionEndSchedulerAdapter(
                 provider =>
                 {
+                    settings ??= provider.GetRequiredService<TimeTaskServiceSettings>();
                     var client = RestClient.For<ITimeTaskClient>(settings.ConnectionString);
                     client.ApiKey = settings.ApiKey;
                     return client;
