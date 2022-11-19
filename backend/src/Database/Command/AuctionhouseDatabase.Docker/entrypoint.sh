@@ -10,13 +10,24 @@ SA_PASSWORD=$SA_PASSWORD /opt/mssql/bin/sqlservr &
 
 wait-for 0.0.0.0:1433 -t 240
 
-echo "Running docker_setup.sql..."
-/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -i docker_setup.sql
+echo "Initial 20s sleep"
+sleep 20s
 
-echo "Waiting for sqlagent..."
 retry=10
-
 while [ $retry -gt 0 ]; do
+    echo "Running docker_setup.sql $retry..."
+    #todo logs
+    result=$(/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -i docker_setup.sql 1>/dev/null 2>/dev/null && echo $? || echo $?)
+    if [ $result -eq 0 ]; then
+		break
+	fi
+	retry=$(($retry-1))
+	sleep 5
+done
+
+retry=10
+while [ $retry -gt 0 ]; do
+    echo "Waiting for sqlagent $retry..."
 	result=$(/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -Q "exec msdb.dbo.sp_is_sqlagent_starting" 1>/dev/null 2>/dev/null && echo $? || echo $?)
 	if [ $result -eq 0 ]; then
 		break
@@ -30,7 +41,7 @@ if [ $retry -eq 0 ]; then
 	exit 128
 fi
 
-db_exists=`/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'Qwerty1234' -Q "IF DB_ID('AuctionhouseDatabase') IS NOT NULL print 'exists'"`
+db_exists=`/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -Q "IF DB_ID('AuctionhouseDatabase') IS NOT NULL print 'exists'"`
 
 if ! [ "$db_exists" == "exists" ]; then
 	echo "Setting up db..."
