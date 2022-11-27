@@ -71,7 +71,7 @@ namespace Common.Application.Commands
         public virtual async Task<RequestStatus> Handle(AppCommand<T> request, CancellationToken cancellationToken)
         {
             using var logScope = _logger.BeginScope("{CorrelationId}", request.CommandContext.CorrelationId.Value);
-            using var activity = Tracing.StartTracing(typeof(T).Name, request.CommandContext.CorrelationId);
+            using var activity = Tracing.StartActivity(typeof(T).Name, request.CommandContext.CorrelationId);
 
             var validationContext = new ValidationContext(request.Command);
             var validationResults = new Collection<ValidationResult>();

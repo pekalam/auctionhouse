@@ -11,6 +11,7 @@ using Common.Application.Events;
 using Common.WebAPI;
 using Common.WebAPI.Auth;
 using Common.WebAPI.Configuration;
+using Common.WebAPI.Tracing;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using RabbitMq.EventBus;
@@ -87,10 +88,7 @@ builder.Services.AddCommonJwtAuth(jwtConfig, authBuilder);
 builder.Services.AddSerilogLogging(builder.Configuration, "Command");
 Activity.DefaultIdFormat = ActivityIdFormat.W3C;
 Activity.ForceDefaultIdFormat = true;
-builder.Services.AddTracing(b =>
-{
-    //b.AddAspNetCoreInstrumentation();
-});
+builder.Services.AddTracing("Command", builder.Configuration);
 
 builder.Services.AddCacheServices(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
@@ -138,7 +136,6 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-var tracing = TracingInstaller.CreateModuleTracing("Command");
 
 app.UseIdTokenManager();
 app.UseIdTokenSlidingExpiration();
@@ -160,4 +157,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-tracing.Dispose();

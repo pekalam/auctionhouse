@@ -1,10 +1,11 @@
-﻿using Common.Application.Events;
+﻿using Common.Application;
+using Common.Application.Events;
 using Core.Common.Domain;
 using Core.DomainFramework;
 using EasyNetQ;
 using EasyNetQ.SystemMessages;
 using Microsoft.Extensions.Logging;
-
+using System.Diagnostics;
 
 namespace RabbitMq.EventBus
 {
@@ -48,6 +49,7 @@ namespace RabbitMq.EventBus
         {
             try
             {
+                Tracing.SetActivityContextData(@event.CommandContext);
                 await _rabbitMq.Bus.PubSub.PublishAsync(@event, @event.Event.GetType().Name);
             }
             catch (Exception e)

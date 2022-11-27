@@ -14,7 +14,7 @@ namespace Common.Application.Events
 
         async Task IEventDispatcher.Dispatch(IAppEvent<Event> msg)
         {
-            using var activity = Tracing.StartTracing(GetType().Name + "_" + msg.Event.EventName, msg.CommandContext.CorrelationId);
+            using var activity = Tracing.StartActivityFromCommandContext(GetType().Name + "_" + msg.Event.EventName, msg.CommandContext);
 
             await HandleEvent(msg);
 

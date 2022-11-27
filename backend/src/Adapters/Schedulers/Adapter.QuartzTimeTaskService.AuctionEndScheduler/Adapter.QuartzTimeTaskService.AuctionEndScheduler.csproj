@@ -9,12 +9,14 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Primitives" Version="6.0.0" />
     <PackageReference Include="RestEase" Version="1.5.5" />
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="Test.Adapter.QuartzServiceAuctionEndScheduler"/>
+    <InternalsVisibleTo Include="Test.Adapter.QuartzServiceAuctionEndScheduler" />
   </ItemGroup>
 
   <ItemGroup>

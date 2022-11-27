@@ -34,6 +34,16 @@ services:
       - '5672:5672'
       - '15672:15672'
 
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: otel-collector
+    command: ["--config=/etc/otel-collector-config.yml"]
+    volumes:
+      - ./otel-collector-config.yml:/etc/otel-collector-config.yml:ro
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+
   zipkin:
     image: openzipkin/zipkin
     ports:

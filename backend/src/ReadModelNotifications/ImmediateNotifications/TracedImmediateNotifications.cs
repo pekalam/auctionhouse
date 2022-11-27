@@ -16,19 +16,19 @@ namespace ReadModelNotifications.ImmediateNotifications
 
         public Task NotifyCompleted(CorrelationId correlationId, Dictionary<string, object>? extraData = null)
         {
-            var activity = Tracing.StartTracing(nameof(NotifyCompleted), correlationId);
+            var activity = Tracing.StartActivity(nameof(NotifyCompleted), correlationId);
             return _immediateNotifications.NotifyCompleted(correlationId, extraData).AddActivityDisposingContinuation(activity);
         }
 
         public Task NotifyFailed(CorrelationId correlationId, Dictionary<string, object>? extraData = null)
         {
-            var activity = Tracing.StartTracing(nameof(NotifyFailed), correlationId);
+            var activity = Tracing.StartActivity(nameof(NotifyFailed), correlationId);
             return _immediateNotifications.NotifyFailed(correlationId, extraData).AddActivityDisposingContinuation(activity);
         }
 
         public Task RegisterNew(CorrelationId correlationId, CommandId commandId)
         {
-            var activity = Tracing.StartTracing(nameof(RegisterNew), correlationId);
+            var activity = Tracing.StartActivity(nameof(RegisterNew), correlationId);
             return _immediateNotifications.RegisterNew(correlationId, commandId).AddActivityDisposingContinuation(activity);
         }
     }

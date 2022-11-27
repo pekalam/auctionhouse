@@ -28,6 +28,6 @@ namespace Common.Application.Commands
 
         public static CommandContext CreateNew(string name, Guid? user = null) => new(CommandId.CreateNew(), CorrelationId.CreateNew(), user, false, false, name, new Dictionary<string, string>());
 
-        public CommandContext CloneWithName(string name) => new(new CommandId(CommandId.Id), CorrelationId.Value, User, HttpQueued, WSQueued, name, new Dictionary<string, string>(ExtraData));
+        public CommandContext CloneWithName(string name) => new(CommandId.CreateNew(), CorrelationId.Value, User, HttpQueued, WSQueued, name, new Dictionary<string, string>(ExtraData));
     }
 }

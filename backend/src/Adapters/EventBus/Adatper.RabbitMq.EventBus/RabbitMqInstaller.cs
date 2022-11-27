@@ -4,7 +4,6 @@ using Common.Application;
 using Common.Application.Events;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using OpenTelemetry.Metrics;
 using System.Diagnostics;
 using System.Reflection;
 

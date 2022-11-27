@@ -35,7 +35,7 @@ namespace Core.Query.EventHandlers
 
         async Task IEventDispatcher.Dispatch(IAppEvent<Event> msg)
         {
-            using var activity = Tracing.StartTracing(GetType().Name + "_" + msg.Event.EventName, msg.CommandContext.CorrelationId);
+            using var activity = Tracing.StartActivityFromCommandContext(GetType().Name + "_" + msg.Event.EventName, msg.CommandContext);
 
             await ConsumeEvent(msg);
             await (_eventConsumerCallbacks?.OnEventProcessed(msg, _logger) ?? Task.CompletedTask);

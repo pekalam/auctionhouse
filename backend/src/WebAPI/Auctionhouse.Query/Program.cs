@@ -8,6 +8,7 @@ using Common.Application;
 using Common.WebAPI;
 using Common.WebAPI.Auth;
 using Common.WebAPI.Configuration;
+using Common.WebAPI.Tracing;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using RabbitMq.EventBus;
 using ReadModel.Core;
@@ -71,10 +72,7 @@ var authBuilder = builder.Services.AddAuthentication(JwtBearerDefaults.Authentic
 builder.Services.AddCommonJwtAuth(jwtConfig, authBuilder);
 //logging and tracing
 builder.Services.AddSerilogLogging(builder.Configuration, "Query");
-builder.Services.AddTracing(b =>
-{
-    //b.AddAspNetCoreInstrumentation();
-});
+builder.Services.AddTracing("Query", builder.Configuration);
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
@@ -100,8 +98,6 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-var tracing = TracingInstaller.CreateModuleTracing("Query");
-
 app.UseIdTokenManager();
 app.UseIdTokenSlidingExpiration();
 app.UseAuthentication();
@@ -121,4 +117,3 @@ app.MapHub<ApplicationHub>("/app");
 app.MapControllers();
 
 app.Run();
-tracing.Dispose();

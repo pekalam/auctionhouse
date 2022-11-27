@@ -41,9 +41,8 @@ namespace RabbitMq.EventBus
             var cmdName = cmdType.Name;
             var queueName = "Queued_" + cmdName;
             var subscription = _bus.PubSub.SubscribeAsync<QueuedCommand>(cmdName,
-                obj =>
+                cmd =>
                 {
-                    var cmd = (QueuedCommand)obj;
                     var cmdContext = ((ICommandContextOwner)cmd.AppCommand).CommandContext;
                     _logger.LogDebug("Reveived command message from MQ: {@command}", cmd);
                     if (cmdContext.WSQueued)

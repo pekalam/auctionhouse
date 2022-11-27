@@ -17,7 +17,7 @@ namespace Common.Application
         {
             if (activity == null) return;
 
-            Activity.Current?.SetTag("otel.status_code", "UNSET");
+            Activity.Current?.SetTag("otel.status_code", status);
             if (description != null) Activity.Current?.SetTag("otel.status_description", description);
         }
     }
