@@ -94,6 +94,11 @@ namespace Adapter.MongoDb.AuctionImage
 
         public int UpdateManyMetadata(string[] imageIds, AuctionImageMetadata metadata)
         {
+            if(imageIds.Length == 0)
+            {
+                return 0;
+            }
+
             var filter = Builders<BsonDocument>.Filter.In("filename", imageIds);
             var update = Builders<BsonDocument>.Update.Set("metadata.IsAssignedToAuction", metadata.IsAssignedToAuction);
 
