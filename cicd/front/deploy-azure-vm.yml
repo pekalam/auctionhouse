@@ -1,0 +1,32 @@
+parameters:
+  - name: registry-url
+    type: string
+    default: pekalam.online:5000
+  - name: frontend-dockerimage
+    type: string
+    default: pekalam/auctionhouse-front:latest
+  - name: docker-username
+    type: string
+    default: pekalam
+
+stages:
+- stage: Deploy
+  displayName: 'Deploy Prod stage'
+  jobs:
+    - deployment: 'AzureDeployment'
+      displayName: 'Azure Deployment'
+      environment:
+        name: azure-vm
+        resourceType: VirtualMachine
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - script: |
+                (sudo -E docker login -u ${{ parameters['docker-username'] }} -p $(PEKALAM-REGISTRY-PASS) ${{ parameters['registry-url'] }} 2>login_errorlog.txt || (cat login_errorlog.txt && exit 1)) && (test $(wc -l login_errorlog.txt | cut -d " " -f1) -gt 0 || rm login_errorlog.txt)
+              failOnStderr: true
+              displayName: Login to docker registry
+            - script: |
+                sudo -E docker pull ${{ parameters['registry-url'] }}/${{ parameters['frontend-dockerimage'] }} && sudo -E docker service update auctionhouse_front --with-registry-auth --image ${{ parameters['registry-url'] }}/${{ parameters['frontend-dockerimage'] }}
+              failOnStderr: true
+              displayName: Deploy frontend docker image

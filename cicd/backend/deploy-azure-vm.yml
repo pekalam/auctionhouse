@@ -1,0 +1,80 @@
+parameters:
+  - name: registry-url
+    type: string
+    default: registry.pekalam.online:5000
+
+
+stages:
+- stage: Deploy
+  displayName: Deploy to azure-vm
+  jobs:
+  - deployment: AzureVMDeployment
+    displayName: AzureVM Deployment
+    environment:
+      name: azure-vm
+      resourceType: VirtualMachine
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - task: DownloadBuildArtifacts@1
+              inputs:
+                buildType: 'current'
+                downloadType: 'single'
+                artifactName: 'drop'
+                downloadPath: '$(System.ArtifactsDirectory)'
+            - task: AzureKeyVault@2
+              inputs:
+                azureSubscription: 'Azure for Students(54a8b190-aefa-4989-849f-3931ec46cb62)'
+                KeyVaultName: auctionhouse-kv-prod
+                SecretsFilter: '*'
+                RunAsPreJob: false
+            # Creates secrets only if following conditions happen:
+            # - secret does not exist
+            # - secret exists and is not being used (stack is removed)
+            - script: |
+                (sudo docker secret ls | grep envoy_ssl_pkcs12 && sudo docker secret rm envoy_ssl_pkcs12 2>/dev/null) || true;
+                (echo "$(auctionhouse-cert)" | base64 --decode | sudo docker secret create envoy_ssl_pkcs12 - 2>/dev/null) || true;
+                (sudo docker secret ls | grep front_ssl_chain && sudo docker secret rm front_ssl_chain 2>/dev/null) || true;
+                (echo "$(auctionhouse-cert)" | base64 --decode | openssl pkcs12 -password pass: -clcerts -nokeys | sudo docker secret create front_ssl_chain - 2>/dev/null) || true;
+                (sudo docker secret ls | grep front_ssl_private && sudo docker secret rm front_ssl_private 2>/dev/null) || true;
+                (echo "$(auctionhouse-cert)" | base64 --decode | openssl pkcs12 -password pass: -nocerts -nodes | sudo docker secret create front_ssl_private - 2>/dev/null) || true;
+                (sudo docker secret ls | grep mongocluster-keyfile && sudo docker secret rm mongocluster-keyfile 2>/dev/null) || true;
+                (echo "$(mongocluster-keyfile)" | sudo docker secret create mongocluster-keyfile - 2>/dev/null) || true;
+                (sudo docker secret ls | grep mongouser-password && sudo docker secret rm mongouser-password 2>/dev/null) || true;
+                (echo "$(mongouser-password)" | sudo docker secret create mongouser-password - 2>/dev/null) || true;
+              displayName: Create docker secrets
+              failOnStderr: true
+            - script: |
+                mkdir -p /home/auctionhouse/auctionhouse/test && cp -r '$(System.ArtifactsDirectory)/drop/compose' /home/auctionhouse/auctionhouse/test
+              displayName: Copy artifacts
+              failOnStderr: true
+            - script: |
+                (sudo -E docker login -u pekalam -p $(PEKALAM-REGISTRY-PASS) ${{ parameters['registry-url'] }} 2>login_errorlog.txt || (cat login_errorlog.txt && exit 1)) && (test $(wc -l login_errorlog.txt | cut -d " " -f1) -gt 0 || rm login_errorlog.txt)
+              displayName: Login to private registry
+              failOnStderr: true
+            - script: >
+                cd /home/auctionhouse/auctionhouse/test/compose && 
+                (DOCKER_REGISTRY="${{ parameters['registry-url'] }}/"
+                AzureCredentials__AZURE_CLIENT_SECRET="$(AZURE_CLIENT_SECRET)"
+                AzureCredentials__AZURE_CLIENT_ID="$(AZURE_CLIENT_ID)"
+                AzureCredentials__AZURE_TENANT_ID="$(AZURE_TENANT_ID)"
+                ConnectionStrings__AppConfigurationProd="$(APPCONFIGURATIONPROD)"
+                TEST1="prod1"
+                sudo -E docker stack deploy --with-registry-auth
+                -c infrastructure/docker-compose.yml
+                -c infrastructure/docker-compose.prod.yml 
+                -c infrastructure/docker-compose.azure-vm.yml 
+                -c infrastructure/mongodb/docker-compose.yml 
+                -c infrastructure/mongodb/docker-compose.azure-vm.yml 
+                -c infrastructure/mongodb/docker-compose.volumes.yml 
+                -c front/docker-compose.yml 
+                -c front/docker-compose.azure-vm.yml 
+                -c front/docker-compose.prod.yml 
+                -c webAPI/docker-compose.yml 
+                -c webAPI/docker-compose.azure-vm.yml 
+                -c webAPI/docker-compose.prod.yml auctionhouse 
+                2>deploy_errorlog.txt || (cat deploy_errorlog.txt && exit 1)) && (test $(wc -l deploy_errorlog.txt | cut -d " " -f1) -gt 0 || rm deploy_errorlog.txt)
+              timeoutInMinutes: 4
+              displayName: Docker deployment
+              failOnStderr: true

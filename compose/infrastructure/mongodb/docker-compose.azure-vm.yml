@@ -1,0 +1,28 @@
+version: '3.4'
+
+services:
+  db-config1:
+    deploy:
+      placement:
+        constraints:
+          - "node.role==manager"
+  mongodb:
+    deploy:
+      placement:
+        constraints:
+          - "node.role==manager"
+  db-node1:
+    deploy:
+      placement:
+        constraints:
+          - "node.role==manager"
+  db-node2:
+    deploy:
+      placement:
+        constraints:
+          - "node.role==manager"
+  db-node3:
+    deploy:
+      placement:
+        constraints:
+          - "node.role==manager"

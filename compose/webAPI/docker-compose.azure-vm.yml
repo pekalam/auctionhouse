@@ -1,0 +1,21 @@
+version: '3.4'
+
+
+services:
+  command:
+    deploy:
+      placement:
+        constraints:
+          - "node.role==manager"
+
+  query:
+    deploy:
+      placement:
+        constraints:
+          - "node.role==manager"
+
+  commandstatus:
+    deploy:
+      placement:
+        constraints:
+          - "node.role==manager"

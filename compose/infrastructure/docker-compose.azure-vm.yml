@@ -1,0 +1,50 @@
+version: '3.4'
+
+services:
+  envoy1:
+    deploy:
+      placement:
+        constraints:
+          - "node.role==worker"
+
+  quartz_web_task_service:
+    deploy:
+      placement:
+        constraints:
+          - "node.role==manager"
+
+  sql_server:
+    deploy:
+      placement:
+        constraints:
+          - "node.role==manager"
+
+  rabbitmq:
+    deploy:
+      placement:
+        constraints:
+          - "node.role==manager"
+
+  otel-collector:
+    deploy:
+      placement:
+        constraints:
+          - "node.role==manager"
+
+  zipkin:
+    deploy:
+      placement:
+        constraints:
+          - "node.role==manager"
+
+  seq:
+    deploy:
+      placement:
+        constraints:
+          - "node.role==manager"
+
+  redis:
+    deploy:
+      placement:
+        constraints:
+          - "node.role==manager"

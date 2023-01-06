@@ -10,12 +10,13 @@ services:
       - ENV
   query:
     environment:
-      - CORS__AllowedOrigins=https://pekalam.me
+      - CORS__AllowedOrigins=https://pekalam.online
       - ConnectionStrings__AppConfigurationProd
       - AzureCredentials__AZURE_CLIENT_SECRET
       - AzureCredentials__AZURE_CLIENT_ID
       - AzureCredentials__AZURE_TENANT_ID
       - ENV
+      - TEST1
   commandstatus:
     environment:
-      - CORS__AllowedOrigins=https://pekalam.me
+      - CORS__AllowedOrigins=https://pekalam.online
