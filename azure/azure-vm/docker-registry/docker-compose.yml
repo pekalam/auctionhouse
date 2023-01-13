@@ -1,0 +1,40 @@
+version: '3.4'
+
+services:
+  registry:
+    image: registry:2.7
+    volumes:
+      - ./registry.yml:/etc/docker/registry/config.yml
+      - registry_data:/var/lib/registry
+    secrets:
+      - registry.crt
+      - registry.key
+
+
+  ui:
+    image: joxit/docker-registry-ui:latest
+    ports:
+      - 5000:443
+    environment:
+      - REGISTRY_TITLE=My Private Docker Registry
+      - SINGLE_REGISTRY=false
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - registry
+    secrets:
+      - registry.crt
+      - registry.key
+      - registry.htpasswd
+
+
+secrets:
+  registry.crt:
+    external: true
+  registry.key:
+    external: true
+  registry.htpasswd:
+    external: true
+
+volumes:
+  registry_data:
