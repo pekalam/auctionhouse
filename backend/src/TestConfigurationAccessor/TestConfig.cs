@@ -5,13 +5,13 @@ namespace TestConfigurationAccessor
 {
     /// <summary>
     /// Provides access to test configuration from provider selected by env name. 
-    /// Source of configuration is obtained by checking "ENV" environment variable.
+    /// Source of configuration is obtained by checking "APP_ENV" environment variable.
     /// If the environment variable contains prefix (ENV="exampleprefix-suffix") then source of configuration is obtained using provider configured for this prefix.
     /// Suffix usage depends on type of provider.
-    /// Default value of "ENV" is "local" which results in usage of default file-based provider. The file-based provider uses ENV variable to choose source file of settings.
+    /// Default value of "APP_ENV" is "local" which results in usage of default file-based provider. The file-based provider uses APP_ENV variable to choose source file of settings.
     /// For example: 
-    /// - if ENV="local", provider loads: settings.json, settings.local.json
-    /// - if ENV="docker", provider loads: settings.json, settings.docker.json
+    /// - if APP_ENV="local", provider loads: settings.json, settings.local.json
+    /// - if APP_ENV="docker", provider loads: settings.json, settings.docker.json
     /// </summary>
     public static class TestConfig
     {
@@ -50,7 +50,7 @@ namespace TestConfigurationAccessor
 
         private static string GetEnvironmentName()
         {
-            return Environment.GetEnvironmentVariable("ENV") ?? LocalEnvName;
+            return Environment.GetEnvironmentVariable("APP_ENV") ?? LocalEnvName;
         }
     }
 }

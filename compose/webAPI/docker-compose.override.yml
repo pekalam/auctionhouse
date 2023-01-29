@@ -5,7 +5,7 @@ services:
     environment:
       - ASPNETCORE_URLS=http://+:80
       - DemoMode__Enabled=false
-      - ENV=docker
+      - APP_ENV=docker
     ports:
       - "80"
       - "443"
@@ -15,11 +15,11 @@ services:
   query:
     environment:
       - CORS__AllowedOrigins=https://localhost:10000
-      - ENV=docker
+      - APP_ENV=docker
   commandstatus:
     environment:
       - CORS__AllowedOrigins=https://localhost:10000
-      - ENV=docker
+      - APP_ENV=docker
 
 networks:
   default:

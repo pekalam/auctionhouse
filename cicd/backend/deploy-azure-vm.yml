@@ -60,7 +60,7 @@ stages:
                 AzureCredentials__AZURE_CLIENT_ID="$(AZURE_CLIENT_ID)"
                 AzureCredentials__AZURE_TENANT_ID="$(AZURE_TENANT_ID)"
                 ConnectionStrings__AppConfigurationProd="$(APPCONFIGURATIONPROD)"
-                TEST1="prod1"
+                APP_ENV="prod1"
                 sudo -E docker stack deploy --with-registry-auth
                 -c infrastructure/docker-compose.yml
                 -c infrastructure/docker-compose.prod.yml 

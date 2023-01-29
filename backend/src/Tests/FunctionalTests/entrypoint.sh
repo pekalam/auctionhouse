@@ -2,7 +2,7 @@
 
 set -e
 
-ENV="$1"
+APP_ENV="$1"
 shift
 
 while (( "$#" )); do 
@@ -12,4 +12,4 @@ while (( "$#" )); do
 done
 
 sleep 30
-exec dotnet test FunctionalTests.csproj --no-restore -e ENV="$ENV"
+exec dotnet test FunctionalTests.csproj --no-restore -e APP_ENV="$APP_ENV"

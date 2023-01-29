@@ -8,7 +8,7 @@ namespace Common.WebAPI.Configuration
         private const string AzureClientSecretKey = "AZURE_CLIENT_SECRET";
         private const string AzureClientIdKey = "AZURE_CLIENT_ID";
         private const string AzureTenantKey = "AZURE_TENANT_ID";
-        private const string EnvironmentKey = "ENV";
+        private const string EnvironmentKey = "APP_ENV";
         private const string AppConfigurationConnectionStringKey = "AppConfigurationProd";
 
         public const string LocalEnvName = "local";

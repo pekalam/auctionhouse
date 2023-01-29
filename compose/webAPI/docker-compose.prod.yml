@@ -7,7 +7,7 @@ services:
       - AzureCredentials__AZURE_CLIENT_SECRET
       - AzureCredentials__AZURE_CLIENT_ID
       - AzureCredentials__AZURE_TENANT_ID
-      - ENV
+      - APP_ENV
   query:
     environment:
       - CORS__AllowedOrigins=https://pekalam.online
@@ -15,8 +15,7 @@ services:
       - AzureCredentials__AZURE_CLIENT_SECRET
       - AzureCredentials__AZURE_CLIENT_ID
       - AzureCredentials__AZURE_TENANT_ID
-      - ENV
-      - TEST1
+      - APP_ENV
   commandstatus:
     environment:
       - CORS__AllowedOrigins=https://pekalam.online
