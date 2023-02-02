@@ -1,4 +1,4 @@
-FROM ubuntu:18.04 as base
+FROM ubuntu:20.04 as base
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes
@@ -10,7 +10,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     iputils-ping \
     libcurl4 \
-    libicu60 \
     libunwind8 \
     netcat \
     libssl1.0 \
@@ -57,4 +56,5 @@ RUN apt-get update; \
   apt-get install -y dotnet-sdk-6.0
 
 FROM dotnet as node
-RUN apt-get install -y nodejs npm
+RUN apt-get install -y npm && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+RUN NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && nvm install 18.13.0
