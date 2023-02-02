@@ -37,3 +37,7 @@ backend/src/Database/Command/AuctionhouseDatabase/AuctionhouseDatabase.jfm
 .vscode/settings.json
 /backend/Adapter.ChronicleEfCoreStorage/obj
 
+azure/azure-vm/tf/*.tfstate
+azure/azure-vm/tf/*.tfstate*
+azure/azure-vm/tf/\.*
+azure/azure-vm/tf/ssh
