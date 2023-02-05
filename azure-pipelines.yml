@@ -12,4 +12,5 @@ steps:
   env:
     MSBuildBinPath: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\'
   inputs:
-    filePath: 'backend\src\Database\Command\Scripts\build\Build.ps1'
+    workingDirectory: 'backend\src\Database\Command\Scripts\build'
+    filePath: 'Build.ps1'
