@@ -12,5 +12,18 @@ steps:
   env:
     MSBuildBinPath: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\'
   inputs:
-    filePath: 'backend\src\Database\Command\Scripts\build\Build.ps1'
+    filePath: 'backend\src\Database\Command\Scripts\build\BuildCsproj.ps1'
+    workingDirectory: 'backend\src\Database\Command\Scripts\build'
+- task: PowerShell@2
+  inputs:
+    filePath: 'backend\src\Database\Command\Scripts\build\Add-EventOutboxAdapterScripts.ps1'
+    workingDirectory: 'backend\src\Database\Command\Scripts\build'
+- task: PowerShell@2
+  inputs:
+    filePath: 'backend\src\Database\Command\Scripts\build\Add-SagaNotificationsScripts.ps1'
+    workingDirectory: 'backend\src\Database\Command\Scripts\build'
+- task: PowerShell@2
+  inputs:
+    filePath: 'backend\src\Database\Command\Scripts\build\CopyArtifacts.ps1'
+    arguments: '$(Build.ArtifactStagingDirectory)'
     workingDirectory: 'backend\src\Database\Command\Scripts\build'
