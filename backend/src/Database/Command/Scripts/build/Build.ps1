@@ -1,6 +1,6 @@
 $ErrorActionPreference = 'Stop'
 
-& MSBuild.exe ..\..\AuctionhouseDatabase\AuctionhouseDatabase.sqlproj
+& "$Env:MSBuildBinPath"MSBuild.exe ..\..\AuctionhouseDatabase\AuctionhouseDatabase.sqlproj
 
 & .\Add-EventOutboxAdapterScripts.ps1
 & .\Add-SagaNotificationsScripts.ps1
