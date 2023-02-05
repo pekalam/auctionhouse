@@ -6,14 +6,26 @@
 pool:
   vmImage: windows-latest
 
-steps:
+variables:
+  MSBuildBinPath: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\'
 
+steps:
 - task: PowerShell@2
   env:
-    MSBuildBinPath: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\'
+    MSBuildBinPath: ${{ variables.MSBuildBinPath }}
   inputs:
     filePath: 'backend\src\Database\Command\Scripts\build\BuildCsproj.ps1'
     workingDirectory: 'backend\src\Database\Command\Scripts\build'
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    useGlobalJson: true
+    workingDirectory: 'backend\src'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'custom'
+    custom: 'tool'
+    arguments: 'install --global dotnet-ef'
 - task: PowerShell@2
   inputs:
     filePath: 'backend\src\Database\Command\Scripts\build\Add-EventOutboxAdapterScripts.ps1'
