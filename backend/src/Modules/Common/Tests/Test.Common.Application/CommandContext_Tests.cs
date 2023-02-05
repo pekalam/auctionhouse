@@ -29,8 +29,6 @@ namespace Common.Application.Tests
             ctx.CommandId.ToString().Should().NotBeNullOrEmpty();
             ctx.CorrelationId.ToString().Should().NotBeNullOrEmpty();
             ctx.User.Should().BeNull();
-            ctx.HttpQueued.Should().BeFalse();
-            ctx.WSQueued.Should().BeFalse();
             ctx.Name.Should().Be(commandName);
         }
     }

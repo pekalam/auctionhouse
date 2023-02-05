@@ -20,8 +20,6 @@ namespace Adapter.SqlServer.EventOutbox
         public string CommandId { get; set; }
         public string CorrelationId { get; set; }
         public Guid? User { get; set; }
-        public bool HttpQueued { get; set; }
-        public bool WSQueued { get; set; }
         public string Name { get; set; }
         public string? ExtraData { get; set; }
     }
@@ -38,10 +36,8 @@ namespace Adapter.SqlServer.EventOutbox
                 {
                     CommandId = outboxStoreItem.CommandContext.CommandId.Id,
                     CorrelationId = outboxStoreItem.CommandContext.CorrelationId.Value,
-                    HttpQueued = outboxStoreItem.CommandContext.HttpQueued,
                     Name = outboxStoreItem.CommandContext.Name,
                     User = outboxStoreItem.CommandContext.User,
-                    WSQueued = outboxStoreItem.CommandContext.WSQueued,
                     ExtraData = JsonSerializer.Serialize(outboxStoreItem.CommandContext.ExtraData)
                 },
                 Timestamp = outboxStoreItem.Timestamp,
@@ -58,8 +54,6 @@ namespace Adapter.SqlServer.EventOutbox
                     new CommandId(dbItem.CommandContext.CommandId),
                     new CorrelationId(dbItem.CommandContext.CorrelationId),
                     dbItem.CommandContext.User,
-                    dbItem.CommandContext.HttpQueued,
-                    dbItem.CommandContext.WSQueued,
                     dbItem.CommandContext.Name,
                     DeserializeExtraData(dbItem)
                 ),

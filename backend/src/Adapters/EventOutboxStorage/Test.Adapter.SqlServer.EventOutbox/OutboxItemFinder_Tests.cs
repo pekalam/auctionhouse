@@ -49,8 +49,6 @@ namespace Test.Adapter.SqlServer.EventOutbox
                     CorrelationId = "123",
                     Name = "test",
                     User = Guid.NewGuid(),
-                    HttpQueued = false,
-                    WSQueued = false
                 },
                 Event = SerializationUtils.ToJson(new TestEvent()),
                 Timestamp = timestamp,

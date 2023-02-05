@@ -29,26 +29,5 @@ namespace ReadModelNotifications.SagaNotifications
 
         public void SetCompleted() => IsCompleted = true;
         public void SetFailed() => IsFailed = true;
-
-        public bool AddUnprocessedEvent(string @event)
-        {
-            var processedContains = ProcessedEvents.Contains(@event);
-            if (processedContains) return false;
-            var unprocessedContains = UnprocessedEvents.Contains(@event);
-            if (unprocessedContains) return false;
-            UnprocessedEvents.Add(@event);
-            return true;
-        }
-
-        public bool MarkEventAsProcessed(string @event)
-        {
-            var processedContains = ProcessedEvents.Contains(@event);
-            if (processedContains) return false;
-            var unprocessedContains = UnprocessedEvents.Contains(@event);
-            if (!unprocessedContains) return false;
-            UnprocessedEvents.Remove(@event);
-            ProcessedEvents.Add(@event);
-            return true;
-        }
     }
 }

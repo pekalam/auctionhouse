@@ -10,9 +10,6 @@ namespace Test.Adapter.SqlServer.EventOutbox
         {
             Assert.Equal(ctx.CommandId.Id, dbCtx.CommandId);
             Assert.Equal(ctx.CorrelationId.Value, dbCtx.CorrelationId);
-            Assert.Equal(ctx.HttpQueued, dbCtx.HttpQueued);
-            Assert.Equal(ctx.WSQueued, dbCtx.WSQueued);
-            Assert.Equal(ctx.Name, dbCtx.Name);
             Assert.Equal(ctx.Name, dbCtx.Name);
         }
     }

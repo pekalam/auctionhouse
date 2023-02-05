@@ -216,7 +216,7 @@ namespace ReadModelNotifications.Tests
             var appCmd = new AppCommand<T>
             {
                 Command = cmd,
-                CommandContext = new CommandContext(CommandId.CreateNew(), CorrelationId.CreateNew(), Guid.NewGuid(), false, false, typeof(T).Name, new Dictionary<string, string>())
+                CommandContext = new CommandContext(CommandId.CreateNew(), CorrelationId.CreateNew(), Guid.NewGuid(), typeof(T).Name, new Dictionary<string, string>())
             };
             return appCmd;
         }
