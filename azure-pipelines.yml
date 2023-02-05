@@ -39,3 +39,8 @@ steps:
     filePath: 'backend\src\Database\Command\Scripts\build\CopyArtifacts.ps1'
     arguments: '$(Build.ArtifactStagingDirectory)'
     workingDirectory: 'backend\src\Database\Command\Scripts\build'
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
