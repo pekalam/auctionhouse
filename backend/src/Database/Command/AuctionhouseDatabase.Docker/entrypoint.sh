@@ -51,6 +51,6 @@ if ! [ "$db_exists" == "exists" ]; then
 fi
 
 echo "AuctionhouseDatabase is ready"
-/container-scripts/listen-on-health-port.sh &
+bash /container-scripts/listen-on-health-port.sh &
 
 wait
