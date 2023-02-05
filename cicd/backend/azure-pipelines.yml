@@ -7,8 +7,14 @@ trigger:
      - backend
 
 variables:
-  - name: 'default-vm-image'
-    value: 'ubuntu-latest'
+  - name: default-vm-image
+    value: ubuntu-latest
+    readonly: true
+  - name: command-db-build-vm-image
+    value: windows-latest
+    readonly: true
+  - name: MSBuildBinPath
+    value: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\
     readonly: true
 
 parameters:
@@ -64,6 +70,79 @@ stages:
 - stage: DockerBuild
   displayName: 'Docker build stage'
   jobs:
+  - job: 'build_command_db'
+    displayName: 'Build command DB'
+    pool:
+      vmImage: ${{ variables['command-db-build-vm-image'] }}
+    steps:
+    - task: PowerShell@2
+      env:
+        MSBuildBinPath: ${{ variables.MSBuildBinPath }}
+      inputs:
+        filePath: 'backend\src\Database\Command\Scripts\build\BuildCsproj.ps1'
+        workingDirectory: 'backend\src\Database\Command\Scripts\build'
+    - task: UseDotNet@2
+      inputs:
+        packageType: 'sdk'
+        useGlobalJson: true
+        workingDirectory: 'backend\src'
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'custom'
+        custom: 'tool'
+        arguments: 'install --global dotnet-ef'
+    - task: PowerShell@2
+      inputs:
+        filePath: 'backend\src\Database\Command\Scripts\build\Add-EventOutboxAdapterScripts.ps1'
+        workingDirectory: 'backend\src\Database\Command\Scripts\build'
+    - task: PowerShell@2
+      inputs:
+        filePath: 'backend\src\Database\Command\Scripts\build\Add-SagaNotificationsScripts.ps1'
+        workingDirectory: 'backend\src\Database\Command\Scripts\build'
+    - task: PowerShell@2
+      inputs:
+        filePath: 'backend\src\Database\Command\Scripts\build\CopyArtifacts.ps1'
+        arguments: '$(Build.ArtifactStagingDirectory)'
+        workingDirectory: 'backend\src\Database\Command\Scripts\build'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'command-db-build'
+        publishLocation: 'Container'
+  - job: 'build_docker_command_db'
+    dependsOn: build_command_db
+    ${{ if eq(parameters['pool'], 'default') }}:
+      pool:
+        vmImage: ${{ variables['default-vm-image'] }}
+    ${{ else }}:
+      pool: ${{ parameters['pool'] }}
+    steps:
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'command-db-build'
+        itemPattern: 'command-db-build/**'
+        downloadPath: 'backend/src/Database/Command/AuctionhouseDatabase.Docker'
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: backend/src/Database/Command/AuctionhouseDatabase.Docker/command-db-build
+        TargetFolder: backend/src/Database/Command/AuctionhouseDatabase.Docker/buildArtifacts
+    - task: Docker@2
+      inputs:
+        containerRegistry: ${{ parameters['docker-registry'] }}
+        command: build
+        Dockerfile: backend/src/Database/Command/AuctionhouseDatabase.Docker/Dockerfile
+        buildContext: backend/src/Database/Command/AuctionhouseDatabase.Docker
+        arguments: --target build
+        tags: latest
+        repository: pekalam/auctionhouse-sqlserver
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'AuctionhouseDockerRegistry'
+        command: 'push'
+        tags: latest
+        repository: pekalam/auctionhouse-sqlserver
   - job: 'build_docker_infrastructure'
     displayName: 'Build infrastructure docker images'
     ${{ if eq(parameters['pool'], 'default') }}:
