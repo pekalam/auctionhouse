@@ -1,4 +1,4 @@
-FROM mongo
+FROM mongo:5.0.6
 RUN apt-get update && apt-get -y install netcat
 RUN apt-get -y install cron
 COPY ["common/wait-for", "/bin/wait-for"]

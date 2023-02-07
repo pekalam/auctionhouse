@@ -1,4 +1,4 @@
-FROM mongo
+FROM mongo:5.0.6
 RUN apt-get update && apt-get -y install netcat
 COPY ["common/wait-for", "/bin/wait-for"]
 COPY ["shards/shard_db-node3/mongo-entrypoint.sh", "/root"]
