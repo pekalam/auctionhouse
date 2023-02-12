@@ -67,7 +67,7 @@ namespace Common.Application
             }
 
             Services.AddTransient<EventOutboxItemsSender>();
-            Services.AddTransient<ImmediateCommandQueryMediator>();
+            Services.AddTransient<CommandQueryMediator>();
             Services.AddTransient<CommandHandlerBaseDependencies>();
 
             Services.AddTransient<ICommandHandlerCallbacks, DefaultCommandHandlerCallbacks>();
@@ -101,7 +101,7 @@ namespace Common.Application
                 cfg.AsTransient();
             });
 
-            Services.AddTransient<ImmediateCommandQueryMediator>();
+            Services.AddTransient<CommandQueryMediator>();
             AttributeStrategies.LoadQueryAttributeStrategies(queryHandlerAssemblies);
             AuthorizationRequiredAttribute.LoadSignedInUserCmdAndQueryMembers(queryHandlerAssemblies);
 

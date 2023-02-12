@@ -24,9 +24,9 @@ namespace Auctions.Application.Commands.BuyNow
         public const string TransactionContextParamName = "TransactionId";
         public const string CmdContextParamName = "CommandContext";
 
-        private readonly Lazy<ImmediateCommandQueryMediator> _mediator;
+        private readonly Lazy<CommandQueryMediator> _mediator;
 
-        public BuyNowSaga(Lazy<ImmediateCommandQueryMediator> mediator)
+        public BuyNowSaga(Lazy<CommandQueryMediator> mediator)
         {
             _mediator = mediator;
         }

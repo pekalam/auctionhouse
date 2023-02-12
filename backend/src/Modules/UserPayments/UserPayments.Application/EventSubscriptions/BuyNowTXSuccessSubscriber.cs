@@ -13,9 +13,9 @@ namespace UserPayments.Application.EventSubscriptions
 {
     public class BuyNowTXSuccessSubscriber : EventSubscriber<Events.V1.BuyNowTXSuccess>
     {
-        private readonly ImmediateCommandQueryMediator _mediator;
+        private readonly CommandQueryMediator _mediator;
 
-        public BuyNowTXSuccessSubscriber(IAppEventBuilder eventBuilder, ImmediateCommandQueryMediator mediator) : base(eventBuilder)
+        public BuyNowTXSuccessSubscriber(IAppEventBuilder eventBuilder, CommandQueryMediator mediator) : base(eventBuilder)
         {
             _mediator = mediator;
         }

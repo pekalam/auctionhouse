@@ -12,9 +12,9 @@ namespace Users.Application.EventSubscriptions
 {
     public class BuyNowTXSuccessEventSubscriber : EventSubscriber<Events.V1.BuyNowTXSuccess>
     {
-        private readonly ImmediateCommandQueryMediator _mediator;
+        private readonly CommandQueryMediator _mediator;
 
-        public BuyNowTXSuccessEventSubscriber(IAppEventBuilder eventBuilder, ImmediateCommandQueryMediator mediator) : base(eventBuilder)
+        public BuyNowTXSuccessEventSubscriber(IAppEventBuilder eventBuilder, CommandQueryMediator mediator) : base(eventBuilder)
         {
             _mediator = mediator;
         }

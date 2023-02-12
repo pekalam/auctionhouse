@@ -13,9 +13,9 @@ namespace UserPayments.Application.EventSubscriptions
 {
     public class UserCreatedSubscriber : EventSubscriber<UserCreated>
     {
-        private readonly ImmediateCommandQueryMediator _mediator;
+        private readonly CommandQueryMediator _mediator;
 
-        public UserCreatedSubscriber(IAppEventBuilder eventBuilder, ImmediateCommandQueryMediator mediator) : base(eventBuilder)
+        public UserCreatedSubscriber(IAppEventBuilder eventBuilder, CommandQueryMediator mediator) : base(eventBuilder)
         {
             _mediator = mediator;
         }

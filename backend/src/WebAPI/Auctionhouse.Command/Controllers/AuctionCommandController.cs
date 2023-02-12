@@ -20,10 +20,10 @@ namespace Auctionhouse.Command.Controllers
     //[FeatureGate("Auctionhouse_AuctionCommands")]
     public class AuctionCommandController : ControllerBase
     {
-        private readonly ImmediateCommandQueryMediator _immediateCommandMediator;
+        private readonly CommandQueryMediator _immediateCommandMediator;
         private readonly IMapper _mapper;
 
-        public AuctionCommandController(ImmediateCommandQueryMediator immediateCommandMediator,
+        public AuctionCommandController(CommandQueryMediator immediateCommandMediator,
             IMapper mapper)
         {
             _immediateCommandMediator = immediateCommandMediator;

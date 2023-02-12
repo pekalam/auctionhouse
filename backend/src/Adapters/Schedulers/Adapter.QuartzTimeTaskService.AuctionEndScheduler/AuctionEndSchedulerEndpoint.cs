@@ -26,9 +26,9 @@ namespace Adapter.QuartzTimeTaskService.AuctionEndScheduler
     [Route("api/c")]
     public class AuctionEndSchedulerEndpoint : ControllerBase
     {
-        private readonly ImmediateCommandQueryMediator _mediator;
+        private readonly CommandQueryMediator _mediator;
 
-        public AuctionEndSchedulerEndpoint(ImmediateCommandQueryMediator mediator)
+        public AuctionEndSchedulerEndpoint(CommandQueryMediator mediator)
         {
             _mediator = mediator;
         }

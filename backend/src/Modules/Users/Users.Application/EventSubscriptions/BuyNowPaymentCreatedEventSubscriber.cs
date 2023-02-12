@@ -7,9 +7,9 @@ namespace Users.Application.EventSubscriptions
 {
     public class BuyNowPaymentCreatedEventSubscriber : EventSubscriber<BuyNowPaymentCreated>
     {
-        private readonly ImmediateCommandQueryMediator _mediator;
+        private readonly CommandQueryMediator _mediator;
 
-        public BuyNowPaymentCreatedEventSubscriber(IAppEventBuilder eventBuilder, ImmediateCommandQueryMediator mediator) : base(eventBuilder)
+        public BuyNowPaymentCreatedEventSubscriber(IAppEventBuilder eventBuilder, CommandQueryMediator mediator) : base(eventBuilder)
         {
             _mediator = mediator;
         }

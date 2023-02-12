@@ -24,9 +24,9 @@ namespace Auctions.Application.Commands.CreateAuction
         public const string CommandContextKey = "CommandContext";
 
         private readonly ILogger<CreateAuctionSaga> _logger;
-        private readonly ImmediateCommandQueryMediator _mediator;
+        private readonly CommandQueryMediator _mediator;
 
-        public CreateAuctionSaga(ILogger<CreateAuctionSaga> logger, ImmediateCommandQueryMediator mediator)
+        public CreateAuctionSaga(ILogger<CreateAuctionSaga> logger, CommandQueryMediator mediator)
         {
             _logger = logger;
             _mediator = mediator;

@@ -9,9 +9,9 @@ namespace Auctionhouse.Query.Controllers
     [Route("api/q")]
     public class UserQueryController_Username : ControllerBase
     {
-        private ImmediateCommandQueryMediator _mediator;
+        private CommandQueryMediator _mediator;
 
-        public UserQueryController_Username(ImmediateCommandQueryMediator mediator)
+        public UserQueryController_Username(CommandQueryMediator mediator)
         {
             _mediator = mediator;
         }

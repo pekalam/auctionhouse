@@ -20,12 +20,12 @@ namespace Auctionhouse.Command.Controllers
     //[FeatureGate("Auctionhouse_AuthenticationCommands")]
     public class AuthenticationCommandController : Controller
     {
-        private readonly ImmediateCommandQueryMediator _mediator;
+        private readonly CommandQueryMediator _mediator;
         private readonly JwtService _jwtService;
         private readonly IMapper _mapper;
         private readonly Lazy<IIdTokenManager> _idTokenManager; //TODO consider use of virtual proxy due to low cohesion in this controller
 
-        public AuthenticationCommandController(ImmediateCommandQueryMediator immediateCommandMediator, JwtService jwtService, IMapper mapper, Lazy<IIdTokenManager> idTokenManager)
+        public AuthenticationCommandController(CommandQueryMediator immediateCommandMediator, JwtService jwtService, IMapper mapper, Lazy<IIdTokenManager> idTokenManager)
         {
             _mediator = immediateCommandMediator;
             _jwtService = jwtService;

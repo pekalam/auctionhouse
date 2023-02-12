@@ -8,9 +8,9 @@ namespace AuctionBids.Application.EventSubscriptions
 
     public class AuctionCreatedSubscriber : EventSubscriber<AuctionCreated>
     {
-        private readonly ImmediateCommandQueryMediator _mediator;
+        private readonly CommandQueryMediator _mediator;
 
-        public AuctionCreatedSubscriber(IAppEventBuilder appEventBuilder, ImmediateCommandQueryMediator mediator) : base(appEventBuilder)
+        public AuctionCreatedSubscriber(IAppEventBuilder appEventBuilder, CommandQueryMediator mediator) : base(appEventBuilder)
         {
             _mediator = mediator;
         }

@@ -15,10 +15,10 @@ namespace UserPayments.Application.EventSubscriptions
 
     public class UserCreditsFailedToLockForBuyNowAuctionSubscriber : EventSubscriber<UserCreditsFailedToLockForBuyNowAuction>
     {
-        private readonly ImmediateCommandQueryMediator _mediator;
+        private readonly CommandQueryMediator _mediator;
 
 
-        public UserCreditsFailedToLockForBuyNowAuctionSubscriber(IAppEventBuilder eventBuilder, ImmediateCommandQueryMediator mediator) : base(eventBuilder)
+        public UserCreditsFailedToLockForBuyNowAuctionSubscriber(IAppEventBuilder eventBuilder, CommandQueryMediator mediator) : base(eventBuilder)
         {
             _mediator = mediator;
         }

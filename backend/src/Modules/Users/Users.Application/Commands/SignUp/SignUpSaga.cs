@@ -23,14 +23,14 @@ namespace Users.Application.Commands.SignUp
     {
         public const string CmdContextParamName = "CommandContext";
 
-        private readonly Lazy<ImmediateCommandQueryMediator> _mediator;
+        private readonly Lazy<CommandQueryMediator> _mediator;
         private readonly Lazy<IUserRepository> _users;
         private readonly Lazy<IUserAuthenticationDataRepository> _userAuthenticationData;
         private readonly Lazy<IUnitOfWorkFactory> _uowFactory;
         private readonly Lazy<ILogger<SignUpSaga>> _logger;
         private readonly ICommandHandlerCallbacks _commandHandlerCallbacks;
 
-        public SignUpSaga(Lazy<ImmediateCommandQueryMediator> mediator, Lazy<IUserRepository> users, Lazy<IUserAuthenticationDataRepository> userAuthenticationData, Lazy<IUnitOfWorkFactory> uowFactory, 
+        public SignUpSaga(Lazy<CommandQueryMediator> mediator, Lazy<IUserRepository> users, Lazy<IUserAuthenticationDataRepository> userAuthenticationData, Lazy<IUnitOfWorkFactory> uowFactory, 
             Lazy<ILogger<SignUpSaga>> logger, ICommandHandlerCallbacks commandHandlerCallbacks)
         {
             _mediator = mediator;

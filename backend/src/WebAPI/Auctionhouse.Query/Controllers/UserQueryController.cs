@@ -17,10 +17,10 @@ namespace Auctionhouse.Query.Controllers
     [Route("api/q")]
     public class UserQueryController : ControllerBase
     {
-        private ImmediateCommandQueryMediator _mediator;
+        private CommandQueryMediator _mediator;
         private IMapper _mapper;
 
-        public UserQueryController(ImmediateCommandQueryMediator mediator, IMapper mapper)
+        public UserQueryController(CommandQueryMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
             _mapper = mapper;

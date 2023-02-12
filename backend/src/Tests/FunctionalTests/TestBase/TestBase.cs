@@ -40,11 +40,11 @@ namespace FunctionalTests.Commands
 
         public IServiceProvider ServiceProvider { get; }
 
-        public ImmediateCommandQueryMediator Mediator
+        public CommandQueryMediator Mediator
         {
             get
             {
-                return ServiceProvider.GetRequiredService<ImmediateCommandQueryMediator>();
+                return ServiceProvider.GetRequiredService<CommandQueryMediator>();
             }
         }
 
@@ -94,7 +94,7 @@ namespace FunctionalTests.Commands
         public async Task<RequestStatus> SendCommand<T>(T command) where T : ICommand
         {
             using var scope = ServiceProvider.CreateScope();
-            var result = await scope.ServiceProvider.GetRequiredService<ImmediateCommandQueryMediator>().Send(command);
+            var result = await scope.ServiceProvider.GetRequiredService<CommandQueryMediator>().Send(command);
             return result;
         }
     }

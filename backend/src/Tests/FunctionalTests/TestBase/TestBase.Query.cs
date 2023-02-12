@@ -14,7 +14,7 @@ namespace FunctionalTests.Commands
         public async Task<TResponse> SendQuery<T, TResponse>(T query) where T : IQuery<TResponse>
         {
             using var scope = ServiceProvider.CreateScope();
-            var result = await scope.ServiceProvider.GetRequiredService<ImmediateCommandQueryMediator>().SendQuery(query);
+            var result = await scope.ServiceProvider.GetRequiredService<CommandQueryMediator>().SendQuery(query);
             return result;
         }
     }

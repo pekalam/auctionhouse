@@ -12,9 +12,9 @@ namespace UserPayments.Application.EventSubscriptions
 {
     public class BuyNowTxStartedSubscriber : EventSubscriber<Events.V1.BuyNowTXStarted>
     {
-        private readonly ImmediateCommandQueryMediator _mediator;
+        private readonly CommandQueryMediator _mediator;
 
-        public BuyNowTxStartedSubscriber(IAppEventBuilder eventBuilder, ImmediateCommandQueryMediator mediator) : base(eventBuilder)
+        public BuyNowTxStartedSubscriber(IAppEventBuilder eventBuilder, CommandQueryMediator mediator) : base(eventBuilder)
         {
             _mediator = mediator;
         }

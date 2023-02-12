@@ -1,70 +1,59 @@
 ﻿using Common.Application.Commands;
 using Common.Application.Queries;
-using System.Runtime.CompilerServices;
+using MediatR;
 
-[assembly: InternalsVisibleTo("Test.UnitTests")]
 namespace Common.Application.Mediator
 {
-    public abstract class CommandQueryMediator
+    public class CommandQueryMediator
     {
         private readonly IImplProvider _implProvider;
+        private readonly IMediator _mediator;
 
-        protected CommandQueryMediator(IImplProvider implProvider)
+        public CommandQueryMediator(IImplProvider implProvider, IMediator mediator)
         {
             _implProvider = implProvider;
-        }
-
-        internal static void InvokePostCommandAttributeStrategies(IImplProvider implProvider, CommandContext commandContext, ICommand command)
-        {
-            if (AttributeStrategies.PostHandleCommandAttributeStrategies.ContainsKey(command.GetType()))
-            {
-                foreach (var strategy in AttributeStrategies.PostHandleCommandAttributeStrategies[command.GetType()])
-                {
-                    strategy?.Invoke(implProvider, commandContext, command);
-                }
-            }
+            _mediator = mediator;
         }
 
         public virtual async Task<RequestStatus> Send<T>(T command, CommandContext? commandContext = null) where T : ICommand
         {
+            var commandType = command.GetType();
             var appCommand = new AppCommand<T>
             {
                 Command = command,
-                CommandContext = commandContext?.CloneWithName(typeof(T).Name) ?? CommandContext.CreateNew(typeof(T).Name),
+                CommandContext = commandContext?.CloneWithName(commandType.Name) ?? CommandContext.CreateNew(commandType.Name),
             };
 
-            if (AttributeStrategies.PreHandleCommandAttributeStrategies.ContainsKey(command.GetType()))
+            if (AttributeStrategies.PreHandleCommandAttributeStrategies.ContainsKey(commandType))
             {
-                foreach (var strategy in AttributeStrategies.PreHandleCommandAttributeStrategies[command.GetType()])
+                foreach (var strategy in AttributeStrategies.PreHandleCommandAttributeStrategies[commandType])
                 {
                     strategy?.Invoke(_implProvider, appCommand.CommandContext, command);
                 }
             }
 
-            var (requestStatus, callPostActions) = await SendAppCommand(appCommand);
+            var requestStatus = await _mediator.Send(appCommand);
 
-            if (callPostActions)
-            {
-                InvokePostCommandAttributeStrategies(_implProvider, appCommand.CommandContext, command);
-            }
+            InvokePostCommandAttributeStrategies(_implProvider, appCommand.CommandContext, command, commandType);
 
             return requestStatus;
         }
 
         public virtual async Task<T> SendQuery<T>(IQuery<T> query)
         {
-            if (AttributeStrategies.PreHandleQueryAttributeStrategies.ContainsKey(query.GetType()))
+            var queryType = query.GetType();
+            if (AttributeStrategies.PreHandleQueryAttributeStrategies.ContainsKey(queryType))
             {
-                foreach (var strategy in AttributeStrategies.PreHandleQueryAttributeStrategies[query.GetType()])
+                foreach (var strategy in AttributeStrategies.PreHandleQueryAttributeStrategies[queryType])
                 {
                     strategy?.Invoke(_implProvider, query);
                 }
             }
-            var result = await Send(query);
+            var result = await _mediator.Send(query);
 
-            if (AttributeStrategies.PostHandleQueryAttributeStrategies.ContainsKey(query.GetType()))
+            if (AttributeStrategies.PostHandleQueryAttributeStrategies.ContainsKey(queryType))
             {
-                foreach (var strategy in AttributeStrategies.PostHandleQueryAttributeStrategies[query.GetType()])
+                foreach (var strategy in AttributeStrategies.PostHandleQueryAttributeStrategies[queryType])
                 {
                     strategy?.Invoke(_implProvider, query);
                 }
@@ -73,8 +62,16 @@ namespace Common.Application.Mediator
             return result;
         }
 
-        protected abstract Task<T> Send<T>(IQuery<T> query);
 
-        protected abstract Task<(RequestStatus, bool)> SendAppCommand<T>(AppCommand<T> command) where T : ICommand;
+        internal static void InvokePostCommandAttributeStrategies(IImplProvider implProvider, CommandContext commandContext, ICommand command, Type commandType)
+        {
+            if (AttributeStrategies.PostHandleCommandAttributeStrategies.ContainsKey(commandType))
+            {
+                foreach (var strategy in AttributeStrategies.PostHandleCommandAttributeStrategies[commandType])
+                {
+                    strategy?.Invoke(implProvider, commandContext, command);
+                }
+            }
+        }
     }
 }
