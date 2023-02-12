@@ -18,19 +18,17 @@ namespace Common.Application.Commands
 
         }
 
-        public CommandHandlerBaseDependencies(ILogger<RequestStatus> logger, IEventOutbox eventOutbox, EventOutboxSender eventOutboxSender, IEventOutboxSavedItems eventOutboxSavedItems, ICommandHandlerCallbacks commandHandlerLi)
+        public CommandHandlerBaseDependencies(ILogger<RequestStatus> logger, IEventOutbox eventOutbox, EventOutboxSender eventOutboxSender, ICommandHandlerCallbacks commandHandlerLi)
         {
             Logger = logger;
             EventOutbox = eventOutbox;
             EventOutboxSender = eventOutboxSender;
-            EventOutboxSavedItems = eventOutboxSavedItems;
             CommandHandlerCallbacks = commandHandlerLi;
         }
 
         public ILogger<RequestStatus> Logger { get; set; }
         public IEventOutbox EventOutbox { get; set; }
         public EventOutboxSender EventOutboxSender { get; set; }
-        public IEventOutboxSavedItems EventOutboxSavedItems { get; set; }
         public ICommandHandlerCallbacks CommandHandlerCallbacks { get; set; }
     }
 
@@ -41,7 +39,6 @@ namespace Common.Application.Commands
         // subclass provides value of this field to decide which mode should be used when saving command status
         private readonly IEventOutbox _eventOutbox;
         private readonly EventOutboxSender _eventOutboxSender;
-        private readonly IEventOutboxSavedItems _eventOutboxSavedItems;
         private readonly ICommandHandlerCallbacks _commandHandlerCallbacks;
 
 
@@ -50,7 +47,6 @@ namespace Common.Application.Commands
             _logger = dependencies.Logger;
             _eventOutbox = dependencies.EventOutbox;
             _eventOutboxSender = dependencies.EventOutboxSender;
-            _eventOutboxSavedItems = dependencies.EventOutboxSavedItems;
             _commandHandlerCallbacks = dependencies.CommandHandlerCallbacks;
         }
 
@@ -86,8 +82,8 @@ namespace Common.Application.Commands
                 var requestStatus = await HandleCommandInternal(request, cancellationToken);
                 await _commandHandlerCallbacks.OnCompleted(request);
 
-                await _eventOutboxSender.SendEvents(_eventOutboxSavedItems.SavedOutboxStoreItems);
-                await _commandHandlerCallbacks.OnEventsSent(_eventOutboxSavedItems.SavedOutboxStoreItems);
+                await _eventOutboxSender.SendEvents(_eventOutbox.SavedOutboxStoreItems);
+                await _commandHandlerCallbacks.OnEventsSent(_eventOutbox.SavedOutboxStoreItems);
 
                 if (requestStatus.Status == Status.COMPLETED) Activity.Current.TraceOkStatus();
                 if (requestStatus.Status == Status.FAILED) Activity.Current.TraceErrorStatus();

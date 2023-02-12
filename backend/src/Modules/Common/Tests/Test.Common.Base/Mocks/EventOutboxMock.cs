@@ -4,7 +4,7 @@ using Core.Common.Domain;
 
 namespace Common.Tests.Base.Mocks
 {
-    public class EventOutboxMock : IEventOutbox, IEventOutboxSavedItems
+    public class EventOutboxMock : IEventOutbox
     {
         public static EventOutboxMock Instance { get; } = new EventOutboxMock();
 

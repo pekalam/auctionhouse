@@ -156,7 +156,6 @@ namespace Auctions.Application.Tests
             new CommonApplicationMockInstaller(serviceCollection)
                 .AddCommandCoreDependencies(
                     eventOutboxFactory: (prov) => prov.GetRequiredService<EventOutboxMock>(),
-                    eventOutboxSavedItemsFactory: (prov) => prov.GetRequiredService<EventOutboxMock>(),
                     implProviderFactory: ImplProviderMock.Factory,
                     new[] { Assembly.Load("Auctions.Application") })
                 .AddAppEventBuilder((prov) => TestAppEventBuilder.Instance)

@@ -26,6 +26,8 @@ namespace ReadModelNotifications.EventOutbox
             _settings = settings;
         }
 
+        public IReadOnlyList<OutboxItem> SavedOutboxStoreItems => _eventOutbox.SavedOutboxStoreItems;
+
         public async Task<OutboxItem> SaveEvent(Event @event, CommandContext commandContext)
         {
             var item = await _eventOutbox.SaveEvent(@event, commandContext);

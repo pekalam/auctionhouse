@@ -29,11 +29,10 @@ namespace Common.Application
 
         public CommonApplicationInstaller AddCommandCoreDependencies(
             params Assembly[] commandHandlerAssemblies) => 
-                AddCommandCoreDependencies(null,null,null,commandHandlerAssemblies);
+                AddCommandCoreDependencies(null,null, commandHandlerAssemblies);
 
         public CommonApplicationInstaller AddCommandCoreDependencies(
             Func<IServiceProvider, IEventOutbox>? eventOutboxFactory = null, 
-            Func<IServiceProvider, IEventOutboxSavedItems>? eventOutboxSavedItemsFactory = null, 
             Func<IServiceProvider, IImplProvider>? implProviderFactory = null,
             params Assembly[] commandHandlerAssemblies)
         {
@@ -65,15 +64,6 @@ namespace Common.Application
             else
             {
                 Services.AddTransient(eventOutboxFactory);
-            }
-
-            if(eventOutboxSavedItemsFactory is null)
-            {
-                Services.AddScoped<IEventOutboxSavedItems>(s => s.GetRequiredService<EventOutbox>());
-            }
-            else
-            {
-                Services.AddTransient(eventOutboxSavedItemsFactory);
             }
 
             Services.AddTransient<EventOutboxSender>();

@@ -111,7 +111,6 @@ namespace Test.Adapter.QuartzServiceAuctionEndScheduler
             new CommonApplicationInstaller(services)
                 .AddCommandCoreDependencies(
                     eventOutboxFactory: (prov) => EventOutboxMock.Instance,
-                    eventOutboxSavedItemsFactory: (prov) => EventOutboxMock.Instance,
                     implProviderFactory: ImplProviderMock.Factory,
                 typeof(QuartzAuctionEndSchedulerTests).Assembly, typeof(EndAuctionCommandHandler).Assembly)
                 .AddEventBus(_ => EventBusMock.Instance)

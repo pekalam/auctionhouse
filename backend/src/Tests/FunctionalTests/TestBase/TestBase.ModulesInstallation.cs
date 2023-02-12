@@ -122,7 +122,6 @@ namespace FunctionalTests.Commands
             var common = new CommonApplicationMockInstaller(services)
                 .AddCommandCoreDependencies(
                     null,
-                    null,
                        ImplProviderMock.Factory,
                        assemblies)
                 .AddQueryCoreDependencies(

@@ -43,7 +43,6 @@ namespace ReadModelNotifications.Tests
 
             var services = new ServiceCollection();
             services.AddTransient(typeof(Lazy<>), typeof(LazyInstance<>));
-            services.AddSingleton(Mock.Of<IEventOutboxSavedItems>());
             services.AddCommandReadModelNotifications(
                 (_) => Mock.Of<IImmediateNotifications>(),
                 (_) => mockSagaNotifications.Object,
@@ -83,6 +82,8 @@ namespace ReadModelNotifications.Tests
 
         public class StubEventOutbox : IEventOutbox
         {
+            public IReadOnlyList<OutboxItem> SavedOutboxStoreItems => throw new NotImplementedException();
+
             public Task<OutboxItem> SaveEvent(Event @event, CommandContext commandContext)
             {
                 throw new NotImplementedException();

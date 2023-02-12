@@ -6,7 +6,7 @@ namespace Common.Application.Events
     /// <summary>
     /// Saves events with <see cref="IOutboxItemStore"/>.
     /// </summary>
-    internal class EventOutbox : IEventOutbox, IEventOutboxSavedItems
+    internal class EventOutbox : IEventOutbox
     {
         private readonly IOutboxItemStore _outboxStore;
         private readonly IAppEventBuilder _appEventBuilder;
