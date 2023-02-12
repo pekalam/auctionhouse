@@ -2,10 +2,10 @@ using Auctionhouse.Query;
 using AutoMapper;
 using Xunit;
 
-namespace Test.Auctionhouse.Query.Integration
+namespace Test.Auctionhouse.Query
 {
-    [Trait("Category", "Integration")]
-    public class Automapper_Integration_Tests
+    [Trait("Category", "Unit")]
+    public class AutomapperTests
     {
         [Fact]
         public void Test1()

@@ -31,7 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Modules\Common\Common.Application\Common.Application.csproj" />
-    <ProjectReference Include="..\..\..\ReadModelNotifications\ReadModelNotifications.csproj" />
+    <ProjectReference Include="..\..\..\ReadModelNotifications\Extensions.ReadModelNotifications.csproj" />
   </ItemGroup>
 
 </Project>

@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ReadModelNotifications\ReadModelNotifications.csproj" />
+    <ProjectReference Include="..\ReadModelNotifications\Extensions.ReadModelNotifications.csproj" />
   </ItemGroup>
 
 </Project>
