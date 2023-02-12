@@ -66,7 +66,7 @@ namespace Common.Application
                 Services.AddTransient(eventOutboxFactory);
             }
 
-            Services.AddTransient<EventOutboxSender>();
+            Services.AddTransient<EventOutboxItemsSender>();
             Services.AddTransient<ImmediateCommandQueryMediator>();
             Services.AddTransient<CommandHandlerBaseDependencies>();
 

@@ -7,20 +7,20 @@ namespace Common.Application.Events
     /// <summary>
     /// Sends events from outbox and marks them as processed.
     /// </summary>
-    public class EventOutboxSender
+    public class EventOutboxItemsSender
     {
         private readonly IOutboxItemStore _outboxItemStore;
         private readonly IAppEventBuilder _appEventBuilder;
         private readonly IEventBus _eventBus;
 
-        public EventOutboxSender(IOutboxItemStore outboxItemStore, IAppEventBuilder appEventBuilder, IEventBus eventBus)
+        public EventOutboxItemsSender(IOutboxItemStore outboxItemStore, IAppEventBuilder appEventBuilder, IEventBus eventBus)
         {
             _outboxItemStore = outboxItemStore;
             _appEventBuilder = appEventBuilder;
             _eventBus = eventBus;
         }
 
-        public async Task SendEvents(IEnumerable<OutboxItem> outboxItems)
+        public async Task Send(IEnumerable<OutboxItem> outboxItems)
         {
             var appEvents = outboxItems
                 .Select(i => _appEventBuilder

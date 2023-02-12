@@ -2,11 +2,6 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.Application.Events
 {
@@ -36,7 +31,7 @@ namespace Common.Application.Events
                     catch (Exception e)
                     {
                         _logger.LogError(e, "Error while processing events");
-                        throw e;
+                        throw;
                     }
                 }
 

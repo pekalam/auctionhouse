@@ -1,5 +1,4 @@
-﻿using Core.Common.Domain;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Common.Application.Events
@@ -22,17 +21,15 @@ namespace Common.Application.Events
         private readonly IOutboxItemFinder _outboxItemFinder;
         private readonly ILogger<EventOutboxProcessor> _logger;
         private readonly EventOutboxProcessorSettings _settings;
-        private readonly EventOutboxSender _eventOutboxSender;
+        private readonly EventOutboxItemsSender _eventOutboxSender;
 
-        public EventOutboxProcessor(EventOutboxProcessorSettings settings, IOutboxItemFinder outboxItemFinder, ILogger<EventOutboxProcessor> logger, EventOutboxSender eventOutboxSender)
+        public EventOutboxProcessor(EventOutboxProcessorSettings settings, IOutboxItemFinder outboxItemFinder, ILogger<EventOutboxProcessor> logger, EventOutboxItemsSender eventOutboxSender)
         {
             _settings = settings;
             _outboxItemFinder = outboxItemFinder;
             _logger = settings.EnableLogging ? logger : new NullLogger<EventOutboxProcessor>();
             _eventOutboxSender = eventOutboxSender;
         }
-
-        private static long ToMiliseconds(long timestamp1, long timestamp2) => (timestamp1 - timestamp2) / (1_000_000 / 100);
 
         private static long MilisecondsToFileTime(long miliseconds) => miliseconds * (1_000_000 / 100);
 
@@ -42,7 +39,7 @@ namespace Common.Application.Events
             var unprocessedItems = await _outboxItemFinder.GetUnprocessedItemsOlderThan(timestampDiff, currentTimestamp, total);
 
             _logger.LogDebug("Publishing {total} events from outbox", unprocessedItems.Count()); //TODO 
-            await _eventOutboxSender.SendEvents(unprocessedItems);
+            await _eventOutboxSender.Send(unprocessedItems);
         }
 
         public async Task ProcessEvents()
