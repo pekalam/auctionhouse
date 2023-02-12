@@ -1,16 +1,14 @@
 ﻿using Common.Application;
-using Common.WebAPI.Auth;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using Serilog.Events;
+using WebAPI.Common.Auth;
 
-namespace Common.WebAPI
+namespace WebAPI.Common
 {
-    public static class CommonWebApiInstaller
+    public static class WebApiCommonInstaller
     {
         public static void AddCacheServices(this IServiceCollection services, IConfiguration configuration)
         {

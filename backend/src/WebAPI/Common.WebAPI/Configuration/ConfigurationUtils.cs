@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
-namespace Common.WebAPI.Configuration
+namespace WebAPI.Common.Configuration
 {
     public static class ConfigurationUtils
     {

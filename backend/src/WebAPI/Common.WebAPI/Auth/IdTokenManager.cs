@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 
-namespace Common.WebAPI.Auth
+namespace WebAPI.Common.Auth
 {
     public interface IIdTokenManager
     {
@@ -37,7 +37,7 @@ namespace Common.WebAPI.Auth
 
         public async Task DeactivateToken(string idToken, CancellationToken ct)
         {
-            if(await _cache.GetAsync(GetKey(idToken), ct) == null)
+            if (await _cache.GetAsync(GetKey(idToken), ct) == null)
             {
                 await _cache.SetStringAsync(GetKey(idToken), idToken, new DistributedCacheEntryOptions
                 {

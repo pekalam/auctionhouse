@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 
-namespace Common.WebAPI.Auth
+namespace WebAPI.Common.Auth
 {
     internal static class HttpContextExtensions
     {

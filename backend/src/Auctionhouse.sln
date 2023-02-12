@@ -121,7 +121,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{108DCD5F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Auctionhouse.Command", "WebAPI\Tests\Test.Auctionhouse.Command.Integration\Test.Auctionhouse.Command.csproj", "{2DA24D10-8F4B-413C-AC79-089FF9D301C4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.WebAPI", "WebAPI\Common.WebAPI\Common.WebAPI.csproj", "{EC41C59D-A1E6-4458-9FC2-76CAF37D9C16}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI.Common", "WebAPI\Common.WebAPI\WebAPI.Common.csproj", "{EC41C59D-A1E6-4458-9FC2-76CAF37D9C16}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Auctionhouse.Query", "WebAPI\Tests\Test.Auctionhouse.Query.Integration\Test.Auctionhouse.Query.csproj", "{5F3DBBAD-5BED-4E1D-9726-F543A5DB26FB}"
 EndProject

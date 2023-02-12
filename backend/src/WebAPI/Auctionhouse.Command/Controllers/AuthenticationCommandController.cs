@@ -3,7 +3,6 @@ using AutoMapper;
 using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Mediator;
-using Common.WebAPI.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Users.Application.Commands.ChangePassword;
@@ -12,6 +11,7 @@ using Users.Application.Commands.RequestResetPassword;
 using Users.Application.Commands.ResetPassword;
 using Users.Application.Commands.SignIn;
 using Users.Application.Commands.SignUp;
+using WebAPI.Common.Auth;
 
 namespace Auctionhouse.Command.Controllers
 {

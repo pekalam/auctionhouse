@@ -1,10 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using OpenTelemetry.Logs;
 using Microsoft.Extensions.Configuration;
 
-namespace Common.WebAPI.Tracing
+namespace WebAPI.Common.Tracing
 {
     public static class TracingInstaller
     {
@@ -20,7 +19,7 @@ namespace Common.WebAPI.Tracing
                         configuration.GetSection("OpenTelemetry:OtlpExporter").Bind(opt);
                     })
                     .AddAspNetCoreInstrumentation()
-                    .AddSource(Common.Application.Tracing.GetDefaultActivitySourceName());
+                    .AddSource(global::Common.Application.Tracing.GetDefaultActivitySourceName());
             });
         }
     }

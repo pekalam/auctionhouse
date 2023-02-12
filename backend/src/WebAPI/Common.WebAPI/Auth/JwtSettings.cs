@@ -2,7 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace Common.WebAPI.Auth
+namespace WebAPI.Common.Auth
 {
     internal static class JwtConfiguration
     {
@@ -36,7 +36,7 @@ namespace Common.WebAPI.Auth
                 context.Token = null;
                 context.Fail(new Exception());
             }
-            else if(context.HttpContext.Request.Path.StartsWithSegments(new Microsoft.AspNetCore.Http.PathString("/app")))
+            else if (context.HttpContext.Request.Path.StartsWithSegments(new Microsoft.AspNetCore.Http.PathString("/app")))
             {
                 context.Token = context.Request.Query["token"];
             }

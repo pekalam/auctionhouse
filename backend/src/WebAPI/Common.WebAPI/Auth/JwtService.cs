@@ -6,7 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Common.WebAPI.Auth
+namespace WebAPI.Common.Auth
 {
     public class JwtService
     {
@@ -52,7 +52,7 @@ namespace Common.WebAPI.Auth
 
             var token = new JwtSecurityToken(issuer: _jwtSettings.Issuer, audience: _jwtSettings.Audience,
                 claims: claims, signingCredentials: creds, notBefore: issuedAt, expires: expires);
-            
+
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
@@ -80,7 +80,7 @@ namespace Common.WebAPI.Auth
                 return false;
             }
 
-            if(readToken.ValidTo > DateTime.UtcNow)
+            if (readToken.ValidTo > DateTime.UtcNow)
             {
                 //TODO executed too frequently
                 var userId = Guid.Parse(claimsPrincipal.Claims.First(c => c.Type == ClaimTypes.Sid).Value);
@@ -91,6 +91,6 @@ namespace Common.WebAPI.Auth
             }
             newToken = null;
             return false;
-        } 
+        }
     }
 }

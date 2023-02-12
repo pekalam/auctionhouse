@@ -35,7 +35,7 @@
     <ProjectReference Include="..\..\Adapters\EventBus\Adatper.RabbitMq.EventBus\Adatper.RabbitMq.EventBus.csproj" />
     <ProjectReference Include="..\..\Modules\ReadModel\ReadModel.Core\ReadModel.Core.csproj" />
     <ProjectReference Include="..\..\Adapters\CategoryStore\Adapter.XmlCategoryTreeStore\Adapter.XmlCategoryTreeStore.csproj" />
-    <ProjectReference Include="..\Common.WebAPI\Common.WebAPI.csproj" />
+    <ProjectReference Include="..\Common.WebAPI\WebAPI.Common.csproj" />
   </ItemGroup>
 
 </Project>

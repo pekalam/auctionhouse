@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
-namespace Common.WebAPI.Auth
+namespace WebAPI.Common.Auth
 {
     internal class UserIdentityService : IUserIdentityService
     {

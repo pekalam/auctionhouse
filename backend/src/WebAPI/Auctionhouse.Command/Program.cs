@@ -8,16 +8,16 @@ using Azure.Identity;
 using ChronicleEfCoreStorage;
 using Common.Application;
 using Common.Application.Events;
-using Common.WebAPI;
-using Common.WebAPI.Auth;
-using Common.WebAPI.Configuration;
-using Common.WebAPI.Tracing;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using RabbitMq.EventBus;
 using Serilog;
 using System.Diagnostics;
 using System.Reflection;
+using WebAPI.Common;
+using WebAPI.Common.Auth;
+using WebAPI.Common.Configuration;
+using WebAPI.Common.Tracing;
 
 var builder = WebApplication.CreateBuilder(args);
 
