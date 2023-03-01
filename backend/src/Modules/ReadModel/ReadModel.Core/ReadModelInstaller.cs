@@ -1,4 +1,4 @@
-﻿using Common.Application;
+﻿using Common.Application.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using ReadModel.Core.Model;
 using ReadModel.Core.Services;

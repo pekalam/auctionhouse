@@ -8,7 +8,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-namespace Common.Application
+namespace Common.Application.DependencyInjection
 {
     public class CommonApplicationInstaller
     {
@@ -29,17 +29,17 @@ namespace Common.Application
         }
 
         public CommonApplicationInstaller AddCommandCoreDependencies(
-            params Assembly[] commandHandlerAssemblies) => 
-                AddCommandCoreDependencies(null,null, commandHandlerAssemblies);
+            params Assembly[] commandHandlerAssemblies) =>
+                AddCommandCoreDependencies(null, null, commandHandlerAssemblies);
 
         public CommonApplicationInstaller AddCommandCoreDependencies(
-            Func<IServiceProvider, IEventOutbox>? eventOutboxFactory = null, 
+            Func<IServiceProvider, IEventOutbox>? eventOutboxFactory = null,
             Func<IServiceProvider, IImplProvider>? implProviderFactory = null,
             params Assembly[] commandHandlerAssemblies)
         {
             Services.AddTransient(typeof(Lazy<>), typeof(LazyInstance<>));
 
-            if (implProviderFactory is null) 
+            if (implProviderFactory is null)
             {
                 Services.AddTransient<IImplProvider, DefaultDIImplProvider>();
             }
@@ -57,7 +57,7 @@ namespace Common.Application
                 cfg.AsTransient();
             });
 
-            if(eventOutboxFactory is null)
+            if (eventOutboxFactory is null)
             {
                 Services.AddScoped<EventOutbox>();
                 Services.AddScoped<IEventOutbox>(s => s.GetRequiredService<EventOutbox>());
@@ -79,7 +79,7 @@ namespace Common.Application
             return this;
         }
 
-        public CommonApplicationInstaller AddQueryCoreDependencies(params Assembly[] queryHandlerAssemblies) 
+        public CommonApplicationInstaller AddQueryCoreDependencies(params Assembly[] queryHandlerAssemblies)
             => AddQueryCoreDependencies(null, queryHandlerAssemblies);
 
         public CommonApplicationInstaller AddQueryCoreDependencies(
@@ -87,7 +87,7 @@ namespace Common.Application
             params Assembly[] queryHandlerAssemblies)
         {
             Services.AddTransient(typeof(Lazy<>), typeof(LazyInstance<>));
-            if(implProviderFactory is null)
+            if (implProviderFactory is null)
             {
                 Services.AddTransient<IImplProvider, DefaultDIImplProvider>();
             }

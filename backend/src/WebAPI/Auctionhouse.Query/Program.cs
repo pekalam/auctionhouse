@@ -5,6 +5,7 @@ using Auctionhouse.Query.Adapters;
 using Azure.Identity;
 using Categories.DI;
 using Common.Application;
+using Common.Application.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using RabbitMq.EventBus;
 using ReadModel.Core;

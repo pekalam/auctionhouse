@@ -1,5 +1,5 @@
-﻿using Common.Application;
-using Common.Application.Events;
+﻿using Common.Application.Events;
+using Common.Application.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System;

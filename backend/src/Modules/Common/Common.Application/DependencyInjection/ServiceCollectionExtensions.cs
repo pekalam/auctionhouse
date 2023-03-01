@@ -1,15 +1,10 @@
 ﻿using Common.Application.Events;
 using Core.Query.EventHandlers;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Common.Application
+namespace Common.Application.DependencyInjection
 {
-    public static class InstallerExtensions
+    public static class ServiceCollectionExtensions
     {
         public static void AddEventSubscribers(this IServiceCollection services, params Type[] typesFromAssembliesToScan)
         {

@@ -18,6 +18,7 @@ using XmlCategoryTreeStore;
 using AuctionBids.DI;
 using Users.DI;
 using UserPayments.DI;
+using Common.Application.DependencyInjection;
 
 namespace Auctionhouse.Command.ModuleInstallation
 {

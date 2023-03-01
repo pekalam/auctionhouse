@@ -1,5 +1,5 @@
 ﻿using Auctions.Application.CommandAttributes;
-using Common.Application;
+using Common.Application.DependencyInjection;
 using Core.Common;
 using Microsoft.Extensions.DependencyInjection;
 

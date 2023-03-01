@@ -1,6 +1,7 @@
 ﻿using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
+using Common.Application.DependencyInjection;
 using Common.Tests.Base;
 using Core.Common.Domain;
 using FluentAssertions;

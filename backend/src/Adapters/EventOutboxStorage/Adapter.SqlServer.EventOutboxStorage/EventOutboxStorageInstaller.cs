@@ -1,5 +1,5 @@
-﻿using Common.Application;
-using Common.Application.Events;
+﻿using Common.Application.Events;
+using Common.Application.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

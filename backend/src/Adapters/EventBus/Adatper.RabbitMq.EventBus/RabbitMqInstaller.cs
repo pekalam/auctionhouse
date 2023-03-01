@@ -2,6 +2,7 @@
 using Adatper.RabbitMq.EventBus.ErrorEventOutbox;
 using Common.Application;
 using Common.Application.Events;
+using Common.Application.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;

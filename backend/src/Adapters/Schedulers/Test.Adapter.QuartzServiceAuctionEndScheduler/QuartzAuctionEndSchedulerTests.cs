@@ -6,6 +6,7 @@ using Auctions.Tests.Base.Domain.Services.Fakes;
 using Auctions.Tests.Base.Domain.Services.ServiceContracts;
 using Chronicle;
 using Common.Application;
+using Common.Application.DependencyInjection;
 using Common.Application.Events;
 using Common.Tests.Base.Mocks;
 using Common.Tests.Base.Mocks.Events;

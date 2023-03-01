@@ -1,4 +1,4 @@
-﻿using Common.Application;
+﻿using Common.Application.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using UserPayments.Domain.Repositories;
 using UserPayments.Domain.Services;
