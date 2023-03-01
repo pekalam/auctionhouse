@@ -82,8 +82,8 @@ namespace Common.Application.Commands
                 var requestStatus = await HandleCommandInternal(request, cancellationToken);
                 await _commandHandlerCallbacks.OnCompleted(request);
 
-                await _eventOutboxItemsSender.Send(_eventOutbox.SavedOutboxStoreItems);
-                await _commandHandlerCallbacks.OnEventsSent(_eventOutbox.SavedOutboxStoreItems);
+                await _eventOutboxItemsSender.Send(_eventOutbox.SavedOutboxItems);
+                await _commandHandlerCallbacks.OnEventsSent(_eventOutbox.SavedOutboxItems);
 
                 if (requestStatus.Status == Status.COMPLETED) Activity.Current.TraceOkStatus();
                 if (requestStatus.Status == Status.FAILED) Activity.Current.TraceErrorStatus();

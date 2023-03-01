@@ -82,7 +82,7 @@ namespace ReadModelNotifications.Tests
 
         public class StubEventOutbox : IEventOutbox
         {
-            public IReadOnlyList<OutboxItem> SavedOutboxStoreItems => throw new NotImplementedException();
+            public IReadOnlyList<OutboxItem> SavedOutboxItems => throw new NotImplementedException();
 
             public Task<OutboxItem> SaveEvent(Event @event, CommandContext commandContext)
             {

@@ -18,7 +18,7 @@ namespace Common.Application.Events
         }
 
         private List<OutboxItem> _outboxStoreItems = new();
-        public IReadOnlyList<OutboxItem> SavedOutboxStoreItems => _outboxStoreItems;
+        public IReadOnlyList<OutboxItem> SavedOutboxItems => _outboxStoreItems;
 
         public async Task<OutboxItem> SaveEvent(Event @event, CommandContext commandContext)
         {

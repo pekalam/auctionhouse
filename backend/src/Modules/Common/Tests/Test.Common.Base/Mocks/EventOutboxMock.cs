@@ -10,7 +10,7 @@ namespace Common.Tests.Base.Mocks
 
         private readonly List<OutboxItem> _outboxItems = new();
 
-        public IReadOnlyList<OutboxItem> SavedOutboxStoreItems => _outboxItems;
+        public IReadOnlyList<OutboxItem> SavedOutboxItems => _outboxItems;
 
         public Task<OutboxItem> SaveEvent(Event @event, CommandContext commandContext)
         {
