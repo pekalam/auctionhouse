@@ -1,5 +1,6 @@
 ﻿using Common.Application;
 using Common.Application.Events;
+using Common.Application.Events.Callbacks;
 using Core.Common.Domain;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;

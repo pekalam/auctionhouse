@@ -14,7 +14,7 @@ namespace Core.Command.Bid
 
         public RaiseBidCommand(Guid auctionId, decimal price)
         {
-            if (auctionId.Equals(Guid.Empty)) { throw new InvalidCommandException($"Invalid field AuctionId = {auctionId}"); }
+            if (auctionId.Equals(Guid.Empty)) { throw new InvalidCommandDataException($"Invalid field AuctionId = {auctionId}"); }
             AuctionId = auctionId;
             Price = price;
         }

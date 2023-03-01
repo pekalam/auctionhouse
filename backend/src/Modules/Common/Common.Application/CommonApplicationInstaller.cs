@@ -1,5 +1,6 @@
 ﻿using Common.Application.Commands;
 using Common.Application.Commands.Attributes;
+using Common.Application.Commands.Callbacks;
 using Common.Application.Events;
 using Common.Application.Mediator;
 using Core.Query.EventHandlers;

@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using Common.Tests.Base.Mocks.Events;
 using Xunit;
+using Common.Application.Events.Callbacks;
 
 namespace Test.ReadModel.Integration
 {

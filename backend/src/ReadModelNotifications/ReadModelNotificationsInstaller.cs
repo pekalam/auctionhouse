@@ -1,6 +1,6 @@
-﻿using Common.Application.Commands;
+﻿using Common.Application.Commands.Callbacks;
 using Common.Application.Events;
-using Core.Query.EventHandlers;
+using Common.Application.Events.Callbacks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ReadModelNotifications.CommandCallbacks;

@@ -30,7 +30,7 @@ namespace Users.Application.Commands.ResetPassword
             var resetCode = _resetPasswordCodeRepository.FindResetPasswordCode(request.Command.ResetCode, request.Command.Email);
             if (resetCode == null)
             {
-                throw new InvalidCommandException($"Cannot find resetCode {request.Command.ResetCode}");
+                throw new InvalidCommandDataException($"Cannot find resetCode {request.Command.ResetCode}");
             }
 
             return resetCode;
@@ -41,7 +41,7 @@ namespace Users.Application.Commands.ResetPassword
             var user = _userAuthenticationDataRepository.FindUserAuthByEmail(resetCode.Email);
             if (user == null)
             {
-                throw new InvalidCommandException($"Cannot find user with email {resetCode.Email} and with reset code {request.Command.ResetCode.Value}");
+                throw new InvalidCommandDataException($"Cannot find user with email {resetCode.Email} and with reset code {request.Command.ResetCode.Value}");
             }
 
             return user;
@@ -65,7 +65,7 @@ namespace Users.Application.Commands.ResetPassword
 
             if (!resetCode.Checked)
             {
-                throw new InvalidCommandException("ResetCode must be checked first");
+                throw new InvalidCommandDataException("ResetCode must be checked first");
             }
 
             user.Password = request.Command.NewPassword;

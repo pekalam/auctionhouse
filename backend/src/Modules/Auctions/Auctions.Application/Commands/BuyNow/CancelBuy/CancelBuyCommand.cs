@@ -2,6 +2,7 @@
 using Auctions.Domain.Services;
 using Common.Application;
 using Common.Application.Commands;
+using Common.Application.Commands.Callbacks;
 using Common.Application.Events;
 
 namespace Auctions.Application.Commands.BuyNow.CancelBuy

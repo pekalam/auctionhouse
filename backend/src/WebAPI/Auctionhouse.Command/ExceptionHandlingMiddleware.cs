@@ -41,7 +41,7 @@ namespace Auctionhouse.Command
         {
             switch (ex)
             {
-                case InvalidCommandException e:
+                case InvalidCommandDataException e:
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     break;
                 case UserNotFoundException e:

@@ -28,7 +28,7 @@ namespace Auctions.Application.Commands.UserAddAuctionImage
         public UserAddAuctionImageCommand(Guid auctionId, IFileStreamAccessor img, string extension)
         {
             //TODO validator
-            if (auctionId.Equals(Guid.Empty)) { throw new InvalidCommandException($"Invalid field AuctionId = {auctionId}"); }
+            if (auctionId.Equals(Guid.Empty)) { throw new InvalidCommandDataException($"Invalid field AuctionId = {auctionId}"); }
             AuctionId = auctionId;
             Img = img;
             Extension = extension;

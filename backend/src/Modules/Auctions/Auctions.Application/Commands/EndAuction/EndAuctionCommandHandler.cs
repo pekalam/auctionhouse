@@ -30,7 +30,7 @@ namespace Core.Command.Commands.EndAuction
             if (auction is null)
             {
                 _logger.LogWarning("Could not find auction with id {@auctionId}", request.Command.AuctionId);
-                throw new InvalidCommandException("Could not find auction with id " + request.Command.AuctionId);
+                throw new InvalidCommandDataException("Could not find auction with id " + request.Command.AuctionId);
             }
 
             _logger.LogInformation("Ending auction {@auctionId}", request.Command.AuctionId);

@@ -56,7 +56,7 @@ namespace Common.Application.Tests
                     Command = stubCommand,
                 }, CancellationToken.None);
 
-            await Assert.ThrowsAsync<InvalidCommandException>(action);
+            await Assert.ThrowsAsync<InvalidCommandDataException>(action);
         }
     }
 }

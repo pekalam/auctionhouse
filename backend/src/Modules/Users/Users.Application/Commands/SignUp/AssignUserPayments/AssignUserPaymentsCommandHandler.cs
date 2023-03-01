@@ -1,5 +1,6 @@
 ﻿using Common.Application;
 using Common.Application.Commands;
+using Common.Application.Commands.Callbacks;
 using Common.Application.Events;
 using Users.Domain.Repositories;
 

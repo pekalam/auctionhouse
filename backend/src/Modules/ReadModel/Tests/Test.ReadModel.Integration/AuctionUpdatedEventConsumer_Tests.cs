@@ -2,6 +2,7 @@
 using Auctions.DomainEvents.Update;
 using Common.Application.Commands;
 using Common.Application.Events;
+using Common.Application.Events.Callbacks;
 using Common.Tests.Base.Mocks.Events;
 using Core.Common.Domain;
 using Core.Common.Domain.Categories;

@@ -1,8 +1,8 @@
 ﻿using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
+using Common.Application.Events.Callbacks;
 using Core.Common.Domain;
-using Core.Query.EventHandlers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;

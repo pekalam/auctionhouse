@@ -31,7 +31,7 @@ namespace Auctions.Application.Commands.UserReplaceAuctionImage
 
         public UserReplaceAuctionImageCommand(Guid auctionId, IFileStreamAccessor img, int imgNum, string extension)
         {
-            if (auctionId.Equals(Guid.Empty)) { throw new InvalidCommandException($"Invalid field AuctionId = {auctionId}"); }
+            if (auctionId.Equals(Guid.Empty)) { throw new InvalidCommandDataException($"Invalid field AuctionId = {auctionId}"); }
             AuctionId = auctionId;
             Img = img;
             ImgNum = imgNum;

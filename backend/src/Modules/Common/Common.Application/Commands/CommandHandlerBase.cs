@@ -1,3 +1,4 @@
+using Common.Application.Commands.Callbacks;
 using Common.Application.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -7,7 +8,6 @@ using System.Diagnostics;
 
 namespace Common.Application.Commands
 {
-    //TODO: remove
     public class CommandHandlerBaseDependencies
     {
         /// <summary>
@@ -18,12 +18,13 @@ namespace Common.Application.Commands
 
         }
 
-        public CommandHandlerBaseDependencies(ILogger<RequestStatus> logger, IEventOutbox eventOutbox, EventOutboxItemsSender eventOutboxItemsSender, ICommandHandlerCallbacks commandHandlerLi)
+        public CommandHandlerBaseDependencies(ILogger<RequestStatus> logger, IEventOutbox eventOutbox, EventOutboxItemsSender eventOutboxItemsSender, 
+            ICommandHandlerCallbacks commandHandlerCallbacks)
         {
             Logger = logger;
             EventOutbox = eventOutbox;
             EventOutboxItemsSender = eventOutboxItemsSender;
-            CommandHandlerCallbacks = commandHandlerLi;
+            CommandHandlerCallbacks = commandHandlerCallbacks;
         }
 
         public ILogger<RequestStatus> Logger { get; set; }
@@ -36,7 +37,6 @@ namespace Common.Application.Commands
     public abstract class CommandHandlerBase<T> : IRequestHandler<AppCommand<T>, RequestStatus> where T : ICommand
     {
         private readonly ILogger<RequestStatus> _logger;
-        // subclass provides value of this field to decide which mode should be used when saving command status
         private readonly IEventOutbox _eventOutbox;
         private readonly EventOutboxItemsSender _eventOutboxItemsSender;
         private readonly ICommandHandlerCallbacks _commandHandlerCallbacks;
@@ -94,7 +94,7 @@ namespace Common.Application.Commands
             {
                 Activity.Current.TraceErrorStatus("Invalid command validation results");
                 _logger.LogDebug("Invalid command {validationResults}", validationResults);
-                throw new InvalidCommandException($"Invalid command {request}", request.CommandContext);
+                throw new InvalidCommandDataException($"Invalid command data {request}", request.CommandContext);
             }
         }
 

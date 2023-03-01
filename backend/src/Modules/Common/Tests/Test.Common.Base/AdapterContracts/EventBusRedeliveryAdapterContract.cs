@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common.Tests.Base.Mocks.Events;
+using Common.Application.Events.Callbacks;
 
 namespace Common.Tests.Base.AdapterContracts
 {

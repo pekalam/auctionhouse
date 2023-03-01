@@ -1,8 +1,7 @@
-﻿using Common.Application.Events;
-using Core.Common.Domain;
+﻿using Core.Common.Domain;
 using Microsoft.Extensions.Logging;
 
-namespace Core.Query.EventHandlers
+namespace Common.Application.Events.Callbacks
 {
     public interface IEventConsumerCallbacks
     {

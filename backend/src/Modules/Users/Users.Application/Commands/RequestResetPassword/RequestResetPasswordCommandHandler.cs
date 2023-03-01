@@ -34,7 +34,7 @@ namespace Users.Application.Commands.RequestResetPassword
             var userAuthData = _userAuthenticationDataRepository.FindUserAuthByEmail(request.Command.Email);
             if (userAuthData == null)
             {
-                throw new InvalidCommandException($"Cannot find user with email: {request.Command.Email}");
+                throw new InvalidCommandDataException($"Cannot find user with email: {request.Command.Email}");
             }
 
             return userAuthData;

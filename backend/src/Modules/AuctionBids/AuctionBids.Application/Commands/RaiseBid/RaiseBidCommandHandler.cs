@@ -3,6 +3,7 @@ using AuctionBids.Domain.Repositories;
 using AuctionBids.Domain.Shared;
 using Common.Application;
 using Common.Application.Commands;
+using Common.Application.Commands.Callbacks;
 using Common.Application.Events;
 using Common.Extensions;
 using Core.Command.Bid;

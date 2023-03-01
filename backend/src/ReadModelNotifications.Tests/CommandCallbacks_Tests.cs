@@ -1,4 +1,5 @@
 using Common.Application.Commands;
+using Common.Application.Commands.Callbacks;
 using Common.Application.Events;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;

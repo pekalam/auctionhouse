@@ -1,7 +1,7 @@
 ﻿using Common.Application;
 using Common.Application.Events;
+using Common.Application.Events.Callbacks;
 using Core.Common.Domain;
-using Core.Query.EventHandlers;
 using Microsoft.Extensions.Logging;
 using ReadModelNotifications.ImmediateNotifications;
 using ReadModelNotifications.SagaNotifications;

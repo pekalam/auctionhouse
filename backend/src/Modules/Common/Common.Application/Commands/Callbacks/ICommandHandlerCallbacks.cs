@@ -1,6 +1,6 @@
 ﻿using Common.Application.Events;
 
-namespace Common.Application.Commands
+namespace Common.Application.Commands.Callbacks
 {
     public interface ICommandHandlerCallbacks
     {
