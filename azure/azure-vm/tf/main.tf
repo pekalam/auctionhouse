@@ -113,8 +113,8 @@ resource "azurerm_virtual_machine" "vm" {
     name              = "vm-backend-dev-eastus-osdisk"
     caching           = "ReadWrite"
     create_option     = "FromImage"
-    managed_disk_type = "Premium_LRS"
-    disk_size_gb = 30
+    managed_disk_type = "Standard_LRS"
+    disk_size_gb = 128
     os_type = "Linux"
   }
   os_profile {
@@ -188,7 +188,7 @@ resource "azurerm_virtual_machine" "vm_proxy" {
     name              = "vm-proxy-dev-eastus-osdisk"
     caching           = "ReadWrite"
     create_option     = "FromImage"
-    managed_disk_type = "Premium_LRS"
+    managed_disk_type = "Standard_LRS"
     disk_size_gb = 30
     os_type = "Linux"
   }
