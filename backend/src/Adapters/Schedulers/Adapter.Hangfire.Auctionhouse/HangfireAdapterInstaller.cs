@@ -55,7 +55,7 @@ namespace Adapter.Hangfire_.Auctionhouse
             }
 
             services.AddTransient<IAuctionUnlockSchedulerJobIdFinder, AuctionUnlockSchedulerJobIdFinder>();
-            services.AddTransient<IAuctionUnlockScheduler, AuctionUnlockScheduler>();
+            services.AddTransient<AuctionUnlockScheduler>();
         }
 
         private static void AddCoreServices(this IServiceCollection services, IConfiguration? configuration = null, string? connectionString = null)
