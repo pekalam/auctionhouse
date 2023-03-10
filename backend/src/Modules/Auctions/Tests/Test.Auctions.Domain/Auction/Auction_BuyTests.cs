@@ -31,21 +31,6 @@ namespace Auctions.Domain.Tests
             auction.ShouldEmitNoEvents();
         }
 
-        protected Auction GivenValidAuctionThatCanBeBought()
-        {
-            var auction = new GivenAuction().ValidOfTypeBuyNowAndBid();
-            auction.MarkPendingEventsAsHandled();
-            return auction;
-        }
-
-        protected Task<Guid> BuyAuction(Auction auction, UserId buyerId = null, AuctionPaymentVerificationScenario paymentVerificationScenario = null)
-        {
-            buyerId ??= GivenUserId.Build();
-            paymentVerificationScenario ??= AuctionPaymentVerificationContracts.SuccessfulScenario(auction, buyerId);
-            var stubPaymentVerification = new GivenAuctionPaymentVerification().Build(paymentVerificationScenario);
-            return auction.Buy(buyerId, paymentVerificationScenario.Given.paymentMethod, stubPaymentVerification, Mock.Of<IAuctionUnlockScheduler>());
-        }
-
         [Fact]
         public async Task Succeeds_when_bought_by_a_non_onwer_with_valid_payment_method()
         {
@@ -56,16 +41,6 @@ namespace Auctions.Domain.Tests
 
             transactionId.Should().NotBe(Guid.Empty);
             AuctionStateShouldBeValidAfterBeingBought(auction, buyerId, transactionId);
-        }
-
-        private static void AuctionStateShouldBeValidAfterBeingBought(Auction auction, UserId buyerId, Guid transactionId)
-        {
-            auction.TransactionId.HasValue.Should().BeTrue();
-            auction.TransactionId.Should().NotBe(Guid.Empty);
-            auction.TransactionId.Should().Be(transactionId);
-            auction.LockIssuer.Should().Be(buyerId);
-            auction.Completed.Should().BeFalse();
-            auction.Locked.Should().BeTrue();
         }
 
         [Fact]
@@ -80,22 +55,6 @@ namespace Auctions.Domain.Tests
             AuctionStateShouldBeValidAfterBuyConfirmed(auction);
         }
 
-        protected async Task<(Auction Auction, Guid TransactionId)> GivenBoughtAuction(UserId buyerId = null)
-        {
-            var auction = GivenValidAuctionThatCanBeBought();
-            var transactionId = await BuyAuction(auction, buyerId ?? GivenUserId.Build());
-            auction.MarkPendingEventsAsHandled();
-            return (auction, transactionId);
-        }
-
-        private static void AuctionStateShouldBeValidAfterBuyConfirmed(Auction auction)
-        {
-            auction.TransactionId.HasValue.Should().BeTrue();
-            auction.TransactionId.Should().NotBe(Guid.Empty);
-            auction.Completed.Should().BeTrue();
-            auction.Locked.Should().BeFalse();
-        }
-
         [Fact]
         public async Task Fails_when_confirms_buy_for_non_existing_transaction_id()
         {
@@ -106,13 +65,6 @@ namespace Auctions.Domain.Tests
 
             confirmBuyResult.Should().BeFalse();
             AuctionStateShouldBeValidAfterBuyConfirmationFails(auction);
-        }
-
-        private static void AuctionStateShouldBeValidAfterBuyConfirmationFails(Auction auction)
-        {
-            auction.TransactionId.HasValue.Should().BeFalse();
-            auction.Completed.Should().BeFalse();
-            auction.Locked.Should().BeTrue();
         }
 
         [Fact]
@@ -126,12 +78,6 @@ namespace Auctions.Domain.Tests
             AuctionStateShoudBeValidAfterBuyCanceled(auction);
         }
 
-        private void AuctionStateShoudBeValidAfterBuyCanceled(Auction auction)
-        {
-            auction.Locked.Should().BeFalse();
-            auction.Completed.Should().BeFalse();
-        }
-
         [Fact]
         public async Task Fails_when_cancelled_with_non_existing_transaction_id()
         {
@@ -142,12 +88,6 @@ namespace Auctions.Domain.Tests
 
             cancelBuyResult.Should().BeFalse();
             AuctionStateShoudBeValidAfterBuyCanceledFails(auction);
-        }
-
-        private void AuctionStateShoudBeValidAfterBuyCanceledFails(Auction auction)
-        {
-            auction.Locked.Should().BeTrue();
-            auction.Completed.Should().BeFalse();
         }
 
         [Fact]
@@ -166,6 +106,66 @@ namespace Auctions.Domain.Tests
             //Assert
             cancelBuyResult.Should().BeFalse();
             AuctionStateShouldBeValidAfterBeingBought(auction, secondBuyerId, secondTransactionId);
+        }
+
+        protected async Task<(Auction Auction, Guid TransactionId)> GivenBoughtAuction(UserId buyerId = null)
+        {
+            var auction = GivenValidAuctionThatCanBeBought();
+            var transactionId = await BuyAuction(auction, buyerId ?? GivenUserId.Build());
+            auction.MarkPendingEventsAsHandled();
+            return (auction, transactionId);
+        }
+
+        protected Auction GivenValidAuctionThatCanBeBought()
+        {
+            var auction = new GivenAuction().ValidOfTypeBuyNowAndBid();
+            auction.MarkPendingEventsAsHandled();
+            return auction;
+        }
+
+        protected Task<Guid> BuyAuction(Auction auction, UserId buyerId = null, AuctionPaymentVerificationScenario paymentVerificationScenario = null)
+        {
+            buyerId ??= GivenUserId.Build();
+            paymentVerificationScenario ??= AuctionPaymentVerificationContracts.SuccessfulScenario(auction, buyerId);
+            var stubPaymentVerification = new GivenAuctionPaymentVerification().Build(paymentVerificationScenario);
+            return auction.Buy(buyerId, paymentVerificationScenario.Given.paymentMethod, stubPaymentVerification, Mock.Of<IAuctionUnlockScheduler>());
+        }
+
+        private void AuctionStateShoudBeValidAfterBuyCanceledFails(Auction auction)
+        {
+            auction.Locked.Should().BeTrue();
+            auction.Completed.Should().BeFalse();
+        }
+
+        private void AuctionStateShoudBeValidAfterBuyCanceled(Auction auction)
+        {
+            auction.Locked.Should().BeFalse();
+            auction.Completed.Should().BeFalse();
+        }
+
+        private static void AuctionStateShouldBeValidAfterBuyConfirmationFails(Auction auction)
+        {
+            auction.TransactionId.HasValue.Should().BeFalse();
+            auction.Completed.Should().BeFalse();
+            auction.Locked.Should().BeTrue();
+        }
+
+        private static void AuctionStateShouldBeValidAfterBuyConfirmed(Auction auction)
+        {
+            auction.TransactionId.HasValue.Should().BeTrue();
+            auction.TransactionId.Should().NotBe(Guid.Empty);
+            auction.Completed.Should().BeTrue();
+            auction.Locked.Should().BeFalse();
+        }
+
+        private static void AuctionStateShouldBeValidAfterBeingBought(Auction auction, UserId buyerId, Guid transactionId)
+        {
+            auction.TransactionId.HasValue.Should().BeTrue();
+            auction.TransactionId.Should().NotBe(Guid.Empty);
+            auction.TransactionId.Should().Be(transactionId);
+            auction.LockIssuer.Should().Be(buyerId);
+            auction.Completed.Should().BeFalse();
+            auction.Locked.Should().BeTrue();
         }
     }
 }
