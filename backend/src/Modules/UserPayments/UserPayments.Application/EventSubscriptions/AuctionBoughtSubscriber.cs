@@ -1,31 +1,26 @@
 ﻿using Auctions.DomainEvents;
 using Common.Application.Events;
 using Common.Application.Mediator;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UserPayments.Application.Commands.CreateBuyNowPayment;
 
 namespace UserPayments.Application.EventSubscriptions
 {
-    public class BuyNowTxStartedSubscriber : EventSubscriber<Events.V1.BuyNowTXStarted>
+    public class AuctionBoughtSubscriber : EventSubscriber<Events.V1.AuctionBought>
     {
         private readonly CommandQueryMediator _mediator;
 
-        public BuyNowTxStartedSubscriber(IAppEventBuilder eventBuilder, CommandQueryMediator mediator) : base(eventBuilder)
+        public AuctionBoughtSubscriber(IAppEventBuilder eventBuilder, CommandQueryMediator mediator) : base(eventBuilder)
         {
             _mediator = mediator;
         }
 
-        public override async Task Handle(IAppEvent<Events.V1.BuyNowTXStarted> appEvent)
+        public override async Task Handle(IAppEvent<Events.V1.AuctionBought> appEvent)
         {
             var cmd = new CreateBuyNowPaymentCommand
             {
                 AuctionId = appEvent.Event.AuctionId,
                 BuyerId = appEvent.Event.BuyerId,
-                TransactionId = appEvent.Event.TransactionId,
+                TransactionId = appEvent.Event.BuyerId,
                 PaymentMethodName = appEvent.Event.PaymentMethodName,
                 Amount = appEvent.Event.Price,
             };

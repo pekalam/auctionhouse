@@ -47,51 +47,36 @@ namespace Auctions.Domain
         private void ApplyEvent(AuctionImageRemoved @event) => RemoveImage(@event.ImgNum);
         private void ApplyEvent(AuctionImageReplaced @event) => ReplaceImage(new AuctionImage(@event.ImageSize1Id, @event.ImageSize2Id, @event.ImageSize3Id), @event.ImgNum);
 
-        private void ApplyEvent(AuctionLocked @event)
-        {
-            Locked = true;
-            LockIssuer = @event.LockIssuer;
-        }
-
-        private void ApplyEvent(AuctionUnlocked @event)
-        {
-            Locked = false;
-            LockIssuer = UserId.Empty;
-        }
-
         private void ApplyEvent(AuctionBidsAdded @event)
         {
             AuctionBidsId = new AuctionBidsId(@event.AuctionBidsId);
         }
 
-        private void ApplyEvent(Events.V1.BuyNowTXCanceled _)
+        private void ApplyEvent(Events.V1.AuctionBuyCanceled _)
         {
-            TransactionId = null;
+            Buyer = UserId.Empty;
         }
 
-        private void ApplyEvent(Events.V1.BuyNowTXCanceledConcurrently _)
+        private void ApplyEvent(Events.V1.AuctionBuyCanceledConcurrently _)
         {
         }
 
-        private void ApplyEvent(Events.V1.BuyNowTXFailed _)
+        private void ApplyEvent(Events.V1.AuctionBuyConfirmationFailed _)
         {
-            TransactionId = null;
         }
 
-        private void ApplyEvent(Events.V1.BuyNowTXSuccess @event)
+        private void ApplyEvent(Events.V1.AuctionBuyConfirmed @event)
         {
-            Buyer = @event.BuyerId;
             EndDate = @event.EndDate;
-            TransactionId = @event.TransactionId;
             Completed = true;
         }
 
-        private void ApplyEvent(Events.V1.BuyNowTXStarted @event)
+        private void ApplyEvent(Events.V1.AuctionBought @event)
         {
-            TransactionId = @event.TransactionId;
+            Buyer = @event.BuyerId;
         }
 
-        private void ApplyEvent(AuctionEnded @event)
+        private void ApplyEvent(AuctionEnded _)
         {
             Completed = true;
         }

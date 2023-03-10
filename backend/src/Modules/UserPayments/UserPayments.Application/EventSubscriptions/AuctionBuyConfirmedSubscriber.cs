@@ -11,21 +11,21 @@ using UserPayments.Domain.Repositories;
 
 namespace UserPayments.Application.EventSubscriptions
 {
-    public class BuyNowTXSuccessSubscriber : EventSubscriber<Events.V1.BuyNowTXSuccess>
+    public class AuctionBuyConfirmedSubscriber : EventSubscriber<Events.V1.AuctionBuyConfirmed>
     {
         private readonly CommandQueryMediator _mediator;
 
-        public BuyNowTXSuccessSubscriber(IAppEventBuilder eventBuilder, CommandQueryMediator mediator) : base(eventBuilder)
+        public AuctionBuyConfirmedSubscriber(IAppEventBuilder eventBuilder, CommandQueryMediator mediator) : base(eventBuilder)
         {
             _mediator = mediator;
         }
 
-        public override async Task Handle(IAppEvent<Events.V1.BuyNowTXSuccess> appEvent)
+        public override async Task Handle(IAppEvent<Events.V1.AuctionBuyConfirmed> appEvent)
         {
             var completePaymentCommand = new CompletePaymentCommand()
             {
                 UserId = appEvent.Event.BuyerId,
-                TransactionId = appEvent.Event.TransactionId,
+                TransactionId = appEvent.Event.BuyerId,
             };
 
             await _mediator.Send(completePaymentCommand, appEvent.CommandContext);

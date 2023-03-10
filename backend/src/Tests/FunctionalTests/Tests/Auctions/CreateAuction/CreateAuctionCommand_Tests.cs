@@ -23,7 +23,7 @@ namespace FunctionalTests.Tests.Auctions.CreateAuction
         }
 
         [Fact]
-        public async Task Creates_auction_and_unlocks_it_when_pending_events_are_processed()
+        public async Task Creates_auction_and_unlocks_read_model_when_pending_events_are_processed()
         {
             //start session
             var startSessionCmd = new StartAuctionCreateSessionCommand();

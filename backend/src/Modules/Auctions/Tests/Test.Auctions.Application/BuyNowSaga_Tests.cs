@@ -42,37 +42,30 @@ namespace Auctions.Application.Tests
             var buyerId = new UserId(this.buyerId);
             SetupServices(eventBus, auction, buyerId, out var paymentVerification, out var serviceProvider);
 
-            await auction.Buy(buyerId, paymentMethod, paymentVerification.Object, Mock.Of<IAuctionUnlockScheduler>());
-            var transactionId = auction.TransactionId;
+            await auction.Buy(buyerId, paymentMethod, paymentVerification.Object, Mock.Of<IAuctionBuyCancellationScheduler>());
             _auctions.AddAuction(auction);
             auction.MarkPendingEventsAsHandled();
 
-            SetupSagaContextAndCoordinator(serviceProvider, auction, correlationId, commandContext, transactionId, out var ctx, out var sagaCoordinator);
+            SetupSagaContextAndCoordinator(serviceProvider, auction, correlationId, commandContext, out var ctx, out var sagaCoordinator);
 
-            await sagaCoordinator.ProcessAsync(new BuyNowTXStarted
+            await sagaCoordinator.ProcessAsync(new AuctionBought
             {
                 PaymentMethodName = paymentMethod,
                 BuyerId = buyerId,
                 AuctionId = auction.AggregateId,
-                TransactionId = transactionId.Value,
                 Price = auction.BuyNowPrice!.Value
             }, ctx);
             eventBus.PublishedEvents.Count.Should().Be(0);
 
             await sagaCoordinator.ProcessAsync(new UserPayments.DomainEvents.Events.V1.BuyNowPaymentConfirmed
             {
-                TransactionId = transactionId.Value,
+                TransactionId = auction.Buyer,
             }, ctx);
-            eventBus.PublishedEvents.Count.Should().Be(2);
             var expectedTypes = new[]
             {
-                typeof(BuyNowTXSuccess),
-                typeof(AuctionUnlocked),
+                typeof(AuctionBuyConfirmed),
             };
-            foreach (var messageType in eventBus.PublishedEvents.Select(e => e.GetType()))
-            {
-                expectedTypes.Contains(messageType).Should().BeTrue();
-            }
+            eventBus.PublishedEvents.Select(e => e.GetType()).Should().ContainInOrder(expectedTypes);
         }
 
         [Theory]
@@ -85,20 +78,18 @@ namespace Auctions.Application.Tests
             var buyerId = new UserId(this.buyerId);
             SetupServices(eventBus, auction, buyerId, out var paymentVerification, out var serviceProvider);
 
-            await auction.Buy(buyerId, paymentMethod, paymentVerification.Object, Mock.Of<IAuctionUnlockScheduler>());
-            var transactionId = auction.TransactionId;
+            await auction.Buy(buyerId, paymentMethod, paymentVerification.Object, Mock.Of<IAuctionBuyCancellationScheduler>());
             _auctions.AddAuction(auction);
             auction.MarkPendingEventsAsHandled();
 
-            SetupSagaContextAndCoordinator(serviceProvider, auction, correlationId, commandContext, transactionId, out var ctx, out var sagaCoordinator);
+            SetupSagaContextAndCoordinator(serviceProvider, auction, correlationId, commandContext, out var ctx, out var sagaCoordinator);
 
 
-            await sagaCoordinator.ProcessAsync(new BuyNowTXStarted
+            await sagaCoordinator.ProcessAsync(new AuctionBought
             {
                 PaymentMethodName = paymentMethod,
                 BuyerId = buyerId,
                 AuctionId = auction.AggregateId,
-                TransactionId = transactionId.Value,
                 Price = auction.BuyNowPrice!.Value
             }, ctx);
             eventBus.PublishedEvents.Count.Should().Be(0);
@@ -106,43 +97,38 @@ namespace Auctions.Application.Tests
             if (concurrentScenario)
             {
                 var user2 = UserId.New();
-                auction.Unlock(auction.LockIssuer);
+                auction.CancelBuy();
                 var paymentVerificationForUser2 = new GivenAuctionPaymentVerification().BuildValidMock(auction, user2);
-                await auction.Buy(user2, "test", paymentVerificationForUser2.Object, Mock.Of<IAuctionUnlockScheduler>());
+                await auction.Buy(user2, "test", paymentVerificationForUser2.Object, Mock.Of<IAuctionBuyCancellationScheduler>());
                 auction.MarkPendingEventsAsHandled();
             }
 
             await sagaCoordinator.ProcessAsync(new UserPayments.DomainEvents.Events.V1.BuyNowPaymentFailed
             {
-                TransactionId = transactionId.Value,
+                TransactionId = buyerId,
             }, ctx);
             if (!concurrentScenario)
             {
-                eventBus.PublishedEvents.Count.Should().Be(2);
                 var expectedTypes = new[]
                 {
-                    typeof(BuyNowTXCanceled),
-                    typeof(AuctionUnlocked),
+                    typeof(AuctionBuyCanceled),
                 };
-                foreach (var messageType in eventBus.PublishedEvents.Select(e => e.GetType()))
-                {
-                    expectedTypes.Contains(messageType).Should().BeTrue();
-                }
+                eventBus.PublishedEvents.Select(e => e.GetType()).Should().ContainInOrder(expectedTypes);
             }
             else
             {
                 eventBus.PublishedEvents.Count.Should().Be(1);
-                eventBus.PublishedEvents.First().Should().BeOfType<BuyNowTXCanceledConcurrently>();
+                eventBus.PublishedEvents.First().Should().BeOfType<AuctionBuyCanceledConcurrently>();
             }
         }
 
 
 
-        private static void SetupSagaContextAndCoordinator(ServiceProvider serviceProvider, Auction auction, Guid correlationId, CommandContext commandContext, Guid? transactionId, out ISagaContext ctx, out ISagaCoordinator sagaCoordinator)
+        private static void SetupSagaContextAndCoordinator(ServiceProvider serviceProvider, Auction auction, Guid correlationId, CommandContext commandContext, out ISagaContext ctx, out ISagaCoordinator sagaCoordinator)
         {
             ctx = SagaContext.Create().WithSagaId(correlationId.ToString())
                 .WithMetadata(BuyNowSaga.AuctionContextParamName, auction)
-                .WithMetadata(BuyNowSaga.TransactionContextParamName, transactionId)
+                .WithMetadata(BuyNowSaga.TransactionContextParamName, auction.Buyer.Value)
                 .WithMetadata(BuyNowSaga.CmdContextParamName, commandContext)
                 .Build();
             sagaCoordinator = serviceProvider.GetRequiredService<ISagaCoordinator>();

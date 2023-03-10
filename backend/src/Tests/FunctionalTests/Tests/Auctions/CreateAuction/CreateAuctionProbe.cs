@@ -29,12 +29,12 @@ namespace FunctionalTests.Tests.Auctions.CreateAuction
             var _readModelNotificationsDbContext = scope.ServiceProvider.GetRequiredService<SagaEventsConfirmationDbContext>();
             var confirmationsMarkedAsCompleted = _readModelNotificationsDbContext.SagaEventsConfirmations.FirstOrDefault()?.Completed == true;
             var confirmationEventsProcessed = _readModelNotificationsDbContext.SagaEventsToConfirm.All(e => e.Processed);
-            var createdAuction = _testBase.SendQuery<UserAuctionsQuery, UserAuctionsQueryResult>(new UserAuctionsQuery()).GetAwaiter().GetResult().Auctions.FirstOrDefault();
-            var auctionUnlocked = createdAuction != null && !createdAuction.Locked;
+            var createdAuctionRead = _testBase.SendQuery<UserAuctionsQuery, UserAuctionsQueryResult>(new UserAuctionsQuery()).GetAwaiter().GetResult().Auctions.FirstOrDefault();
+            var auctionReadUnlocked = createdAuctionRead != null && !createdAuctionRead.Locked;
             var (sagaCompleted, allEventsProcessed) = _testBase.SagaShouldBeCompletedAndAllEventsShouldBeProcessed(_requestStatus);
 
             //if (!confirmationsMarkedAsCompleted) outputHelper.WriteLine("Notifications not marked as completed");
-            return auctionUnlocked && confirmationsMarkedAsCompleted && confirmationEventsProcessed && createdAuction != null && sagaCompleted && allEventsProcessed;
+            return auctionReadUnlocked && confirmationsMarkedAsCompleted && confirmationEventsProcessed && createdAuctionRead != null && sagaCompleted && allEventsProcessed;
         }
     }
 }

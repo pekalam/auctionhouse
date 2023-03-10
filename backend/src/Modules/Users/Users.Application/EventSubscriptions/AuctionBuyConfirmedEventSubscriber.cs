@@ -1,29 +1,24 @@
 ﻿using Auctions.DomainEvents;
 using Common.Application.Events;
 using Common.Application.Mediator;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Users.Application.Commands.WithdrawCredits;
 
 namespace Users.Application.EventSubscriptions
 {
-    public class BuyNowTXSuccessEventSubscriber : EventSubscriber<Events.V1.BuyNowTXSuccess>
+    public class AuctionBuyConfirmedEventSubscriber : EventSubscriber<Events.V1.AuctionBuyConfirmed>
     {
         private readonly CommandQueryMediator _mediator;
 
-        public BuyNowTXSuccessEventSubscriber(IAppEventBuilder eventBuilder, CommandQueryMediator mediator) : base(eventBuilder)
+        public AuctionBuyConfirmedEventSubscriber(IAppEventBuilder eventBuilder, CommandQueryMediator mediator) : base(eventBuilder)
         {
             _mediator = mediator;
         }
 
-        public override async Task Handle(IAppEvent<Events.V1.BuyNowTXSuccess> appEvent)
+        public override async Task Handle(IAppEvent<Events.V1.AuctionBuyConfirmed> appEvent)
         {
             var cmd = new WithdrawCreditsForBuyNowAuctionCommand
             {
-                TransactionId = appEvent.Event.TransactionId,
+                TransactionId = appEvent.Event.BuyerId,
                 UserId = appEvent.Event.BuyerId,
             };
 

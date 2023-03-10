@@ -18,7 +18,7 @@ namespace Auctions.Tests.Base
             .AddAuctionImageConversion(_ => Mock.Of<IAuctionImageConversion>())
             .AddAuctionImageRepository(_ => Mock.Of<IAuctionImageRepository>())
             .AddCategoryNamesToTreeIdsConversion(_ => Mock.Of<ICategoryNamesToTreeIdsConversion>())
-            .AddAuctionUnlockScheduler(_ => Mock.Of<IAuctionUnlockScheduler>())
+            .AddAuctionCancelScheduler(_ => Mock.Of<IAuctionBuyCancellationScheduler>())
             .AddAuctionEndScheduler(_ => Mock.Of<IAuctionEndScheduler>())
             .AddAuctionPaymentVerification(_ => Mock.Of<IAuctionPaymentVerification>());
         }

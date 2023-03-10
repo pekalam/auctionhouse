@@ -10,52 +10,57 @@ namespace Adapter.Hangfire_.Auctionhouse
     using Common.Application.Events;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using System.Diagnostics;
 
     internal class SqlServerSettings
     {
         public string ConnectionString { get; set; } = null!;
     }
 
-    public static class HangfireAdapterInstaller
+    public static class HangfireAuctionBuyCancellationSchedulerInstaller
     {
-        public static AuctionsDomainInstaller AddHangfireAuctionUnlockSchedulerAdapter(this AuctionsDomainInstaller installer, IConfiguration? configuration = null, string? connectionString = null)
+        public static AuctionsDomainInstaller AddHangfireAuctionBuyCancellationSchedulerAdapter(this AuctionsDomainInstaller installer, IConfiguration configuration)
         {
-            installer.Services.AddHangfireAuctionUnlockSchedulerAdapter(configuration, connectionString);
-
-            installer.AddAuctionUnlockScheduler((prov) => prov.GetRequiredService<AuctionUnlockScheduler>());
-            return installer;
+            return installer.AddHangfireAuctionBuyCancellationSchedulerAdapter(configuration, null);
         }
 
-        public static void AddHangfireAuctionUnlockSchedulerAdapter(this IServiceCollection services,
-            IConfiguration? configuration = null, string? connectionString = null,
+
+        public static AuctionsDomainInstaller AddHangfireAuctionBuyCancellationSchedulerAdapter(this AuctionsDomainInstaller installer, string connectionString)
+        {
+            return installer.AddHangfireAuctionBuyCancellationSchedulerAdapter(null, connectionString);
+        }
+
+        public static AuctionsDomainInstaller AddHangfireAuctionBuyCancellationSchedulerAdapter(this AuctionsDomainInstaller installer,
+            IConfiguration? configuration, string? connectionString,
             //Test dependencies
             Func<IServiceProvider, IAuctionRepository>? auctionRepositoryFactory = null,
             Func<IServiceProvider, IEventOutbox>? eventOutboxFactory = null,
             Func<IServiceProvider, IUnitOfWorkFactory>? unitOfWorkFactory = null,
-            Func<IServiceProvider, AuctionUnlockService>? auctionUnlockServiceFactory = null)
+            Func<IServiceProvider, AuctionBuyCancellationService>? auctionBuyCancellationServiceFactory = null)
         {
             if(configuration is null && connectionString is null)
             {
                 throw new ArgumentException("Invalid configuration");
             }
 
-            services.AddCoreServices(configuration, connectionString);
+            installer.Services.AddCoreServices(configuration, connectionString);
 
             if (auctionRepositoryFactory != null && eventOutboxFactory != null && unitOfWorkFactory != null) 
             {
-                services.AddTransient((prov) => auctionRepositoryFactory(prov));
-                services.AddTransient((prov) => eventOutboxFactory(prov));
-                services.AddTransient((prov) => unitOfWorkFactory(prov));
+                installer.Services.AddTransient((prov) => auctionRepositoryFactory(prov));
+                installer.Services.AddTransient((prov) => eventOutboxFactory(prov));
+                installer.Services.AddTransient((prov) => unitOfWorkFactory(prov));
 
-                if(auctionUnlockServiceFactory != null)
+                if(auctionBuyCancellationServiceFactory != null)
                 {
-                    services.AddTransient((prov) => auctionUnlockServiceFactory(prov));
+                    installer.Services.AddTransient((prov) => auctionBuyCancellationServiceFactory(prov));
                 }
             }
 
-            services.AddTransient<IAuctionUnlockSchedulerJobIdFinder, AuctionUnlockSchedulerJobIdFinder>();
-            services.AddTransient<AuctionUnlockScheduler>();
+            installer.Services.AddTransient<IAuctionCancelSchedulerJobIdFinder, AuctionCancelSchedulerJobIdFinder>();
+            installer.Services.AddTransient<AuctionBuyCancellationScheduler>();
+
+            installer.AddAuctionCancelScheduler((prov) => prov.GetRequiredService<AuctionBuyCancellationScheduler>());
+            return installer;
         }
 
         private static void AddCoreServices(this IServiceCollection services, IConfiguration? configuration = null, string? connectionString = null)

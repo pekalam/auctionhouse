@@ -13,21 +13,21 @@ namespace Auctions.Application.Commands.BuyNow
     public class BuyNowCommandHandler : CommandHandlerBase<BuyNowCommand>
     {
         private readonly ILogger<BuyNowCommandHandler> _logger;
-        private readonly IAuctionUnlockScheduler _auctionUnlockScheduler;
+        private readonly IAuctionBuyCancellationScheduler _auctionBuyCancellationScheduler;
         private readonly IAuctionPaymentVerification _auctionPaymentVerification;
         private readonly IAuctionRepository _auctions;
         private readonly ISagaCoordinator _sagaCoordinator;
         private readonly OptimisticConcurrencyHandler _optimisticConcurrencyHandler;
 
         public BuyNowCommandHandler(IAuctionRepository auctions, ILogger<BuyNowCommandHandler> logger,
-            IAuctionPaymentVerification auctionPaymentVerification, IAuctionUnlockScheduler auctionUnlockScheduler, ISagaCoordinator sagaCoordinator,
+            IAuctionPaymentVerification auctionPaymentVerification, IAuctionBuyCancellationScheduler auctionBuyCancellationScheduler, ISagaCoordinator sagaCoordinator,
             CommandHandlerBaseDependencies dependencies, OptimisticConcurrencyHandler optimisticConcurrencyHandler)
             : base(dependencies)
         {
             _logger = logger;
             _auctions = auctions;
             _auctionPaymentVerification = auctionPaymentVerification;
-            _auctionUnlockScheduler = auctionUnlockScheduler;
+            _auctionBuyCancellationScheduler = auctionBuyCancellationScheduler;
             _sagaCoordinator = sagaCoordinator;
             _optimisticConcurrencyHandler = optimisticConcurrencyHandler;
         }
@@ -44,12 +44,12 @@ namespace Auctions.Application.Commands.BuyNow
             await _optimisticConcurrencyHandler.Run(async (repeats, uowFactory) => {
                 if (repeats > 0) auction = _auctions.FindAuction(request.Command.AuctionId);
 
-                var transactionId = await auction.Buy(new UserId(request.Command.SignedInUser), "test", _auctionPaymentVerification, _auctionUnlockScheduler);
+                await auction.Buy(new UserId(request.Command.SignedInUser), "test", _auctionPaymentVerification, _auctionBuyCancellationScheduler);
 
                 using (var uow = uowFactory.Begin())
                 {
                     _auctions.UpdateAuction(auction);
-                    await StartSaga(request, auction, transactionId);
+                    await StartSaga(request, auction, auction.Buyer);
                     await eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext);
                     uow.Commit();
                 }
@@ -62,7 +62,7 @@ namespace Auctions.Application.Commands.BuyNow
 
         private async Task StartSaga(AppCommand<BuyNowCommand> request, Auction auction, Guid transactionId)
         {
-            var txStartedEvent = (DomainEvents.Events.V1.BuyNowTXStarted)auction.PendingEvents.First(e => e.EventName == "buyNowTXStarted");
+            var txStartedEvent = (DomainEvents.Events.V1.AuctionBought)auction.PendingEvents.First(e => e.EventName == "auctionBought");
             var context = SagaContext
                 .Create()
                 .WithSagaId(request.CommandContext.CorrelationId.Value)

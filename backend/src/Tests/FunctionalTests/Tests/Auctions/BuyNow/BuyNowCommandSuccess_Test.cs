@@ -17,15 +17,13 @@ namespace FunctionalTests.Tests.Auctions.BuyNow
     public class BuyNowCommandSuccess_Test : BuyNowCommandTestBase
     {
         readonly Type[] SuccessExpectedEvents = new[] {
-                    typeof(global::Auctions.DomainEvents.AuctionLocked),
-                    typeof(global::Auctions.DomainEvents.Events.V1.BuyNowTXStarted),
+                    typeof(global::Auctions.DomainEvents.Events.V1.AuctionBought),
                     typeof(UserPayments.Domain.Events.BuyNowPaymentCreated),
                     typeof(LockedFundsCreated),
                     typeof(UserCreditsLockedForBuyNowAuction),
                     typeof(BuyNowPaymentConfirmed),
                     typeof(UserPayments.Domain.Events.PaymentStatusChangedToConfirmed),
-                    typeof(global::Auctions.DomainEvents.AuctionUnlocked),
-                    typeof(global::Auctions.DomainEvents.Events.V1.BuyNowTXSuccess),
+                    typeof(global::Auctions.DomainEvents.Events.V1.AuctionBuyConfirmed),
                     typeof(UserPayments.Domain.Events.PaymentStatusChangedToCompleted),
                     typeof(CreditsWithdrawn),
                 };

@@ -18,15 +18,15 @@ namespace Auctions.Application.Commands.BuyNow.CancelBuy
         private readonly OptimisticConcurrencyHandler _optimisticConcurrencyHandler;
         private readonly IAuctionRepository _auctions;
         private readonly ICommandHandlerCallbacks _commandHandlerCallbacks;
-        private readonly IAuctionUnlockScheduler _auctionUnlockScheduler;
+        private readonly IAuctionBuyCancellationScheduler _auctionBuyCancellationScheduler;
 
-        public CancelBuyCommandHandler(OptimisticConcurrencyHandler optimisticConcurrencyHandler, IAuctionRepository auctions, IAuctionUnlockScheduler auctionUnlockScheduler, ICommandHandlerCallbacks commandHandlerCallbacks,
+        public CancelBuyCommandHandler(OptimisticConcurrencyHandler optimisticConcurrencyHandler, IAuctionRepository auctions, IAuctionBuyCancellationScheduler auctionBuyCancellationScheduler, ICommandHandlerCallbacks commandHandlerCallbacks,
             CommandHandlerBaseDependencies dependencies)
             : base(dependencies)
         {
             _optimisticConcurrencyHandler = optimisticConcurrencyHandler;
             _auctions = auctions;
-            _auctionUnlockScheduler = auctionUnlockScheduler;
+            _auctionBuyCancellationScheduler = auctionBuyCancellationScheduler;
             _commandHandlerCallbacks = commandHandlerCallbacks;
         }
 
@@ -42,7 +42,7 @@ namespace Auctions.Application.Commands.BuyNow.CancelBuy
             await _optimisticConcurrencyHandler.Run(async (repeats, uowFactory) =>
             {
                 if (repeats > 0) auction = _auctions.FindAuction(request.Command.AuctionId);
-                auction.CancelBuy(request.Command.TransactionId, _auctionUnlockScheduler);
+                auction.CancelBuy(request.Command.TransactionId, _auctionBuyCancellationScheduler);
 
                 using (var uow = uowFactory.Begin())
                 {

@@ -16,7 +16,7 @@ namespace Auctions.Application.Commands.BuyNow
     }
 
     public class BuyNowSaga : Saga<BuyNowSagaData>,
-        ISagaStartAction<Events.V1.BuyNowTXStarted>,
+        ISagaStartAction<Events.V1.AuctionBought>,
         ISagaAction<UserPaymentsEvents.V1.BuyNowPaymentConfirmed>,
         ISagaAction<UserPaymentsEvents.V1.BuyNowPaymentFailed>
     {
@@ -31,12 +31,12 @@ namespace Auctions.Application.Commands.BuyNow
             _mediator = mediator;
         }
 
-        public Task CompensateAsync(Events.V1.BuyNowTXStarted message, ISagaContext context)
+        public Task CompensateAsync(Events.V1.AuctionBought message, ISagaContext context)
         {
             return Task.CompletedTask;
         }
 
-        public Task HandleAsync(Events.V1.BuyNowTXStarted message, ISagaContext context)
+        public Task HandleAsync(Events.V1.AuctionBought message, ISagaContext context)
         {
             if (!context.TryGetMetadata(AuctionContextParamName, out var metadata))
             {

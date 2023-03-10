@@ -7,16 +7,16 @@ using ReadModel.Core.Model;
 
 namespace ReadModel.Core.EventConsumers
 {
-    public class AuctionBuyNowTXSuccessEventConsumer : EventConsumer<Events.V1.BuyNowTXSuccess, AuctionBuyNowTXSuccessEventConsumer>
+    public class AuctionBuyConfirmedEventConsumer : EventConsumer<Events.V1.AuctionBuyConfirmed, AuctionBuyConfirmedEventConsumer>
     {
         private readonly ReadModelDbContext _dbContext;
 
-        public AuctionBuyNowTXSuccessEventConsumer(ILogger<AuctionBuyNowTXSuccessEventConsumer> logger, EventConsumerDependencies dependencies, ReadModelDbContext dbContext) : base(logger, dependencies)
+        public AuctionBuyConfirmedEventConsumer(ILogger<AuctionBuyConfirmedEventConsumer> logger, EventConsumerDependencies dependencies, ReadModelDbContext dbContext) : base(logger, dependencies)
         {
             _dbContext = dbContext;
         }
 
-        public override async Task Consume(IAppEvent<Events.V1.BuyNowTXSuccess> appEvent)
+        public override async Task Consume(IAppEvent<Events.V1.AuctionBuyConfirmed> appEvent)
         {
             var buyerName = await _dbContext.UsersReadModel
                 .Find(u => u.UserIdentity.UserId == appEvent.Event.BuyerId.ToString())
@@ -26,7 +26,8 @@ namespace ReadModel.Core.EventConsumers
             var catFilter = CategoryFilterFactory.Create(appEvent.Event.CategoryIds);
             var idFilter = Builders<AuctionRead>.Filter.Eq(a => a.AuctionId,
                 appEvent.Event.AuctionId.ToString());
-            var filter = Builders<AuctionRead>.Filter.And(catFilter, idFilter);
+            var versionFilter = Builders<AuctionRead>.Filter.Lt(f => f.Version, appEvent.Event.AggVersion);
+            var filter = Builders<AuctionRead>.Filter.And(catFilter, idFilter, versionFilter);
 
             var update = Builders<AuctionRead>.Update
                 .Set(a => a.Buyer, new UserIdentityRead
@@ -37,7 +38,9 @@ namespace ReadModel.Core.EventConsumers
                 .Set(a => a.Completed, true)
                 .Set(a => a.Bought, true)
                 .Set(a => a.Archived, true)
-                .Set(a => a.EndDate, appEvent.Event.EndDate);
+                .Set(a => a.EndDate, appEvent.Event.EndDate)
+                .Set(a => a.Version, appEvent.Event.AggVersion)
+                .Set(a=> a.Locked, false);
 
             _dbContext.AuctionsReadModel.UpdateOne(filter, update);
         }

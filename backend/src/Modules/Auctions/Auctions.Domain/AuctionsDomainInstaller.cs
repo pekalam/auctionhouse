@@ -18,7 +18,7 @@ namespace Auctions.Domain
         {
             services.AddTransient<AuctionImageService>();
             services.AddTransient<CreateAuctionService>();
-            services.AddTransient<AuctionUnlockService>();
+            services.AddTransient<AuctionBuyCancellationService>();
         }
 
         public AuctionsDomainInstaller AddAuctionRepository(Func<IServiceProvider, IAuctionRepository> factory)
@@ -57,7 +57,7 @@ namespace Auctions.Domain
             return this;
         }
 
-        public AuctionsDomainInstaller AddAuctionUnlockScheduler(Func<IServiceProvider, IAuctionUnlockScheduler> factory)
+        public AuctionsDomainInstaller AddAuctionCancelScheduler(Func<IServiceProvider, IAuctionBuyCancellationScheduler> factory)
         {
             Services.AddTransient(factory);
             return this;

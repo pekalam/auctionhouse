@@ -32,7 +32,7 @@ namespace Auctionhouse.Command.ModuleInstallation
                     .AddAuctionImageConversionAdapter()
                     .AddMongoDbImageRepositoryAdapter(configuration)
                     .AddQuartzTimeTaskServiceAuctionEndSchedulerAdapter(configuration)
-                    .AddHangfireAuctionUnlockSchedulerAdapter(configuration)
+                    .AddHangfireAuctionBuyCancellationSchedulerAdapter(configuration)
                     .AddAuctionCreateSessionStoreAdapter()
                     //INTEGRATION SERVICES
                     .AddCategoryNamesToTreeIdsConversionAdapter()

@@ -3,6 +3,8 @@ using Auctions.Domain;
 using Auctions.Domain.Repositories;
 using Auctions.Domain.Services;
 using Auctions.Tests.Base.Domain.ModelBuilders;
+using Auctions.Tests.Base.Domain.Services.ServiceContracts;
+using Auctions.Tests.Base.Domain.Services.TestDoubleBuilders;
 using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
@@ -24,55 +26,55 @@ using Xunit.Abstractions;
 namespace Test.Adapter.Hangfire.Auctionhouse
 {
     [Trait("Category", "Integration")]
-    public class AuctionUnlockScheduler_Tests : IDisposable
+    public class AuctionBuyCancellationScheduler_Tests : IDisposable
     {
         private readonly ITestOutputHelper _outputHelper;
 
-        public AuctionUnlockScheduler_Tests(ITestOutputHelper outputHelper)
+        public AuctionBuyCancellationScheduler_Tests(ITestOutputHelper outputHelper)
         {
             _outputHelper = outputHelper;
         }
 
         [Fact]
-        public async Task Schedules_unlock_task_and_unlocks_auction()
+        public async Task Schedules_buy_cancellation_task_and_cancels_an_auction()
         {
-            var auction = GivenLockedAuction();
+            var auction = await GivenLockedAuction();
             var auctionRepositoryMock = GivenAuctionRepositoryMock(auction);
             var scheduler = SetupWebHostAndServices(auctionRepositoryMock, out var cts);
             
-            scheduler.ScheduleAuctionUnlock(auction.AggregateId, TimeOnly.FromTimeSpan(TimeSpan.FromSeconds(1)));
+            scheduler.ScheduleAuctionBuyCancellation(auction.AggregateId, TimeOnly.FromTimeSpan(TimeSpan.FromSeconds(1)));
 
-            await AssertThatAuctionIsUnlocked(auction);
+            await AssertThatAuctionBuyIsCancelled(auction);
             cts.Cancel();
         }
 
         [Fact]
-        public async Task Cancels_scheduled_unlock_task()
+        public async Task Cancels_scheduled_buy_cancellation_task()
         {
-            var auction = GivenLockedAuction();
+            var auction = await GivenLockedAuction();
             var auctionRepositoryMock = GivenAuctionRepositoryMock(auction);
             var scheduler = SetupWebHostAndServices(auctionRepositoryMock, out var cts);
 
-            scheduler.ScheduleAuctionUnlock(auction.AggregateId, TimeOnly.FromTimeSpan(TimeSpan.FromSeconds(1)));
+            scheduler.ScheduleAuctionBuyCancellation(auction.AggregateId, TimeOnly.FromTimeSpan(TimeSpan.FromSeconds(1)));
             scheduler.Cancel(auction.AggregateId);
 
-            await AssertThatAuctionIsLocked(auction);
+            await AssertThatAuctionBuyIsNotCancelled(auction);
             cts.Cancel();
         }
 
-        private static async Task AssertThatAuctionIsUnlocked(Auction auction)
+        private static async Task AssertThatAuctionBuyIsCancelled(Auction auction)
         {
             await Task.Delay(20_000);
-            Assert.False(auction.Locked);
+            Assert.Equal(UserId.Empty, auction.Buyer);
         }
 
-        private static async Task AssertThatAuctionIsLocked(Auction auction)
+        private static async Task AssertThatAuctionBuyIsNotCancelled(Auction auction)
         {
             await Task.Delay(20_000);
-            Assert.True(auction.Locked);
+            Assert.NotEqual(UserId.Empty, auction.Buyer);
         }
 
-        private IAuctionUnlockScheduler SetupWebHostAndServices(Mock<IAuctionRepository> auctionRepositoryMock, out CancellationTokenSource cts)
+        private IAuctionBuyCancellationScheduler SetupWebHostAndServices(Mock<IAuctionRepository> auctionRepositoryMock, out CancellationTokenSource cts)
         {
             var host = Host.CreateDefaultBuilder()
                 .ConfigureServices(services =>
@@ -84,18 +86,20 @@ namespace Test.Adapter.Hangfire.Auctionhouse
                         //TODO hangfire logger based on _outputHelper
                     });
 
-                    services.AddTransient<AuctionUnlockService>();
-                    services.AddHangfireAuctionUnlockSchedulerAdapter(connectionString: TestConfig.Instance.GetHangfireDbConnectionString(),
-                        auctionRepositoryFactory: s => auctionRepositoryMock.Object,
-                        eventOutboxFactory: s => Mock.Of<IEventOutbox>(),
-                        unitOfWorkFactory: s => UnitOfWorkFactoryMock.Instance.Object);
+                    new AuctionsDomainInstaller(services)
+                        .AddHangfireAuctionBuyCancellationSchedulerAdapter(
+                                connectionString: TestConfig.Instance.GetHangfireDbConnectionString(),
+                                auctionRepositoryFactory: s => auctionRepositoryMock.Object,
+                                eventOutboxFactory: s => Mock.Of<IEventOutbox>(),
+                                unitOfWorkFactory: s => UnitOfWorkFactoryMock.Instance.Object
+                            );
                 })
                 .Build();
-            HangfireAdapterInstaller.Initialize(host.Services);
+            HangfireAuctionBuyCancellationSchedulerInstaller.Initialize(host.Services);
 
             cts = new CancellationTokenSource();
             var hostRunTask = host.RunAsync(cts.Token);
-            return host.Services.GetRequiredService<IAuctionUnlockScheduler>();
+            return host.Services.GetRequiredService<IAuctionBuyCancellationScheduler>();
         }
 
         private static Mock<IAuctionRepository> GivenAuctionRepositoryMock(Auction auction)
@@ -107,12 +111,17 @@ namespace Test.Adapter.Hangfire.Auctionhouse
             return auctionRepositoryMock;
         }
 
-        private static Auction GivenLockedAuction()
+        private async static Task<Auction> GivenLockedAuction()
         {
             var auction = new GivenAuction().Build();
-            auction.MarkPendingEventsAsHandled();
+            var buyerId = UserId.New();
+            var paymentVerificationScenario = AuctionPaymentVerificationContracts.SuccessfulScenario(auction, buyerId);
+            var stubPaymentVerification = new GivenAuctionPaymentVerification().Build(paymentVerificationScenario);
+
+            await auction.Buy(buyerId, paymentVerificationScenario.Given.paymentMethod, stubPaymentVerification, Mock.Of<IAuctionBuyCancellationScheduler>());
+
             // ensure locked
-            Assert.True(auction.Locked);
+            Assert.Equal(buyerId, auction.Buyer);
             return auction;
         }
 

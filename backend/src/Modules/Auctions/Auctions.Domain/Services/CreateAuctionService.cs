@@ -10,12 +10,10 @@ namespace Auctions.Domain.Services
 {
     public class CreateAuctionServiceData
     {
-        public Guid LockIssuer { get; }
         public AuctionId AuctionId { get; }
 
-        public CreateAuctionServiceData(Guid lockIssuer, AuctionId auctionId)
+        public CreateAuctionServiceData(AuctionId auctionId)
         {
-            LockIssuer = lockIssuer;
             AuctionId = auctionId;
         }
     }
@@ -39,7 +37,7 @@ namespace Auctions.Domain.Services
         /// <summary>
         /// Returns true if created auction can be used and there is no need to call <see cref="EndCreate(AuctionBidsId)"/>
         /// </summary>
-        public bool Finished => _auction is not null && (_auction.BuyNowOnly || _auction.Locked == false) && _startSuccess;
+        public bool Finished => _auction is not null && (_auction.BuyNowOnly || _auction.AuctionBidsId is not null) && _startSuccess;
 
         public CreateAuctionService(Lazy<IAuctionImageRepository> auctionImages, Lazy<IAuctionEndScheduler> auctionEndScheduler, Lazy<IAuctionRepository> auctions, CreateAuctionServiceData? serviceData = null)
         {
@@ -86,7 +84,7 @@ namespace Auctions.Domain.Services
                 return auction;
             }
 
-            ServiceData = new(auction.LockIssuer, auction.AggregateId);
+            ServiceData = new(auction.AggregateId);
             return auction;
         }
 
@@ -98,7 +96,6 @@ namespace Auctions.Domain.Services
             }
             if(_auction is null)
                 _auction = _auctions.Value.FindAuction(ServiceData.AuctionId);
-            if (!_auction.Locked) throw new InvalidOperationException("Auction is not locked");
             _auction.AddAuctionBids(auctionBidsId);
             return _auction;
         }

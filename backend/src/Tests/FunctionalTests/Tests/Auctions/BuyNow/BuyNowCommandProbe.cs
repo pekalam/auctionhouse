@@ -10,6 +10,8 @@ namespace FunctionalTests.Tests.Auctions.BuyNow
     using global::Auctions.Domain.Repositories;
     using Microsoft.Extensions.DependencyInjection;
     using MongoDB.Driver;
+    using ReadModel.Core.Model;
+    using ReadModel.Core.Queries.Auction.SingleAuction;
 
     public class BuyNowCommandProbe
     {
@@ -46,6 +48,7 @@ namespace FunctionalTests.Tests.Auctions.BuyNow
             var paymentCompletedAssertion = PaymentStatusShouldBe(UserPayments.Domain.PaymentStatus.Completed);
             var userCreditsAssertion = UserCreditsShouldBe(_initialCredits - _buyNowPrice);
             var userReadCreditsAssertion = UserReadCreditsShouldBe(_initialCredits - _buyNowPrice);
+            var auctionReadUnlocked = AuctionReadLocked() == false;
 
             return sagaCompleted &&
             allEventsProcessed &&
@@ -53,7 +56,8 @@ namespace FunctionalTests.Tests.Auctions.BuyNow
             expectedEventsAssertion &&
             paymentCompletedAssertion &&
             userCreditsAssertion &&
-            userReadCreditsAssertion;
+            userReadCreditsAssertion &&
+            auctionReadUnlocked;
 
 
             bool PaymentStatusShouldBe(UserPayments.Domain.PaymentStatus paymentStatus)
@@ -64,6 +68,7 @@ namespace FunctionalTests.Tests.Auctions.BuyNow
 
             bool UserReadCreditsShouldBe(decimal credits)
             {
+                //TODO: query
                 var userRead = _testBase.ReadModelDbContext.UsersReadModel.Find(u => u.UserIdentity.UserId == _user.AggregateId.ToString()).FirstOrDefault();
                 return userRead?.Credits == credits;
             }
@@ -71,6 +76,18 @@ namespace FunctionalTests.Tests.Auctions.BuyNow
             bool UserCreditsShouldBe(decimal credits)
             {
                 return users.FindUser(_user.AggregateId)?.Credits == credits;
+            }
+
+            bool? AuctionReadLocked()
+            {
+                try
+                {
+                    return _testBase.SendQuery<AuctionQuery, AuctionRead>(new AuctionQuery(_auctionId.ToString())).GetAwaiter().GetResult().Locked;
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
             }
         }
     }

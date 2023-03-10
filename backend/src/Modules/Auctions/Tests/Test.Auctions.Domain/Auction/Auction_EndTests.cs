@@ -13,7 +13,7 @@ using Xunit;
 
 namespace Auctions.Domain.Tests
 {
-    public class Auction_End_Tests
+    public class Auction_End_Tests : Auction_Buy_Tests //TODO: temporary
     {
         [Fact]
         public void New_auction_can_be_successfuly_ended()
@@ -46,19 +46,12 @@ namespace Auctions.Domain.Tests
         }
 
         [Fact]
-        public void Fails_when_trying_to_end_while_locked()
+        public async Task Fails_when_trying_to_end_bought()
         {
-            var auction = GivenLockedAuction();
+            var (auction, _) = await GivenBoughtAuction();
             var endAuctionAction = () => auction.EndAuction();
 
-            endAuctionAction.Should().Throw<DomainException>().WithMessage("Cannot end locked auction");
-        }
-
-        private static Auction GivenLockedAuction()
-        {
-            var auction = GivenValidAuction();
-            auction.Lock(GivenUserId.Build());
-            return auction;
+            endAuctionAction.Should().Throw<DomainException>().WithMessage("Cannot end bought auction");
         }
 
         [Fact]
@@ -73,9 +66,9 @@ namespace Auctions.Domain.Tests
         private static async Task<Auction> GivenCompletedAuction()
         {
             var auction = GivenValidAuction();
-            var buyer = GivenUserId.Build();
-            var tranId = await auction.Buy(buyer, "test", new GivenAuctionPaymentVerification().BuildValid(auction, buyer), Mock.Of<IAuctionUnlockScheduler>());
-            auction.ConfirmBuy(tranId, Mock.Of<IAuctionUnlockScheduler>());
+            var buyerId = GivenUserId.Build();
+            await auction.Buy(buyerId, "test", new GivenAuctionPaymentVerification().BuildValid(auction, buyerId), Mock.Of<IAuctionBuyCancellationScheduler>());
+            auction.ConfirmBuy(buyerId, Mock.Of<IAuctionBuyCancellationScheduler>());
             return auction;
         }
     }

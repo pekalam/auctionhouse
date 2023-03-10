@@ -10,16 +10,16 @@ using System.Data.SqlClient;
 
 namespace Adapter.Hangfire_.Auctionhouse
 {
-    internal interface IAuctionUnlockSchedulerJobIdFinder
+    internal interface IAuctionCancelSchedulerJobIdFinder
     {
         Task<string?> FindJobId(AuctionId auctionId);
     }
 
-    internal class AuctionUnlockSchedulerJobIdFinder : IAuctionUnlockSchedulerJobIdFinder
+    internal class AuctionCancelSchedulerJobIdFinder : IAuctionCancelSchedulerJobIdFinder
     {
         private readonly SqlServerSettings _sqlServerSettings;
 
-        public AuctionUnlockSchedulerJobIdFinder(SqlServerSettings sqlServerSettings)
+        public AuctionCancelSchedulerJobIdFinder(SqlServerSettings sqlServerSettings)
         {
             _sqlServerSettings = sqlServerSettings;
         }
@@ -50,21 +50,21 @@ namespace Adapter.Hangfire_.Auctionhouse
     }
 
 
-    internal class AuctionUnlockScheduler : IAuctionUnlockScheduler
+    internal class AuctionBuyCancellationScheduler : IAuctionBuyCancellationScheduler
     {
         public const int MaxRetries = 6;
 
-        private readonly AuctionUnlockService _auctionUnlockService;
+        private readonly AuctionBuyCancellationService _auctionBuyCancellationService;
         private readonly IAuctionRepository _auctions;
-        private readonly ILogger<AuctionUnlockScheduler> _logger;
+        private readonly ILogger<AuctionBuyCancellationScheduler> _logger;
         private readonly IEventOutbox _eventOutbox;
         private readonly IUnitOfWorkFactory _uowFactory;
-        private readonly IAuctionUnlockSchedulerJobIdFinder _jobIdFinder;
+        private readonly IAuctionCancelSchedulerJobIdFinder _jobIdFinder;
 
-        public AuctionUnlockScheduler(AuctionUnlockService auctionUnlockService, IAuctionRepository auctions, ILogger<AuctionUnlockScheduler> logger,
-            IEventOutbox eventOutbox, IUnitOfWorkFactory uowFactory, IAuctionUnlockSchedulerJobIdFinder jobIdFinder)
+        public AuctionBuyCancellationScheduler(AuctionBuyCancellationService auctionBuyCancellationService, IAuctionRepository auctions, ILogger<AuctionBuyCancellationScheduler> logger,
+            IEventOutbox eventOutbox, IUnitOfWorkFactory uowFactory, IAuctionCancelSchedulerJobIdFinder jobIdFinder)
         {
-            _auctionUnlockService = auctionUnlockService;
+            _auctionBuyCancellationService = auctionBuyCancellationService;
             _auctions = auctions;
             _logger = logger;
             _eventOutbox = eventOutbox;
@@ -79,36 +79,35 @@ namespace Adapter.Hangfire_.Auctionhouse
         }
 
         [AutomaticRetry(Attempts = MaxRetries, DelaysInSeconds = new[] {10,10,10,10,10,10},  OnAttemptsExceeded = AttemptsExceededAction.Fail)]
-        public async Task UnlockAuctionAsync(AuctionId auctionId)
+        public async Task CancelAuctionBuyAsync(AuctionId auctionId)
         {
-            var unlockedAuction = _auctionUnlockService.Unlock(auctionId, _auctions);
-            if (unlockedAuction is null)
+            var cancelledAuction = _auctionBuyCancellationService.Cancel(auctionId, _auctions);
+            if (cancelledAuction is null)
             {
-                _logger.LogWarning("Could not find auction {auctionId} to unlock", auctionId);
+                _logger.LogWarning("Could not find auction {auctionId} for buy cancellation", auctionId);
                 return;
             }
-            if (unlockedAuction.PendingEvents.Count == 0)
+            if (cancelledAuction.PendingEvents.Count == 0)
             {
-                if (unlockedAuction.Completed) _logger.LogWarning("Auction {auctionId} was completed", auctionId);
-                else _logger.LogWarning("Auction {auctionId} was not locked", auctionId);
+                _logger.LogWarning("Could not cancel auction {auctionId}", auctionId);
                 return;
             }
 
-            _logger.LogDebug("Unlocking auction {auctionId}", auctionId);
+            _logger.LogDebug("Cancelling auction buy of auction {auctionId}", auctionId);
             using (var uow = _uowFactory.Begin())
             {
-                // there is no need to try to send events faster like in CommandHandlerBase because this unlocked event has not strict timing requirements
-                _auctions.UpdateAuction(unlockedAuction);
-                await _eventOutbox.SaveEvents(unlockedAuction.PendingEvents,
-                    CommandContext.CreateNew(nameof(AuctionUnlockScheduler)));
+                // there is no need to try to send events faster like in CommandHandlerBase because this event has not strict timing requirements
+                _auctions.UpdateAuction(cancelledAuction);
+                await _eventOutbox.SaveEvents(cancelledAuction.PendingEvents,
+                    CommandContext.CreateNew(nameof(AuctionBuyCancellationScheduler)));
                 uow.Commit();
             }
-            unlockedAuction.MarkPendingEventsAsHandled();
+            cancelledAuction.MarkPendingEventsAsHandled();
         }
 
-        public void ScheduleAuctionUnlock(AuctionId auctionId, TimeOnly time)
+        public void ScheduleAuctionBuyCancellation(AuctionId auctionId, TimeOnly time)
         {
-            BackgroundJob.Schedule<AuctionUnlockScheduler>((unlockScheduler) => unlockScheduler.UnlockAuctionAsync(auctionId), time.ToTimeSpan());
+            BackgroundJob.Schedule<AuctionBuyCancellationScheduler>((scheduler) => scheduler.CancelAuctionBuyAsync(auctionId), time.ToTimeSpan());
         }
     }
 }

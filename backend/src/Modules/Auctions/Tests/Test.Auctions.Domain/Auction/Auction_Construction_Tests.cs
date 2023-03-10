@@ -11,22 +11,15 @@ namespace Auctions.Domain.Tests
     {
 
         [Fact]
-        public void Created_buy_now_only_auction_should_be_unlocked()
-        {
-            var auctionArgs = new GivenAuctionArgs().WithBuyNowOnly(true).Build();
-            var auction = new GivenAuction().WithAuctionArgs(auctionArgs).Build();
-
-            auction.Locked.Should().BeFalse();
-        }
-
-        [Fact]
-        public void Created_auction_should_be_locked_and_unlocked_when_bids_id_is_set()
+        public void Created_auction_should_have_bids_id_set_by_adding_them()
         {
             var auction = new GivenAuction().WithAuctionArgs(new GivenAuctionArgs().ValidForBuyNowAndBidAuctionType()).Build();
+            var expectedAuctionBids = new AuctionBidsId(Guid.NewGuid());
+            auction.AuctionBidsId.Should().BeNull();
 
-            auction.Locked.Should().BeTrue();
+            auction.AddAuctionBids(expectedAuctionBids);
 
-            auction.AddAuctionBids(new AuctionBidsId(Guid.NewGuid()));
+            auction.AuctionBidsId.Should().Be(expectedAuctionBids);
         }
 
         [Fact]

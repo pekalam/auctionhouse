@@ -3,6 +3,7 @@ using Auctions.Application.Commands.StartAuctionCreateSession;
 using Auctions.Application.Commands.UpdateAuction;
 using FunctionalTests.Commands;
 using FunctionalTests.Tests.Auctions.CreateAuction;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using ReadModel.Core.Model;
@@ -32,44 +33,58 @@ namespace FunctionalTests.Tests.Auctions.UpdateAuction
         public async Task Updates_created_auction()
         {
             //start session
-            var startSessionCmd = new StartAuctionCreateSessionCommand();
-            await SendCommand(startSessionCmd);
-            await Task.Delay(2000);
-
+            await StartAuctionCreateSession();
             //create auction in session
-            var createAuctionCmd = GivenCreateAuctionCommand().Build();
-            await SendCommand(createAuctionCmd);
-            await Task.Delay(2000);
-
-            AuctionRead? createdAuction = null!;
-            AssertEventual(() =>
-            {
-                createdAuction = SendQuery<UserAuctionsQuery, UserAuctionsQueryResult>(new UserAuctionsQuery()).GetAwaiter().GetResult().Auctions.FirstOrDefault();
-                var auctionUnlocked = createdAuction != null && !createdAuction.Locked;
-                return createdAuction != null && auctionUnlocked;
-            });
+            await CreateAuction();
+            var createdAuctionRead = WaitForCreatedAuctionRead();
 
             var updateAuctionCommand = new UpdateAuctionCommand
             {
-                AuctionId = Guid.Parse(createdAuction.AuctionId),
-                BuyNowPrice = createdAuction.BuyNowPrice + 1, //TODO test all props
+                AuctionId = Guid.Parse(createdAuctionRead.AuctionId),
+                BuyNowPrice = createdAuctionRead.BuyNowPrice + 1, //TODO test all props
                 EndDate = null,
             };
             var requestStatus = await SendCommand(updateAuctionCommand);
-            await Task.Delay(2000);
 
             AssertEventual(() =>
             {
                 //assert confirmations
                 var _readModelNotificationsDbContext = ServiceProvider.GetRequiredService<SagaEventsConfirmationDbContext>();
                 var confirmationsMarkedAsCompleted = _readModelNotificationsDbContext.SagaEventsConfirmations
+                    .AsNoTracking()
                     .FirstOrDefault(c => c.CommandId == requestStatus.CommandId.Id)?.Completed == true;
 
                 // assert read model changes
-                var filter = Builders<AuctionRead>.Filter.Eq(f => f.AuctionId, createdAuction.AuctionId.ToString());
+                var filter = Builders<AuctionRead>.Filter.Eq(f => f.AuctionId, createdAuctionRead.AuctionId.ToString());
                 var auctionRead = ReadModelDbContext.AuctionsReadModel.FindSync(filter).First();
                 return updateAuctionCommand.BuyNowPrice == auctionRead.BuyNowPrice && confirmationsMarkedAsCompleted;
             });
+        }
+
+        private async Task StartAuctionCreateSession()
+        {
+            var startSessionCmd = new StartAuctionCreateSessionCommand();
+            await SendCommand(startSessionCmd);
+            await Task.Delay(2000);
+        }
+
+        private async Task CreateAuction()
+        {
+            var createAuctionCmd = GivenCreateAuctionCommand().Build();
+            await SendCommand(createAuctionCmd);
+            await Task.Delay(2000);
+        }
+
+        private AuctionRead? WaitForCreatedAuctionRead()
+        {
+            AuctionRead? createdAuctionRead = null;
+            AssertEventual(() =>
+            {
+                createdAuctionRead = SendQuery<UserAuctionsQuery, UserAuctionsQueryResult>(new UserAuctionsQuery()).GetAwaiter().GetResult().Auctions.FirstOrDefault();
+                var auctionReadUnlocked = createdAuctionRead != null && !createdAuctionRead.Locked;
+                return createdAuctionRead != null && auctionReadUnlocked;
+            });
+            return createdAuctionRead;
         }
     }
 }

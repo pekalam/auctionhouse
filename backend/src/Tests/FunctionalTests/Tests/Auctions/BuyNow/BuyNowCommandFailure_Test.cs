@@ -25,14 +25,12 @@ namespace FunctionalTests.Tests.Auctions.BuyNow
     public class BuyNowCommandFailure_Test : BuyNowCommandTestBase, IDisposable
     {
         readonly Type[] FailureExpectedEvents = new[] {
-                    typeof(global::Auctions.DomainEvents.AuctionLocked),
-                    typeof(global::Auctions.DomainEvents.Events.V1.BuyNowTXStarted),
+                    typeof(global::Auctions.DomainEvents.Events.V1.AuctionBought),
                     typeof(UserPayments.Domain.Events.BuyNowPaymentCreated),
                     typeof(UserCreditsFailedToLockForBuyNowAuction),
                     typeof(BuyNowPaymentFailed),
                     typeof(UserPayments.Domain.Events.PaymentStatusChangedToFailed),
-                    typeof(global::Auctions.DomainEvents.AuctionUnlocked),
-                    typeof(global::Auctions.DomainEvents.Events.V1.BuyNowTXCanceled),
+                    typeof(global::Auctions.DomainEvents.Events.V1.AuctionBuyCanceled),
                 };
 
         public BuyNowCommandFailure_Test(ITestOutputHelper outputHelper) : base(outputHelper)
@@ -46,7 +44,7 @@ namespace FunctionalTests.Tests.Auctions.BuyNow
         }
 
         [Fact]
-        public async Task BuyNowCommand_creates_failed_payment_and_cancels_buynowtx_when_user_doesnt_have_enought_credits()
+        public async Task BuyNowCommand_creates_failed_payment_and_cancels_buy_when_user_doesnt_have_enought_credits()
         //case when there is not enough credits at the time the request is handled by UserPayments
         {
             var createAuctionCommand = GivenCreateAuctionCommand().Build();

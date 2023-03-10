@@ -16,4 +16,10 @@
     <ProjectReference Include="..\Auctions.Domain.Events\Auctions.DomainEvents.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+  	<InternalsVisibleTo Include="Auctions.Domain.Tests" />
+  	<InternalsVisibleTo Include="Auctions.Tests.Base" />
+  	<InternalsVisibleTo Include="Auctions.Application.Tests" />
+  </ItemGroup>
+
 </Project>
