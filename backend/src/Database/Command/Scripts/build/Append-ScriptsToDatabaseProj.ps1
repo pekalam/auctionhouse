@@ -72,14 +72,6 @@ function Add-PostDeploymentScript {
         $pathParts = ([System.String]$file).Split('\')
         Write-Output (":r .\" + $pathParts[2] + '\' + $pathParts[3]) >> (Resolve-Path "..\..\AuctionhouseDatabase\dbo\Scripts\Script.PostDeployment.sql")
     }
-
-    $postDeployScriptContent2 = "ALTER DATABASE AuctionhouseDatabase
-    SET READ_COMMITTED_SNAPSHOT ON
-    GO
-    ALTER DATABASE AuctionhouseDatabase
-    SET ALLOW_SNAPSHOT_ISOLATION ON
-    GO"
-    Write-Output $postDeployScriptContent2 >> (Resolve-Path "..\..\AuctionhouseDatabase\dbo\Scripts\Script.PostDeployment.sql")
 }
 
 

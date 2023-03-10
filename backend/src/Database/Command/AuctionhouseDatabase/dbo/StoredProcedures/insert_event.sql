@@ -12,7 +12,7 @@ BEGIN
 
 	IF NOT @@ROWCOUNT = 1
 	BEGIN
-		set @errmsg = FORMATMESSAGE('Optimistic concurrency exception - aggregate with version %I64d doesn''t exist', @ExpectedVersion);
+		set @errmsg = FORMATMESSAGE('Concurrency exception - aggregate with version %I64d doesn''t exist', @ExpectedVersion);
 		throw 51000, @errmsg, 0;
 	END
 

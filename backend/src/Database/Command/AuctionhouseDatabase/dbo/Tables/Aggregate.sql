@@ -4,5 +4,5 @@
 	[AggregateId] UNIQUEIDENTIFIER NOT NULL,
 	[AggregateName] VARCHAR(100) NOT NULL,
 	[Version] BIGINT NOT NULL
-	UNIQUE(AggregateId)
+	UNIQUE(AggregateId) --TODO: check (AggregateId, Version) performance
 )
