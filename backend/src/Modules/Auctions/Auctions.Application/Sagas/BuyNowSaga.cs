@@ -7,7 +7,7 @@ using Common.Application.Commands;
 using Common.Application.Mediator;
 using UserPaymentsEvents = UserPayments.DomainEvents.Events;
 
-namespace Auctions.Application.Commands.BuyNow
+namespace Auctions.Application.Sagas
 {
     public class BuyNowSagaData
     {

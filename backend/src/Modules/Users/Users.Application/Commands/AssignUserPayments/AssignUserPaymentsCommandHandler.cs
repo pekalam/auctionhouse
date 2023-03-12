@@ -4,7 +4,7 @@ using Common.Application.Commands.Callbacks;
 using Common.Application.Events;
 using Users.Domain.Repositories;
 
-namespace Users.Application.Commands.SignUp.AssignUserPayments
+namespace Users.Application.Commands.AssignUserPayments
 {
     public class AssignUserPaymentsCommandHandler : CommandHandlerBase<AssignUserPaymentsCommand>
     {
@@ -38,7 +38,7 @@ namespace Users.Application.Commands.SignUp.AssignUserPayments
             await _commandHandlerCallbacks.OnUowCommit(request);
             user.MarkPendingEventsAsHandled();
             uow.Commit();
-           
+
 
             return RequestStatus.CreateCompleted(request.CommandContext);
         }

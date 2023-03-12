@@ -3,8 +3,6 @@ using Adapter.EfCore.ReadModelNotifications;
 using AuctionBids.DI;
 using Auctionhouse.Command.Adapters;
 using Auctions.Application;
-using Auctions.Application.Commands.BuyNow;
-using Auctions.Application.Commands.CreateAuction;
 using Auctions.DI;
 using Auctions.Domain;
 using Auctions.Tests.Base;
@@ -26,9 +24,10 @@ using ReadModel.Core.Services;
 using System;
 using TestConfigurationAccessor;
 using UserPayments.DI;
-using Users.Application.Commands.SignUp;
 using Users.DI;
 using XmlCategoryTreeStore;
+using Auctions.Application.Sagas;
+using Users.Application.Sagas;
 
 namespace FunctionalTests.Commands
 {

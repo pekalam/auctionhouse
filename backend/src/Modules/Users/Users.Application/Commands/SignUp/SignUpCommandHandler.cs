@@ -6,6 +6,7 @@ using Common.Application.Events;
 using Core.Common.Domain.Users;
 using Microsoft.Extensions.Logging;
 using Users.Application.Exceptions;
+using Users.Application.Sagas;
 using Users.Domain;
 using Users.Domain.Auth;
 using Users.Domain.Repositories;

@@ -1,7 +1,7 @@
 ﻿using Chronicle;
 using Common.Application.Events;
 using UserPayments.Domain;
-using Users.Application.Commands.SignUp;
+using Users.Application.Sagas;
 
 namespace Users.Application.EventSubscriptions
 {

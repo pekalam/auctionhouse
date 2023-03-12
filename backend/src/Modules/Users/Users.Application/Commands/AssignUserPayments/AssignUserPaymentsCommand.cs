@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Users.Application.Commands.SignUp.AssignUserPayments
+namespace Users.Application.Commands.AssignUserPayments
 {
     public class AssignUserPaymentsCommand : ICommand
     {

@@ -1,8 +1,8 @@
 ﻿using Common.Application.Events;
 using AuctionBids.DomainEvents;
 using Chronicle;
-using Auctions.Application.Commands.CreateAuction;
 using Auctions.Domain.Services;
+using Auctions.Application.Sagas;
 
 namespace Auctions.Application.EventSubscriptions
 {

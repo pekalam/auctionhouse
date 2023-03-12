@@ -1,4 +1,4 @@
-﻿using Auctions.Application.Commands.BuyNow;
+﻿using Auctions.Application.Sagas;
 using Chronicle;
 using Common.Application.Events;
 using System;

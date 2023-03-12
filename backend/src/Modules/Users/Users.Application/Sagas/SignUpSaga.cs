@@ -2,21 +2,14 @@
 using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Commands.Callbacks;
-using Common.Application.Events;
 using Common.Application.Mediator;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UserPayments.Domain;
-using Users.Application.Commands.SignUp.AssignUserPayments;
-using Users.Domain.Events;
+using Users.Application.Commands.AssignUserPayments;
 using Users.Domain.Repositories;
 using Users.DomainEvents;
 
-namespace Users.Application.Commands.SignUp
+namespace Users.Application.Sagas
 {
     public class SignUpSaga : Saga,
         ISagaStartAction<UserCreated>,
@@ -31,7 +24,7 @@ namespace Users.Application.Commands.SignUp
         private readonly Lazy<ILogger<SignUpSaga>> _logger;
         private readonly ICommandHandlerCallbacks _commandHandlerCallbacks;
 
-        public SignUpSaga(Lazy<CommandQueryMediator> mediator, Lazy<IUserRepository> users, Lazy<IUserAuthenticationDataRepository> userAuthenticationData, Lazy<IUnitOfWorkFactory> uowFactory, 
+        public SignUpSaga(Lazy<CommandQueryMediator> mediator, Lazy<IUserRepository> users, Lazy<IUserAuthenticationDataRepository> userAuthenticationData, Lazy<IUnitOfWorkFactory> uowFactory,
             Lazy<ILogger<SignUpSaga>> logger, ICommandHandlerCallbacks commandHandlerCallbacks)
         {
             _mediator = mediator;
@@ -59,7 +52,7 @@ namespace Users.Application.Commands.SignUp
 
         public async Task CompensateAsync(UserPaymentsCreated message, ISagaContext context)
         {
-            using(var uow = _uowFactory.Value.Begin())
+            using (var uow = _uowFactory.Value.Begin())
             {
                 _users.Value.DeleteUser(new(message.UserId)); //delete should be idempotent
                 _userAuthenticationData.Value.DeleteUserAuth(message.UserId); //delete should be idempotent

@@ -1,4 +1,4 @@
-﻿using Auctions.Application.Commands.BuyNow;
+﻿using Auctions.Application.Sagas;
 using Auctions.Domain;
 using Auctions.Domain.Services;
 using Auctions.DomainEvents;
