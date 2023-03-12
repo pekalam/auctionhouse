@@ -1,5 +1,5 @@
-﻿using Auctions.Application.Commands.BuyNow.CancelBuy;
-using Auctions.Application.Commands.BuyNow.ConfirmBuy;
+﻿using Auctions.Application.Commands.CancelBuy;
+using Auctions.Application.Commands.ConfirmBuy;
 using Auctions.Domain;
 using Auctions.DomainEvents;
 using Chronicle;

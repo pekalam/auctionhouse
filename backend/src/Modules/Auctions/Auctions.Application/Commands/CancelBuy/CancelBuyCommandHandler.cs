@@ -5,14 +5,8 @@ using Common.Application.Commands;
 using Common.Application.Commands.Callbacks;
 using Common.Application.Events;
 
-namespace Auctions.Application.Commands.BuyNow.CancelBuy
+namespace Auctions.Application.Commands.CancelBuy
 {
-    public class CancelBuyCommand : ICommand
-    {
-        public Guid AuctionId { get; set; }
-        public Guid TransactionId { get; set; }
-    }
-
     public class CancelBuyCommandHandler : CommandHandlerBase<CancelBuyCommand>
     {
         private readonly OptimisticConcurrencyHandler _optimisticConcurrencyHandler;

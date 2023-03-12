@@ -5,14 +5,8 @@ using Common.Application.Commands;
 using Common.Application.Commands.Callbacks;
 using Common.Application.Events;
 
-namespace Auctions.Application.Commands.BuyNow.ConfirmBuy
+namespace Auctions.Application.Commands.ConfirmBuy
 {
-    public class ConfirmBuyCommand : ICommand
-    {
-        public Guid AuctionId { get; set; }
-        public Guid TransactionId { get; set; }
-    }
-
     public class ConfirmBuyCommandHandler : CommandHandlerBase<ConfirmBuyCommand>
     {
         private readonly IAuctionRepository _auctions;
