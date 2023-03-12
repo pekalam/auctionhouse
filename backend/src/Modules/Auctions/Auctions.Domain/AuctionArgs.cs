@@ -1,5 +1,6 @@
 ﻿using Auctions.Domain.Services;
 using Core.DomainFramework;
+using System.Runtime.CompilerServices;
 
 namespace Auctions.Domain
 {
@@ -18,103 +19,99 @@ namespace Auctions.Domain
 
         public class Builder
         {
-            private AuctionArgs args = new AuctionArgs();
+            private AuctionArgs _args = new AuctionArgs();
 
-            private void CheckCanBuild()
+            private static void ThrowIfNull(string memberName, object? obj)
             {
-                //TODO null object pattern?
-                if (args.Product == null ||
-                    args.StartDate == null ||
-                    args.EndDate == null ||
-                    args.Owner == null ||
-                    args.Tags == null ||
-                    args.Name == null ||
-                    args.AuctionImages == null ||
-                    args.Categories == null || args.Categories.Length != 3
-                )
+                if(obj is null)
                 {
-                    throw new DomainException("Invalid auctionArgs");
-                }
-                if(args.BuyNowOnly && args.BuyNowPrice is null)
-                {
-                    throw new DomainException("Auction cannot be buyNowOnly and don't have a price");
+                    throw new DomainException($"{memberName} cannot be null");
                 }
             }
 
             public Builder From(AuctionArgs args)
             {
-                this.args = args;
+                _args = args;
+                ThrowIfNull(nameof(_args), _args);
                 return this;
             }
 
             public Builder SetTags(string[] tags)
             {
-                args.Tags = tags.Select(s => (Tag)s).ToArray();
+                _args.Tags = tags.Select(s => (Tag)s).ToArray();
+                ThrowIfNull(nameof(_args.Tags), _args.Tags);
                 return this;
             }
             public Builder SetTags(Tag[] tags)
             {
-                args.Tags = tags;
+                _args.Tags = tags;
+                ThrowIfNull(nameof(_args.Tags), _args.Tags);
                 return this;
             }
             public Builder SetBuyNow(BuyNowPrice? buyNowPrice)
             {
-                args.BuyNowPrice = buyNowPrice;
+                _args.BuyNowPrice = buyNowPrice;
                 return this;
             }
 
             public Builder SetBuyNowOnly(bool buyNowOnly)
             {
-                args.BuyNowOnly = buyNowOnly;
+                _args.BuyNowOnly = buyNowOnly;
                 return this;
             }
 
             public Builder SetStartDate(AuctionDate startDate)
             {
-                args.StartDate = startDate;
+                _args.StartDate = startDate;
+                ThrowIfNull(nameof(_args.StartDate), _args.StartDate);
                 return this;
             }
 
             public Builder SetEndDate(AuctionDate endDate)
             {
-                args.EndDate = endDate;
+                _args.EndDate = endDate;
+                ThrowIfNull(nameof(_args.EndDate), _args.EndDate);
                 return this;
             }
 
             public Builder SetOwner(UserId owner)
             {
-                args.Owner = owner;
+                _args.Owner = owner;
+                ThrowIfNull(nameof(_args.Owner), _args.Owner);
                 return this;
             }
 
             public Builder SetProduct(Product product)
             {
-                args.Product = product;
+                _args.Product = product;
+                ThrowIfNull(nameof(_args.Product), _args.Product);
                 return this;
             }
 
             public async Task<Builder> SetCategories(string[] categoryNames, ICategoryNamesToTreeIdsConversion convertCategoryNamesToIds)
             {
-                args.Categories = await convertCategoryNamesToIds.ConvertNames(categoryNames);
+                _args.Categories = await convertCategoryNamesToIds.ConvertNames(categoryNames);
+                ThrowIfNull(nameof(_args.Categories), _args.Categories);
                 return this;
             }
 
             public Builder SetImages(AuctionImages images)
             {
-                args.AuctionImages = images;
+                _args.AuctionImages = images;
+                ThrowIfNull(nameof(_args.AuctionImages), _args.AuctionImages);
                 return this;
             }
 
             public Builder SetName(AuctionName name)
             {
-                args.Name = name;
+                _args.Name = name;
+                ThrowIfNull(nameof(_args.Name), _args.Name);
                 return this;
             }
 
             public AuctionArgs Build()
             {
-                CheckCanBuild();
-                return args;
+                return _args;
             }
         }
     }

@@ -25,15 +25,11 @@ namespace Auctions.Domain.Tests
         [Fact]
         public void Cannot_create_buynowonly_action_with_null_price()
         {
-            Assert.Throws<DomainException>(() => new GivenAuctionArgs()
-                .WithBuyNowOnly(true)
-                .WithBuyNowOnlyPrice(null).Build());
-
             var auctionArgs = new GivenAuctionArgs()
                 .WithBuyNowOnly(true).Build();
             auctionArgs.BuyNowPrice = null;
-            Assert.Throws<DomainException>(() => new GivenAuction().WithAuctionArgs(auctionArgs).Build());
 
+            Assert.Throws<DomainException>(() => new GivenAuction().WithAuctionArgs(auctionArgs).Build());
         }
     }
 }

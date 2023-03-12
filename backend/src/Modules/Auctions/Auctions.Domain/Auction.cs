@@ -127,6 +127,10 @@ namespace Auctions.Domain
             Categories = auctionArgs.Categories;
             BuyNowOnly = auctionArgs.BuyNowOnly;
             Name = auctionArgs.Name;
+            if(Categories.Length != 3)
+            {
+                throw new DomainException("Auction must have exactly 3 categories assigned");
+            }
             if (BuyNowOnly && BuyNowPrice is null)
             {
                 throw new DomainException("Cannot create buyNowOnly auction with null buyNowPrice");

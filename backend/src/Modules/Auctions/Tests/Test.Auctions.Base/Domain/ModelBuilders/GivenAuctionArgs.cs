@@ -40,6 +40,18 @@ namespace Auctions.Tests.Base.Domain.ModelBuilders
             return this;
         }
 
+        public GivenAuctionArgs WithEndDate(DateTime dateTime)
+        {
+            _endDate = dateTime;
+            return this;
+        }
+
+        public GivenAuctionArgs WithStartDate(DateTime date)
+        {
+            _startDate = date;
+            return this;
+        }
+
         public AuctionArgs Build()
         {
             var auctionArgsBuilder = new AuctionArgs.Builder()
@@ -53,18 +65,6 @@ namespace Auctions.Tests.Base.Domain.ModelBuilders
                 .SetName(_name);
             auctionArgsBuilder.SetCategories(_categories, new FakeConvertCategoryNamesToRootToLeafIds()).GetAwaiter().GetResult();
             return auctionArgsBuilder.Build();
-        }
-
-        internal GivenAuctionArgs WithEndDate(DateTime dateTime)
-        {
-            _endDate = dateTime;
-            return this;
-        }
-
-        internal GivenAuctionArgs WithStartDate(DateTime date)
-        {
-            _startDate = date;
-            return this;
         }
 
         public AuctionArgs ValidForBuyNowAndBidAuctionType()
