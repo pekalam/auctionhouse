@@ -11,14 +11,15 @@ namespace Auctions.Domain
         public const int DEFAULT_SESSION_MAX_TIME = 1000 * 60 * 10;
         public static int SESSION_MAX_TIME { get; internal set; } = DEFAULT_SESSION_MAX_TIME;
 
-        public AuctionImages SessionAuctionImages { get; private set; }
+        public AuctionImages AuctionImages { get; private set; }
+
         public DateTime DateCreated { get; private set; }
 
         public UserId OwnerId { get; private set; }
 
-        public AuctionCreateSession(AuctionImages sessionAuctionImages, DateTime dateCreated, UserId ownerId)
+        public AuctionCreateSession(AuctionImages auctionImages, DateTime dateCreated, UserId ownerId)
         {
-            SessionAuctionImages = sessionAuctionImages;
+            AuctionImages = auctionImages;
             DateCreated = dateCreated;
             OwnerId = ownerId;
         }
@@ -27,7 +28,7 @@ namespace Auctions.Domain
         {
             OwnerId = owner;
             DateCreated = DateTime.UtcNow;
-            SessionAuctionImages = new();
+            AuctionImages = new();
         }
 
         public static AuctionCreateSession CreateSession(UserId ownerId)
@@ -43,7 +44,7 @@ namespace Auctions.Domain
             }
         }
 
-        public IReadOnlyList<AuctionImage?> AuctionImages => SessionAuctionImages.ToList();
+        public IReadOnlyList<AuctionImage?> AuctionImagesList => AuctionImages.ToList();
 
         public static bool ValidateSessionTime(DateTime dateCreated)
         {
@@ -59,16 +60,16 @@ namespace Auctions.Domain
         {
             CheckIsSessionValid();
             DateCreated = DateTime.UtcNow;
-            SessionAuctionImages.ClearAll();
+            AuctionImages.ClearAll();
         }
 
         public void AddOrReplaceImage(AuctionImage img, int imgNum)
         {
             CheckIsSessionValid();
-            SessionAuctionImages[imgNum] = img;
+            AuctionImages[imgNum] = img;
         }
 
-        internal Auction CreateAuction(AuctionArgs auctionArgs)
+        public Auction CreateAuction(AuctionArgs auctionArgs)
         {
             CheckIsSessionValid();
             if (OwnerId == null)
@@ -77,7 +78,7 @@ namespace Auctions.Domain
             }
             var args = new AuctionArgs.Builder()
                 .From(auctionArgs)
-                .SetImages(SessionAuctionImages)
+                .SetImages(AuctionImages)
                 .SetOwner(OwnerId)
                 .Build();
             var auction = new Auction(args);

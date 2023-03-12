@@ -17,7 +17,6 @@ namespace Auctions.Domain
         private void AddCoreServices(IServiceCollection services)
         {
             services.AddTransient<AuctionImageService>();
-            services.AddTransient<CreateAuctionService>();
             services.AddTransient<AuctionBuyCancellationService>();
         }
 

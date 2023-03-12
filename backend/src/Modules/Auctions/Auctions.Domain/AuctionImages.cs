@@ -7,6 +7,7 @@ namespace Auctions.Domain
     {
         private AuctionImage?[] _images = new AuctionImage[AuctionConstantsFactory.MaxImages];
 
+        public IEnumerable<string> AllImageIds => Size1Ids.Union(Size2Ids).Union(Size3Ids).Where(img => img is not null)!;
 
         public IEnumerable<string?> Size1Ids => _images.Select(i => i?.Size1Id);
         public IEnumerable<string?> Size2Ids => _images.Select(i => i?.Size2Id);

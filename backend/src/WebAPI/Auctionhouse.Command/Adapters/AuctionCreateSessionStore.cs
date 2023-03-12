@@ -1,7 +1,6 @@
 ﻿using Auctions.Domain;
 using Auctions.Domain.Services;
 using Common.Application;
-using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using System.Text;
 
@@ -24,9 +23,9 @@ namespace Auctionhouse.Command.Adapters
             {
                 DateCreated = auctionCreateSession.DateCreated,
                 OwnerId = auctionCreateSession.OwnerId,
-                Size1Ids = auctionCreateSession.SessionAuctionImages.Size1Ids.ToArray(),
-                Size2Ids = auctionCreateSession.SessionAuctionImages.Size2Ids.ToArray(),
-                Size3Ids = auctionCreateSession.SessionAuctionImages.Size3Ids.ToArray(),
+                Size1Ids = auctionCreateSession.AuctionImages.Size1Ids.ToArray(),
+                Size2Ids = auctionCreateSession.AuctionImages.Size2Ids.ToArray(),
+                Size3Ids = auctionCreateSession.AuctionImages.Size3Ids.ToArray(),
             };
         }
 

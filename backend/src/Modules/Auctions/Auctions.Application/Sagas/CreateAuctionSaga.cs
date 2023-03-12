@@ -1,4 +1,5 @@
 ﻿using Auctions.Application.Commands.CreateAuction;
+using Auctions.Domain;
 using Auctions.Domain.Services;
 using Auctions.DomainEvents;
 using Chronicle;
@@ -11,12 +12,11 @@ namespace Auctions.Application.Sagas
 {
     public class CreateAuctionSagaData
     {
-        public CreateAuctionServiceData CreateAuctionServiceData { get; set; } = null!;
+        public Guid AuctionId { get; set; }
     }
 
     public class CreateAuctionSaga : Saga<CreateAuctionSagaData>, ISagaStartAction<AuctionCreated>, ISagaAction<AuctionBidsEvents.V1.AuctionBidsCreated>
     {
-        public const string ServiceDataKey = "ServiceData";
         public const string CorrelationIdKey = "CorrelationId";
         public const string CommandContextKey = "CommandContext";
 
@@ -46,11 +46,7 @@ namespace Auctions.Application.Sagas
 
         public Task HandleAsync(AuctionCreated message, ISagaContext context)
         {
-            if (!context.TryGetMetadata(ServiceDataKey, out var metadata))
-            {
-                throw new InvalidOperationException();
-            }
-            Data.CreateAuctionServiceData = (CreateAuctionServiceData)metadata.Value;
+            Data.AuctionId = message.AuctionId;
             return Task.CompletedTask;
         }
 
@@ -59,7 +55,7 @@ namespace Auctions.Application.Sagas
             var cmd = new EndCreateAuctionCommand
             {
                 AuctionBidsId = message.AuctionBidsId,
-                CreateAuctionServiceData = Data.CreateAuctionServiceData
+                AuctionId = Data.AuctionId,
             };
             await _mediator.Send(cmd, GetCommandContext(context));
             await CompleteAsync();

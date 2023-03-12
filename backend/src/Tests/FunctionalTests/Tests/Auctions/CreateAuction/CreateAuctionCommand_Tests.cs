@@ -22,8 +22,10 @@ namespace FunctionalTests.Tests.Auctions.CreateAuction
             this.outputHelper = outputHelper;
         }
 
-        [Fact]
-        public async Task Creates_auction_and_unlocks_read_model_when_pending_events_are_processed()
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task Creates_auction_and_unlocks_read_model_when_pending_events_are_processed(bool buyNowOnly)
         {
             //start session
             var startSessionCmd = new StartAuctionCreateSessionCommand();
@@ -31,10 +33,15 @@ namespace FunctionalTests.Tests.Auctions.CreateAuction
             await Task.Delay(2000);
 
             //create auction in session
-            var createAuctionCmd = GivenCreateAuctionCommand().Build();
+            var createAuctionCmd = GivenCreateAuctionCommand().WithBuyNowOnly(buyNowOnly).Build();
             var createRequestStatus = await SendCommand(createAuctionCmd);
 
-            AssertEventual(new CreateAuctionProbe(this, createRequestStatus).Check);
+            AssertEventual(
+                buyNowOnly switch
+                {
+                    false => new CreateAuctionProbe(this, createRequestStatus).Check,
+                    true => new CreateBuyNowAuctionProbe(this).Check,
+                });
         }
 
         [Fact]

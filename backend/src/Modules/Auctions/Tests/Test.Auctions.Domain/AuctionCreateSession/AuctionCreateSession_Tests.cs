@@ -35,7 +35,7 @@ namespace Auctions.Domain.Tests
             var img = new GivenAuctionImage().Build();
             session.AddOrReplaceImage(img, 0);
             session.ResetSession();
-            session.AuctionImages[0]
+            session.AuctionImagesList[0]
                 .Should()
                 .BeNull();
         }
@@ -58,24 +58,24 @@ namespace Auctions.Domain.Tests
             var image1 = new GivenAuctionImage().Build();
             session.AddOrReplaceImage(image1, imgNum);
 
-            session.AuctionImages.Count.Should()
+            session.AuctionImagesList.Count.Should()
                 .Be(Auction.MAX_IMAGES);
-            for (var i = 0; i < session.AuctionImages.Count; i++)
+            for (var i = 0; i < session.AuctionImagesList.Count; i++)
             {
                 if (i == imgNum)
                 {
                     continue;
                 }
 
-                session.AuctionImages[i]
+                session.AuctionImagesList[i]
                     .Should()
                     .BeNull();
             }
 
-            session.AuctionImages[imgNum]
+            session.AuctionImagesList[imgNum]
                 .Should()
                 .Be(image1);
-            session.AuctionImages.Count.Should()
+            session.AuctionImagesList.Count.Should()
                 .Be(Auction.MAX_IMAGES);
         }
 
@@ -91,24 +91,24 @@ namespace Auctions.Domain.Tests
             session.AddOrReplaceImage(image1, imgNum);
             session.AddOrReplaceImage(image2, imgNum);
 
-            session.AuctionImages.Count.Should()
+            session.AuctionImagesList.Count.Should()
                 .Be(Auction.MAX_IMAGES);
-            for (var i = 0; i < session.AuctionImages.Count; i++)
+            for (var i = 0; i < session.AuctionImagesList.Count; i++)
             {
                 if (i == imgNum)
                 {
                     continue;
                 }
 
-                session.AuctionImages[i]
+                session.AuctionImagesList[i]
                     .Should()
                     .BeNull();
             }
 
-            session.AuctionImages[imgNum]
+            session.AuctionImagesList[imgNum]
                 .Should()
                 .Be(image2);
-            session.AuctionImages.Count.Should()
+            session.AuctionImagesList.Count.Should()
                 .Be(Auction.MAX_IMAGES);
         }
 

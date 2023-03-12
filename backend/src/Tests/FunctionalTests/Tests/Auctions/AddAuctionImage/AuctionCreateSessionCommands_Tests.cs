@@ -69,7 +69,7 @@ namespace FunctionalTests.Tests.Auctions.AddAuctionImage
             var removeImage = new RemoveImageCommand(0);
             await SendCommand(removeImage);
 
-            auctionCreateSessionStore.GetExistingSession().AuctionImages.Any(i => i != null).Should().BeFalse();
+            auctionCreateSessionStore.GetExistingSession().AuctionImagesList.Any(i => i != null).Should().BeFalse();
             auctionCreateSessionStore.GetExistingSession().Should().NotBeNull();
         }
     }
