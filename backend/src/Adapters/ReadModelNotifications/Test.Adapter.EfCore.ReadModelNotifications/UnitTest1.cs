@@ -32,7 +32,7 @@ namespace Test.Adapter.EfCore.ReadModelNotifications
                 .UseInMemoryDatabase("testDb").Options));
             var provider = services.BuildServiceProvider();
             
-            sagaEventNotifications = new EfCoreSagaNotifications(dbContext, provider.GetRequiredService<IServiceScopeFactory>());
+            sagaEventNotifications = new EfCoreSagaNotifications(dbContext);
         }
 
         [Fact]

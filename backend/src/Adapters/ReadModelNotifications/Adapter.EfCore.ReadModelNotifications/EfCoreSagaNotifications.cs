@@ -9,16 +9,13 @@ namespace Adapter.EfCore.ReadModelNotifications
     using Common.Application.Commands;
     using System.Threading.Tasks;
     using Core.Common.Domain;
-    using Microsoft.Extensions.DependencyInjection;
 
     internal class EfCoreSagaNotifications : ISagaNotifications, IImmediateNotifications
     {
         private readonly SagaEventsConfirmationDbContext _dbContext;
-        private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public EfCoreSagaNotifications(SagaEventsConfirmationDbContext dbContext, IServiceScopeFactory serviceScopeFactory)
+        public EfCoreSagaNotifications(SagaEventsConfirmationDbContext dbContext)
         {
-            _serviceScopeFactory = serviceScopeFactory;
             _dbContext = dbContext;
         }
 
@@ -108,9 +105,8 @@ namespace Adapter.EfCore.ReadModelNotifications
             {
                 await SaveDbConfirmation(dbEventConfirmations.Id, eventConfirmations);
             }
-            catch (Exception E)
+            catch (Exception)
             {
-
                 throw;
             }
         }

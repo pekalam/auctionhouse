@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using ReadModel.Core;
 using ReadModel.Core.Services;
 
 namespace Auctionhouse.Query.Adapters
@@ -30,20 +29,10 @@ namespace Auctionhouse.Query.Adapters
                     notificationArgs.dateCreated,
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                _logger.LogWarning("Could not send notification about raised bid for an auction {@auctionId}", notificationArgs.auctionId);
+                _logger.LogWarning(ex, "Could not send notification about raised bid for an auction {@auctionId}", notificationArgs.auctionId);
             }
-        }
-    }
-
-    internal static class BidRaisedNotificationsInstaller
-    {
-        public static ReadModelInstaller AddBidRaisedNotificationsAdapter(this ReadModelInstaller installer)
-        {
-            installer.Services.AddTransient<BidRaisedNotifications>();
-            installer.AddBidRaisedNotifications((prov) => prov.GetRequiredService<BidRaisedNotifications>());
-            return installer;
         }
     }
 }

@@ -29,13 +29,10 @@ namespace Auctions.Application.Commands.CreateAuction
 
             auction.AddAuctionBids(new Domain.AuctionBidsId(request.Command.AuctionBidsId));
 
-            //TODO rm:
-            // auctionBidsAdded doesn't need to be projected in read model
-            var eventsToSend = auction.PendingEvents.Where(e => e.EventName != "auctionBidsAdded");
             using (var uow = _unitOfWorkFactory.Begin())
             {
                 _auctions.UpdateAuction(auction);
-                await _eventOutbox.SaveEvents(eventsToSend, request.CommandContext);
+                await _eventOutbox.SaveEvents(auction.PendingEvents, request.CommandContext);
                 await _commandHandlerCallbacks.OnUowCommit(request);
                 uow.Commit();
             }

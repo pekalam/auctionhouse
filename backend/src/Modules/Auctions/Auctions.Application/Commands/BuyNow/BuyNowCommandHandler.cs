@@ -63,14 +63,14 @@ namespace Auctions.Application.Commands.BuyNow
 
         private async Task StartSaga(AppCommand<BuyNowCommand> request, Auction auction, Guid transactionId)
         {
-            var txStartedEvent = (DomainEvents.Events.V1.AuctionBought)auction.PendingEvents.First(e => e.EventName == "auctionBought");
+            var auctionBoughtEvent = (DomainEvents.Events.V1.AuctionBought)auction.PendingEvents.Single(e => e is DomainEvents.Events.V1.AuctionBought);
             var context = SagaContext
                 .Create()
                 .WithSagaId(request.CommandContext.CorrelationId.Value)
                 .WithMetadata(BuyNowSaga.AuctionContextParamName, auction)
                 .WithMetadata(BuyNowSaga.TransactionContextParamName, transactionId)
                 .Build();
-            await _sagaCoordinator.ProcessAsync(txStartedEvent, context);
+            await _sagaCoordinator.ProcessAsync(auctionBoughtEvent, context);
         }
     }
 }
