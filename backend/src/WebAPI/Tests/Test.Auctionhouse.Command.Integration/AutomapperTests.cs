@@ -8,7 +8,7 @@ namespace Test.Auctionhouse.Command
     public class AutomapperTests
     {
         [Fact]
-        public void Test1()
+        public void MapperProfileTests()
         {
             var configuration = new MapperConfiguration(cfg =>
             cfg.AddProfile<CommandMapperProfile>());

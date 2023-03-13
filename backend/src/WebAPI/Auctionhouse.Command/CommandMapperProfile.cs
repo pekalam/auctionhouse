@@ -30,7 +30,7 @@ namespace Auctionhouse.Command
             CreateMap<ResetPasswordCommandDto, ResetPasswordCommand>(MemberList.Source);
             CreateMap<RequestResetPasswordCommandDto, RequestResetPasswordCommand>();
             CreateMap<CheckResetCodeCommandDto, CheckResetCodeCommand>();
-            CreateMap<BuyNowCommandDto, BuyNowCommand>();
+            CreateMap<BuyNowCommandDto, BuyNowCommand>(MemberList.Source);
 
             CreateMap<AddAuctionImageCommandDto, AddAuctionImageCommand>(MemberList.Source)
                 .ForMember(dto => dto.Img, cfg => cfg.Ignore());

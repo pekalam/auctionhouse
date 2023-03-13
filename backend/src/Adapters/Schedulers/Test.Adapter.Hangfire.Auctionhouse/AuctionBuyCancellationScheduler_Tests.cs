@@ -88,6 +88,7 @@ namespace Test.Adapter.Hangfire.Auctionhouse
 
                     new AuctionsDomainInstaller(services)
                         .AddHangfireAuctionBuyCancellationSchedulerAdapter(
+                                configuration: null,
                                 connectionString: TestConfig.Instance.GetHangfireDbConnectionString(),
                                 auctionRepositoryFactory: s => auctionRepositoryMock.Object,
                                 eventOutboxFactory: s => Mock.Of<IEventOutbox>(),
