@@ -111,6 +111,7 @@ namespace Test.Adapter.RabbitMq.EventBus
     }
 
     [Collection(nameof(RedeliveryTestCollection))]
+    [Trait("Category", "Integration")]
     public class RocksDbErrorEventOutboxStorage_Tests //TODO split into separate classes
     {
         const string TestDbPath = @".\testDb";

@@ -4,15 +4,10 @@ using Common.Application.Events;
 using Common.Tests.Base.AdapterContracts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using Moq;
 using RabbitMq.EventBus;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TestConfigurationAccessor;
@@ -24,6 +19,7 @@ namespace Test.Adapter.RabbitMq.EventBus
     public class RedeliveryTestCollection { }
 
 
+    [Trait("Category", "Integration")]
     public class RabbitMqEventBusRedeliveryTestBase
     {
         const string TestDbPath = @".\testDb";

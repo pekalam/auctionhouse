@@ -20,6 +20,7 @@ using Common.Application.Events.Callbacks;
 
 namespace Test.ReadModel.Integration
 {
+    [Trait("Category", "Integration")]
     public class AuctionPriceRisedEventConsumer_IdempotencyTest
     {
         ReadModelDbContext dbContext;

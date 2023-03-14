@@ -50,6 +50,7 @@ namespace ReadModel.Tests.Integration
         }
     }
 
+    [Trait("Category", "Integration")]
     public class AuctionUpdatedEventConsumer_Tests : IDisposable
     {
         ReadModelDbContext dbContext;

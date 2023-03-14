@@ -8,6 +8,7 @@ using Xunit;
 
 namespace Test.Dapper.AuctionhouseDatabase
 {
+    [Trait("Category", "Integration")]
     public class AuctionBidsRepository_Tests
     {
         readonly IAuctionBidsRepository auctionBids;
