@@ -25,7 +25,7 @@ namespace Auctions.Tests.Base.Domain.ModelBuilders
             var auction = new Auction(_args);
             if (_auctionBidsId is not null)
             {
-                auction.AddAuctionBids(_auctionBidsId);
+                auction.AssignAuctionBids(_auctionBidsId);
             }
             return auction;
         }

@@ -11,13 +11,13 @@ namespace Auctions.Domain.Tests
     {
 
         [Fact]
-        public void Created_auction_should_have_bids_id_set_by_adding_them()
+        public void Created_auction_should_have_not_null_bids_id_after_assigning_bids()
         {
             var auction = new GivenAuction().WithAuctionArgs(new GivenAuctionArgs().ValidForBuyNowAndBidAuctionType()).Build();
             var expectedAuctionBids = new AuctionBidsId(Guid.NewGuid());
             auction.AuctionBidsId.Should().BeNull();
 
-            auction.AddAuctionBids(expectedAuctionBids);
+            auction.AssignAuctionBids(expectedAuctionBids);
 
             auction.AuctionBidsId.Should().Be(expectedAuctionBids);
         }

@@ -1,20 +1,19 @@
 ﻿using Auctions.Domain.Repositories;
-using Auctions.Domain.Services;
 using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Commands.Callbacks;
 using Common.Application.Events;
 
-namespace Auctions.Application.Commands.CreateAuction
+namespace Auctions.Application.Commands.AssignAuctionBids
 {
-    public class EndCreateAuctionCommandHandler : CommandHandlerBase<EndCreateAuctionCommand>
+    public class AssignAuctionBidsCommandHandler : CommandHandlerBase<AssignAuctionBidsCommand>
     {
         private readonly IAuctionRepository _auctions;
         private readonly ICommandHandlerCallbacks _commandHandlerCallbacks;
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         private readonly IEventOutbox _eventOutbox;
 
-        public EndCreateAuctionCommandHandler(CommandHandlerBaseDependencies dependencies,
+        public AssignAuctionBidsCommandHandler(CommandHandlerBaseDependencies dependencies,
             IAuctionRepository auctions, IUnitOfWorkFactory unitOfWorkFactory) : base(dependencies)
         {
             _commandHandlerCallbacks = dependencies.CommandHandlerCallbacks;
@@ -23,11 +22,11 @@ namespace Auctions.Application.Commands.CreateAuction
             _unitOfWorkFactory = unitOfWorkFactory;
         }
 
-        protected override async Task<RequestStatus> HandleCommand(AppCommand<EndCreateAuctionCommand> request, IEventOutbox eventOutbox, CancellationToken cancellationToken)
+        protected override async Task<RequestStatus> HandleCommand(AppCommand<AssignAuctionBidsCommand> request, IEventOutbox eventOutbox, CancellationToken cancellationToken)
         {
             var auction = _auctions.FindAuction(request.Command.AuctionId);
 
-            auction.AddAuctionBids(new Domain.AuctionBidsId(request.Command.AuctionBidsId));
+            auction.AssignAuctionBids(new Domain.AuctionBidsId(request.Command.AuctionBidsId));
 
             using (var uow = _unitOfWorkFactory.Begin())
             {

@@ -327,13 +327,13 @@ namespace Auctions.Domain
         }
 
 
-        public void AddAuctionBids(AuctionBidsId auctionBidsId)
+        public void AssignAuctionBids(AuctionBidsId auctionBidsId)
         {
             if(AuctionBidsId is not null)
             {
                 throw new DomainException("");
             }
-            if (BuyNowOnly) throw new DomainException($"Cannot add AuctionBidsId to auction when {nameof(BuyNowOnly)}=true");
+            if (BuyNowOnly) throw new DomainException($"Cannot assign AuctionBidsId to auction when {nameof(BuyNowOnly)}=true");
             ApplyEvent(AddEvent(new AuctionBidsAdded() { AuctionId = AggregateId, CategoryIds = CategoryIdsFactory.Create(this), AuctionBidsId = auctionBidsId.Value }));
         }
 

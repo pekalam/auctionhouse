@@ -1,6 +1,4 @@
-﻿using Auctions.Application.Commands.CreateAuction;
-using Auctions.Domain;
-using Auctions.Domain.Services;
+﻿using Auctions.Application.Commands.AssignAuctionBids;
 using Auctions.DomainEvents;
 using Chronicle;
 using Common.Application.Commands;
@@ -52,7 +50,7 @@ namespace Auctions.Application.Sagas
 
         public async Task HandleAsync(AuctionBidsEvents.V1.AuctionBidsCreated message, ISagaContext context)
         {
-            var cmd = new EndCreateAuctionCommand
+            var cmd = new AssignAuctionBidsCommand
             {
                 AuctionBidsId = message.AuctionBidsId,
                 AuctionId = Data.AuctionId,
