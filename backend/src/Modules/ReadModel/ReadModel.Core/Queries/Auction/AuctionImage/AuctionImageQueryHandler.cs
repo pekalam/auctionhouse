@@ -1,14 +1,12 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Auctions.Domain.Repositories;
+﻿using ReadModel.Core.Services;
 
 namespace ReadModel.Core.Queries.Auction.AuctionImage
 {
     public class AuctionImageQueryHandler : QueryHandlerBase<AuctionImageQuery, AuctionImageQueryResult>
     {
-        private readonly IAuctionImageRepository _auctionImageRepository;
+        private readonly IAuctionImageReadRepository _auctionImageRepository;
 
-        public AuctionImageQueryHandler(IAuctionImageRepository auctionImageRepository)
+        public AuctionImageQueryHandler(IAuctionImageReadRepository auctionImageRepository)
         {
             _auctionImageRepository = auctionImageRepository;
         }

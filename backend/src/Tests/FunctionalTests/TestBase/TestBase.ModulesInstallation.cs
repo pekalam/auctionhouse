@@ -6,7 +6,7 @@ using Auctions.Application;
 using Auctions.DI;
 using Auctions.Domain;
 using Auctions.Tests.Base;
-using Categories.DI;
+using Categories.Domain;
 using ChronicleEfCoreStorage;
 using Common.Application.Events;
 using Common.Application.DependencyInjection;
@@ -58,13 +58,7 @@ namespace FunctionalTests.Commands
             // adding httpcontext accessor with singleton session in order to satisfy AuctionCreateSessionStore requirements
             services.AddScoped<IHttpContextAccessor, TestHttpContextAccessor>();
 
-            services.AddChronicleSQLServerStorage((sagaType) => sagaType switch
-            {
-                nameof(BuyNowSaga) => typeof(BuyNowSaga),
-                nameof(CreateAuctionSaga) => typeof(CreateAuctionSaga),
-                nameof(SignUpSaga) => typeof(SignUpSaga),
-                _ => throw new NotImplementedException(),
-            }, TestConfig.Instance.GetChronicleSQLServerStorageConnectionString());
+            services.AddChronicleSQLServerStorage(TestConfig.Instance.GetChronicleSQLServerStorageConnectionString());
 
             services.AddCommandEfCoreReadModelNotifications(TestConfig.Instance, settings: TestConfig.Instance.GetEfCoreReadModelNotificaitonsOptions());
             services.AddQueryEfCoreReadModelNotifications(TestConfig.Instance, settings: TestConfig.Instance.GetEfCoreReadModelNotificaitonsOptions());
@@ -83,20 +77,20 @@ namespace FunctionalTests.Commands
 
         private static void SetupReadModel(ServiceCollection services)
         {
-            new ReadModelInstaller(services, TestConfig.Instance.GetReadModelSettings())
+            new ReadModelInstaller(services, TestConfig.Instance, "FunctionalTests:ReadModelSettings")
                 .AddBidRaisedNotifications(_ => Mock.Of<IBidRaisedNotifications>());
         }
 
         private static void SetupUserPayments(ServiceCollection services)
         {
-            new UserPaymentsInstaller(services)
+            new UserPaymentsModuleInstaller(services)
                 .Domain
                     .AddDapperUserPaymentsRepositoryAdapter(settings: TestConfig.Instance.GetAuctionhouseRepositorySettings());
         }
 
         private static void SetupUsers(ServiceCollection services)
         {
-            new UsersInstaller(services)
+            new UsersModuleInstaller(services)
                 .Domain
                     .AddDapperUserRepositoryAdapter(settings: TestConfig.Instance.GetAuctionhouseRepositorySettings())
                     .AddDapperUserAuthenticationDataRepositoryAdapter(settings: TestConfig.Instance.GetAuctionhouseRepositorySettings());
@@ -104,7 +98,7 @@ namespace FunctionalTests.Commands
 
         private static void SetupAuctionBids(ServiceCollection services)
         {
-            new AuctionBidsInstaller(services)
+            new AuctionBidsModuleInstaller(services)
                 .Domain
                  .AddDapperAuctionBidsRepositoryAdapter(settings: TestConfig.Instance.GetAuctionhouseRepositorySettings());
         }
@@ -152,7 +146,7 @@ namespace FunctionalTests.Commands
             ConfigureAuctionsModuleCustomDependencies(auctions);
         }
 
-        protected virtual void ConfigureAuctionsModuleCustomDependencies(AuctionsInstaller installer)
+        protected virtual void ConfigureAuctionsModuleCustomDependencies(AuctionsModuleInstaller installer)
         {
 
         }

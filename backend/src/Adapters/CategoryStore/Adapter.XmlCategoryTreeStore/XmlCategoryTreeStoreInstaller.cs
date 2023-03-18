@@ -1,5 +1,5 @@
 ﻿using Adapter.XmlCategoryTreeStore;
-using Categories.DI;
+using Categories.Domain;
 using Core.Common.Domain.Categories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

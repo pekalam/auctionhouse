@@ -4,9 +4,9 @@ using Users.Domain;
 
 namespace Users.DI
 {
-    public class UsersInstaller
+    public class UsersModuleInstaller
     {
-        public UsersInstaller(IServiceCollection services)
+        public UsersModuleInstaller(IServiceCollection services)
         {
             Domain = new UsersDomainInstaller(services);
             Application = new UserApplicationInstaller(services);

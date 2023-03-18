@@ -1,7 +1,7 @@
 ﻿using Core.Common.Domain.Categories;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Categories.DI;
+namespace Categories.Domain;
 
 public class CategoriesInstaller
 {

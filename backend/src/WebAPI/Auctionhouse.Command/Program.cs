@@ -1,19 +1,22 @@
 using Adapter.Dapper.AuctionhouseDatabase;
 using Adapter.EfCore.ReadModelNotifications;
 using Adapter.QuartzTimeTaskService.AuctionEndScheduler;
+using AuctionBids.DI;
 using Auctionhouse.Command;
+using Auctionhouse.Command.Adapters;
 using Auctionhouse.Command.Controllers;
-using Auctionhouse.Command.ModuleInstallation;
+using Auctions.DI;
 using Azure.Identity;
+using Categories.DI;
 using ChronicleEfCoreStorage;
-using Common.Application;
-using Common.Application.Events;
+using Common.DI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
-using RabbitMq.EventBus;
 using Serilog;
 using System.Diagnostics;
 using System.Reflection;
+using UserPayments.DI;
+using Users.DI;
 using WebAPI.Common;
 using WebAPI.Common.Auth;
 using WebAPI.Common.Configuration;
@@ -56,27 +59,20 @@ var modules = moduleNames.Select(n => Assembly.Load(n)).ToArray();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 //MODULES
-builder.Services.AddAuctionsModule(builder.Configuration);
-builder.Services.AddCommonModule(builder.Configuration, modules);
+builder.Services.AddAuctionsModule(builder.Configuration).AddCommandAdapters();
+builder.Services.AddCommonCommandModule(builder.Configuration, modules);
 builder.Services.AddCategoriesModule(builder.Configuration);
 builder.Services.AddAuctionBidsModule(builder.Configuration);
-builder.Services.AddUsersModule(builder.Configuration);
+builder.Services.AddUsersModule(builder.Configuration).AddCommandAdapters();
 builder.Services.AddUserPaymentsModule(builder.Configuration);
 
-builder.Services.AddChronicleSQLServerStorage(SagaTypeSerialization.GetSagaType, builder.Configuration.GetSection(nameof(AuctionhouseRepositorySettings)).Get<AuctionhouseRepositorySettings>().ConnectionString);
+builder.Services.AddChronicleSQLServerStorage(builder.Configuration.GetSection(nameof(AuctionhouseRepositorySettings)).Get<AuctionhouseRepositorySettings>().ConnectionString);
 
 //EXTENSIONS
 builder.Services.AddCommandEfCoreReadModelNotifications(builder.Configuration);
 
-
 //DEMO MODE
 builder.Services.AddOptions<DemoModeOptions>().Bind(builder.Configuration.GetSection("DemoMode"));
-
-//REDELIVERY SERVICE
-builder.Services.AddErrorEventRedeliveryProcessorService(new EventBusSettings
-{
-    MaxRedelivery = Convert.ToInt32(builder.Configuration.GetSection(nameof(EventBusSettings))[nameof(EventBusSettings.MaxRedelivery)])
-});
 
 //WEB API SERVICES
 //jwt auth

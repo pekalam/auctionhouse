@@ -1,9 +1,9 @@
 ﻿using Auctions.Application.Sagas;
 using Users.Application.Sagas;
 
-namespace Auctionhouse.Command
+namespace ChronicleEfCoreStorage
 {
-    internal static class SagaTypeSerialization //TODO temporary solution - consider changing serialization logic in chronicle.integrations or change library
+    internal static class SagaTypeSerialization
     {
         public static Type GetSagaType(string sagaType) => sagaType switch
         {

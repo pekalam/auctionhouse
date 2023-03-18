@@ -3,7 +3,7 @@ using Common.Application.DependencyInjection;
 using Core.Common;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Auctions.Application
+namespace Auctions.Application.DependencyInjection
 {
     public class AuctionsApplicationInstaller
     {

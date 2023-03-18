@@ -18,8 +18,6 @@ using Common.Tests.Base.Mocks.Events;
 using Xunit;
 using Common.Application.Events.Callbacks;
 using Microsoft.Extensions.Options;
-using TestConfigurationAccessor;
-using ReadModel.Tests.Integration;
 
 namespace Test.ReadModel.Integration
 {
@@ -40,7 +38,6 @@ namespace Test.ReadModel.Integration
             auction = new()
             {
                 AuctionId = Guid.NewGuid().ToString(),
-                Category = new CategoryRead
                 {
                     Id = 1,
                     SubCategory = new CategoryRead

@@ -1,6 +1,5 @@
 ﻿using Auctions.Domain.Services;
 using Core.Common.Domain.Categories;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace IntegrationService.CategoryNamesToTreeIdsConversion
 {
@@ -29,17 +28,6 @@ namespace IntegrationService.CategoryNamesToTreeIdsConversion
             while (current is not null);
 
             return Task.FromResult(categoryIds.ToArray());
-        }
-    }
-
-    public static class CategoryNamesToTreeIdsConversionInstaller
-    {
-        public static AuctionsDomainInstaller AddCategoryNamesToTreeIdsConversionAdapter(this AuctionsDomainInstaller installer)
-        {
-            installer.Services.AddTransient<CategoryNamesToTreeIdsConversion>();
-
-            installer.AddCategoryNamesToTreeIdsConversion((prov) => prov.GetRequiredService<CategoryNamesToTreeIdsConversion>());
-            return installer;
         }
     }
 }

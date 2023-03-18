@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Adapters\Repositories\Adapter.Dapper.AuctionhouseDatabase\Adapter.Dapper.AuctionhouseDatabase.csproj" />
     <ProjectReference Include="..\Modules\Users\Users.Application\Users.Application.csproj" />
   </ItemGroup>
 

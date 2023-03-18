@@ -30,11 +30,13 @@
     <ProjectReference Include="..\..\Adapters\ReadModelNotifications\Adapter.EfCore.ReadModelNotifications\Adapter.EfCore.ReadModelNotifications.csproj" />
     <ProjectReference Include="..\..\Adapters\AuctionImageRepository\Adapter.MongoDb.AuctionImageRepository\Adapter.MongoDb.AuctionImageRepository.csproj" />
     <ProjectReference Include="..\..\Adapters\EventOutboxStorage\Adapter.SqlServer.EventOutboxStorage\Adapter.SqlServer.EventOutboxStorage.csproj" />
+    <ProjectReference Include="..\..\Categories.DI\Categories.DI.csproj" />
+    <ProjectReference Include="..\..\Common.DI\Common.DI.csproj" />
     <ProjectReference Include="..\..\Modules\Categories\Categories.Domain\Categories.Domain.csproj" />
     <ProjectReference Include="..\..\Modules\Common\Common.Application\Common.Application.csproj" />
     <ProjectReference Include="..\..\Adapters\EventBus\Adatper.RabbitMq.EventBus\Adatper.RabbitMq.EventBus.csproj" />
-    <ProjectReference Include="..\..\Modules\ReadModel\ReadModel.Core\ReadModel.Core.csproj" />
     <ProjectReference Include="..\..\Adapters\CategoryStore\Adapter.XmlCategoryTreeStore\Adapter.XmlCategoryTreeStore.csproj" />
+    <ProjectReference Include="..\..\ReadModel.DI\ReadModel.DI.csproj" />
     <ProjectReference Include="..\Common.WebAPI\WebAPI.Common.csproj" />
   </ItemGroup>
 

@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Modules\Auctions\Auctions.Domain\Auctions.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Modules\ReadModel\ReadModel.Core\ReadModel.Core.csproj" />
   </ItemGroup>
 
 </Project>

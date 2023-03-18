@@ -7,23 +7,14 @@ namespace ChronicleEfCoreStorage
 {
     public static class ChronicleEfCoreStorageInstaller
     {
-        public static void AddChronicleSQLServerStorage(this IServiceCollection services, GetSagaType getSagaTypeDelegate, string connectionString)
+        public static void AddChronicleSQLServerStorage(this IServiceCollection services, string connectionString)
         {
             services.AddChronicle(builder =>
             {
-                builder.UseEfCorePersistence<SagaLogDataSerialization, SagaDataSerialization>(services, getSagaTypeDelegate, opt =>
+                builder.UseEfCorePersistence<SagaLogDataSerialization, SagaDataSerialization>(services, SagaTypeSerialization.GetSagaType, opt =>
                 {
                     opt.UseSqlServer(connectionString);
                 });
-            });
-        }
-
-
-        public static void AddChronicleSQLServerStorage(this IChronicleBuilder builder, IServiceCollection services, GetSagaType getSagaTypeDelegate, string connectionString)
-        {
-            builder.UseEfCorePersistence<SagaLogDataSerialization, SagaDataSerialization>(services, getSagaTypeDelegate, opt =>
-            {
-                opt.UseSqlServer(connectionString);
             });
         }
     }

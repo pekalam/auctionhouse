@@ -10,6 +10,7 @@ using Core.Query.EventHandlers;
 using Core.Query.EventHandlers.AuctionUpdateHandlers;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Moq;
 using ReadModel.Core.Model;

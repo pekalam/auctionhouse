@@ -28,7 +28,7 @@ namespace FunctionalTests.Tests.Auctions.AddAuctionImage
             auctionCreateSessionStore = ServiceProvider.GetRequiredService<IAuctionCreateSessionStore>();
         }
 
-        protected override void ConfigureAuctionsModuleCustomDependencies(AuctionsInstaller installer)
+        protected override void ConfigureAuctionsModuleCustomDependencies(AuctionsModuleInstaller installer)
         {
             base.ConfigureAuctionsModuleCustomDependencies(installer);
             installer.Application.AddTempFileServiceAdapter();

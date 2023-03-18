@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
@@ -18,7 +19,7 @@ namespace ReadModel.Core.Model
         private readonly IMongoDatabase _db;
         private readonly MongoClient _client;
 
-        public ReadModelDbContext(MongoDbSettings options)
+        public ReadModelDbContext(IOptions<MongoDbSettings> options)
         {
             //BsonSerializer.RegisterSerializer(typeof(Category), new CategorySerializer(categoryBuilder));
             if (BsonSerializer.SerializerRegistry.GetSerializer(typeof(Guid)) == null)
@@ -31,8 +32,8 @@ namespace ReadModel.Core.Model
                 BsonSerializer.RegisterSerializer(typeof(decimal), new DecimalSerializer(BsonType.Decimal128));
             }
 
-            _client = new MongoClient(new MongoUrl(options.ConnectionString));
-            _db = _client.GetDatabase(options.DatabaseName);
+            _client = new MongoClient(new MongoUrl(options.Value.ConnectionString));
+            _db = _client.GetDatabase(options.Value.DatabaseName);
         }
 
         public virtual IMongoClient Client => _client;

@@ -4,9 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace AuctionBids.DI
 {
-    public class AuctionBidsInstaller
+    public class AuctionBidsModuleInstaller
     {
-        public AuctionBidsInstaller(IServiceCollection services)
+        public AuctionBidsModuleInstaller(IServiceCollection services)
         {
             Application = new AuctionBidsApplicationInstaller(services);
             Domain = new AuctionBidsDomainInstaller(services);

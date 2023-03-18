@@ -4,9 +4,7 @@ using Auctions.Domain.Services;
 using Common.Application;
 using Common.Application.Commands;
 using Common.Application.Events;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.Transactions;
 
 namespace Auctions.Application.Commands.UserAddAuctionImage
 {
@@ -18,7 +16,7 @@ namespace Auctions.Application.Commands.UserAddAuctionImage
         private readonly OptimisticConcurrencyHandler _optimisticConcurrencyHandler;
 
         public UserAddAuctionImageCommandHandler(AuctionImageService auctionImageService,
-            IAuctionRepository auctionRepository, ILogger<UserAddAuctionImageCommandHandler> logger, 
+            IAuctionRepository auctionRepository, ILogger<UserAddAuctionImageCommandHandler> logger,
             CommandHandlerBaseDependencies dependencies, OptimisticConcurrencyHandler optimisticConcurrencyHandler)
             : base(dependencies)
         {
@@ -54,7 +52,7 @@ namespace Auctions.Application.Commands.UserAddAuctionImage
                 await _optimisticConcurrencyHandler.Run(
                     async (repeat, uowFactory) =>
                     {
-                        if(repeat > 0)
+                        if (repeat > 0)
                         {
                             auction = _auctions.FindAuction(request.Command.AuctionId);
                         }
@@ -70,7 +68,7 @@ namespace Auctions.Application.Commands.UserAddAuctionImage
             }
             catch (Exception e)
             {
-                _logger.LogWarning(e, "Error while trying to persist auction changes - emoving added images");
+                _logger.LogWarning(e, "Error while trying to persist auction changes - removing added images");
                 _auctionImageService.RemoveAuctionImage(newImg);
                 throw;
             }

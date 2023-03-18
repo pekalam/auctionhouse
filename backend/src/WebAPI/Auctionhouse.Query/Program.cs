@@ -4,7 +4,7 @@ using Auctionhouse.Query;
 using Auctionhouse.Query.Adapters;
 using Azure.Identity;
 using Categories.DI;
-using Common.Application;
+using Common.DI;
 using Common.Application.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using RabbitMq.EventBus;
@@ -15,7 +15,7 @@ using WebAPI.Common;
 using WebAPI.Common.Auth;
 using WebAPI.Common.Configuration;
 using WebAPI.Common.Tracing;
-using XmlCategoryTreeStore;
+using ReadModel.DI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,23 +45,10 @@ switch (environmentName)
 builder.Host.UseSerilog();
 
 //MODULES
-new CommonApplicationInstaller(builder.Services)
-    .AddQueryCoreDependencies(typeof(ReadModelInstaller).Assembly)
-    .AddRabbitMqAppEventBuilderAdapter()
-    .AddRabbitMqEventBusAdapter(builder.Configuration, eventConsumerAssemblies: new[] { typeof(ReadModelInstaller).Assembly });
-
-
-new CategoriesInstaller(builder.Services)
-    .AddXmlCategoryTreeStoreAdapter(builder.Configuration);
-
-var mongoDbSettings = builder.Configuration.GetSection("MongoDb").Get<MongoDbSettings>();
-new ReadModelInstaller(builder.Services, mongoDbSettings)
-    //ADAPTERS
-    .AddBidRaisedNotificationsAdapter();
-
-//ADAPTERS
-//TODO: remove?
-builder.Services.AddMongoDbImageRepositoryAdapter(builder.Configuration);
+builder.Services.AddCommonQueryModule(builder.Configuration, 
+    new[] { typeof(ReadModelInstaller).Assembly }, new[] { typeof(ReadModelInstaller).Assembly });
+builder.Services.AddCategoriesModule(builder.Configuration);
+builder.Services.AddReadModelModule(builder.Configuration).AddQueryAdapters();
 
 //EXTENSIONS
 builder.Services.AddQueryEfCoreReadModelNotifications(builder.Configuration);

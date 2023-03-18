@@ -6,10 +6,11 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
+using ReadModel.Core.Services;
 
 namespace Adapter.MongoDb.AuctionImage
 {
-    internal class AuctionImageRepository : IAuctionImageRepository
+    internal class AuctionImageRepository : IAuctionImageRepository, IAuctionImageReadRepository
     {
         private readonly ImageDbContext _dbContext;
         private readonly ILogger<AuctionImageRepository> _logger;

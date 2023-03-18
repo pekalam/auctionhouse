@@ -1,4 +1,5 @@
 ﻿using Auctions.Application;
+using Auctions.Application.DependencyInjection;
 using Auctions.DI;
 using Auctions.Domain;
 using Auctions.Domain.Repositories;
@@ -33,7 +34,7 @@ namespace Auctions.Tests.Base
         }
     }
 
-    public class AuctionsMockInstaller : AuctionsInstaller
+    public class AuctionsMockInstaller : AuctionsModuleInstaller
     {
         private readonly AuctionsDomainMockInstaller _domainInstaller;
         private readonly AuctionsApplicationMockInstaller _applicationInstaller;

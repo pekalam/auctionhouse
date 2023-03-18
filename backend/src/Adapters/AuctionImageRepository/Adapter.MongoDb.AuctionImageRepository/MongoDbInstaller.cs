@@ -1,17 +1,19 @@
 ﻿using Adapter.MongoDb.AuctionImage;
 using Auctions.Domain;
-using Auctions.Domain.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ReadModel.Core;
 
 namespace Adapter.MongoDb
 {
     public static class MongoDbInstaller
     {
-        public static void AddMongoDbImageRepositoryAdapter(this IServiceCollection services, IConfiguration? configuration = null, ImageDbSettings? settings = null)
+        public static void AddMongoDbImageReadRepositoryAdapter(this ReadModelInstaller installer, IConfiguration? configuration = null, ImageDbSettings? settings = null)
         {
-            services.AddMongoDbImageDb(configuration, settings);
-            services.AddTransient<IAuctionImageRepository, AuctionImageRepository>();
+            installer.Services.AddMongoDbImageDb(configuration, settings);
+            installer.Services.AddTransient<AuctionImageRepository>();
+
+            installer.AddAuctionImageReadRepository(prov => prov.GetRequiredService<AuctionImageRepository>());
         }
 
         public static AuctionsDomainInstaller AddMongoDbImageRepositoryAdapter(this AuctionsDomainInstaller installer, IConfiguration? configuration = null, ImageDbSettings? settings = null)
