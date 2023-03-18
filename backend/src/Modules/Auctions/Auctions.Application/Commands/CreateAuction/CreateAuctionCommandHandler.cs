@@ -1,5 +1,3 @@
-using System;
-using Auctions.Application.Sagas;
 using Auctions.Domain;
 using Auctions.Domain.Repositories;
 using Auctions.Domain.Services;
@@ -10,7 +8,6 @@ using Common.Application.Commands;
 using Common.Application.Commands.Callbacks;
 using Common.Application.Events;
 using Common.Extensions;
-using Core.Common.Domain;
 using Microsoft.Extensions.Logging;
 
 namespace Auctions.Application.Commands.CreateAuction
@@ -25,10 +22,12 @@ namespace Auctions.Application.Commands.CreateAuction
         private readonly ICommandHandlerCallbacks _commandHandlerCallbacks;
         private readonly IAuctionEndScheduler _auctionEndScheduler;
         private readonly IAuctionImageRepository _auctionImages;
+        private readonly IAuctionCreateSessionStore _auctionCreateSessionStore;
 
 
-        public CreateAuctionCommandHandler(ILogger<CreateAuctionCommandHandler> logger, ICategoryNamesToTreeIdsConversion categoryNamesToTreeIdsConversion,
-            ISagaCoordinator sagaCoordinator, IUnitOfWorkFactory uow, CommandHandlerBaseDependencies dependencies, IAuctionRepository auctions, IAuctionEndScheduler auctionEndScheduler, IAuctionImageRepository auctionImages)
+        public CreateAuctionCommandHandler(CommandHandlerBaseDependencies dependencies, ILogger<CreateAuctionCommandHandler> logger, ICategoryNamesToTreeIdsConversion categoryNamesToTreeIdsConversion,
+            ISagaCoordinator sagaCoordinator, IUnitOfWorkFactory uow, IAuctionRepository auctions,
+            IAuctionEndScheduler auctionEndScheduler, IAuctionImageRepository auctionImages, IAuctionCreateSessionStore auctionCreateSessionStore)
             : base(dependencies)
         {
             _commandHandlerCallbacks = dependencies.CommandHandlerCallbacks;
@@ -39,16 +38,19 @@ namespace Auctions.Application.Commands.CreateAuction
             _auctions = auctions;
             _auctionEndScheduler = auctionEndScheduler;
             _auctionImages = auctionImages;
+            _auctionCreateSessionStore = auctionCreateSessionStore;
         }
 
         protected override async Task<RequestStatus> HandleCommand(AppCommand<CreateAuctionCommand> request, IEventOutbox eventOutbox,
             CancellationToken cancellationToken)
         {
-            var auction = await CreateAuction(request);
+            var auctionCreateSession = _auctionCreateSessionStore.GetExistingSession();
+            var auction = await CreateAuction(request, auctionCreateSession);
             // * actions performed after this call can fail because scheduler call can be ignored when auction
             // is created in invalid state or not persisted
             await _auctionEndScheduler.ScheduleAuctionEnd(auction);
-            UpdateAuctionImagesMetadata(request);
+
+            UpdateAuctionImagesMetadata(auctionCreateSession);
 
             using (var uow = _uow.Begin())
             {
@@ -60,22 +62,24 @@ namespace Auctions.Application.Commands.CreateAuction
                 uow.Commit();
             }
 
+            _auctionCreateSessionStore.RemoveSession();
+
             return RequestStatus.CreatePending(request.CommandContext);
         }
 
-        private void UpdateAuctionImagesMetadata(AppCommand<CreateAuctionCommand> request)
+        private void UpdateAuctionImagesMetadata(AuctionCreateSession auctionCreateSession)
         {
-            var imagesToSave = request.Command.AuctionCreateSession.AuctionImages.AllImageIds.ToArray();
+            var imagesToSave = auctionCreateSession.AuctionImages.AllImageIds.ToArray();
             _auctionImages.UpdateManyMetadata(imagesToSave, new AuctionImageMetadata(null)
             {
                 IsAssignedToAuction = true
             });
         }
 
-        private async Task<Auction> CreateAuction(AppCommand<CreateAuctionCommand> request)
+        private async Task<Auction> CreateAuction(AppCommand<CreateAuctionCommand> request, AuctionCreateSession auctionCreateSession)
         {
             var auctionArgs = await CreateAuctionArgs(request.Command, new UserId(request.CommandContext.User!.Value));
-            var auction = request.Command.AuctionCreateSession.CreateAuction(auctionArgs);
+            var auction = auctionCreateSession.CreateAuction(auctionArgs);
             return auction;
         }
 

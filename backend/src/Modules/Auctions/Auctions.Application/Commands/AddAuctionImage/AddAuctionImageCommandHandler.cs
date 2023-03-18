@@ -1,5 +1,4 @@
-﻿using System;
-using Auctions.Domain;
+﻿using Auctions.Domain;
 using Auctions.Domain.Services;
 using Common.Application;
 using Common.Application.Commands;
@@ -13,14 +12,17 @@ namespace Auctions.Application.Commands.AddAuctionImage
     {
         private readonly ILogger<AddAuctionImageCommandHandler> _logger;
         private readonly AuctionImageService _auctionImageService;
+        private readonly IAuctionCreateSessionStore _auctionCreateSessionStore;
 
         public AddAuctionImageCommandHandler(
+            CommandHandlerBaseDependencies dependencies,
             ILogger<AddAuctionImageCommandHandler> logger,
-            AuctionImageService auctionImageService, CommandHandlerBaseDependencies dependencies) : 
-            base(dependencies)
+            AuctionImageService auctionImageService,
+            IAuctionCreateSessionStore auctionCreateSessionStore) : base(dependencies)
         {
             _logger = logger;
             _auctionImageService = auctionImageService;
+            _auctionCreateSessionStore = auctionCreateSessionStore;
         }
 
         protected override Task<RequestStatus> HandleCommand(
@@ -34,7 +36,10 @@ namespace Auctions.Application.Commands.AddAuctionImage
 
             var added = _auctionImageService.AddAuctionImage(img);
 
-            request.Command.AuctionCreateSession.AddOrReplaceImage(added, request.Command.ImgNum);
+            var auctionCreateSession = _auctionCreateSessionStore.GetExistingSession();
+            auctionCreateSession.AddOrReplaceImage(added, request.Command.ImgNum);
+
+            _auctionCreateSessionStore.SaveSession(auctionCreateSession);
 
             var requestStatus = RequestStatus.CreatePending(request.CommandContext);
             requestStatus.SetExtraData(new Dictionary<string, object>()

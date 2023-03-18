@@ -17,7 +17,6 @@ namespace Auctions.Application
 
         private static void AddCoreServices(IServiceCollection services)
         {
-            InAuctionCreateSessionAttribute.LoadAuctionCreateSessionCommandMembers(typeof(AuctionsApplicationInstaller).Assembly);
             SaveTempAuctionImageAttribute.LoadImagePathCommandMembers(typeof(AuctionsApplicationInstaller).Assembly);
             services.AddEventSubscribers(typeof(AuctionsApplicationInstaller));
         }

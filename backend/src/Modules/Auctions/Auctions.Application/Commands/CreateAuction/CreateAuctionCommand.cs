@@ -7,7 +7,6 @@ using System.ComponentModel.DataAnnotations;
 namespace Auctions.Application.Commands.CreateAuction
 {
     [AuthorizationRequired]
-    [InAuctionCreateSessionRemove]
     public class CreateAuctionCommand : ICommand
     {
         public BuyNowPrice? BuyNowPrice { get; set; }
@@ -35,7 +34,5 @@ namespace Auctions.Application.Commands.CreateAuction
 
         [SignedInUser]
         public Guid SignedInUser { get; set; }
-
-        public AuctionCreateSession AuctionCreateSession { get; set; } = null!;
     }
 }

@@ -7,7 +7,6 @@ using System.ComponentModel.DataAnnotations;
 namespace Auctions.Application.Commands.AddAuctionImage
 {
     [AuthorizationRequired]
-    [InAuctionCreateSession]
     [SaveTempAuctionImage]
     public class AddAuctionImageCommand : ICommand
     {
@@ -24,7 +23,5 @@ namespace Auctions.Application.Commands.AddAuctionImage
 
         [Range(0, AuctionConstantsFactory.DEFAULT_MAX_IMAGES - 1)]
         public int ImgNum { get; set; }
-
-        public AuctionCreateSession AuctionCreateSession { get; set; }
     }
 }
