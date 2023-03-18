@@ -8,15 +8,13 @@ namespace Test.Adapter.QuartzServiceAuctionEndScheduler
     {
         private const string SectionName = "QuartzAuctionEndSchedulerTests";
 
-        public static string Url { get; set; }
-
         public static TimeTaskServiceSettings Create()
         {
             return new TimeTaskServiceSettings
             {
                 ConnectionString = TestConfig.Instance.GetSection(SectionName)["ConnectionString"],
                 ApiKey = TestConfig.Instance.GetSection(SectionName)["ApiKey"],
-                AuctionEndEchoTaskEndpoint = Url.Replace("localhost", "host.docker.internal") + "/foo",
+                AuctionEndEchoTaskEndpoint = TestConfig.Instance["QuartzAuctionEndSchedulerTests:TestHostUrl"] + "/foo",
             };
         }
     }

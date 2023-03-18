@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RabbitMq.EventBus;
 using System;
-using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,27 +17,12 @@ namespace Test.Adapter.RabbitMq.EventBus
     [CollectionDefinition(nameof(RedeliveryTestCollection), DisableParallelization = true)]
     public class RedeliveryTestCollection { }
 
-
     [Trait("Category", "Integration")]
-    public class RabbitMqEventBusRedeliveryTestBase
+    public class RabbitMqEventBusRedeliveryTestBase : IDisposable
     {
-        const string TestDbPath = @".\testDb";
+        private readonly RocksDbFixture _dbFixture = new RocksDbFixture();
 
-        public RabbitMqEventBusRedeliveryTestBase()
-        {
-            if (RocksDbErrorEventOutboxStorage.db.IsValueCreated)
-            {
-                RocksDbErrorEventOutboxStorage.db.Value.Dispose();
-                Directory.Delete(TestDbPath, true);
-                RocksDbErrorEventOutboxStorage.InitializeRocksDb();
-            }
-            else
-            {
-                RockdbUtils.ClearOutboxItems();
-            }
-        }
-
-        protected static IImplProvider SetupImplProvider(EventBusRedeliveryTestEventConsumer handler)
+        protected IImplProvider SetupImplProvider(EventBusRedeliveryTestEventConsumer handler)
         {
             var services = new ServiceCollection();
             services.AddLogging(b => b.AddXUnit());
@@ -46,24 +30,29 @@ namespace Test.Adapter.RabbitMq.EventBus
             return AddAdapterServices(services);
         }
 
-        protected static IImplProvider AddAdapterServices(ServiceCollection services)
+        protected IImplProvider AddAdapterServices(ServiceCollection services)
         {
             services.AddRabbitMqEventBus(TestConfig.Instance.GetRabbitMqSettings());
             services.AddErrorEventOutbox(new()
             {
-                DatabasePath = @".\testDb"
+                DatabasePath = _dbFixture.TestDbPath,
             });
             var serviceProvider = services.BuildServiceProvider();
             var stubImplProvider = new ImplProviderMock(serviceProvider);
             return stubImplProvider;
         }
 
-        protected static IImplProvider SetupImplProvider(EventBusRedeliveryTestEventSubscriber handler)
+        protected IImplProvider SetupImplProvider(EventBusRedeliveryTestEventSubscriber handler)
         {
             var services = new ServiceCollection();
             services.AddLogging(b => b.AddXUnit());
             services.AddSingleton(handler);
             return AddAdapterServices(services);
+        }
+
+        public void Dispose()
+        {
+            _dbFixture.Dispose();
         }
     }
 

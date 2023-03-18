@@ -6,13 +6,13 @@ namespace TestConfigurationAccessor.ConfigProviders
     {
         public bool AddConfiguration(ConfigurationManager builder, string envName, string? prefix, string? suffix)
         {
-            if (prefix != "local")
+            if (prefix != "file" || suffix is null)
             {
                 return false;
             }
 
-            AddJsonFile(builder, envName);
             AddDefaultJsonFile(builder);
+            AddJsonFile(builder, suffix);
 
             return true;
         }
@@ -24,7 +24,11 @@ namespace TestConfigurationAccessor.ConfigProviders
 
         private static void AddJsonFile(IConfigurationBuilder builder, string envName)
         {
-            builder.AddJsonFile($"settings.{envName}.json");
+            var settingsFileName = $"settings.{envName}.json";
+            if (File.Exists(settingsFileName)) // if file does not exists, then default will be used 
+            {
+                builder.AddJsonFile(settingsFileName);
+            }
         }
     }
 }

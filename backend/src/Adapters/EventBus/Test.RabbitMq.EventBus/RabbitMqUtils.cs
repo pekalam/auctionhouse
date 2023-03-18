@@ -1,14 +1,21 @@
 ﻿using Adatper.RabbitMq.EventBus.ErrorEventOutbox;
 using EasyNetQ.Management.Client;
 using System;
+using TestConfigurationAccessor;
 
 namespace Test.Adapter.RabbitMq.EventBus
 {
     internal static class RabbitMqUtils
     {
-        public static void PurgeQueues(string hostUrl = "localhost")
+        public static void PurgeQueues()
         {
-            var managmentClient = new ManagementClient(hostUrl, "guest", "guest", 15672);
+            var settings = TestConfig.Instance.GetRabbitMqSettings();
+            var hostStart = "host=";
+            var hostInd = settings.ConnectionString.IndexOf(hostStart);
+            var hostEnd = settings.ConnectionString.IndexOf(';', hostInd);
+            var host = settings.ConnectionString[(hostInd + hostStart.Length)..hostEnd];
+
+            using var managmentClient = new ManagementClient(host, "guest", "guest", 15672);
 
             var queues = managmentClient.GetQueues();
 
@@ -16,25 +23,6 @@ namespace Test.Adapter.RabbitMq.EventBus
             {
                 Console.WriteLine("Purging = {0}", queue.Name);
                 managmentClient.Purge(queue);
-            }
-        }
-    }
-
-    internal static class RockdbUtils
-    {
-        public static void ClearOutboxItems()
-        {
-            var storage = new RocksDbErrorEventOutboxStorage();
-
-            var unprocessed = storage.FindUnprocessed(10);
-            while (unprocessed.Length > 0)
-            {
-                foreach (var item in unprocessed)
-                {
-                    storage.Delete(item);
-                }
-
-                unprocessed = storage.FindUnprocessed(10);
             }
         }
     }

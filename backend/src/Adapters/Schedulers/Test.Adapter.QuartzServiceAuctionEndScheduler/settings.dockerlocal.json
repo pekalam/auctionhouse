@@ -1,5 +1,5 @@
 {
-  "QuartzAuctionEndSchedulerTests:ConnectionString": "http://localhost:5001",
+  "QuartzAuctionEndSchedulerTests:ConnectionString": "http://host.docker.internal:5001",
   "QuartzAuctionEndSchedulerTests:ApiKey": "testk",
   "QuartzAuctionEndSchedulerTests:TestHostUrl": "http://host.docker.internal:9991"
 }

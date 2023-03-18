@@ -17,6 +17,9 @@ using System.Threading.Tasks;
 using Common.Tests.Base.Mocks.Events;
 using Xunit;
 using Common.Application.Events.Callbacks;
+using Microsoft.Extensions.Options;
+using TestConfigurationAccessor;
+using ReadModel.Tests.Integration;
 
 namespace Test.ReadModel.Integration
 {
@@ -32,11 +35,7 @@ namespace Test.ReadModel.Integration
         public AuctionPriceRisedEventConsumer_IdempotencyTest()
         {
             dbContext = new ReadModelDbContext(
-            new MongoDbSettings
-            {
-                ConnectionString = "mongodb://auctionhouse-user:Test-1234@localhost:27017/appDb",
-                DatabaseName = "appDb"
-            });
+            Options.Create(TestConfig.Instance.GetMongoDbSettings()));
 
             auction = new()
             {

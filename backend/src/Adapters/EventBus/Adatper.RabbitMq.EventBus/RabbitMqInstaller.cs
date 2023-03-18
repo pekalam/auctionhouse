@@ -54,7 +54,8 @@ namespace RabbitMq.EventBus
         public static void AddErrorEventRedeliveryProcessorService(this IServiceCollection services, EventBusSettings settings)
         {
             services.AddSingleton(settings);
-            services.AddHostedService<ErrorEventOutboxProcessor>();
+            services.AddTransient<ErrorEventOutboxProcessor>();
+            services.AddHostedService<ErrorEventOutboxProcessorBackgroundService>();
         }
 
         internal static void AddRabbitMqEventBus(this IServiceCollection services, RabbitMqSettings rabbitMqSettings)
@@ -66,8 +67,11 @@ namespace RabbitMq.EventBus
 
         internal static void AddErrorEventOutbox(this IServiceCollection services, RocksDbOptions rocksDbOptions)
         {
-            RocksDbErrorEventOutboxStorage.Options = rocksDbOptions;
-            services.AddSingleton(rocksDbOptions);
+            services.AddOptions<RocksDbOptions>().Configure(opt => 
+            {
+                opt.DatabasePath = rocksDbOptions.DatabasePath;
+            });
+            services.AddSingleton<GlobalRocksDb>();
             services.AddTransient<IErrorEventOutboxStore, RocksDbErrorEventOutboxStorage>();
             services.AddTransient<IErrorEventOutboxUnprocessedItemsFinder, RocksDbErrorEventOutboxStorage>();
         }

@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TestConfigurationAccessor;
 using Xunit;
 
 namespace ReadModel.Tests.Integration
@@ -60,11 +61,7 @@ namespace ReadModel.Tests.Integration
         public AuctionUpdatedEventConsumer_Tests()
         {
             dbContext = new ReadModelDbContext(
-                new MongoDbSettings
-                {
-                    ConnectionString = "mongodb://auctionhouse-user:Test-1234@localhost:27017/appDb",
-                    DatabaseName = "appDb"
-                });
+                Options.Create(TestConfig.Instance.GetMongoDbSettings()));
             auctionRead = new AuctionRead
             {
                 AuctionId = Guid.NewGuid().ToString(),

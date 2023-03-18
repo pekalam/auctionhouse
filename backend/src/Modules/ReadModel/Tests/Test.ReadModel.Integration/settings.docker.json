@@ -1,0 +1,4 @@
+{
+    "ReadModelTests:ReadModelSettings:ConnectionString": "mongodb://auctionhouse-user:Test-1234@mongodb:27017/appDb",
+    "ReadModelTests:ReadModelSettings:DatabaseName": "appDb"
+}

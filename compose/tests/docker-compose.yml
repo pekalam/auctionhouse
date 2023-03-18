@@ -2,7 +2,8 @@ version: '3.4'
 
 services:
   functional-tests:
+    hostname: functional-tests
     build:
       context: ../../backend/src
-      dockerfile: Tests/FunctionalTests/Dockerfile
-    command: "docker sql_server:32112 quartz_web_task_service:80 rabbitmq:5672 redis:6379 seq:5341 zipkin:9411 mongodb:27017"
+      dockerfile: Tests/Docker/Dockerfile
+    command: "file-docker Release sql_server:32112 quartz_web_task_service:80 rabbitmq:5672 redis:6379 seq:5341 zipkin:9411 mongodb:27017"

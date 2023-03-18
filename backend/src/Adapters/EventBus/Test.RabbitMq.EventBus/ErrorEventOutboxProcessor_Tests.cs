@@ -40,7 +40,6 @@ namespace Test.Adapter.RabbitMq.EventBus
                 AssertDeleted(outboxItem, Times.Once());
                 AssertMessageIsPublished(outboxItem, ctsSource, Times.Once());
             }
-
         }
 
         [Fact]

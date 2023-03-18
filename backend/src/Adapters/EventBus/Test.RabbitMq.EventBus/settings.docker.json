@@ -1,0 +1,3 @@
+{
+  "EventBusTests:ConnectionString": "host=rabbitmq;publisherConfirms=true;persistentMessages=true;prefetchcount=0"
+}

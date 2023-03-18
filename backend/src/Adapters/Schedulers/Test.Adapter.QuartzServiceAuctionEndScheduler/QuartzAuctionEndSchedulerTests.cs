@@ -12,6 +12,7 @@ using Common.Tests.Base.Mocks;
 using Common.Tests.Base.Mocks.Events;
 using Core.Command.Commands.EndAuction;
 using FluentAssertions;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -24,6 +25,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using TestConfigurationAccessor;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -63,13 +65,10 @@ namespace Test.Adapter.QuartzServiceAuctionEndScheduler
             var application = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
                 {
-
                     builder.ConfigureServices((services) => SetupServices(services, auctions));
                     // ... Configure test services
                 });
-            var server = WireMockServer.Start();
-            var url = server.Urls[0];
-            TimeTaskServiceSettingsFactory.Url = url;
+            var server = WireMockServer.Start(TestConfig.Instance["QuartzAuctionEndSchedulerTests:TestHostUrl"]);
 
             var provider = SetupServices(new ServiceCollection(), auctions);
             var client = application.CreateClient();

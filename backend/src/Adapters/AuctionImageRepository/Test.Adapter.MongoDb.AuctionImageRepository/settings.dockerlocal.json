@@ -1,0 +1,4 @@
+{
+  "AuctionImageRepositoryTests:ConnectionString": "mongodb://auctionhouse-user:Test-1234@host.docker.internal:27017/appDb",
+  "AuctionImageRepositoryTests:DatabaseName": "appDb"
+}

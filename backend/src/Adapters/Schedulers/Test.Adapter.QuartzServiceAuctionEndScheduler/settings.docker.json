@@ -1,0 +1,5 @@
+{
+  "QuartzAuctionEndSchedulerTests:ConnectionString": "http://quartz_web_task_service",
+  "QuartzAuctionEndSchedulerTests:ApiKey": "testk",
+  "QuartzAuctionEndSchedulerTests:TestHostUrl": "http://functional-tests:9991"
+}

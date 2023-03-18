@@ -1,4 +1,5 @@
-﻿using RocksDbSharp;
+﻿using Microsoft.Extensions.Options;
+using RocksDbSharp;
 
 namespace Adatper.RabbitMq.EventBus.ErrorEventOutbox
 {
@@ -7,39 +8,50 @@ namespace Adatper.RabbitMq.EventBus.ErrorEventOutbox
         public string DatabasePath { get; set; } = "./errorEventOutboxDb";
     }
 
-    internal class RocksDbErrorEventOutboxStorage : IErrorEventOutboxStore, IErrorEventOutboxUnprocessedItemsFinder
+    public class GlobalRocksDb : IDisposable
     {
-        private static readonly DbOptions dbOptions = new DbOptions().SetCreateIfMissing(true);
-        private static readonly byte[] KeyZeroBytes = 0L.ToBytes();
+        private readonly RocksDbOptions _options;
+        private readonly DbOptions _dbOptions = new DbOptions().SetCreateIfMissing(true);
+        private Lazy<RocksDb> _db;
 
-        public static RocksDbOptions Options { get; set; } = new();
-        internal static Lazy<RocksDb> db;
-
-        internal static void InitializeRocksDb()
+        public GlobalRocksDb(IOptions<RocksDbOptions> options)
         {
-            db = new(() => OpenDb(), LazyThreadSafetyMode.ExecutionAndPublication);
+            _options = options.Value;
+            _db = new(() => OpenDb(), LazyThreadSafetyMode.ExecutionAndPublication);
         }
 
-        static RocksDbErrorEventOutboxStorage()
+        public RocksDb Db => _db.Value;
+
+        public void Dispose()
         {
-            InitializeRocksDb();
+            _db.Value.Dispose();
         }
 
-        private static RocksDb OpenDb()
+        private RocksDb OpenDb()
         {
-            var db = RocksDb.Open(dbOptions, Options.DatabasePath, new ColumnFamilies());
+            var db = RocksDb.Open(_dbOptions, _options.DatabasePath, new ColumnFamilies());
             return db;
         }
+    }
 
+    internal class RocksDbErrorEventOutboxStorage : IErrorEventOutboxStore, IErrorEventOutboxUnprocessedItemsFinder
+    {
+        private static readonly byte[] KeyZeroBytes = 0L.ToBytes();
+        private readonly GlobalRocksDb _db;
+
+        public RocksDbErrorEventOutboxStorage(GlobalRocksDb db)
+        {
+            _db = db;
+        }
 
         public void Delete(ErrorEventOutboxItem item)
         {
-            db.Value.Remove(item.Timestamp.ToBytes());
+            _db.Db.Remove(item.Timestamp.ToBytes());
         }
 
         public ErrorEventOutboxItem[] FindUnprocessed(int max)
         {
-            var iterator = db.Value.NewIterator(db.Value.GetDefaultColumnFamily());
+            var iterator = _db.Db.NewIterator(_db.Db.GetDefaultColumnFamily());
             var items = new List<ErrorEventOutboxItem>(20);
             iterator.Seek(KeyZeroBytes);
 
@@ -59,7 +71,7 @@ namespace Adatper.RabbitMq.EventBus.ErrorEventOutbox
             }
             var bytes = RocksDbSerializationUtils.Serialize(item);
 
-            db.Value.Put(item.Timestamp.ToBytes(), bytes);
+            _db.Db.Put(item.Timestamp.ToBytes(), bytes);
         }
 
         public void Update(ErrorEventOutboxItem item) => Save(item);

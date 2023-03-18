@@ -5,6 +5,7 @@ using Common.Tests.Base.Mocks.Events;
 using Core.Common.Domain;
 using EasyNetQ;
 using FluentAssertions;
+using Microsoft.Extensions.Options;
 using RocksDbSharp;
 using System;
 using System.Collections.Generic;
@@ -112,39 +113,33 @@ namespace Test.Adapter.RabbitMq.EventBus
 
     [Collection(nameof(RedeliveryTestCollection))]
     [Trait("Category", "Integration")]
-    public class RocksDbErrorEventOutboxStorage_Tests //TODO split into separate classes
+    public class RocksDbErrorEventOutboxStorage_Tests : IDisposable
     {
-        const string TestDbPath = @".\testDb";
+        private readonly RocksDbFixture _dbFixture = new RocksDbFixture();
+        private readonly GlobalRocksDb _db;
         RocksDbErrorEventOutboxStorage storage;
 
         public RocksDbErrorEventOutboxStorage_Tests()
         {
-            if (RocksDbErrorEventOutboxStorage.db.IsValueCreated)
+            var options = Options.Create(new RocksDbOptions
             {
-                RocksDbErrorEventOutboxStorage.db.Value.Dispose();
-                Directory.Delete(TestDbPath, true);
-                RocksDbErrorEventOutboxStorage.InitializeRocksDb();
-            }
-
-            OpenWrite().Dispose();
-            RocksDbErrorEventOutboxStorage.Options = new RocksDbOptions
-            {
-                DatabasePath = TestDbPath
-            };
-            storage = new();
+                DatabasePath = _dbFixture.TestDbPath,
+            });
+            _db = new GlobalRocksDb(options);
+            storage = new(_db);
         }
 
-        private static RocksDb OpenWrite()
+        private RocksDb OpenWrite()
         {
-            return RocksDb.Open(new DbOptions().SetCreateIfMissing(true), TestDbPath);
+            return RocksDb.Open(new DbOptions().SetCreateIfMissing(true), _dbFixture.TestDbPath);
         }
 
-        private static RocksDb OpenReadOnly()
+        private RocksDb OpenReadOnly()
         {
-            return RocksDb.OpenReadOnly(new DbOptions().SetCreateIfMissing(true), TestDbPath, true);
+            return RocksDb.OpenReadOnly(new DbOptions().SetCreateIfMissing(true), _dbFixture.TestDbPath, true);
         }
         
-        private static byte[] GetSavedItem(ErrorEventOutboxItem errorEventOutboxItem)
+        private byte[] GetSavedItem(ErrorEventOutboxItem errorEventOutboxItem)
         {
             using var rocksDb = OpenReadOnly();
             return rocksDb.Get(errorEventOutboxItem.Timestamp.ToBytes());
@@ -231,6 +226,12 @@ namespace Test.Adapter.RabbitMq.EventBus
             storage.Delete(errorEventOutboxItem);
 
             GetSavedItem(errorEventOutboxItem).Should().BeNull();
+        }
+
+        public void Dispose()
+        {
+            _db.Dispose();
+            _dbFixture.Dispose();
         }
     }
 }

@@ -24,8 +24,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\TestConfigurationAccessor\TestConfigurationAccessor.csproj" />
     <ProjectReference Include="..\..\ReadModel.Core\ReadModel.Core.csproj" />
     <ProjectReference Include="..\..\..\Common\Tests\Test.Common.Base\Common.Tests.Base.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="settings.docker.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="settings.dockerlocal.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="settings.local.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

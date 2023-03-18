@@ -9,7 +9,28 @@ using System.Text;
 
 namespace Adatper.RabbitMq.EventBus.ErrorEventOutbox
 {
-    internal class ErrorEventOutboxProcessor : BackgroundService
+    internal class ErrorEventOutboxProcessorBackgroundService : BackgroundService
+    {
+        private readonly ErrorEventOutboxProcessor _errorEventOutboxProcessor;
+
+        public ErrorEventOutboxProcessorBackgroundService(ErrorEventOutboxProcessor errorEventOutboxProcessor)
+        {
+            _errorEventOutboxProcessor = errorEventOutboxProcessor;
+        }
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                await _errorEventOutboxProcessor.ProcessEvents(stoppingToken);
+
+                await Task.Delay(500, stoppingToken);
+            }
+        }
+    }
+
+
+    internal class ErrorEventOutboxProcessor
     {
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly EventBusSettings _eventBusSettings;
@@ -22,35 +43,7 @@ namespace Adatper.RabbitMq.EventBus.ErrorEventOutbox
             _logger = logger;
         }
 
-        private int? GetRedeliveryCount(JToken jToken)
-        {
-            if(jToken == null || jToken["RedeliveryCount"] == null)
-            {
-                return null;
-            }
-
-            var redeliveryCount = jToken["RedeliveryCount"]!.ToObject<int>();
-            return redeliveryCount;
-        }
-
-        private string IncrementRedeliveryCount(JToken jToken, int currentRedeliveryCount)
-        {
-            (jToken["RedeliveryCount"] as JValue)!.Value = currentRedeliveryCount + 1;
-            var json = JsonConvert.SerializeObject(jToken);
-            return json;
-        }
-
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                await ProcessEvents(stoppingToken);
-
-                await Task.Delay(500, stoppingToken);
-            }
-        }
-
-        internal async Task ProcessEvents(CancellationToken ct)
+        public async Task ProcessEvents(CancellationToken ct)
         {
             var scope = _serviceScopeFactory.CreateScope();
             var errorEventOutboxStore = scope.ServiceProvider.GetRequiredService<IErrorEventOutboxStore>();
@@ -99,6 +92,24 @@ namespace Adatper.RabbitMq.EventBus.ErrorEventOutbox
 
                 TryDeleteItem(errorEventOutboxStore, item);
             }
+        }
+
+        private int? GetRedeliveryCount(JToken jToken)
+        {
+            if (jToken == null || jToken["RedeliveryCount"] == null)
+            {
+                return null;
+            }
+
+            var redeliveryCount = jToken["RedeliveryCount"]!.ToObject<int>();
+            return redeliveryCount;
+        }
+
+        private string IncrementRedeliveryCount(JToken jToken, int currentRedeliveryCount)
+        {
+            (jToken["RedeliveryCount"] as JValue)!.Value = currentRedeliveryCount + 1;
+            var json = JsonConvert.SerializeObject(jToken);
+            return json;
         }
 
         private void TryDeleteItem(IErrorEventOutboxStore errorEventOutboxStore, ErrorEventOutboxItem item)

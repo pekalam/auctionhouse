@@ -1,0 +1,3 @@
+{
+  "AuctionhouseHangfireTests:ConnectionString": "Data Source=sql_server;Initial Catalog=AuctionhouseDatabase;MultipleActiveResultSets=True;TrustServerCertificate=True;User ID=sa;Password=Qwerty1234;"
+}
