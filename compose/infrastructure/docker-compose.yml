@@ -58,7 +58,7 @@ services:
       - '5341:5341'
 
   redis:
-    image: redis
+    image: redis@sha256:0d9c9aed1eb385336db0bc9b976b6b49774aee3d2b9c2788a0d0d9e239986cb3
     ports:
       - '6379:6379'
 
