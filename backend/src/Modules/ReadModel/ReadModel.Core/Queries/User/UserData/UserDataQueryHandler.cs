@@ -1,8 +1,7 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Common.Application;
+﻿using Common.Application;
 using MongoDB.Driver;
+using ReadModel.Contracts.Model;
+using ReadModel.Contracts.Queries.User.UserData;
 using ReadModel.Core.Model;
 
 namespace ReadModel.Core.Queries.User.UserData

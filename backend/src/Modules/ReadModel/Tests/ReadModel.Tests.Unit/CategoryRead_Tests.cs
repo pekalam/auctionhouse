@@ -1,6 +1,6 @@
 using Core.Common.Domain.Categories;
 using FluentAssertions;
-using ReadModel.Core.Model;
+using ReadModel.Contracts.Model;
 using Xunit;
 
 namespace ReadModel.Tests.Unit
@@ -15,7 +15,7 @@ namespace ReadModel.Tests.Unit
             cat.SubCategory.SubCategory = new Category("test3", new CategoryId(3));
 
             var catRead = CategoryRead.FromCategory(cat);
-            
+
             catRead.Id.Should().Be(1);
             catRead.Name.Should().Be("test1");
             catRead.SubCategory.Id.Should().Be(2);

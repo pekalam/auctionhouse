@@ -3,8 +3,9 @@ using Common.Application.Events;
 using Core.Query.EventHandlers;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using ReadModel.Contracts.Model;
+using ReadModel.Contracts.Services;
 using ReadModel.Core.Model;
-using ReadModel.Core.Services;
 
 namespace ReadModel.Core.EventConsumers
 {

@@ -1,6 +1,8 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using MongoDB.Driver;
+using ReadModel.Contracts.Model;
+using ReadModel.Contracts.Queries.Auction.Auctions;
+using ReadModel.Contracts.Queries.Auction.Auctions.ByTag;
 using ReadModel.Core.Model;
 
 namespace ReadModel.Core.Queries.Auction.Auctions.ByTag
@@ -8,15 +10,16 @@ namespace ReadModel.Core.Queries.Auction.Auctions.ByTag
     public class AuctionsByTagQueryHandler : AuctionsQueryHandlerBase<AuctionsByTagQuery>
     {
         private readonly ReadModelDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public AuctionsByTagQueryHandler(ReadModelDbContext dbContext)
+        public AuctionsByTagQueryHandler(ReadModelDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
         protected async override Task<AuctionsQueryResult> HandleQuery(AuctionsByTagQuery request, CancellationToken cancellationToken)
         {
-            var mapper = MapperConfigHolder.Configuration.CreateMapper();
             var tagFilter = Builders<AuctionRead>.Filter
                 .AnyIn(model => model.Tags, new[] { request.Tag });
 
@@ -27,7 +30,7 @@ namespace ReadModel.Core.Queries.Auction.Auctions.ByTag
             var auctions = await _dbContext.AuctionsReadModel
                 .Find(Builders<AuctionRead>.Filter.And(queryFilters))
                 .Skip(request.Page * PageSize)
-                .Project(model => mapper.Map<AuctionListItem>(model))
+                .Project(model => _mapper.Map<AuctionListItem>(model))
                 .Limit(PageSize)
                 .Sort(GetDefaultSorting())
                 .ToListAsync();

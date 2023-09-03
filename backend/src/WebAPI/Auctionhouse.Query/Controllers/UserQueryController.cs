@@ -3,11 +3,11 @@ using AutoMapper;
 using Common.Application.Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ReadModel.Core.Queries.User.UserAuctions;
-using ReadModel.Core.Queries.User.UserBids;
-using ReadModel.Core.Queries.User.UserBoughtAuctions;
-using ReadModel.Core.Queries.User.UserData;
-using ReadModel.Core.Queries.User.UserWonAuctions;
+using ReadModel.Contracts.Queries.User.UserAuctions;
+using ReadModel.Contracts.Queries.User.UserBids;
+using ReadModel.Contracts.Queries.User.UserBoughtAuctions;
+using ReadModel.Contracts.Queries.User.UserData;
+using ReadModel.Contracts.Queries.User.UserWonAuctions;
 
 namespace Auctionhouse.Query.Controllers
 {

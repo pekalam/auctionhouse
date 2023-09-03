@@ -1,6 +1,5 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Core.Common.Domain.Categories;
+﻿using Core.Common.Domain.Categories;
+using ReadModel.Contracts.Queries.Auction.Categories;
 
 namespace ReadModel.Core.Queries.Auction.Categories
 {

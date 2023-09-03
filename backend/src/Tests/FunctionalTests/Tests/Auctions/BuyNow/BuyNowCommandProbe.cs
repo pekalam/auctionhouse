@@ -10,6 +10,8 @@ namespace FunctionalTests.Tests.Auctions.BuyNow
     using global::Auctions.Domain.Repositories;
     using Microsoft.Extensions.DependencyInjection;
     using MongoDB.Driver;
+    using ReadModel.Contracts.Model;
+    using ReadModel.Contracts.Queries.Auction.SingleAuction;
     using ReadModel.Core.Model;
     using ReadModel.Core.Queries.Auction.SingleAuction;
 

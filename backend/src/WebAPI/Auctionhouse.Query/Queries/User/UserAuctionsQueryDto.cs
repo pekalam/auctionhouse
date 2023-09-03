@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ReadModel.Contracts.Queries.User.UserAuctions;
 using ReadModel.Core.Queries.User.UserAuctions;
 
 namespace Auctionhouse.Query.Queries

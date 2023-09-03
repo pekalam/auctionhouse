@@ -1,4 +1,5 @@
-﻿using ReadModel.Core.Services;
+﻿using ReadModel.Contracts.Queries.Auction.AuctionImage;
+using ReadModel.Contracts.Services;
 
 namespace ReadModel.Core.Queries.Auction.AuctionImage
 {

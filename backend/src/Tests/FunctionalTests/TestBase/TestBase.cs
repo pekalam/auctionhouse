@@ -73,7 +73,7 @@ namespace FunctionalTests.Commands
             ChronicleEfCoreIntegrationInitializer.Initialize(ServiceProvider);
             RabbitMqInstaller.InitializeEventSubscriptions(ServiceProvider, assemblyNames.Select(n => Assembly.Load(n)).ToArray());
             EfCoreReadModelNotificationsInstaller.Initialize(ServiceProvider);
-            RabbitMqInstaller.InitializeEventConsumers(ServiceProvider, typeof(ReadModelInstaller).Assembly);
+            RabbitMqInstaller.InitializeEventConsumers(ServiceProvider, typeof(MongoDbReadModelInstaller).Assembly);
             XmlCategoryTreeStoreInstaller.Init(ServiceProvider);
             ReadModelDbContext = ServiceProvider.GetRequiredService<ReadModelDbContext>();
 

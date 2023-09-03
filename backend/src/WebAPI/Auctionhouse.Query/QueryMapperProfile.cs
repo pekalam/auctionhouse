@@ -1,13 +1,13 @@
 ﻿using Auctionhouse.Query.Queries;
 using AutoMapper;
-using ReadModel.Core.Queries.Auction.Auctions.ByCategory;
-using ReadModel.Core.Queries.Auction.Auctions.ByTag;
-using ReadModel.Core.Queries.Auction.CommonTags;
-using ReadModel.Core.Queries.Auction.SingleAuction;
-using ReadModel.Core.Queries.Auction.TopAuctionsByTag;
-using ReadModel.Core.Queries.User.UserAuctions;
-using ReadModel.Core.Queries.User.UserBoughtAuctions;
-using ReadModel.Core.Queries.User.UserWonAuctions;
+using ReadModel.Contracts.Queries.Auction.Auctions.ByCategory;
+using ReadModel.Contracts.Queries.Auction.Auctions.ByTag;
+using ReadModel.Contracts.Queries.Auction.Auctions.TopAuctions;
+using ReadModel.Contracts.Queries.Auction.CommonTags;
+using ReadModel.Contracts.Queries.Auction.SingleAuction;
+using ReadModel.Contracts.Queries.User.UserAuctions;
+using ReadModel.Contracts.Queries.User.UserBoughtAuctions;
+using ReadModel.Contracts.Queries.User.UserWonAuctions;
 
 namespace Auctionhouse.Query
 {

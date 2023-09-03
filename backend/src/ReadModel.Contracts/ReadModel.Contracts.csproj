@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Bson" Version="2.14.1" />
+	<PackageReference Include="AutoMapper" Version="10.1.1" />
+	<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Modules\Auctions\Auctions.Domain\Auctions.Domain.csproj" />
+    <ProjectReference Include="..\Modules\Categories\Categories.Domain\Categories.Domain.csproj" />
+    <ProjectReference Include="..\Modules\Common\Common.Application\Common.Application.csproj" />
+    <ProjectReference Include="..\Modules\Users\Users.Domain\Users.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -4,6 +4,7 @@ using Common.Application.Events;
 using Core.Common.Domain.Categories;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using ReadModel.Contracts.Model;
 using ReadModel.Core.EventConsumers;
 using ReadModel.Core.Model;
 using ReflectionMagic;

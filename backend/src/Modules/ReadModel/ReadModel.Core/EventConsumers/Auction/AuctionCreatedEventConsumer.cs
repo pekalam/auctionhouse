@@ -5,6 +5,7 @@ using Core.Common.Domain.Categories;
 using Core.Query.EventHandlers;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using ReadModel.Contracts.Model;
 using ReadModel.Core.Model;
 
 namespace ReadModel.Core.EventConsumers

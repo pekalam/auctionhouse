@@ -1,7 +1,6 @@
-﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
+using ReadModel.Contracts.Model;
+using ReadModel.Contracts.Queries.User.UserBids;
 using ReadModel.Core.Model;
 
 namespace ReadModel.Core.Queries.User.UserBids

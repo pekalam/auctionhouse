@@ -6,7 +6,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
-using ReadModel.Core.Services;
+using ReadModel.Contracts.Services;
 
 namespace Adapter.MongoDb.AuctionImage
 {

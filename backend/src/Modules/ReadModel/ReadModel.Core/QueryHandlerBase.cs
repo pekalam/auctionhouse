@@ -1,10 +1,7 @@
-﻿using System;
-using Common.Application.Queries;
+﻿using Common.Application.Queries;
 using MediatR;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ReadModel.Core
 {

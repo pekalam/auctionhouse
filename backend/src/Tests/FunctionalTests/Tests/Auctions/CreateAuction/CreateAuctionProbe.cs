@@ -5,6 +5,7 @@ using Common.Application;
 using FunctionalTests.Commands;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
+using ReadModel.Contracts.Queries.User.UserAuctions;
 using ReadModel.Core.Queries.User.UserAuctions;
 using System.Linq;
 

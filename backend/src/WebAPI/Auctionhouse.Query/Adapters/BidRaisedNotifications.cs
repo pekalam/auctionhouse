@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using ReadModel.Core.Services;
+using ReadModel.Contracts.Services;
 
 namespace Auctionhouse.Query.Adapters
 {

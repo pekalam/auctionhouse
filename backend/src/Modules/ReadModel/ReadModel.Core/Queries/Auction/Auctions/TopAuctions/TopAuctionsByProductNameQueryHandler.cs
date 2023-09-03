@@ -1,9 +1,8 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Auctions.Domain;
+﻿using Auctions.Domain;
 using MongoDB.Driver;
+using ReadModel.Contracts.Queries.Auction.Auctions.TopAuctions;
+using ReadModel.Contracts.Views;
 using ReadModel.Core.Model;
-using ReadModel.Core.Views;
 
 namespace ReadModel.Core.Queries.Auction.TopAuctionsByTag
 {
@@ -18,8 +17,8 @@ namespace ReadModel.Core.Queries.Auction.TopAuctionsByTag
 
         protected async override Task<TopAuctionsByProductName[]> HandleQuery(TopAuctionsByProductNameQuery request, CancellationToken cancellationToken)
         {
-            if(string.IsNullOrWhiteSpace(request.ProductName))
-            { 
+            if (string.IsNullOrWhiteSpace(request.ProductName))
+            {
                 return Array.Empty<TopAuctionsByProductName>();
             }
             var productName = request.ProductName.Trim();
@@ -30,7 +29,7 @@ namespace ReadModel.Core.Queries.Auction.TopAuctionsByTag
                 return Array.Empty<TopAuctionsByProductName>();
             }
             var filter = Builders<TopAuctionsByProductName>.Filter.Regex(f => f.CanonicalName,
-                new MongoDB.Bson.BsonRegularExpression(canonicalName)); 
+                new MongoDB.Bson.BsonRegularExpression(canonicalName));
             var topByProductName = await _dbContext.TopAuctionsByProductNameCollection
                 .Find(filter)
                 .Skip(request.Page * TopAuctionsInTagQuery.MAX_PER_PAGE)

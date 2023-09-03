@@ -3,18 +3,18 @@ using AutoMapper;
 using Common.Application.Mediator;
 using Core.Common.Domain.Categories;
 using Microsoft.AspNetCore.Mvc;
-using ReadModel.Core.Model;
-using ReadModel.Core.Queries.Auction.AuctionImage;
-using ReadModel.Core.Queries.Auction.Auctions;
-using ReadModel.Core.Queries.Auction.Auctions.ByCategory;
-using ReadModel.Core.Queries.Auction.Auctions.ByTag;
-using ReadModel.Core.Queries.Auction.Categories;
-using ReadModel.Core.Queries.Auction.CommonTags;
-using ReadModel.Core.Queries.Auction.EndingAuctions;
-using ReadModel.Core.Queries.Auction.MostViewed;
-using ReadModel.Core.Queries.Auction.SingleAuction;
-using ReadModel.Core.Queries.Auction.TopAuctionsByTag;
-using ReadModel.Core.Views;
+using ReadModel.Contracts.Model;
+using ReadModel.Contracts.Queries.Auction.AuctionImage;
+using ReadModel.Contracts.Queries.Auction.Auctions;
+using ReadModel.Contracts.Queries.Auction.Auctions.ByCategory;
+using ReadModel.Contracts.Queries.Auction.Auctions.ByTag;
+using ReadModel.Contracts.Queries.Auction.Auctions.TopAuctions;
+using ReadModel.Contracts.Queries.Auction.Categories;
+using ReadModel.Contracts.Queries.Auction.CommonTags;
+using ReadModel.Contracts.Queries.Auction.EndingAuctions;
+using ReadModel.Contracts.Queries.Auction.MostViewed;
+using ReadModel.Contracts.Queries.Auction.SingleAuction;
+using ReadModel.Contracts.Views;
 
 namespace Auctionhouse.Query.Controllers
 {

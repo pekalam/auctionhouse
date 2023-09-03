@@ -1,11 +1,10 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
+using ReadModel.Contracts.Queries.Auction.CommonTags;
 using ReadModel.Core.Model;
 
 namespace ReadModel.Core.Queries.Auction.CommonTags
 {
-    public class CommonTagsQueryHandler : QueryHandlerBase<CommonTagsQuery, Views.CommonTags>
+    public class CommonTagsQueryHandler : QueryHandlerBase<CommonTagsQuery, Contracts.Views.CommonTags>
     {
         private readonly ReadModelDbContext _dbContext;
 
@@ -14,7 +13,7 @@ namespace ReadModel.Core.Queries.Auction.CommonTags
             _dbContext = dbContext;
         }
 
-        protected override Task<Views.CommonTags> HandleQuery(CommonTagsQuery request, CancellationToken cancellationToken)
+        protected override Task<Contracts.Views.CommonTags> HandleQuery(CommonTagsQuery request, CancellationToken cancellationToken)
         {
             var commonTags = _dbContext.CommonTagsCollection.Find(m => m.Tag == request.Tag).FirstOrDefault();
             return Task.FromResult(commonTags);

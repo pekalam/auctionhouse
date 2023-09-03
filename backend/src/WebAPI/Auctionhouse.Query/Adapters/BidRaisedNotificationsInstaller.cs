@@ -1,4 +1,5 @@
-﻿using ReadModel.Core;
+﻿using ReadModel.Contracts;
+using ReadModel.Core;
 
 namespace Auctionhouse.Query.Adapters
 {

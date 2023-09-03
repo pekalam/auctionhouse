@@ -2,6 +2,7 @@
 using Auctions.Domain;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ReadModel.Contracts;
 using ReadModel.Core;
 
 namespace Adapter.MongoDb

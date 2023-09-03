@@ -14,6 +14,8 @@ namespace FunctionalTests.Tests.Auctions.BuyNow
     using FunctionalTests.Tests.Auctions.CreateAuction;
     using global::Auctions.Application.Commands.CreateAuction;
     using global::Users.Domain.Repositories;
+    using ReadModel.Contracts.Model;
+    using ReadModel.Contracts.Queries.User.UserAuctions;
     using ReadModel.Core.Model;
     using ReadModel.Core.Queries.User.UserAuctions;
     using System.Linq;
@@ -27,7 +29,7 @@ namespace FunctionalTests.Tests.Auctions.BuyNow
 
 
         public BuyNowCommandTestBase(ITestOutputHelper outputHelper)
-            : base(outputHelper, "AuctionBids.Application", "Auctions.Application", "UserPayments.Application", "Users.Application", "ReadModel.Core")
+            : base(outputHelper, "AuctionBids.Application", "Auctions.Application", "UserPayments.Application", "Users.Application", "ReadModel.Core", "ReadModel.Contracts")
         {
             this.outputHelper = outputHelper;
             allUserPayments = ServiceProvider.GetRequiredService<IUserPaymentsRepository>();

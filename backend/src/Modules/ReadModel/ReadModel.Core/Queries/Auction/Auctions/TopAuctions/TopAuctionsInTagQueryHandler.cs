@@ -1,8 +1,7 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
+using ReadModel.Contracts.Queries.Auction.Auctions.TopAuctions;
+using ReadModel.Contracts.Views;
 using ReadModel.Core.Model;
-using ReadModel.Core.Views;
 
 namespace ReadModel.Core.Queries.Auction.TopAuctionsByTag
 {

@@ -22,7 +22,7 @@ namespace FunctionalTests.Tests.AuctionBids.RaiseBid
     [Trait("Category", "Functional")]
     public class RaiseBidCommand_Tests : TestBase
     {
-        public RaiseBidCommand_Tests(ITestOutputHelper outputHelper) : base(outputHelper, "ReadModel.Core", "AuctionBids.Application", "Auctions.Application", "UserPayments.Application", "Users.Application")
+        public RaiseBidCommand_Tests(ITestOutputHelper outputHelper) : base(outputHelper, "ReadModel.Core", "ReadModel.Contracts", "AuctionBids.Application", "Auctions.Application", "UserPayments.Application", "Users.Application")
         {
         }
 

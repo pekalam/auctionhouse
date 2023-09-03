@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
+using ReadModel.Contracts.Queries.Auction.EndingAuctions;
 using ReadModel.Core.Model;
 
 namespace ReadModel.Core.Queries.Auction.EndingAuctions
 {
-    public class EndingAuctionsQueryHandler : QueryHandlerBase<EndingAuctionsQuery, IEnumerable<Views.EndingAuctions>>
+    public class EndingAuctionsQueryHandler : QueryHandlerBase<EndingAuctionsQuery, IEnumerable<Contracts.Views.EndingAuctions>>
     {
         private readonly ReadModelDbContext _dbContext;
 
@@ -16,10 +14,10 @@ namespace ReadModel.Core.Queries.Auction.EndingAuctions
         }
 
 
-        protected override async Task<IEnumerable<Views.EndingAuctions>> HandleQuery(EndingAuctionsQuery request,
+        protected override async Task<IEnumerable<Contracts.Views.EndingAuctions>> HandleQuery(EndingAuctionsQuery request,
             CancellationToken cancellationToken)
         {
-            var result = await _dbContext.EndingAuctionsCollection.Find(FilterDefinition<Views.EndingAuctions>.Empty)
+            var result = await _dbContext.EndingAuctionsCollection.Find(FilterDefinition<Contracts.Views.EndingAuctions>.Empty)
                 .ToListAsync(cancellationToken);
 
             return result;

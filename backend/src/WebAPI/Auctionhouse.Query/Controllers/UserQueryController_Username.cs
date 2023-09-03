@@ -1,6 +1,7 @@
 ﻿using Auctionhouse.Query.Queries;
 using Common.Application.Mediator;
 using Microsoft.AspNetCore.Mvc;
+using ReadModel.Contracts.Queries.Auth.CheckUsername;
 using ReadModel.Core.Queries.Auth.CheckUsername;
 
 namespace Auctionhouse.Query.Controllers

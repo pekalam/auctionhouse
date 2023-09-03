@@ -6,6 +6,8 @@ using FunctionalTests.Tests.Auctions.CreateAuction;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
+using ReadModel.Contracts.Model;
+using ReadModel.Contracts.Queries.User.UserAuctions;
 using ReadModel.Core.Model;
 using ReadModel.Core.Queries.User.UserAuctions;
 using System;
@@ -23,7 +25,7 @@ namespace FunctionalTests.Tests.Auctions.UpdateAuction
     {
         private readonly ITestOutputHelper outputHelper;
 
-        public UpdateAuctionCommand_Tests(ITestOutputHelper outputHelper) : base(outputHelper, "AuctionBids.Application", "Auctions.Application", "ReadModel.Core")
+        public UpdateAuctionCommand_Tests(ITestOutputHelper outputHelper) : base(outputHelper, "AuctionBids.Application", "Auctions.Application", "ReadModel.Core", "ReadModel.Contracts")
         {
             this.outputHelper = outputHelper;
         }

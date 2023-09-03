@@ -2,12 +2,8 @@
 using Core.Query.EventHandlers;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using ReadModel.Contracts.Model;
 using ReadModel.Core.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UserPayments.Domain;
 
 namespace ReadModel.Core.EventConsumers

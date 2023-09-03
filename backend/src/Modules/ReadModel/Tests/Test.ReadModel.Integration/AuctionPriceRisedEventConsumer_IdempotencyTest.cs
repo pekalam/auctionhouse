@@ -8,7 +8,6 @@ using MongoDB.Driver;
 using Moq;
 using ReadModel.Core.EventConsumers;
 using ReadModel.Core.Model;
-using ReadModel.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +19,8 @@ using Common.Application.Events.Callbacks;
 using Microsoft.Extensions.Options;
 using TestConfigurationAccessor;
 using ReadModel.Tests.Integration;
+using ReadModel.Contracts.Model;
+using ReadModel.Contracts.Services;
 
 namespace Test.ReadModel.Integration
 {

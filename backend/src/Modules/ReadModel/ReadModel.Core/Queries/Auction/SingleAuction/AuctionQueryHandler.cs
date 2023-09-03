@@ -1,6 +1,6 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
+using ReadModel.Contracts.Model;
+using ReadModel.Contracts.Queries.Auction.SingleAuction;
 using ReadModel.Core.Model;
 
 namespace ReadModel.Core.Queries.Auction.SingleAuction

@@ -1,6 +1,7 @@
 ﻿using Auctions.Domain;
 using Auctions.DomainEvents;
 using AutoMapper;
+using ReadModel.Contracts.Model;
 using ReadModel.Core.Model;
 using System;
 using System.Collections.Generic;

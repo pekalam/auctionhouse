@@ -2,6 +2,7 @@
 using FunctionalTests.Commands;
 using FunctionalTests.Tests.Auctions.CreateAuction;
 using MongoDB.Driver;
+using ReadModel.Contracts.Model;
 using ReadModel.Core.Model;
 using System;
 using System.Linq;

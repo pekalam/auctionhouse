@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Moq;
+using ReadModel.Contracts.Model;
 using ReadModel.Core.Model;
 using System;
 using System.Collections.Generic;

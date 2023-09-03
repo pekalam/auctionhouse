@@ -16,6 +16,7 @@ using WebAPI.Common.Auth;
 using WebAPI.Common.Configuration;
 using WebAPI.Common.Tracing;
 using ReadModel.DI;
+using ReadModel.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,7 +47,7 @@ builder.Host.UseSerilog();
 
 //MODULES
 builder.Services.AddCommonQueryModule(builder.Configuration, 
-    new[] { typeof(ReadModelInstaller).Assembly }, new[] { typeof(ReadModelInstaller).Assembly });
+    new[] { typeof(MongoDbReadModelInstaller).Assembly, typeof(ReadModelInstaller).Assembly }, new[] { typeof(MongoDbReadModelInstaller).Assembly });
 builder.Services.AddCategoriesModule(builder.Configuration);
 builder.Services.AddReadModelModule(builder.Configuration).AddQueryAdapters();
 

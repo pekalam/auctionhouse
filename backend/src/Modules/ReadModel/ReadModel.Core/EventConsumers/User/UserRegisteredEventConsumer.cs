@@ -2,6 +2,7 @@
 using Core.Query.EventHandlers;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using ReadModel.Contracts.Model;
 using ReadModel.Core.Model;
 using Users.DomainEvents;
 

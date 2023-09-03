@@ -1,7 +1,7 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using ReadModel.Contracts.Model;
+using ReadModel.Contracts.Queries.Auth.CheckUsername;
 using ReadModel.Core.Model;
 
 namespace ReadModel.Core.Queries.Auth.CheckUsername

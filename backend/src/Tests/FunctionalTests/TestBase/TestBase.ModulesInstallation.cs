@@ -20,7 +20,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using RabbitMq.EventBus;
 using ReadModel.Core;
-using ReadModel.Core.Services;
 using System;
 using TestConfigurationAccessor;
 using UserPayments.DI;
@@ -28,6 +27,8 @@ using Users.DI;
 using XmlCategoryTreeStore;
 using Auctions.Application.Sagas;
 using Users.Application.Sagas;
+using ReadModel.Contracts.Services;
+using ReadModel.Contracts;
 
 namespace FunctionalTests.Commands
 {
@@ -77,7 +78,8 @@ namespace FunctionalTests.Commands
 
         private static void SetupReadModel(ServiceCollection services)
         {
-            new ReadModelInstaller(services, TestConfig.Instance, "FunctionalTests:ReadModelSettings")
+            new ReadModelInstaller(services)
+                .AddMongoDbReadModel(TestConfig.Instance, "FunctionalTests:ReadModelSettings")
                 .AddBidRaisedNotifications(_ => Mock.Of<IBidRaisedNotifications>());
         }
 

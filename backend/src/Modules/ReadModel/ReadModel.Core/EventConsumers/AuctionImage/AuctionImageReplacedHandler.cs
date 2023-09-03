@@ -2,6 +2,7 @@
 using Common.Application.Events;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using ReadModel.Contracts.Model;
 using ReadModel.Core.Model;
 
 namespace Core.Query.EventHandlers.AuctionUpdateHandlers

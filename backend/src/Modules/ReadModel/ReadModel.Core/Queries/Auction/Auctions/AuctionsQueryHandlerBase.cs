@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using Auctions.Domain;
-using Common.Application.Queries;
+﻿using Common.Application.Queries;
 using MongoDB.Driver;
-using ReadModel.Core.Model;
+using ReadModel.Contracts.Model;
+using ReadModel.Contracts.Queries.Auction.Auctions;
 
 namespace ReadModel.Core.Queries.Auction.Auctions
 {
