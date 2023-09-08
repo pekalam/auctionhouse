@@ -17,7 +17,7 @@ namespace FunctionalTests.Tests.Auctions.CreateAuction
     {
         private readonly ITestOutputHelper outputHelper;
 
-        public CreateAuctionCommand_Tests(ITestOutputHelper outputHelper) : base(outputHelper, "AuctionBids.Application", "Auctions.Application", "Users.Application", "ReadModel.Core", "ReadModel.Contracts")
+        public CreateAuctionCommand_Tests(ITestOutputHelper outputHelper) : base(outputHelper)
         {
             this.outputHelper = outputHelper;
         }

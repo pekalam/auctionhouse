@@ -29,7 +29,7 @@ namespace FunctionalTests.Tests.Auctions.BuyNow
 
 
         public BuyNowCommandTestBase(ITestOutputHelper outputHelper)
-            : base(outputHelper, "AuctionBids.Application", "Auctions.Application", "UserPayments.Application", "Users.Application", "ReadModel.Core", "ReadModel.Contracts")
+            : base(outputHelper)
         {
             this.outputHelper = outputHelper;
             allUserPayments = ServiceProvider.GetRequiredService<IUserPaymentsRepository>();

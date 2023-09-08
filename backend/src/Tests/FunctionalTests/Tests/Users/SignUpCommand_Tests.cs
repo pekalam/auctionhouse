@@ -16,8 +16,7 @@ namespace FunctionalTests.Tests.Users
     [Trait("Category", "Functional")]
     public class SignUpCommandTests : TestBase
     {
-        public SignUpCommandTests(ITestOutputHelper outputHelper) : base(outputHelper,
-            "UserPayments.Application", "Users.Application")
+        public SignUpCommandTests(ITestOutputHelper outputHelper) : base(outputHelper)
         {
         }
 

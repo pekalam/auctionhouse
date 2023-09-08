@@ -118,10 +118,10 @@ namespace FunctionalTests.Commands
                 .AddCommandCoreDependencies(
                     null,
                        ImplProviderMock.Factory,
-                       assemblies)
+                       _assemblies)
                 .AddQueryCoreDependencies(
                     implProviderFactory: ImplProviderMock.Factory,
-                    assemblies
+                    _assemblies
                 )
                 .AddRabbitMqEventBusAdapter(null, rabbitMqSettings: TestConfig.Instance.GetRabbitMqSettings())
                 .AddRabbitMqAppEventBuilderAdapter()

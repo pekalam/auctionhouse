@@ -25,7 +25,7 @@ namespace FunctionalTests.Tests.Auctions.UpdateAuction
     {
         private readonly ITestOutputHelper outputHelper;
 
-        public UpdateAuctionCommand_Tests(ITestOutputHelper outputHelper) : base(outputHelper, "AuctionBids.Application", "Auctions.Application", "ReadModel.Core", "ReadModel.Contracts")
+        public UpdateAuctionCommand_Tests(ITestOutputHelper outputHelper) : base(outputHelper)
         {
             this.outputHelper = outputHelper;
         }

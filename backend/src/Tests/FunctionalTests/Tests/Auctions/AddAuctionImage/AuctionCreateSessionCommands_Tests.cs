@@ -23,7 +23,7 @@ namespace FunctionalTests.Tests.Auctions.AddAuctionImage
         private const string TestImagePath = "imageData/1200x600.jpg";
         private readonly IAuctionCreateSessionStore auctionCreateSessionStore;
 
-        public AuctionCreateSessionCommands_Tests(ITestOutputHelper outputHelper) : base(outputHelper, "AuctionBids.Application", "Auctions.Application")
+        public AuctionCreateSessionCommands_Tests(ITestOutputHelper outputHelper) : base(outputHelper)
         {
             auctionCreateSessionStore = ServiceProvider.GetRequiredService<IAuctionCreateSessionStore>();
         }

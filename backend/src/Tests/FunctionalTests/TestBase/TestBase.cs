@@ -15,7 +15,6 @@ namespace FunctionalTests.Commands
     using Core.Common.Domain;
     using Core.Common.Domain.Users;
     using Moq;
-    using Polly;
     using ReadModel.Core;
     using ReadModel.Core.Model;
     using System.Collections.Generic;
@@ -26,13 +25,14 @@ namespace FunctionalTests.Commands
     using Users.Domain.Repositories;
     using Users.Tests.Base;
     using XmlCategoryTreeStore;
-    using Xunit;
     using Xunit.Abstractions;
 
     public partial class TestBase : IDisposable
     {
-        private readonly string[] assemblyNames;
-        private readonly Assembly[] assemblies;
+        private readonly static string[] assemblyNames = 
+            new[] { "AuctionBids.Application", "Auctions.Application", "UserPayments.Application", "Users.Application", "ReadModel.Core", "ReadModel.Contracts" };
+
+        private readonly Assembly[] _assemblies;
         private readonly ITestOutputHelper _outputHelper;
         private readonly Mock<IUserIdentityService> _userIdentityService;
         private readonly ReadModelUserReadTestHelper _modelUserReadTestHelper = new();
@@ -62,12 +62,11 @@ namespace FunctionalTests.Commands
 
         public IReadOnlyList<IAppEvent<Event>> SentEvents => InMemoryEventBusDecorator.SentEvents;
 
-        public TestBase(ITestOutputHelper outputHelper, params string[] assemblyNames)
+        public TestBase(ITestOutputHelper outputHelper)
         {
             _userIdentityService = new Mock<IUserIdentityService>();
             _outputHelper = outputHelper;
-            this.assemblyNames = assemblyNames;
-            this.assemblies = assemblyNames.Select(n => Assembly.Load(n)).ToArray();
+            _assemblies = assemblyNames.Select(n => Assembly.Load(n)).ToArray();
             ServiceProvider = BuildConfiguredServiceProvider();
 
             ChronicleEfCoreIntegrationInitializer.Initialize(ServiceProvider);

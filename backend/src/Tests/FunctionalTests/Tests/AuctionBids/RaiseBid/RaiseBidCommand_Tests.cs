@@ -4,15 +4,12 @@ using Auctions.Tests.Base.Domain.ModelBuilders;
 using Common.Application.Events;
 using Core.Command.Bid;
 using Core.Common.Domain;
-using Core.Common.Domain.Users;
 using FunctionalTests.Commands;
 using FunctionalTests.Tests.Auctions.CreateAuction;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Users.Domain.Repositories;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -22,7 +19,7 @@ namespace FunctionalTests.Tests.AuctionBids.RaiseBid
     [Trait("Category", "Functional")]
     public class RaiseBidCommand_Tests : TestBase
     {
-        public RaiseBidCommand_Tests(ITestOutputHelper outputHelper) : base(outputHelper, "ReadModel.Core", "ReadModel.Contracts", "AuctionBids.Application", "Auctions.Application", "UserPayments.Application", "Users.Application")
+        public RaiseBidCommand_Tests(ITestOutputHelper outputHelper) : base(outputHelper)
         {
         }
 
