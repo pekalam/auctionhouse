@@ -26,6 +26,7 @@ parameters:
       - default
       - azure-vm
       - myserver
+      - pipeline-utils
   - name: docker-registry
     type: string
     displayName: Docker registry
