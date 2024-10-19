@@ -13,7 +13,7 @@ steps:
 - task: PowerShell@2
   inputs:
     targetType: 'inline'
-    script: 'dotnet tool install dotnet-ef'
+    script: 'dotnet tool install --global dotnet-ef'
 - task: PowerShell@2
   displayName: 'Run command db build scripts'
   env:
