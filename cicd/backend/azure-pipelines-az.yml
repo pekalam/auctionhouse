@@ -28,8 +28,9 @@ steps:
     ServerName: 'mptestfree.database.windows.net'
     DatabaseName: 'FreeTest'
     SqlUsername: 'sqladmin'
-    SqlPassword: $(pass)
+    SqlPassword: '$(pass)'
     deployType: 'DacpacTask'
     DeploymentAction: 'Publish'
     DacpacFile: 'backend\src\Database\Command\AuctionhouseDatabase\bin\Debug\AuctionhouseDatabase.dacpac'
+    AdditionalArguments: '/p:ScriptDatabaseOptions=False'
     IpDetectionMethod: 'AutoDetect'
