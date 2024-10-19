@@ -17,4 +17,23 @@ steps:
     ConfigurationFile: 'backend\src\WebAPI\Auctionhouse.Query\appsettings.Azure.json'
     Separator: ':'
     Strict: false
-    DryRun: true
+    DryRun: false
+    Label: query
+- task: AzureAppConfigurationImport@10
+  inputs:
+    azureSubscription: 'Sandbox A1(2c929c60-4abb-4097-9f96-cca3b55eb871)'
+    AppConfigurationEndpoint: 'https://auctionhouse-appcfg.azconfig.io'
+    ConfigurationFile: 'backend\src\WebAPI\Auctionhouse.Command\appsettings.Azure.json'
+    Separator: ':'
+    Strict: false
+    DryRun: false
+    Label: command
+- task: AzureAppConfigurationImport@10
+  inputs:
+    azureSubscription: 'Sandbox A1(2c929c60-4abb-4097-9f96-cca3b55eb871)'
+    AppConfigurationEndpoint: 'https://auctionhouse-appcfg.azconfig.io'
+    ConfigurationFile: 'backend\src\WebAPI\Auctionhouse.CommandStatus\appsettings.Azure.json'
+    Separator: ':'
+    Strict: false
+    DryRun: false
+    Label: commandstatus
