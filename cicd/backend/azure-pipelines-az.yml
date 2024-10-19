@@ -10,6 +10,10 @@ pool:
   vmImage: windows-latest
 
 steps:
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'custom'
+    custom: 'tool install --global dotnet-ef'
 - task: PowerShell@2
   displayName: 'Run command db build scripts'
   env:
