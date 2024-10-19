@@ -13,5 +13,5 @@ steps:
 - task: PowerShell@2
   displayName: 'Run command db build scripts'
   inputs:
-    filePath: 'Build2.ps1'
+    filePath: 'backend\src\Database\Command\Scripts\build\Build2.ps1'
     workingDirectory: 'backend\src\Database\Command\Scripts\build'
