@@ -21,3 +21,15 @@ steps:
   inputs:
     filePath: 'backend\src\Database\Command\Scripts\build\Build2.ps1'
     workingDirectory: 'backend\src\Database\Command\Scripts\build'
+- task: SqlAzureDacpacDeployment@1
+  inputs:
+    azureSubscription: 'Free P1(0ebcf8c7-bd19-44e1-9a1e-77cfc61def57)'
+    AuthenticationType: 'server'
+    ServerName: 'mptestfree.database.windows.net'
+    DatabaseName: 'FreeTest'
+    SqlUsername: 'sqladmin'
+    SqlPassword: $(pass)
+    deployType: 'DacpacTask'
+    DeploymentAction: 'Publish'
+    DacpacFile: 'backend\src\Database\Command\AuctionhouseDatabase\bin\Debug\AuctionhouseDatabase.dacpac'
+    IpDetectionMethod: 'AutoDetect'
