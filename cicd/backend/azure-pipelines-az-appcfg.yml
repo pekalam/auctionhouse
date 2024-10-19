@@ -1,0 +1,20 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- rewrite
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: AzureAppConfigurationImport@10
+  inputs:
+    azureSubscription: 'Sandbox A1(2c929c60-4abb-4097-9f96-cca3b55eb871)'
+    AppConfigurationEndpoint: 'https://auctionhouse-appcfg.azconfig.io'
+    ConfigurationFile: 'backend\src\WebAPI\Auctionhouse.Query\appsettings.Azure.json'
+    Separator: ':'
+    Strict: false
+    DryRun: true
