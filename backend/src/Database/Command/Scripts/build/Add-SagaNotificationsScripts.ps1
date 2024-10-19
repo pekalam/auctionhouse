@@ -8,9 +8,7 @@ $generatedFile = "..\..\AuctionhouseDatabase\dbo\Scripts\Generated\SagaNotificat
 $existingContent = [String]((Get-Content $generatedFile) -join "`n")
 $existingContent = $existingContent.Replace('GO', '')
 
-Write-Output "USE AuctionhouseDatabase
-GO
-IF OBJECT_ID(N'[SagaEventsConfirmations]') IS NULL
+Write-Output "IF OBJECT_ID(N'[SagaEventsConfirmations]') IS NULL
 BEGIN" > $generatedFile
 Write-Output $existingContent >> $generatedFile
 Write-Output "
