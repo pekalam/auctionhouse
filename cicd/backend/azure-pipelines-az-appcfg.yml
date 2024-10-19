@@ -7,7 +7,7 @@ trigger:
 - rewrite
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: windows-latest
 
 steps:
 - task: AzureAppConfigurationImport@10
