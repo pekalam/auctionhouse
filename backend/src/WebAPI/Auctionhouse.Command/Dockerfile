@@ -33,7 +33,7 @@ COPY ["Adapters/AuctionImageConversion/Adapter.AuctionImageConversion/Adapter.Au
 COPY ["Modules/IntegrationServices/IntegrationService.AuctionPaymentVerification/IntegrationService.AuctionPaymentVerification.csproj", "Modules/IntegrationServices/IntegrationService.AuctionPaymentVerification/"]
 COPY ["Modules/AuctionBids/AuctionBids.Domain/AuctionBids.Domain.csproj", "Modules/AuctionBids/AuctionBids.Domain/"]
 COPY ["Adapters/EventBus/Adatper.RabbitMq.EventBus/Adatper.RabbitMq.EventBus.csproj", "Adapters/EventBus/Adatper.RabbitMq.EventBus/"]
-COPY ["WebAPI/Common.WebAPI/Common.WebAPI.csproj", "WebAPI/Common.WebAPI/"]
+COPY ["WebAPI/Common.WebAPI/WebAPI.Common.csproj", "WebAPI/Common.WebAPI/"]
 COPY ["Modules/AuctionBids/AuctionBids.Application/AuctionBids.Application.csproj", "Modules/AuctionBids/AuctionBids.Application/"]
 COPY ["Adapters/Repositories/Adapter.Dapper.AuctionhouseDatabase/Adapter.Dapper.AuctionhouseDatabase.csproj", "Adapters/Repositories/Adapter.Dapper.AuctionhouseDatabase/"]
 COPY ["Adapters/CategoryStore/Adapter.XmlCategoryTreeStore/Adapter.XmlCategoryTreeStore.csproj", "Adapters/CategoryStore/Adapter.XmlCategoryTreeStore/"]

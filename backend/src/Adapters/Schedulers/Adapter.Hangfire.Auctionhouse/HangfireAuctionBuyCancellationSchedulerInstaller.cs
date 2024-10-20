@@ -10,6 +10,8 @@ namespace Adapter.Hangfire_.Auctionhouse
     using Common.Application.Events;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using System.Data.Common;
+    using System.Data.SqlClient;
 
     internal class SqlServerSettings
     {
@@ -78,8 +80,7 @@ namespace Adapter.Hangfire_.Auctionhouse
                 .UseColouredConsoleLogProvider()
                 .UseSimpleAssemblyNameTypeSerializer()
                 .UseRecommendedSerializerSettings()
-                .UseSqlServerStorage(connectionString,
-                new SqlServerStorageOptions
+                .UseSqlServerStorage(() => new Microsoft.Data.SqlClient.SqlConnection(connectionString), new SqlServerStorageOptions
                 {
                     CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
                     SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),

@@ -25,7 +25,7 @@ COPY ["Modules/AuctionBids/AuctionBids.DomainEvents/AuctionBids.DomainEvents.csp
 COPY ["Adapters/AuctionImageRepository/Adapter.MongoDb.AuctionImageRepository/Adapter.MongoDb.AuctionImageRepository.csproj", "Adapters/AuctionImageRepository/Adapter.MongoDb.AuctionImageRepository/"]
 COPY ["Adapters/ReadModelNotifications/Adapter.EfCore.ReadModelNotifications/Adapter.EfCore.ReadModelNotifications.csproj", "Adapters/ReadModelNotifications/Adapter.EfCore.ReadModelNotifications/"]
 COPY ["Adapters/EventBus/Adatper.RabbitMq.EventBus/Adatper.RabbitMq.EventBus.csproj", "Adapters/EventBus/Adatper.RabbitMq.EventBus/"]
-COPY ["WebAPI/Common.WebAPI/Common.WebAPI.csproj", "WebAPI/Common.WebAPI/"]
+COPY ["WebAPI/Common.WebAPI/WebAPI.Common.csproj", "WebAPI/Common.WebAPI/"]
 COPY ["Adapters/CategoryStore/Adapter.XmlCategoryTreeStore/Adapter.XmlCategoryTreeStore.csproj", "Adapters/CategoryStore/Adapter.XmlCategoryTreeStore/"]
 RUN dotnet restore "WebAPI/Auctionhouse.Query/Auctionhouse.Query.csproj"
 COPY . .
