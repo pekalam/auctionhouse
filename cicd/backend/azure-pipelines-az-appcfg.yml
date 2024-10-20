@@ -9,20 +9,29 @@ trigger:
 pool:
   vmImage: windows-latest
 
+variables:
+  appConfigName: 'auctionhouse-appcfg'
+
 steps:
 - task: AzureAppConfigurationImport@10
   inputs:
     azureSubscription: 'Sandbox A1(2c929c60-4abb-4097-9f96-cca3b55eb871)'
-    AppConfigurationEndpoint: 'https://auctionhouse-appcfg.azconfig.io'
+    AppConfigurationEndpoint: 'https://$(appConfigName).azconfig.io'
     ConfigurationFile: 'backend\src\WebAPI\Auctionhouse.Query\appsettings.Azure.json'
     Separator: ':'
     Strict: false
     DryRun: false
     Label: query
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'Sandbox A1(2c929c60-4abb-4097-9f96-cca3b55eb871)'
+    scriptType: 'ps'
+    scriptLocation: 'inlineScript'
+    inlineScript: 'az appconfig kv import --label test --content-type "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8" --name $(appConfigName) --source file --path backend\src\WebAPI\Auctionhouse.Query\keyvault-refs.json --format json'
 - task: AzureAppConfigurationImport@10
   inputs:
     azureSubscription: 'Sandbox A1(2c929c60-4abb-4097-9f96-cca3b55eb871)'
-    AppConfigurationEndpoint: 'https://auctionhouse-appcfg.azconfig.io'
+    AppConfigurationEndpoint: 'https://$(appConfigName).azconfig.io'
     ConfigurationFile: 'backend\src\WebAPI\Auctionhouse.Command\appsettings.Azure.json'
     Separator: ':'
     Strict: false
@@ -31,7 +40,7 @@ steps:
 - task: AzureAppConfigurationImport@10
   inputs:
     azureSubscription: 'Sandbox A1(2c929c60-4abb-4097-9f96-cca3b55eb871)'
-    AppConfigurationEndpoint: 'https://auctionhouse-appcfg.azconfig.io'
+    AppConfigurationEndpoint: 'https://$(appConfigName).azconfig.io'
     ConfigurationFile: 'backend\src\WebAPI\Auctionhouse.CommandStatus\appsettings.Azure.json'
     Separator: ':'
     Strict: false
