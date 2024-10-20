@@ -1,0 +1,8 @@
+{
+  "MongoDb:ConnectionString": {
+    "uri": "https://auctionhouse-kv.vault.azure.net/secrets/QueryDbConnectionString"
+  },
+  "ImageDbSettings:ConnectionString": {
+    "uri": "https://auctionhouse-kv.vault.azure.net/secrets/QueryDbConnectionString"
+  }
+}
