@@ -27,7 +27,7 @@ steps:
     azureSubscription: 'Sandbox A1(2c929c60-4abb-4097-9f96-cca3b55eb871)'
     scriptType: 'ps'
     scriptLocation: 'inlineScript'
-    inlineScript: 'az appconfig kv import --label test --content-type "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8" --name $(appConfigName) --source file --path backend\src\WebAPI\Auctionhouse.Query\keyvault-refs.json --format json --yes'
+    inlineScript: 'az appconfig kv import --label query --content-type "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8" --name $(appConfigName) --source file --path backend\src\WebAPI\Auctionhouse.Query\keyvault-refs.json --format json --yes'
 - task: AzureAppConfigurationImport@10
   inputs:
     azureSubscription: 'Sandbox A1(2c929c60-4abb-4097-9f96-cca3b55eb871)'
