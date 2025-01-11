@@ -23,11 +23,11 @@ steps:
     workingDirectory: 'backend\src\Database\Command\Scripts\build'
 - task: SqlAzureDacpacDeployment@1
   inputs:
-    azureSubscription: 'Free P1(0ebcf8c7-bd19-44e1-9a1e-77cfc61def57)'
+    azureSubscription: 'Sandbox A1(2c929c60-4abb-4097-9f96-cca3b55eb871)'
     AuthenticationType: 'server'
-    ServerName: 'mptestfree.database.windows.net'
-    DatabaseName: 'FreeTest'
-    SqlUsername: 'sqladmin'
+    ServerName: 'auctionhouse-sql.database.windows.net'
+    DatabaseName: 'Auctionhouse'
+    SqlUsername: 'azureadm'
     SqlPassword: '$(pass)'
     deployType: 'DacpacTask'
     DeploymentAction: 'Publish'
