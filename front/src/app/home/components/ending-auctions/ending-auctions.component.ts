@@ -42,7 +42,7 @@ export class EndingAuctionsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.endingAuctionsQuery.execute().subscribe((r) => {
-      this.imgs = r.map((a) => this.auctionImageQuery.execute(a.auctionImages[0].size3Id));
+      this.imgs = r.filter(a => a.auctionImages && a.auctionImages.length > 0).map((a) => this.auctionImageQuery.execute(a.auctionImages[0].size3Id));
       this.endingAuctions = r.map((a) => {
         return {
           queryResult: a,

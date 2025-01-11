@@ -10,6 +10,7 @@ namespace WebAPI.Common.Configuration
         private const string AzureTenantKey = "AZURE_TENANT_ID";
         private const string EnvironmentKey = "APP_ENV";
         private const string AppConfigurationConnectionStringKey = "AppConfigurationProd";
+        private const string KvManagedIdentityClidentIdKey = "KV_MI_CLIENT_ID";
 
         public const string LocalEnvName = "local";
         public const string DockerEnvName = "docker";
@@ -41,5 +42,7 @@ namespace WebAPI.Common.Configuration
         {
             builder.ConfigureAppConfiguration(cfg => cfg.AddJsonFile("appsettings.Docker.json"));
         }
+
+        public static string? GetKvManagedIdentityClientId() => Environment.GetEnvironmentVariable(KvManagedIdentityClidentIdKey);
     }
 }

@@ -36,7 +36,10 @@ switch (environmentName)
             cfgBuilder.AddAzureAppConfiguration(cfg =>
             {
                 cfg.Connect(appConfigurationCs)
-                    .ConfigureKeyVault(kv => kv.SetCredential(new DefaultAzureCredential()))
+                    .ConfigureKeyVault(kv => kv.SetCredential(
+                        ConfigurationUtils.GetKvManagedIdentityClientId() != null ?
+                        new DefaultAzureCredential(new DefaultAzureCredentialOptions { ManagedIdentityClientId = ConfigurationUtils.GetKvManagedIdentityClientId() }) :
+                        new DefaultAzureCredential()))
                     .Select("*", environmentName);
             });
         });

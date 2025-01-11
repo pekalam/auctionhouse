@@ -37,11 +37,8 @@ export class HTTPCommandStatusService {
   }
 
   private calcIntervalSec(configuredInterval: number, retry: number){
-    if((retry-1) * configuredInterval >= 3000){
-      //if already waited at least 3sec then wait interval * (2,3,4,5 etc.. until max retry)
-      var mul = (retry - Math.floor(3000 / configuredInterval));
-      mul = mul < 2 ? 2 : mul + 1; 
-      return configuredInterval * mul;
+    if(retry > 5){
+      return configuredInterval * 2;
     }
     return configuredInterval;
   }

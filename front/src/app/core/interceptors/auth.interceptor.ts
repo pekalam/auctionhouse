@@ -24,22 +24,22 @@ export class AuthInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    const authHeader = null;//this.authStateService.getAuthorizationHttpHeader();
+    const authHeader = this.authStateService.getAuthorizationHttpHeader();
 
-/*     if (authHeader) {
+    if (authHeader) {
       const request = req.clone({
         setHeaders: {
           Authorization: authHeader
         }
       });
       return next.handle(request);
-    } */
+    }
 
     return next.handle(req).pipe(
       //@ts-ignore
       tap((h) => {
         console.log(h);
-        
+
       })
       ,catchError((err: HttpErrorResponse) => {
 
@@ -51,9 +51,9 @@ export class AuthInterceptor implements HttpInterceptor {
         }
       }
       return throwError(err);
-    })); 
+    }));
 
-    
+
 
   }
 }

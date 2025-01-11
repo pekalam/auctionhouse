@@ -26,12 +26,12 @@ describe('HttpcommandStatusService', () => {
     expect(service).toBeTruthy();
   }));
 
-  it('setupServerMessage should retry sending requests to server in case of 404 and return null error after max retry',
+  it('setupServerMessage should retry sending requests to server in case of 404 and return error after max retry',
     inject([HTTPCommandStatusService], (service: HTTPCommandStatusService) => {
       service.setupServerMessageHandler('123').subscribe((status) => {
         fail();
       }, (err) => {
-        expect(err).toBeNull();
+        expect(err).not.toBeNull();
       });
       for (let i = 0; i < MAX_RETRY; i++) {
         jasmine.clock().tick(INTERVAL_SEC * 300);
@@ -61,7 +61,7 @@ describe('HttpcommandStatusService', () => {
       service.setupServerMessageHandler('123').subscribe((status) => {
         fail();
       }, (err) => {
-        expect(err).toBeNull();
+        expect(err).not.toBeNull();
       });
       for (let i = 0; i < MAX_RETRY; i++) {
         jasmine.clock().tick(INTERVAL_SEC * 300);

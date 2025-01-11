@@ -10,6 +10,7 @@ import { Subject, Observable, empty, EMPTY } from 'rxjs';
 import { debounceTime, switchMap, catchError, tap } from 'rxjs/operators';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { isDemoModeDisabled } from 'src/app/core/utils/DemoModeUtils';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-home-page',
@@ -46,7 +47,7 @@ export class HomePageComponent implements OnInit {
       this.showCodeOk = this.showCodeInvalid = false;
       await this.submitDemoCode(v)
     });
-    this.showDemoMode = !isDemoModeDisabled();      
+    this.showDemoMode = !isDemoModeDisabled();
   }
 
   ngOnInit() {
@@ -55,10 +56,10 @@ export class HomePageComponent implements OnInit {
 
   private async submitDemoCode(demoCode: string){
     try{
-      await this.httpClient.post("/api/c/demoCode", {demoCode}).toPromise()
+      await this.httpClient.post(`${environment.API_URL}/api/c/demoCode`, {demoCode}).toPromise()
       this.showCodeOk = true;
       this.codeEnterSuccess = true;
-      document.getElementById('demo-container').addEventListener('animationend', () => {        
+      document.getElementById('demo-container').addEventListener('animationend', () => {
         this.showDemoMode = false;
       });
       this.showDemoAnim = true;
@@ -66,13 +67,13 @@ export class HomePageComponent implements OnInit {
     }catch(error){
       console.log(error);
       this.showCodeInvalid = true;
-    }    
+    }
     this.showLoading = false;
   }
 
   async onDemoCodeSubmit(){
     if (!this.codeEnterSuccess && this.demoCodeForm.controls.code.valid){
-      await this.submitDemoCode(this.demoCodeForm.value.code)    
+      await this.submitDemoCode(this.demoCodeForm.value.code)
     }
   }
 
