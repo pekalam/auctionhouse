@@ -1,6 +1,3 @@
-(2022 update)\
-# !!Work in progress - some functionalities are not working
-
 ```
 Demo mode accounts:
 username: test1 password: pass
